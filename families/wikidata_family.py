@@ -46,12 +46,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[103] = {
             'repo': u'Property talk',
         }
-        self.namespaces[104] = {
-            'repo': u'Query',
-        }
-        self.namespaces[105] = {
-            'repo': u'Query talk',
-        }
         self.namespaces[120] = {
             'wikidata': u'Property',
         }
