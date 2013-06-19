@@ -45,6 +45,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[207] = {
             '_default': u'Iberocoop talk',
         }
+        self.namespaces[208] = {
+            '_default': u'Programs',
+        }
+        self.namespaces[209] = {
+            '_default': u'Programs talk',
+        }
         self.namespaces[470] = {
             '_default': u'Schema',
         }
