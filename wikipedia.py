@@ -4194,7 +4194,8 @@ class DataPage(Page):
         params = {
             'summary': self._encodeArg(summary, 'summary'),
             'format': 'jsonfm',
-            'action': 'wbeditentity'
+            'action': 'wbeditentity',
+            'new': 'item',
         }
         if not value:
             params['data'] = (u'{"labels": {"%(lang)s": {"language": "%(lang)s", '
