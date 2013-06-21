@@ -5655,6 +5655,16 @@ def html2unicode(text, ignore = []):
     # also entities that might be named entities.
     entityR = re.compile(
         r'&(?:amp;)?(#(?P<decimal>\d+)|#x(?P<hex>[0-9a-fA-F]+)|(?P<name>[A-Za-z]+));')
+	
+    ignore.extend((38,     # Ampersand (&amp;)
+                   39,     # Bugzilla 24093
+                   60,     # Less than (&lt;)
+                   62,     # Great than (&gt;)
+                   91,     # Opening bracket - sometimes used intentionally inside links
+                   93,     # Closing bracket - sometimes used intentionally inside links
+                   124,    # Vertical bar (??) - used intentionally in navigation bar templates on de:
+                   160,))
+
     # These characters are Html-illegal, but sadly you *can* find some of
     # these and converting them to unichr(decimal) is unsuitable
     convertIllegalHtmlEntities = {
