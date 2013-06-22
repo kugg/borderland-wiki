@@ -49,23 +49,29 @@ class Family(family.WikimediaFamily):
             'repo': u'Property talk',
         }
         self.namespaces[120] = {
+            'test': u'Property',
             'wikidata': u'Property',
         }
         self.namespaces[121] = {
+            'test': u'Property talk',
             'wikidata': u'Property talk',
         }
         self.namespaces[122] = {
+            'test': u'Query',
             'wikidata': u'Query',
         }
         self.namespaces[123] = {
+            'test': u'Query talk',
             'wikidata': u'Query talk',
         }
         self.namespaces[1198] = {
             'repo': u'Translations',
+            'test': u'Translations',
             'wikidata': u'Translations',
         }
         self.namespaces[1199] = {
             'repo': u'Translations talk',
+            'test': u'Translations talk',
             'wikidata': u'Translations talk',
         }
 
