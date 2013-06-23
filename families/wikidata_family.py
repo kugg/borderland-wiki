@@ -25,6 +25,8 @@ class Family(family.WikimediaFamily):
         del(self.namespaces[829]['_default'])
         self.namespaces[828]['client'] = u'Module'
         self.namespaces[829]['client'] = u'Module talk'
+        self.namespaces[828]['test'] = u'Module'
+        self.namespaces[829]['test'] = u'Module talk'
         self.namespaces[828]['wikidata'] = u'Module'
         self.namespaces[829]['wikidata'] = u'Module talk'
 
