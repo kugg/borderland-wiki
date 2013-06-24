@@ -3,11 +3,12 @@
 """
 Usage:
 
-python harvest_template.py -lang:nl -template:"Taxobox straalvinnige" orde P70 familie P71 geslacht P74 
+python harvest_template.py -lang:nl -template:"Taxobox straalvinnige" orde P70 familie P71 geslacht P74
 
-This will work on all pages that transclude the template in the article namespace
+This will work on all pages that transclude the template in the article
+namespace
 
-You can use any typical pagegenerator to provide with a list of pages
+You can use any typical pagegenerator to provide with a list of pages:
 
 python harvest_template.py -lang:nl -cat:Sisoridae -template:"Taxobox straalvinnige" -namespace:0 orde P70 familie P71 geslacht P74
 
@@ -23,7 +24,8 @@ __version__ = '$Id$'
 
 import re
 import wikipedia as pywikibot
-import pagegenerators
+import pagegenerators as pg
+
 
 class HarvestRobot:
     """
@@ -39,11 +41,11 @@ class HarvestRobot:
         """
         self.generator = generator
         self.templateTitle = templateTitle.replace(u'_', u' ')
-        self.pregen=pagegenerators.PreloadingGenerator(generator)
+        self.pregen = pg.PreloadingGenerator(generator)
         self.fields = fields
-        self.site=pywikibot.getSite()
+        self.site = pywikibot.getSite()
         self.repo = self.site.data_repository()
-    
+
     def setSource(self, lang):
         '''
         Get the source
@@ -66,10 +68,10 @@ class HarvestRobot:
                          'be':  'Q877583',
                          'uk':  'Q199698',
                          'tr':  'Q58255',
-                 }  # TODO: Should be moved to a central wikidata library
-        
+                        }  # TODO: Should be moved to a central wikidata library
+
         if lang in source_values:
-            source = ('143',source_values.get(lang))
+            source = ('143', source_values.get(lang))
             return source
         else:
             return None
@@ -96,36 +98,51 @@ class HarvestRobot:
             templates = pywikibot.extract_templates_and_params(pagetext)
             for (template, fielddict) in templates:
                 # We found the template we were looking for
-                if template.replace(u'_', u' ')==self.templateTitle:
+                if template.replace(u'_', u' ') == self.templateTitle:
                     for field, value in fielddict.items():
                         # This field contains something useful for us
                         if field in self.fields:
                             # Check if the property isn't already set
-                            claim =  self.fields[field]
+                            claim = self.fields[field]
                             if claim in item.get().get('claims'):
-                                pywikibot.output(u'A claim for %s already exists. Skipping' % (claim,))
-                                #TODO FIXME: This is a very crude way of dupe checking
+                                pywikibot.output(
+                                    u'A claim for %s already exists. Skipping'
+                                    % (claim,))
+                                # TODO FIXME: This is a very crude way of dupe
+                                # checking
                             else:
                                 # Try to extract a valid page
-                                match = re.search(re.compile(r'\[\[(?P<title>[^\]|[#<>{}]*)(\|.*?)?\]\]'), value)
+                                match = re.search(re.compile(
+                                    r'\[\[(?P<title>[^\]|[#<>{}]*)(\|.*?)?\]\]'),
+                                                  value)
                                 if match:
                                     try:
                                         link = match.group(1)
-                                        linkedPage = pywikibot.Page(self.site, link)
+                                        linkedPage = pywikibot.Page(self.site,
+                                                                    link)
                                         if linkedPage.isRedirectPage():
                                             linkedPage = linkedPage.getRedirectTarget()
                                         linkedItem = pywikibot.DataPage(linkedPage)
-                                        pywikibot.output('Adding %s --> %s' % (claim, linkedItem.getID()))
+                                        pywikibot.output('Adding %s --> %s'
+                                                         % (claim,
+                                                            linkedItem.getID()))
                                         if self.setSource(self.site().language()):
-                                            item.editclaim(str(claim), linkedItem.getID() ,refs={self.setSource(self.site().language())})
+                                            item.editclaim(
+                                                str(claim),
+                                                linkedItem.getID(),
+                                                refs={self.setSource(
+                                                    self.site().language())})
                                         else:
-                                            item.editclaim(str(claim), linkedItem.getID() )
+                                            item.editclaim(str(claim),
+                                                           linkedItem.getID())
                                     except pywikibot.NoPage:
-                                        pywikibot.output('[[%s]] doesn\'t exist so I can\'t link to it' % (linkedItem.title(),))
-                                        
+                                        pywikibot.output(
+                                            "[[%s]] doesn't exist so I can't link to it"
+                                            % linkedItem.title())
+
 
 def main():
-    genFactory = pagegenerators.GeneratorFactory()
+    genFactory = pg.GeneratorFactory()
     commandline_arguments = list()
     templateTitle = u''
     for arg in pywikibot.handleArgs():
@@ -139,21 +156,24 @@ def main():
             continue
         else:
             commandline_arguments.append(arg)
-    
+
     if len(commandline_arguments) % 2 or not templateTitle:
         raise ValueError  # or something.
     fields = dict()
 
-    for i in xrange (0, len(commandline_arguments), 2):
-        fields[commandline_arguments[i]] = commandline_arguments[i+1]
+    for i in xrange(0, len(commandline_arguments), 2):
+        fields[commandline_arguments[i]] = commandline_arguments[i + 1]
     if templateTitle:
-        gen = pagegenerators.ReferringPageGenerator(pywikibot.Page(pywikibot.getSite(),"Template:%s" % templateTitle ), onlyTemplateInclusion = True)
+        gen = pg.ReferringPageGenerator(pywikibot.Page(pywikibot.getSite(),
+                                                       "Template:%s"
+                                                       % templateTitle),
+                                        onlyTemplateInclusion=True)
     else:
         gen = genFactory.getCombinedGenerator()
     if not gen:
         # TODO: Build a transcluding generator based on templateTitle
         return
-    
+
     bot = HarvestRobot(gen, templateTitle, fields)
     bot.run()
 
