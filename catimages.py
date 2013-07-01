@@ -199,10 +199,10 @@ class _UnknownFile(object):
         misc += [exif['DescProducer']] if 'DescProducer' in exif else []
         misc += [exif['DescCreator']] if 'DescCreator' in exif else []
 
-        result = { 'Software':         exif['Software'] if 'Software' in exif else u'-',
-                   'Desc':             exif['Desc'] if 'Desc' in exif else u'-',
-                   'Comment':          exif['Comment'] if 'Comment' in exif else u'-',
-                   'Producer':         exif['Producer'] if 'Producer' in exif else u'-',
+        result = { 'Software':         u'%s'%exif['Software'] if 'Software' in exif else u'-',
+                   'Desc':             u'%s'%exif['Desc'] if 'Desc' in exif else u'-',
+                   'Comment':          u'%s'%exif['Comment'] if 'Comment' in exif else u'-',
+                   'Producer':         u'%s'%exif['Producer'] if 'Producer' in exif else u'-',
                    'Misc':             u'\n'.join(misc) if misc else u'-',}
                    #'Output_Extension': exif['Output_extension'] if 'Output_extension' in exif else u'-',
                    #'DescProducer':     exif['DescProducer'] if 'DescProducer' in exif else u'-',
@@ -1033,6 +1033,7 @@ class _JpegFile(_UnknownFile):
         enable_recovery()   # enable recovery from hard crash
         found = list(hog.detectMultiScale(img, 0.25, (8,8), (32,32), 1.05, 2))
         disable_recovery()  # disable since everything worked out fine
+        found = [item for item in found if item]
 
         # people haar/cascaded classifier
         # use 'haarcascade_fullbody.xml', ... also (like face detection)
