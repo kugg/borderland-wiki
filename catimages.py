@@ -151,7 +151,7 @@ class _UnknownFile(object):
         self.image_size = (None, None)
 
         # available file properties and metadata
-        self._properties = { 'Properties':   [{'Format': u'-', 'Pages': 0}],
+        self._properties = { 'Properties':   [{'Format': u'-', 'Length': -1}],
                              'Metadata':     [], }
         # available feature to extract
         self._features   = { 'ColorAverage': [],
@@ -163,7 +163,7 @@ class _UnknownFile(object):
                              'History':      [],
                              'Text':         [],
                              'Streams':      [],
-                             'Audio':        [],
+                             #'Audio':        [],
                              'Legs':         [],
                              'Hands':        [],
                              'Torsos':       [],
@@ -193,35 +193,31 @@ class _UnknownFile(object):
 
         exif = self._util_get_DataTags_EXIF()
         #print exif
+
+        misc = []
+        misc += [exif['Output_extension']] if 'Output_extension' in exif else []
+        misc += [exif['DescProducer']] if 'DescProducer' in exif else []
+        misc += [exif['DescCreator']] if 'DescCreator' in exif else []
+
         result = { 'Software':         exif['Software'] if 'Software' in exif else u'-',
-                   'Output_Extension': exif['Output_extension'] if 'Output_extension' in exif else u'-',
                    'Desc':             exif['Desc'] if 'Desc' in exif else u'-',
-                   'DescProducer':     exif['DescProducer'] if 'DescProducer' in exif else u'-',
-                   'DescCreator':      exif['DescCreator'] if 'DescCreator' in exif else u'-',
                    'Comment':          exif['Comment'] if 'Comment' in exif else u'-',
-                   'Producer':         exif['Producer'] if 'Producer' in exif else u'-',}
+                   'Producer':         exif['Producer'] if 'Producer' in exif else u'-',
+                   'Misc':             u'\n'.join(misc) if misc else u'-',}
+                   #'Output_Extension': exif['Output_extension'] if 'Output_extension' in exif else u'-',
+                   #'DescProducer':     exif['DescProducer'] if 'DescProducer' in exif else u'-',
+                   #'DescCreator':      exif['DescCreator'] if 'DescCreator' in exif else u'-',
                    #'Comments':         exif['Comments'] if 'Comments' in exif else u'-',
                    #'WorkDesc':         exif['WorkDescription'] if 'WorkDescription' in exif else u'-',
                    ##'Dimensions':       tuple(map(int, exif['ImageSize'].split(u'x'))),}
                    #'Dimensions':       tuple(exif['ImageSize'].split(u'x')) if 'ImageSize' in exif else (None, None),}
                    #'Mode':             exif['ColorType'], }
 
-# TODO: vvv
-#* metadata template in commons has to be worked out and code adopted
-#* like in 'Streams' a nice content listing of MIDI (exif or music21 - if needed at all?)
-#* docu all this stuff in commons
-#* docu and do all open things on "commons TODO list"
-#
-#
-#
-#(* initial audio midi support (music21))
-#[TODO: docu on Commons ... / template ...]
-
 # TODO: if '_detect_History' is not needed here, moveit back into _JpegFile !!!
         #print "self._detect_History()"
         #print self._detect_History()
 
-        # https://pypi.python.org/pypi/hachoir-metadata (needs 'core' and 'parser')
+        ## https://pypi.python.org/pypi/hachoir-metadata (needs 'core' and 'parser')
         #
         #from hachoir_core.error import HachoirError
         #from hachoir_core.stream import InputStreamError
@@ -416,9 +412,9 @@ class _JpegFile(_UnknownFile):
         self._detect_Faces_EXIF()
         # Faces and eyes (opencv pre-trained haar)
         self._detect_Faces()
-# TODO: test and use or switch off
         # Face via Landmark(s)
-#        self._detect_FaceLandmark_xBOB()
+        # SWITCHED OFF; needs lots of libraries and disk space for minor improvement
+        #self._detect_FaceLandmark_xBOB()
         # exclude duplicates (CV and EXIF)
         faces = [item['Position'] for item in self._features['Faces']]
         for i in self._util_merge_Regions(faces)[1]:
@@ -495,7 +491,7 @@ class _JpegFile(_UnknownFile):
            as commons does in order to compare if those libraries (ImageMagick,
            ...) are buggy (thus explicitely use other software for independence)"""
 
-        result = {'Format': u'-', 'Pages': 0}
+        result = {'Format': u'-', 'Length': -1}
 
         try:
             i = Image.open(self.image_path)
@@ -529,7 +525,7 @@ class _JpegFile(_UnknownFile):
                         #'info':       i.info,
                         #'stat':       os.stat(self.image_path),
                         'Palette':    str(len(i.palette.palette)) if i.palette else u'-',
-                        'Pages':      pc,
+                        'Length':     pc,   # num. of pages
                         'Dimensions': self.image_size,
                         'Filesize':   os.path.getsize(self.file_name),
                         'MIME':       u'%s/%s' % tuple(self.file_mime[:2]), })
@@ -2364,7 +2360,7 @@ class _XcfFile(_JpegFile):
 
         result =      { 'Format':     u'%s' % self.file_mime[1].upper(),
         # DO NOT use ImageMagick (identify) instead of PIL to get these info !!
-                        'Pages':      0,
+                        'Length':     -1,   # pages/layers
                         'Dimensions': self.image_size,
                         'Filesize':   os.path.getsize(self.file_name),
                         'MIME':       u'%s/%s' % tuple(self.file_mime[:2]), }
@@ -2408,7 +2404,7 @@ class _SvgFile(_JpegFile):
            as commons does in order to compare if those libraries (ImageMagick,
            ...) are buggy (thus explicitely use other software for independence)"""
 
-        result = {'Format': u'-', 'Pages': 0}
+        result = {'Format': u'-', 'Length': -1}
 
         # similar to PDF page count OR use BeautifulSoup
         svgcountpages = re.compile("<page>")
@@ -2434,7 +2430,7 @@ class _SvgFile(_JpegFile):
         result.update({ 'Format':     valid,
                         'Mode':       u'-',
                         'Palette':    u'-',
-                        'Pages':      pc,
+                        'Length':     pc,   # pages
         # may be set {{validSVG}} also or do something in bot template to
         # recognize 'Format=SVG (valid)' ...
                         'Dimensions': self.image_size,
@@ -2480,7 +2476,7 @@ class _PdfFile(_JpegFile):
         result =      { 'Format':     u'PDF',
                         'Mode':       u'-',
                         'Palette':    u'-',
-                        'Pages':      pc,
+                        'Length':     pc,   # pages
                         'Dimensions': self.image_size,
                         'Filesize':   os.path.getsize(self.file_name),
                         'MIME':       u'%s/%s' % tuple(self.file_mime[:2]), }
@@ -2648,10 +2644,10 @@ class _PdfFile(_JpegFile):
 class _OggFile(_JpegFile):
     def getFeatures(self):
         # general handling of all audio and video formats
-        self._detect_Streams()
+        self._detect_Streams()          # Streams
 
         # general audio feature extraction
-#        self._detect_AudioFeatures()
+#        self._detect_AudioFeatures()    # Audio
 
         return self._features
 
@@ -2665,8 +2661,10 @@ class _OggFile(_JpegFile):
         d = self._util_get_DataStreams_FFMPEG()
         #print d
 
+        #print self._util_get_DataTags_EXIF()['Duration']
+
         result =      { 'Format':     u'%s' % d['format']['format_name'].upper(),
-                        'Pages':      0,
+                        'Length':     float(d['format']['duration']),   # secs/frames
                         'Dimensions': self.image_size,
                         'Filesize':   os.path.getsize(self.file_name),
                         'MIME':       u'%s/%s' % tuple(self.file_mime[:2]), }
@@ -2701,6 +2699,7 @@ class _OggFile(_JpegFile):
                             'Format':     u'%s/%s' % (s["codec_type"], s.get("codec_name",u'?')),
                             'Rate':       rate or u'-',
                             'Dimensions': dim or (None, None),
+                            'Duration':   float(s['duration']),
                             })
 
         if 'image' in d["format"]["format_name"]:
@@ -2893,25 +2892,21 @@ class _OggFile(_JpegFile):
         return
 
 
-class _MidiFile(_UnknownFile):
-    def getFeatures(self):
-        self._detect_AudioFeatures()    # Audio
-        return self._features
-
+#class _MidiFile(_UnknownFile):
+class _MidiFile(_OggFile):
     def _detect_HeaderAndMetadata(self):
         #_UnknownFile._detect_HeaderAndMetadata(self)
         #result = {'Desc': self._properties['Metadata'][0]['Desc'].splitlines()}
-
-        result = {'Desc': []}
 
         # extract data from midi file
         # http://valentin.dasdeck.com/midi/midifile.htm
         # http://stackoverflow.com/questions/3943149/reading-and-interpreting-data-from-a-binary-file-in-python
         ba = bytearray(open(self.file_name, 'rb').read())
         i = -1
+        res = {'Desc': []}
         for key, data in [('Text', '\x01'), ('Copyright', '\x02')]:#, ('Lyrics', '\x05')]:
             key = 'Desc'
-            #result[key] = []
+            #res[key] = []
             while True:
                 i = ba.find('\xff%s' % data, i+1)
                 if i < 0:       # something found?
@@ -2919,15 +2914,12 @@ class _MidiFile(_UnknownFile):
                 e = (i+3+ba[i+2])
                 if ba[e] != 0:  # length match with string end (00)?
                     e = ba.find('\x00', (i+3+ba[i+2]))
-                result[key].append(ba[i+3:e].decode('latin-1').strip())
-            #result[key] = u'\n'.join(result[key])
-        result[key] = u'\n'.join(result[key])
-        if not result['Desc']:
-            result['Desc'] = u'-'
+                res[key].append(ba[i+3:e].decode('latin-1').strip())
+            #res[key] = u'\n'.join(res[key])
+        res['Desc'] = u'\n'.join(res['Desc'])
 
         ## find specific info in extracted data
         #print [item.strip() for item in re.findall('Generated .*?\n', result['Text'])]
-        ##u"Cr'eateur: GNU LilyPond 2.0.1"
         #import dateutil.parser
         #dates = []
         #for line in result['Text'].splitlines():
@@ -2937,6 +2929,12 @@ class _MidiFile(_UnknownFile):
         #    except ValueError:
         #        pass
         #print dates
+
+        result = { 'Software': u'-',
+                   'Desc':     res['Desc'] if res['Desc'] else u'-',
+                   'Comment':  u'-',
+                   'Producer': u'-',
+                   'Misc':     u'-', }
 
         import _music21 as music21
         try:
@@ -2956,8 +2954,11 @@ class _MidiFile(_UnknownFile):
            as commons does in order to compare if those libraries (ImageMagick,
            ...) are buggy (thus explicitely use other software for independence)"""
 
+        # 'ffprobe' (ffmpeg); audio and video streams files (ogv, oga, ...)
+        d = self._util_get_DataStreams_MUSIC21()
+
         result =      { 'Format':     u'%s' % self.file_mime[1].upper(),
-                        'Pages':      0,
+                        'Length':     d["duration"],    # secs
                         'Dimensions': self.image_size,
                         'Filesize':   os.path.getsize(self.file_name),
                         'MIME':       u'%s/%s' % tuple(self.file_mime[:2]), }
@@ -2966,8 +2967,37 @@ class _MidiFile(_UnknownFile):
         self._properties['Properties'][0].update(result)
         return
 
-    # midi audio feature extraction
-    def _detect_AudioFeatures(self):
+    # midi audio stream/feature extraction, detect streams of notes; parts
+    def _detect_Streams(self):
+        # like in '_OggFile' (streams) a nice content listing of MIDI (music21)
+        d = self._util_get_DataStreams_MUSIC21()
+        if not d:
+            return
+
+        data = []
+        for i, part in enumerate(d["parts"]):
+            #print part.elements
+            mm     = part.elements[0]   # MetronomeMark
+            ts     = part.elements[1]   # TimeSignature
+            stream = part.notes         # Stream - containing all Note(s)
+            #print mm.secondsPerQuarter()
+            #print mm.durationToSeconds(part.duration.quarterLength)
+            #print sum([item.seconds for item in stream])    # sum over all Note(s)
+            #print part.metadata
+            data.append( {'ID':        (i+1), 
+                          'Format':    u'(audio/midi)', 
+                          # note rate / noteduration ...??
+                          'Rate':      u'%s/-/-' % d["channels"][i],
+                          'Dimension': (None, None),
+                          'Duration':  part.seconds,} )
+
+        self._features['Streams'] = data
+        return
+
+    def _util_get_DataStreams_MUSIC21(self):
+        if hasattr(self, '_buffer_MUSIC21'):
+            return self._buffer_MUSIC21
+
         import _music21 as music21
 
         #music21.features.jSymbolic.getCompletionStats()
@@ -2976,7 +3006,7 @@ class _MidiFile(_UnknownFile):
             #s = music21.midi.translate.midiFilePathToStream(self.file_name)
             s = music21.converter.parse(self.file_name)
         except music21.midi.base.MidiException:
-            pywikibot.warning(u'unknown file type [_detect_AudioFeatures]')
+            pywikibot.warning(u'unknown file type [_detect_Streams]')
             return
 
         #fs = music21.features.jSymbolic.extractorsById
@@ -2995,27 +3025,35 @@ class _MidiFile(_UnknownFile):
         #                    print f.name, f.vector
         #                except AttributeError:
         #                    print "ERROR"
-        data = {'RegisterImportance': (music21.features.jSymbolic.ImportanceOfBassRegisterFeature(s).extract().vector[0],
-                                       music21.features.jSymbolic.ImportanceOfMiddleRegisterFeature(s).extract().vector[0],
-                                       music21.features.jSymbolic.ImportanceOfHighRegisterFeature(s).extract().vector[0],),
-                      'NoteDuration': (music21.features.jSymbolic.AverageNoteDurationFeature(s).extract().vector[0],
-                                       music21.features.jSymbolic.MaximumNoteDurationFeature(s).extract().vector[0],),
-                 'IndependentVoices': (music21.features.jSymbolic.AverageNumberOfIndependentVoicesFeature(s).extract().vector[0],
-                                       music21.features.jSymbolic.MaximumNumberOfIndependentVoicesFeature(s).extract().vector[0],),
-                   'MostCommonPitch': music21.features.jSymbolic.MostCommonPitchFeature(s).extract().vector[0],
-                             'Tempo': music21.features.jSymbolic.InitialTempoFeature(s).extract().vector[0],
-                          'Duration': s.highestTime,
-                          #'Metadata': s.metadata if s.metadata else u'',
-                            'Lyrics': s.lyrics(recurse=True) if s.lyrics(recurse=True) else u'',}
+# TODO: do we extract "streams" and/or features here ... ???!?
+#        data = [{'RegisterImportance': (music21.features.jSymbolic.ImportanceOfBassRegisterFeature(s).extract().vector[0],
+#                                        music21.features.jSymbolic.ImportanceOfMiddleRegisterFeature(s).extract().vector[0],
+#                                        music21.features.jSymbolic.ImportanceOfHighRegisterFeature(s).extract().vector[0],),
+#                       'NoteDuration': (music21.features.jSymbolic.AverageNoteDurationFeature(s).extract().vector[0],
+#                                        music21.features.jSymbolic.MaximumNoteDurationFeature(s).extract().vector[0],),
+#                  'IndependentVoices': (music21.features.jSymbolic.AverageNumberOfIndependentVoicesFeature(s).extract().vector[0],
+#                                        music21.features.jSymbolic.MaximumNumberOfIndependentVoicesFeature(s).extract().vector[0],),
+#                    'MostCommonPitch': music21.features.jSymbolic.MostCommonPitchFeature(s).extract().vector[0],
+#                              'Tempo': music21.features.jSymbolic.InitialTempoFeature(s).extract().vector[0],
+#                           #'Duration': s.highestTime,
+#                           #'Metadata': s.metadata if s.metadata else u'',
+#                             'Lyrics': s.lyrics(recurse=True) if s.lyrics(recurse=True) else u'',}]
         #print music21.text.assembleLyrics(s)
-        #print s.duration
-        #print s.offsetMap
-        #print s.measureOffsetMap()
-        #print s.seconds
-        #print s.secondsMap
 
-        self._features['Audio'] = [data]
-        return
+        #print s.show('text')
+        #midi = [item for item in s.recurse()]
+        #print midi
+
+        mf = music21.midi.translate.streamToMidiFile(s)
+
+        res = {}
+
+        res["channels"] = [ len(t.getChannels()) for t in mf.tracks ]
+        res["parts"]    = [ p for p in s.elements ]
+        res["duration"] = max([ p.seconds for p in s.elements ])
+        self._buffer_MUSIC21 = res
+
+        return self._buffer_MUSIC21
 
 
 # http://commons.wikimedia.org/wiki/File_formats
@@ -3221,7 +3259,7 @@ class CatImages_Default(object):
         pdf    = u'PDF' in self._info_filter['Properties'][0]['Format']
         result = self._info_filter['Text']
         relevance = pdf and len(result) and \
-                    (self._info_filter['Properties'][0]['Pages'] >= 10) and \
+                    (self._info_filter['Properties'][0]['Length'] >= 10) and \
                     (result[0]['Size'] >= 5E4) and (result[0]['Lines'] >= 1000)
 
         return (u'Books (literature) in PDF', relevance)
@@ -3231,7 +3269,7 @@ class CatImages_Default(object):
     # (Category:Animated SVG‎)
     def _cat_prop_Animated_general(self):
         result = self._info_filter['Properties']
-        relevance = result and (result[0]['Pages'] > 1) and \
+        relevance = result and (result[0]['Length'] > 1) and \
                     (result[0]['Format'] in [u'GIF', u'PNG'])
 
         return (u'Animated %s' % result[0]['Format'], relevance)
@@ -3270,258 +3308,69 @@ class CatImages_Default(object):
         return (u'Graphics', bool(relevance))
 
     # Category:MIDI files created with GNU LilyPond
-    def _cat_meta_MIDIfilescreatedwithGNULilyPond(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Desc' in result[0]) and \
-                    (u"Generated automatically by: GNU LilyPond" in
-                     result[0]['Desc'])
-
-        return (u'MIDI files created with GNU LilyPond', bool(relevance))
-
     # Category:Bitmap_from_Inkscape (png)
-    def _cat_meta_BitmapfromInkscape(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"www.inkscape.org" in
-                     result[0]['Software'].lower())
-
-        return (u'Bitmap from Inkscape', bool(relevance))
-
     # Category:Created_with_Inkscape (svg)
-    def _cat_meta_CreatedwithInkscape(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Output_Extension' in result[0]) and \
-                    (u"org.inkscape.output.svg.inkscape" in
-                     result[0]['Output_Extension'].lower())
-
-        return (u'Created with Inkscape', bool(relevance))
-
     # Category:Created_with_MATLAB (png)
     # Category:Created_with_MATLAB (svg)
-    def _cat_meta_CreatedwithMATLAB(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and \
-                    ((('Software' in result[0]) and \
-                    (u"MATLAB, The Mathworks, Inc." in 
-                     result[0]['Software'])) \
-                    or \
-                     (('Desc' in result[0]) and \
-                    (u"Matlab Figure" in 
-                     result[0]['Desc'])) )
-
-        return (u'Created with MATLAB', bool(relevance))
-
     # Category:Created_with_PLOT2SVG (svg) [new]
-    def _cat_meta_CreatedwithPLOT2SVG(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Desc' in result[0]) and \
-                    (u"Converted by PLOT2SVG" in
-                     result[0]['Desc'])
-
-        return (u'Created with PLOT2SVG', bool(relevance))
-
     # Category:Created_with_ImageMagick (jpg)
-    def _cat_meta_CreatedwithImageMagick(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"ImageMagick" in
-                     result[0]['Software'])
-
-        return (u'Created with ImageMagick', bool(relevance))
-
     # Category:Created_with_Adobe_ImageReady (png)
-    def _cat_meta_CreatedwithAdobeImageReady(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Adobe ImageReady" in
-                     result[0]['Software'])
-
-        return (u'Created with Adobe ImageReady', bool(relevance))
-
     # Category:Created_with_Adobe_Photoshop (jpg)
-    def _cat_meta_CreatedwithAdobePhotoshop(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Adobe Photoshop" in
-                     result[0]['Software'])
-
-        return (u'Created with Adobe Photoshop', bool(relevance))
-
     # Category:Created_with_Picasa (jpg)
-    def _cat_meta_CreatedwithPicasa(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Picasa" in
-                     result[0]['Software'])
-
-        return (u'Created with Picasa', bool(relevance))
-
     # Category:Created_with_Qtpfsgui (jpg)
-    def _cat_meta_CreatedwithQtpfsgui(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Created with opensource tool Qtpfsgui" in
-                     result[0]['Software'])
-
-        return (u'Created with Qtpfsgui', bool(relevance))
-
     # Category:Created_with_Autopano (jpg)
-    def _cat_meta_CreatedwithAutopano(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Autopano" in
-                     result[0]['Software'])
-
-        return (u'Created with Autopano', bool(relevance))
-
     # Category:Created_with_Xmgrace (png)
-    def _cat_meta_CreatedwithXmgrace(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Grace" in
-                     result[0]['Software'])
-
-        return (u'Created with Xmgrace', bool(relevance))
-
     # Category:Created_with_darktable (jpg)
-    def _cat_meta_Createdwithdarktable(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"darktable" in
-                     result[0]['Software'].lower())
-
-        return (u'Created with darktable', bool(relevance))
-
     # Category:Created_with_easyHDR (jpg)
-    def _cat_meta_CreatedwitheasyHDR(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and \
-                    ((('Software' in result[0]) and \
-                    (u"easyHDR" in
-                     result[0]['Software'])) \
-                    or \
-                     (('Comment' in result[0]) and \
-                    (u"easyHDR" in
-                     result[0]['Comment'])) )
-
-        return (u'Created with easyHDR', bool(relevance))
-
     # Category:Created_with_GIMP (jpg) [new]
-    def _cat_meta_CreatedwithGIMP(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and \
-                    ((('Software' in result[0]) and \
-                    (u"GIMP" in
-                     result[0]['Software'])) \
-                    or \
-                     (('Comment' in result[0]) and \
-                    (u"Created with GIMP" in
-                     result[0]['Comment'])) )
-
-        return (u'Created with GIMP', bool(relevance))
-
     # Category:Created_with_R (svg)
-    def _cat_meta_CreatedwithR(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Desc' in result[0]) and \
-                    (u"R SVG" in
-                     result[0]['Desc'])
-
-        return (u'Created with R', bool(relevance))
-
     # Category:Created_with_VectorFieldPlot (svg)
-    def _cat_meta_CreatedwithVectorFieldPlot(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Desc' in result[0]) and \
-                    (u"created with VectorFieldPlot" in
-                     result[0]['Desc'])
-
-        return (u'Created with VectorFieldPlot', bool(relevance))
-
     # Category:Created_with_Chemtool (svg)
-    def _cat_meta_CreatedwithChemtool(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Desc' in result[0]) and \
-                    (u"Created with Chemtool" in
-                     result[0]['Desc'])
-
-        return (u'Created with Chemtool', bool(relevance))
-
     # Category:Created_with_GNU_Octave (svg)
-    def _cat_meta_CreatedwithGNUOctave(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Desc' in result[0]) and \
-                    (u"Produced by GNUPLOT" in
-                     result[0]['Desc'])
-
-        return (u'Created with GNU Octave', bool(relevance))
-
     # Category:Created_with_GeoGebra (svg)
-    def _cat_meta_CreatedwithGeoGebra(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('DescProducer' in result[0]) and \
-                    (u"geogebra.d.W" in
-                     result[0]['DescProducer']) #and \
-                    #(u"FreeHEP Graphics2D Driver" in
-                    # result[0]['DescCreator'])
-
-        return (u'Created with GeoGebra', bool(relevance))
-
     # Category:Created_with_Stella (png)
-    def _cat_meta_CreatedwithStella(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Comment' in result[0]) and \
-                    (u"Created using Stella4D" in
-                     result[0]['Comment'])
-
-        return (u'Created with Stella', bool(relevance))
-
     # Category:Created_with_PhotoStitch (jpg)
-    def _cat_meta_CreatedwithPhotoStitch(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Comment' in result[0]) and \
-                    (u"LEAD Technologies Inc." in
-                     result[0]['Comment'])
-
-        return (u'Created with PhotoStitch', bool(relevance))
-
     # Category:Created_with_Scribus (pdf)
-    def _cat_meta_CreatedwithScribus(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Producer' in result[0]) and \
-                    (u"Scribus PDF Library" in
-                     result[0]['Producer'])
-
-        return (u'Created with Scribus', bool(relevance))
-
     # Category:Created_with_OpenOffice.org (pdf)
-    def _cat_meta_CreatedwithOpenOfficeorg(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Producer' in result[0]) and \
-                    (u"OpenOffice.org" in
-                     result[0]['Producer'])
-
-        return (u'Created with OpenOffice.org', bool(relevance))
-
     # Category:Created_with_Tux_Paint (pdf)
-    def _cat_meta_CreatedwithTuxPaint(self):
-        result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Tux Paint" in
-                     result[0]['Software'])
-
-        return (u'Created with Tux Paint', bool(relevance))
-
     # Category:Created_with_Microsoft_Image_Composite_Editor (jpg)
-    def _cat_meta_CreatedwithMicrosoftImageCompositeEditor(self):
+    def _cat_meta_general(self):
         result = self._info_filter['Metadata']
-        relevance = len(result) and ('Software' in result[0]) and \
-                    (u"Microsoft ICE" in
-                     result[0]['Software'])
+        for key, magic, cat in [('Desc',             u"Generated automatically by: GNU LilyPond", u'MIDI files created with GNU LilyPond'),
+                                ('Software',         u"www.inkscape.org",                         u'Bitmap from Inkscape'),
+                                ('Misc',             u"org.inkscape.output.svg.inkscape",         u'Created with Inkscape'), # 'Output_extension'
+                                ('Software',         u"MATLAB, The Mathworks, Inc.",              u'Created with MATLAB'),
+                                ('Desc',             u"Matlab Figure",                            u'Created with MATLAB'),
+                                ('Desc',             u"Converted by PLOT2SVG",                    u'Created with PLOT2SVG'),
+                                ('Software',         u"ImageMagick",                              u'Created with ImageMagick'),
+                                ('Software',         u"Adobe ImageReady",                         u'Created with Adobe ImageReady'),
+                                ('Software',         u"Adobe Photoshop",                          u'Created with Adobe Photoshop'),
+                                ('Software',         u"Picasa",                                   u'Created with Picasa'),
+                                ('Software',         u"Created with opensource tool Qtpfsgui",    u'Created with Qtpfsgui'),
+                                ('Software',         u"Autopano",                                 u'Created with Autopano'),
+                                ('Software',         u"Grace",                                    u'Created with Xmgrace'),
+                                ('Software',         u"darktable",                                u'Created with darktable'),
+                                ('Software',         u"Tux Paint",                                u'Created with Tux Paint'),
+                                ('Software',         u"Microsoft ICE",                            u'Created with Microsoft Image Composite Editor'),
+                                ('Software',         u"easyHDR",                                  u'Created with easyHDR'),
+                                ('Comment',          u"easyHDR",                                  u'Created with easyHDR'),
+                                ('Software',         u"GIMP",                                     u'Created with GIMP'),
+                                ('Comment',          u"Created with GIMP",                        u'Created with GIMP'),
+                                ('Desc',             u"R SVG",                                    u'Created with R'),
+                                ('Desc',             u"created with VectorFieldPlot",             u'Created with VectorFieldPlot'),
+                                ('Desc',             u"Created with Chemtool",                    u'Created with Chemtool'),
+                                ('Desc',             u"Produced by GNUPLOT",                      u'Created with GNU Octave'),
+                                ('Misc',             u"geogebra.d.W",                             u'Created with GeoGebra'), # 'DescProducer'
+                                ('Comment',          u"Created using Stella4D",                   u'Created with Stella'),
+                                ('Comment',          u"LEAD Technologies Inc.",                   u'Created with PhotoStitch'),
+                                ('Producer',         u"Scribus PDF Library",                      u'Created with Scribus'),
+                                ('Producer',         u"OpenOffice.org",                           u'Created with OpenOffice.org'),]:
+            relevance = len(result) and (key in result[0]) and \
+                        (magic in result[0][key])
+            if relevance:
+                break
 
-        return (u'Created with Microsoft Image Composite Editor', bool(relevance))
-
-# TODO: make '_cat_meta_general(self)'
+        return (cat, bool(relevance))
 
     # Category:Categorized by DrTrigonBot
     def _addcat_BOT(self):
@@ -4101,9 +3950,12 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         return {'Properties': result}
 
     def _filter_Metadata(self):
-        # >>> never drop <<<
-        result = self._info['Metadata']
-        return {'Metadata': result}
+        ## >>> never drop <<<
+        #result = self._info['Metadata']
+        ok = False
+        for item in self._info['Metadata'][0]:
+            ok = ok or (self._info['Metadata'][0][item] != u'-')
+        return {'Metadata': self._info['Metadata'] if ok else []}
 
     def _filter_Faces(self):
         result = self._info['Faces']
