@@ -3290,7 +3290,9 @@ class CatImages_Default(object):
     def _cat_streams_OggSoundFiles(self):
         result = self._info_filter['Streams']
 
-        return (u'Ogg sound files', ((len(result) == 1) and (u'audio/' in result[0]['Format'])))
+        return (u'Ogg sound files', ((len(result) == 1) and 
+                                     (u'audio/' in result[0]['Format']) and 
+                                     (u'/midi' not in result[0]['Format'])))
 
     # Category:Videos
     def _cat_streams_Videos(self):
