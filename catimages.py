@@ -1031,9 +1031,9 @@ class _JpegFile(_UnknownFile):
         # detectMultiScale(img, hit_threshold=0, win_stride=Size(),
         #                  padding=Size(), scale0=1.05, group_threshold=2)
         enable_recovery()   # enable recovery from hard crash
-        found = list(hog.detectMultiScale(img, 0.25, (8,8), (32,32), 1.05, 2))
+        found, w = hog.detectMultiScale(img, 0.25, (8,8), (32,32), 1.05, 2)
         disable_recovery()  # disable since everything worked out fine
-        found = [item for item in found if item]
+        found = list(found)
 
         # people haar/cascaded classifier
         # use 'haarcascade_fullbody.xml', ... also (like face detection)
