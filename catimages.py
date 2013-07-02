@@ -1031,8 +1031,12 @@ class _JpegFile(_UnknownFile):
         # detectMultiScale(img, hit_threshold=0, win_stride=Size(),
         #                  padding=Size(), scale0=1.05, group_threshold=2)
         enable_recovery()   # enable recovery from hard crash
-        found, w = hog.detectMultiScale(img, 0.25, (8,8), (32,32), 1.05, 2)
+        ret = hog.detectMultiScale(img, 0.25, (8,8), (32,32), 1.05, 2)
         disable_recovery()  # disable since everything worked out fine
+        if cv2.__version__ == '$Rev: 4557 $':   # TS
+            found = ret
+        else:                #'2.4.5' or else (e.g. on fedora 18)
+            found, w = ret
         found = list(found)
 
         # people haar/cascaded classifier
