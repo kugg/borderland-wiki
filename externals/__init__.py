@@ -28,16 +28,11 @@ __version__ = '$Id$'
 # dependencies: (svn, python)
 #               yum, apt-get or whatever your system uses
 #               mercurial (hg)
-#               patch
+#               patch (unix/linux & gnuwin32 version/flavour)
 modules_needed = {
-# TODO: vvv how to apply patches under windows, e.g. and other OS... ? (needed for BeautifulSoup.py and else)
-#           'patch.py': ({},
-#                        {  'url': 'https://python-patch.googlecode.com/files/patch-1.12.11.py',
-#                          'path': '',}),                                   # OK
-#                        {  'url': 'http://google-diff-match-patch.googlecode.com/files/diff_match_patch_20121119.zip',
-#                          'path': 'diff_match_patch_20121119/python2',}),  # OK
-#                        {  'url': 'http://downloads.sourceforge.net/project/unxutils/unxutils/current/UnxUtils.zip',
-#                          'path': '?',}),                                  # OK
+          'patch.exe': ({}, # for win32 only, unix/linux is already equipped with a patch tool
+                        {  'url': 'http://downloads.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip',
+                          'path': 'bin/patch.exe',}),                      # OK
             'crontab': ({},
                         #{  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
                         #  'path': 'parse-crontab-master/crontab',}),       # OK
@@ -328,9 +323,14 @@ def download_install(package, module, path):
             if 'patch' in package:
                 lowlevel_warning(u'Install package "%s" by applying patch to %s.'
                                  % (module, os.path.join(path, module)))
-                cmd = 'patch -p0 -d %s < %s' % (path, os.path.join(path, package['patch']))
-                #os.chdir(path)
-                #cmd = 'python patch.py -p0 -- < %s' % os.path.join(path, package['patch'])
+                if sys.platform == 'win32':
+                    cmd = '%s -p0 -d %s -i %s --binary' % (os.path.join(path, 'patch.exe'), 
+                                                           path, 
+                                                           os.path.join(path, package['patch']))
+                else:              # unix/linux, (mac too?)
+                    cmd = '%s -p0 -d %s < %s' % ('patch', 
+                                                 path, 
+                                                 os.path.join(path, package['patch']))
                 result = os.system(cmd)
 
             lowlevel_warning(u'Package "%s" installed to %s.'
@@ -383,4 +383,5 @@ def check_setup_all():
 
 
 #check_setup_all()
-#check_setup('patch.py')
+if sys.platform == 'win32':
+    check_setup('patch.exe')
