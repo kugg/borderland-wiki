@@ -50,7 +50,7 @@ __version__ = '$Id$'
 import re, urllib2, os, locale, sys, datetime, math, shutil, mimetypes, shelve
 import StringIO, json # fallback: simplejson
 from subprocess import Popen, PIPE
-import Image
+import Image, imghdr
 #import ImageFilter
 
 scriptdir = os.path.dirname(sys.argv[0])
@@ -3083,6 +3083,10 @@ def GenericFile(file_name):
     m = magic.open(magic.MAGIC_MIME)    # or 'magic.MAGIC_NONE'
     m.load()
     file_mime = re.split('[/;\s]', m.file(file_name))
+    file_imgh = ['image', imghdr.what(file_name)]       # alternative MIME ...
+    if file_imgh[1] and (not (file_imgh == file_mime[:2])):
+        pywikibot.warning(u'Issue in MIME type detection! Preferring imghdr result %s over libmagic %s!' % (file_imgh, file_mime))
+        file_mime = file_imgh + file_mime[2:]
     mime = mimetypes.guess_all_extensions('%s/%s' % tuple(file_mime[0:2]))
     if mime and (os.path.splitext(file_name)[1].lower() not in mime):
         pywikibot.warning(u'File extension does not match MIME type! File extension should be %s.' % mime)
