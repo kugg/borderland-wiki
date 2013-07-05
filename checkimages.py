@@ -142,7 +142,7 @@ txt_find = {
     'ar': [u'{{لت', u'{{لا ترخيص'],
     'de': [u'{{DÜP', u'{{Düp', u'{{Dateiüberprüfung'],
     'en': [u'{{nld', u'{{no license'],
-    'fa': [u'{{حق تکثیر تصویر نامعلوم'],
+    'fa': [u'{{حق تکثیر تصویر نامعلوم۲'],
     'ga': [u'{{Ceadúnas de dhíth', u'{{Ceadúnas de dhíth'],
     'hu': [u'{{nincsforrás', u'{{nincslicenc'],
     'it': [u'{{unverdata', u'{{unverified'],
