@@ -405,7 +405,7 @@ def findTranslated(page, oursite=None, quiet=False):
     except:
         return
 
-    backpage is None
+    backpage = None
     for p in iw:
         if p.site() == page.site():
             backpage = p
