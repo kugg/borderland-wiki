@@ -50,7 +50,11 @@ __version__ = '$Id$'
 import re, urllib2, os, locale, sys, datetime, math, shutil, mimetypes, shelve
 import StringIO, json # fallback: simplejson
 from subprocess import Popen, PIPE
-import Image, imghdr
+try:
+    import Image            # classic 'PIL'
+except ImportError:
+    from PIL import Image   # new 'PIL' fork 'Pillow' (fedora 19)
+import imghdr
 #import ImageFilter
 
 scriptdir = os.path.dirname(sys.argv[0])
@@ -58,6 +62,7 @@ if not os.path.isabs(scriptdir):
     scriptdir = os.path.abspath(os.path.join(os.curdir, scriptdir))
 
 # additional python packages (non-default but common)
+sys.exc_clear()
 try:
     import numpy as np
     from scipy import ndimage, fftpack#, signal
@@ -213,10 +218,6 @@ class _UnknownFile(object):
                    #'Dimensions':       tuple(exif['ImageSize'].split(u'x')) if 'ImageSize' in exif else (None, None),}
                    #'Mode':             exif['ColorType'], }
 
-# TODO: if '_detect_History' is not needed here, moveit back into _JpegFile !!!
-        #print "self._detect_History()"
-        #print self._detect_History()
-
         ## https://pypi.python.org/pypi/hachoir-metadata (needs 'core' and 'parser')
         #
         #from hachoir_core.error import HachoirError
@@ -332,45 +333,6 @@ class _UnknownFile(object):
         self._buffer_EXIF = res
         
         return self._buffer_EXIF
-
-    def _detect_History(self):
-        res = self._util_get_DataTags_EXIF()
-
-        #a = []
-        #for k in res.keys():
-        #    if 'history' in k.lower():
-        #        a.append( k )
-        #for item in sorted(a):
-        #    print item
-        # http://tilloy.net/dev/pyexiv2/api.html#pyexiv2.xmp.XmpTag
-        #print [getattr(res['Xmp.xmpMM.History'], item) for item in ['key', 'type', 'name', 'title', 'description', 'raw_value', 'value', ]]
-        result = []
-        i = 1
-        while (('Xmp.xmpMM.History[%i]' % i) in res):
-            data = { 'ID':        i,
-                     'Software':  u'-',
-                     'Timestamp': u'-',
-                     'Action':    u'-',
-                     'Info':      u'-', }
-            if   ('Xmp.xmpMM.History[%i]/stEvt:softwareAgent'%i) in res:
-                data['Software']  = res['Xmp.xmpMM.History[%i]/stEvt:softwareAgent'%i].value
-                data['Timestamp'] = res['Xmp.xmpMM.History[%i]/stEvt:when'%i].value
-                data['Action']    = res['Xmp.xmpMM.History[%i]/stEvt:action'%i].value
-                if ('Xmp.xmpMM.History[%i]/stEvt:changed'%i) in res:
-                    data['Info']  = res['Xmp.xmpMM.History[%i]/stEvt:changed'%i].value
-                #print res['Xmp.xmpMM.History[%i]/stEvt:instanceID'%i].value
-                result.append( data )
-            elif ('Xmp.xmpMM.History[%i]/stEvt:parameters'%i) in res:
-                data['Action']    = res['Xmp.xmpMM.History[%i]/stEvt:action'%i].value
-                data['Info']      = res['Xmp.xmpMM.History[%i]/stEvt:parameters'%i].value
-                #data['Action']    = data['Info'].split(' ')[0]
-                result.append( data )
-            else:
-                pass
-            i += 1
-        
-        self._features['History'] = result
-        return
 
 
 class _JpegFile(_UnknownFile):
@@ -2258,6 +2220,45 @@ class _JpegFile(_UnknownFile):
         self._features['Faces'] += data
         return
 
+    def _detect_History(self):
+        res = self._util_get_DataTags_EXIF()
+
+        #a = []
+        #for k in res.keys():
+        #    if 'history' in k.lower():
+        #        a.append( k )
+        #for item in sorted(a):
+        #    print item
+        # http://tilloy.net/dev/pyexiv2/api.html#pyexiv2.xmp.XmpTag
+        #print [getattr(res['Xmp.xmpMM.History'], item) for item in ['key', 'type', 'name', 'title', 'description', 'raw_value', 'value', ]]
+        result = []
+        i = 1
+        while (('Xmp.xmpMM.History[%i]' % i) in res):
+            data = { 'ID':        i,
+                     'Software':  u'-',
+                     'Timestamp': u'-',
+                     'Action':    u'-',
+                     'Info':      u'-', }
+            if   ('Xmp.xmpMM.History[%i]/stEvt:softwareAgent'%i) in res:
+                data['Software']  = res['Xmp.xmpMM.History[%i]/stEvt:softwareAgent'%i].value
+                data['Timestamp'] = res['Xmp.xmpMM.History[%i]/stEvt:when'%i].value
+                data['Action']    = res['Xmp.xmpMM.History[%i]/stEvt:action'%i].value
+                if ('Xmp.xmpMM.History[%i]/stEvt:changed'%i) in res:
+                    data['Info']  = res['Xmp.xmpMM.History[%i]/stEvt:changed'%i].value
+                #print res['Xmp.xmpMM.History[%i]/stEvt:instanceID'%i].value
+                result.append( data )
+            elif ('Xmp.xmpMM.History[%i]/stEvt:parameters'%i) in res:
+                data['Action']    = res['Xmp.xmpMM.History[%i]/stEvt:action'%i].value
+                data['Info']      = res['Xmp.xmpMM.History[%i]/stEvt:parameters'%i].value
+                #data['Action']    = data['Info'].split(' ')[0]
+                result.append( data )
+            else:
+                pass
+            i += 1
+        
+        self._features['History'] = result
+        return
+
     def _util_merge_Regions(self, regs, sub=False, overlap=False, close=False):
         # sub=False, overlap=False, close=False ; level 0 ; similar regions, similar position (default)
         # sub=True,  overlap=False, close=False ; level 1 ; region contained in other, any shape/size
@@ -3345,8 +3346,10 @@ class CatImages_Default(object):
     # Category:Created_with_OpenOffice.org (pdf)
     # Category:Created_with_Tux_Paint (pdf)
     # Category:Created_with_Microsoft_Image_Composite_Editor (jpg)
-    def _cat_meta_general(self):
-        result = self._info_filter['Metadata']
+    def _cat_meta_and_history_general(self):
+        results = self._info_filter['Metadata'] +\
+                  [{'*': item['Software']} for item in self._info_filter['History']]
+        cats = set()
         for key, magic, cat in [('Desc',             u"Generated automatically by: GNU LilyPond", u'MIDI files created with GNU LilyPond'),
                                 ('Software',         u"www.inkscape.org",                         u'Bitmap from Inkscape'),
                                 ('Misc',             u"org.inkscape.output.svg.inkscape",         u'Created with Inkscape'), # 'Output_extension'
@@ -3376,12 +3379,13 @@ class CatImages_Default(object):
                                 ('Comment',          u"LEAD Technologies Inc.",                   u'Created with PhotoStitch'),
                                 ('Producer',         u"Scribus PDF Library",                      u'Created with Scribus'),
                                 ('Producer',         u"OpenOffice.org",                           u'Created with OpenOffice.org'),]:
-            relevance = len(result) and (key in result[0]) and \
-                        (magic in result[0][key])
-            if relevance:
-                break
+            for result in results:
+                relevance = ((key in result) or ('*' in result)) and \
+                            (magic in result.get(key, result.get('*')))
+                if relevance:
+                    cats.add( cat )
 
-        return (cat, bool(relevance))
+        return (list(cats), bool(len(cats)))
 
     # Category:Categorized by DrTrigonBot
     def _addcat_BOT(self):
@@ -3654,10 +3658,13 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
 
         # categorization: use explicit searches for classification (rel = ?)
         for item in self._funcs['cat']:
-            (cat, rel) = getattr(self, item)()
+            (cats, rel) = getattr(self, item)()
             #print cat, result, len(result)
+            if not isinstance(cats, list):      # because of 'Histroy' and '_cat_meta_and_history_general'
+                cats = [cats]                   #  which return multiple results...
             if rel:
-                self._result_check.append( cat )
+                for cat in cats:
+                    self._result_check.append( cat )
         self._result_check = list(set(self._result_check))
 
         # categorization: conditional (only if the ones before are present)
@@ -4072,6 +4079,11 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         # use all, (should be reliable)
         result = self._info['Streams']
         return {'Streams': result}
+
+    def _filter_History(self):
+        # use all, (should be reliable)
+        result = self._info['History']
+        return {'History': result}
 
 #    def _filter_Audio(self):
 #        # use all, (should be reliable)
