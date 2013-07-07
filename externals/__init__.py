@@ -23,7 +23,8 @@ __version__ = '$Id$'
 # supports: 0. svn:externals
 #           1. package management system (yum, apt-get, ...)
 #           2. download from url (or svn, git repo)
-#           3. checkout from mercurial repo ('hg clone ...' since url not available)
+#           3. checkout from mercurial repo ('hg clone ...' since url not
+#              available)
 #           (what about python eggs?!)
 # dependencies: (svn, python)
 #               yum, apt-get or whatever your system uses
@@ -32,7 +33,7 @@ __version__ = '$Id$'
 modules_needed = {
           'patch.exe': ({}, # for win32 only, unix/linux is already equipped with a patch tool
                         {  'url': 'http://downloads.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip',
-                          'path': 'bin/patch.exe',}),                      # OK
+                          'path': 'bin/patch.exe'}),                      # OK
             'crontab': ({},
                         #{  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
                         #  'path': 'parse-crontab-master/crontab',}),       # OK
@@ -43,11 +44,11 @@ modules_needed = {
                         #{  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.6.tar.gz',
                         #  'path': 'odfpy-0.9.6/odf',}),                    # OK
                         {  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.4.tar.gz',
-                          'path': 'odfpy-0.9.4/odf',},
+                          'path': 'odfpy-0.9.4/odf'},
                         {}),                                               # OK
            'openpyxl': ({},
                         {  'url': 'https://bitbucket.org/ericgazoni/openpyxl/get/1.5.6.tar.gz',
-                          'path': 'ericgazoni-openpyxl-e5934500ffac/openpyxl',},
+                          'path': 'ericgazoni-openpyxl-e5934500ffac/openpyxl'},
                         {}),                                               # OK
 #           'spelling': $ svn propedit svn:externals externals/.
 #                         spelling http://svn.wikimedia.org/svnroot/pywikipedia/trunk/spelling/
@@ -56,14 +57,14 @@ modules_needed = {
 #         'simplejson': ({'linux-fedora': ['python-simplejson'],
 #                         'linux-ubuntu': [''],},
    'BeautifulSoup.py': ({'linux-fedora': ['python-BeautifulSoup'],
-                         'linux-ubuntu': [''],},
+                         'linux-ubuntu': ['']},
                         {  'url': 'https://pypi.python.org/packages/source/B/BeautifulSoup/BeautifulSoup-3.2.0.tar.gz',
                           'path': 'BeautifulSoup-3.2.0/BeautifulSoup.py',
                          #$ diff -Nau TEST_BeautifulSoup.py BeautifulSoup.py > patch-BeautifulSoup
-                         'patch': 'patch-BeautifulSoup',},
+                         'patch': 'patch-BeautifulSoup'},
                         {}),                                               # OK
              'irclib': ({'linux-fedora': ['python-irclib'],
-                         'linux-ubuntu': [''],},
+                         'linux-ubuntu': ['']},
                         {}, # http://python-irclib.sourceforge.net/
                         {}),                                               # OK
           'colormath': ({'linux-fedora': [],
@@ -75,7 +76,7 @@ modules_needed = {
                         {  'url': 'http://vision.ece.ucsb.edu/segmentation/jseg/software/jseg.zip',
                           'path': 'jseg',
                          #$ diff -Nau --exclude="*.o" --exclude="*.pyc" --exclude="segdist_cpp*" TEST_jseg/ jseg/ > patch-jseg
-                         'patch': 'patch-jseg',},
+                         'patch': 'patch-jseg'},
                         {}),                                               # OK
        'jseg/jpeg-6b': ({},
                         {  'url': 'http://vision.ece.ucsb.edu/segmentation/jseg/software/jpeg-6b.zip',
@@ -83,19 +84,19 @@ modules_needed = {
                         {}),                                               # OK
               '_mlpy': ({},
                         {  'url': 'http://downloads.sourceforge.net/project/mlpy/mlpy%203.5.0/mlpy-3.5.0.tar.gz',
-                          'path': 'mlpy-3.5.0/mlpy',},
+                          'path': 'mlpy-3.5.0/mlpy'},
                         {}),                                               # OK
            '_music21': ({},
                         {  'url': 'http://music21.googlecode.com/files/music21-1.4.0.tar.gz',
                           'path': 'music21-1.4.0',
                          #$ diff -Naur --exclude="*.pyc" TEST__music21/ _music21/ > patch-music21
-                         'patch': 'patch-music21',},
+                         'patch': 'patch-music21'},
                         {}),                                               # OK
 # TODO: vvv (future; enable for and use in 'catimages.py', patch needed)
            '_ocropus': ({},
                         {},
                         {  'url': 'https://code.google.com/p/ocropus',
-                           'rev': 'ocropus-0.6',}),                        # OK
+                           'rev': 'ocropus-0.6'}),                        # OK
 # TODO: vvv (further clean-up and unlink - check with 'svn list')
 #             'opencv': $ svn propedit svn:externals externals/.
 #                         opencv https://svn.toolserver.org/svnroot/drtrigon/externals/opencv
@@ -108,20 +109,20 @@ modules_needed = {
 #                         createtrainsamples.pl https://svn.toolserver.org/svnroot/drtrigon/externals/haartraining/createtrainsamples.pl
 'opencv/haarcascades': ({},
                         {  'url': 'https://svn.toolserver.org/svnroot/drtrigon/externals/haarcascades-full.tar.gz',
-                          'path': 'haarcascades',},
+                          'path': 'haarcascades'},
                         {}),                                               # OK
 #          'pdfminer' is not used anymore/at the moment...
 #       'pycolorname': $ svn propset svn:externals 'pycolorname https://svn.toolserver.org/svnroot/drtrigon/externals/pycolorname' externals/.
              'pydmtx': ({'linux-fedora': ['python-libdmtx'],
-                         'linux-ubuntu': ['libdmtx-dev'],},
+                         'linux-ubuntu': ['libdmtx-dev']},
                         {  'url': 'https://github.com/dmtx/dmtx-wrappers/archive/master.zip',
                           'path': 'dmtx-wrappers-master/python',
                          #$ diff -Nau --exclude="*.pyc" TEST_pydmtx/ pydmtx/ > patch-pydmtx
-                         'patch': 'patch-pydmtx',},
+                         'patch': 'patch-pydmtx'},
                         {}),                                               # OK
              'py_w3c': ({},
                         {  'url': 'https://bitbucket.org/nmb10/py_w3c/downloads/py_w3c-v0.1.0.tar.gz',
-                          'path': 'py_w3c-0.1.0/py_w3c',},
+                          'path': 'py_w3c-0.1.0/py_w3c'},
                         {}),                                               # OK
 # TODO: vvv (include)
 #               'TEST_slic': ({},
@@ -132,11 +133,11 @@ modules_needed = {
 #                          'path': 'slic-python-master',}),                 # OPEN
 # (2 download sources to same dir, compilation) + patch (at least for '__init__.py') needed
               '_zbar': ({'linux-fedora': ['zbar'],
-                         'linux-ubuntu': ['python-zbar'],},
+                         'linux-ubuntu': ['python-zbar']},
                         {  'url': 'https://pypi.python.org/packages/source/z/zbar/zbar-0.10.tar.bz2',
                           'path': 'zbar-0.10',
                          #$ diff -Nau --exclude="*.pyc" TEST__zbar/ _zbar/ > patch-zbar
-                         'patch': 'patch-zbar',},
+                         'patch': 'patch-zbar'},
                         {}),                                               # OK
 # TODO: vvv (include)
 #               'TEST__bob': ({},
@@ -157,12 +158,12 @@ modules_needed = {
 modules_order = ['crontab', 'odf', 'openpyxl', 'BeautifulSoup.py', 'irclib',
                  'colormath', 'jseg', 'jseg/jpeg-6b', '_mlpy', '_music21',
                  '_ocropus', 'opencv/haarcascades', 'pydmtx', 'py_w3c',
-                 '_zbar',]
+                 '_zbar', ]
 # OPEN: 'patch.py', 'opencv', 'slic', '_bob', 'xbob_flandmark',
 
 
-import os, sys
-
+import os
+import sys
 import wikipedia as pywikibot   # sets externals path
 #from pywikibot.comms import http
 
@@ -175,6 +176,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 def has_logger():
     #return hasattr(sys.modules['wikipedia'], 'logger')
     return hasattr(pywikibot, 'logger')
+
 
 # TODO: solve properly because this is just a work-a-round, because module
 # externals get imported in wikipedia.py before logger is setup properly, which
@@ -190,6 +192,7 @@ def lowlevel_warning(text):
 def guess_system():
     import platform
     return ("%s-%s" % (platform.system(), platform.dist()[0])).lower()
+
 
 def show_question(which_files):
     lowlevel_warning("Required package missing: %s" % which_files)
@@ -237,10 +240,9 @@ def linux_ubuntu_install(package_name):
     lowlevel_warning("externals wants to install package(s) '%s'" %
                      package_name)
     sucmd = "sudo %s" % cmd
-
     result = os.system(sucmd)
+    return (result == 0)  # 0 indicates success
 
-    return (result == 0) # 0 indicates success
 
 def linux_fedora_install(package_name):
     cmd = 'yum -y install'
@@ -256,10 +258,9 @@ def linux_fedora_install(package_name):
     lowlevel_warning("externals wants to install package(s) '%s'" %
                      package_name)
     sucmd = "su -c'%s'" % cmd
-
     result = os.system(sucmd)
-
     return (result == 0)
+
 
 def linux_install(dependency_dictionary):
     """Tries to import a python module. If unsuccessful, tries to install
@@ -268,7 +269,7 @@ about which system it runs on."""
 
     # Ugly fix to avoid circular import
     distro = guess_system()
-    if not dependency_dictionary.has_key(distro):
+    if not distro in dependency_dictionary:
         return False
     else:
         files = dependency_dictionary[distro]
@@ -277,6 +278,7 @@ about which system it runs on."""
             return callable_(files)
         else:
             return False
+
 
 # TODO: work this out...
 def windows_install(dependency_dictionary):
@@ -289,7 +291,8 @@ def download_install(package, module, path):
     if package:
         lowlevel_warning(u'Download package "%s" from %s'
                          % (module, package['url']))
-        import mimetypes, urllib2
+        import mimetypes
+        import urllib2
         for i in range(3):
             response = urllib2.urlopen(package['url'])
             #response = http.request(pywikibot.getSite(), package['url'],
@@ -300,18 +303,23 @@ def download_install(package, module, path):
         lowlevel_warning(u'Size of download: %s byte(s)'
                          % response.headers['Content-Length'])
         #mime = response.headers['Content-Type'].lower().split('/')
-        mime = mimetypes.guess_type(package['url'], strict=True)[0].lower().split('/')
+        mime = mimetypes.guess_type(package['url'],
+                                    strict=True)[0].lower().split('/')
         lowlevel_warning(u'MIME type: %s' % mime)
 
         lowlevel_warning(u'Extract package "%s" to %s.'
                          % (module, os.path.join(path, module)))
         if len(mime) > 1:
-            if   mime[1] == 'zip':
-                import zipfile, StringIO
+            import StringIO
+            if mime[1] == 'zip' or mime[1] == 'x-zip-compressed':
+                import zipfile
                 arch = zipfile.ZipFile(StringIO.StringIO(response.read()))
             elif mime[1] == 'x-tar':
-                import tarfile, StringIO
+                import tarfile
                 arch = tarfile.open(fileobj=StringIO.StringIO(response.read()))
+            else:
+                raise NotImplementedError(u'Not implemented mime type %s'
+                                          % mime[1])
             arch.extractall(os.path.join(path, '__setup_tmp/'))
             arch.close()
             import shutil
@@ -324,35 +332,29 @@ def download_install(package, module, path):
                 lowlevel_warning(u'Install package "%s" by applying patch to %s.'
                                  % (module, os.path.join(path, module)))
                 if sys.platform == 'win32':
-                    cmd = '%s -p0 -d %s -i %s --binary' % (os.path.join(path, 'patch.exe'), 
-                                                           path, 
-                                                           os.path.join(path, package['patch']))
+                    cmd = '%s -p0 -d %s -i %s --binary' \
+                          % (os.path.join(path, 'patch.exe'), path,
+                             os.path.join(path, package['patch']))
                 else:              # unix/linux, (mac too?)
-                    cmd = '%s -p0 -d %s < %s' % ('patch', 
-                                                 path, 
-                                                 os.path.join(path, package['patch']))
+                    cmd = '%s -p0 -d %s < %s' \
+                          % ('patch', path,
+                             os.path.join(path, package['patch']))
                 result = os.system(cmd)
 
             lowlevel_warning(u'Package "%s" installed to %s.'
                              % (module, os.path.join(path, module)))
             return (result == 0)
 
-    return False
 
 def mercurial_repo_install(package, module, path):
     if package:
         cmd = 'hg clone'
-    
         lowlevel_warning(u'Mercurial clone "%s" from %s'
                          % (module, package['url']))
         cmd += " -r %s %s %s" % (package['rev'], package['url'],
                                  os.path.join(path, module))
-    
         result = os.system(cmd)
-    
         return (result == 0)
-
-    return False
 
 
 def check_setup(m):
@@ -374,7 +376,8 @@ def check_setup(m):
     if mercurial_repo_install(modules_needed[m][2], m, path):
         return
 
-    pywikibot.error(u'Package "%s" could not be found nor installed!' % m) 
+    pywikibot.error(u'Package "%s" could not be found nor installed!' % m)
+
 
 def check_setup_all():
     #for m in modules_needed:
