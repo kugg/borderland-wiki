@@ -233,6 +233,11 @@ class Throttle(object):
         until the wait expires.
 
         """
+        if pywikibot.simulate:
+            pywikibot.output(u'\03{lightyellow}SIMULATION: %s_throttle skipped.\03{default}'%\
+                             {True: u'put', False: u'get'}[write])
+            return
+
         self.lock.acquire()
         try:
             wait = self.waittime(write=write or self.write)
