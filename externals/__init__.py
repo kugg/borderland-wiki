@@ -33,7 +33,7 @@ __version__ = '$Id$'
 modules_needed = {
           'patch.exe': ({}, # for win32 only, unix/linux is already equipped with a patch tool
                         {  'url': 'http://downloads.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip',
-                          'path': 'bin/patch.exe'}),                      # OK
+                          'path': 'bin/patch.exe'}),                       # OK
             'crontab': ({},
                         #{  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
                         #  'path': 'parse-crontab-master/crontab',}),       # OK
@@ -96,7 +96,7 @@ modules_needed = {
            '_ocropus': ({},
                         {},
                         {  'url': 'https://code.google.com/p/ocropus',
-                           'rev': 'ocropus-0.6'}),                        # OK
+                           'rev': 'ocropus-0.6'}),                         # OK
 # TODO: vvv (further clean-up and unlink - check with 'svn list')
 #             'opencv': $ svn propedit svn:externals externals/.
 #                         opencv https://svn.toolserver.org/svnroot/drtrigon/externals/opencv
@@ -288,7 +288,7 @@ def windows_install(dependency_dictionary):
 
 
 def download_install(package, module, path):
-    if package:
+    if package and show_question(module):
         lowlevel_warning(u'Download package "%s" from %s'
                          % (module, package['url']))
         import mimetypes
@@ -311,7 +311,7 @@ def download_install(package, module, path):
                          % (module, os.path.join(path, module)))
         if len(mime) > 1:
             import StringIO
-            if mime[1] == 'zip' or mime[1] == 'x-zip-compressed':
+            if mime[1] in ['zip', 'x-zip-compressed']:
                 import zipfile
                 arch = zipfile.ZipFile(StringIO.StringIO(response.read()))
             elif mime[1] == 'x-tar':
@@ -347,7 +347,7 @@ def download_install(package, module, path):
 
 
 def mercurial_repo_install(package, module, path):
-    if package:
+    if package and show_question(module):
         cmd = 'hg clone'
         lowlevel_warning(u'Mercurial clone "%s" from %s'
                          % (module, package['url']))
@@ -373,10 +373,11 @@ def check_setup(m):
         return
     if download_install(modules_needed[m][1], m, path):
         return
-    if mercurial_repo_install(modules_needed[m][2], m, path):
+    if (len(modules_needed[m]) > 2) and\
+       mercurial_repo_install(modules_needed[m][2], m, path):
         return
 
-    pywikibot.error(u'Package "%s" could not be found nor installed!' % m)
+    lowlevel_warning(u'Package "%s" could not be found nor installed!' % m)
 
 
 def check_setup_all():
