@@ -71,7 +71,7 @@ modules_needed = {
                         {  'url': 'https://github.com/earwig/mwparserfromhell/archive/v0.2.zip',
                         #{  'url': 'https://github.com/earwig/mwparserfromhell/archive/master.zip',
                           'path': 'mwparserfromhell-0.2/mwparserfromhell'},
-                        {}),                                               # ??
+                        {}),                                               # OK
           'colormath': ({'linux-fedora': [],
                          'linux-ubuntu': ['python-colormath'],},
                         {  'url': 'https://github.com/gtaylor/python-colormath/archive/master.zip',
@@ -392,7 +392,6 @@ def check_setup_all():
 
 
 #check_setup_all()
-check_setup('mwparserfromhell')
 
 if sys.platform == 'win32':
     check_setup('patch.exe')
