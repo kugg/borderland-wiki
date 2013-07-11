@@ -67,6 +67,11 @@ modules_needed = {
                          'linux-ubuntu': ['']},
                         {}, # http://python-irclib.sourceforge.net/
                         {}),                                               # OK
+   'mwparserfromhell': ({},
+                        {  'url': 'https://github.com/earwig/mwparserfromhell/archive/v0.2.zip',
+                        #{  'url': 'https://github.com/earwig/mwparserfromhell/archive/master.zip',
+                          'path': 'mwparserfromhell-0.2/mwparserfromhell'},
+                        {}),                                               # ??
           'colormath': ({'linux-fedora': [],
                          'linux-ubuntu': ['python-colormath'],},
                         {  'url': 'https://github.com/gtaylor/python-colormath/archive/master.zip',
@@ -159,7 +164,7 @@ modules_order = ['crontab', 'odf', 'openpyxl', 'BeautifulSoup.py', 'irclib',
                  'colormath', 'jseg', 'jseg/jpeg-6b', '_mlpy', '_music21',
                  '_ocropus', 'opencv/haarcascades', 'pydmtx', 'py_w3c',
                  '_zbar', ]
-# OPEN: 'patch.py', 'opencv', 'slic', '_bob', 'xbob_flandmark',
+# OPEN: 'opencv', 'slic', '_bob', 'xbob_flandmark',
 
 
 import os
@@ -387,5 +392,7 @@ def check_setup_all():
 
 
 #check_setup_all()
+check_setup('mwparserfromhell')
+
 if sys.platform == 'win32':
     check_setup('patch.exe')
