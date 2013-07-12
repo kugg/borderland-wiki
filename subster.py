@@ -78,10 +78,11 @@ import pagegenerators, basic
 import wikipedia as pywikibot
 from pywikibot import i18n
 from pywikibot.comms import http
-import externals                     # check for and install needed 'externals'
-externals.check_setup('crontab')     #
-externals.check_setup('odf')         #
-externals.check_setup('openpyxl')    #
+import externals                            # check for and install needed
+externals.check_setup('BeautifulSoup.py')   #  'externals'
+externals.check_setup('crontab')            #
+externals.check_setup('odf')                #
+externals.check_setup('openpyxl')           #
 import BeautifulSoup
 import openpyxl.reader.excel
 import crontab

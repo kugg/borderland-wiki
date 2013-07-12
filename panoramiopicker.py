@@ -15,6 +15,8 @@ import sys, urllib, re,  StringIO, hashlib, base64, time
 
 import wikipedia as pywikibot
 import config, query, imagerecat, upload
+import externals                            # check for and install needed
+externals.check_setup('BeautifulSoup.py')   #  'externals'
 
 try:
     #For Python 2.6 newer
