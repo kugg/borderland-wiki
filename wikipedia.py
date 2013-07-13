@@ -4626,7 +4626,13 @@ class DataPage(Page):
             except AttributeError:
                 raise SectionError # Page has no section by this name
         self._contents = json.loads(pagetext)
-        self._title = self._contents['entity'].title()
+        if self._contents['entity'][0]=='item':
+            self._title="Q"
+        elif self._contents['entity'][0]=='property':
+            self._title="P"
+        else:
+            raise RuntimeError("unknown type: %s call User:Ladsgroup to fix this" % self._contents['entity'][0])
+        self._title = self._title+str(self._contents['entity'][1])
         return self._contents
 
     @deprecate_arg("get", None)
