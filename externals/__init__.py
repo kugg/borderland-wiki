@@ -33,7 +33,8 @@ __version__ = '$Id$'
 modules_needed = {
           'patch.exe': ({}, # for win32 only, unix/linux is already equipped with a patch tool
                         {  'url': 'http://downloads.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip',
-                          'path': 'bin/patch.exe'}),                       # OK
+                          'path': 'bin/patch.exe'},
+                        {}),                                               # OK
             'crontab': ({},
                         #{  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
                         #  'path': 'parse-crontab-master/crontab',}),       # OK
@@ -161,9 +162,9 @@ modules_needed = {
 }
 
 modules_order = ['crontab', 'odf', 'openpyxl', 'BeautifulSoup.py', 'irclib',
-                 'colormath', 'jseg', 'jseg/jpeg-6b', '_mlpy', '_music21',
-                 '_ocropus', 'opencv/haarcascades', 'pydmtx', 'py_w3c',
-                 '_zbar', ]
+                 'mwparserfromhell', 'colormath', 'jseg', 'jseg/jpeg-6b',
+                 '_mlpy', '_music21', '_ocropus', 'opencv/haarcascades',
+                 'pydmtx', 'py_w3c', '_zbar', ]
 # OPEN: 'opencv', 'slic', '_bob', 'xbob_flandmark',
 
 
@@ -285,9 +286,8 @@ about which system it runs on."""
             return False
 
 
-# TODO: work this out...
 def windows_install(dependency_dictionary):
-    return False
+    return False    # skip this in order to trigger 'download_install' next
 
 ### END of VisTrails inspired and copied code   ### ### ### ### ### ### ### ###
 
@@ -386,12 +386,12 @@ def check_setup(m):
 
 
 def check_setup_all():
-    #for m in modules_needed:
     for m in modules_order:
         check_setup(m)
 
 
-#check_setup_all()
-
+# check and install modules NEEDED
 if sys.platform == 'win32':
     check_setup('patch.exe')
+#check_setup('BeautifulSoup.py')
+#check_setup('mwparserfromhell')
