@@ -78,6 +78,7 @@ import pagegenerators, basic
 import wikipedia as pywikibot
 from pywikibot import i18n
 from pywikibot.comms import http
+import catlib
 import externals                            # check for and install needed
 externals.check_setup('BeautifulSoup.py')   #  'externals'
 externals.check_setup('crontab')            #
@@ -563,7 +564,12 @@ class SubsterBot(basic.AutoBasicBot):
         """
         # DRTRIGON-130: check for changes and then write/change/set values
         datapage = pywikibot.DataPage(self.site, page.title())
-        links = datapage.searchentities(u'%s:%s' % (self._bot_config['BotName'], datapage.title().split(u':')[1]))
+        dataitem = u'%s:%s' % (self._bot_config['BotName'], datapage.title().split(u':')[1])
+        links  = [ {u'aliases': [u'%s:%s' % (dataitem, p.sortkeyprefix)],
+                    u'id': p.toggleTalkPage().title().lower(),}
+                   for p in catlib.Category(self.site, dataitem).articles() ]
+        links += datapage.searchentities(dataitem)
+
         for element in links:
             propid = int(self._bot_config['data_PropertyId'])
             el = element[u'aliases'][0].split(u':')
