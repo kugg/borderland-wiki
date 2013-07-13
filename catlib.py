@@ -272,8 +272,10 @@ class Category(pywikibot.Page):
                     yield ARTICLE, pywikibot.ImagePage(self.site(),
                                                        memb['title'])
                 else:
-                    yield ARTICLE, pywikibot.Page(self.site(), memb['title'],
-                                                  defaultNamespace=memb['ns'])
+                    page = pywikibot.Page(self.site(), memb['title'],
+                                          defaultNamespace=memb['ns'])
+                    page.sortkeyprefix = memb['sortkeyprefix']
+                    yield ARTICLE, page
                 if count >= params['cmlimit']:
                     break
             # try to find a link to the next list page
