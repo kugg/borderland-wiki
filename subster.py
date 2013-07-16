@@ -599,12 +599,13 @@ class SubsterBot(basic.AutoBasicBot):
                                            {"snaktype":  "value",
                                             "property":  "p585",    # point in time
                                             #"property":  "p578",    # Sandbox-TimeValue
-                                                          u'value': {u'after': 0, 
-                                                                     u'precision': 11, 
-                                                                     u'time': (u'+0000000%sZ' % pywikibot.Timestamp.now().isoformat().split('.')[0]), 
-                                                                     u'timezone': 0, 
+                                            "datavalue": {u'type':  u'time',
+                                                          u'value': {u'after':         0, 
+                                                                     u'precision':     11, 
+                                                                     u'time':          (u'+0000000%sZ' % pywikibot.Timestamp.now().isoformat().split('.')[0]), 
+                                                                     u'timezone':      0, 
                                                                      u'calendarmodel': u'http://www.wikidata.org/entity/Q1985727', 
-                                                                     u'before': 0}},]},
+                                                                     u'before':        0}}},]},
                                       comment=summary)
         #print data['timestampFIDE'], pywikibot.Timestamp.now().isoformat()
 
