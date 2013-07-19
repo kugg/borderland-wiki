@@ -2581,8 +2581,8 @@ class Family(object):
                 'yo': u'Ìrànlọ́wọ́',
                 'za': u'帮助',
                 'zea': u'Ulpe',
-                'zh': [u'Help', u'H', u'帮助', u'幫助'],
-                'zh-yue': [u'Help', u'H', u'幫手', u'幫助', u'說明', u'帮手', u'帮助', u'说明'],
+                'zh': [u'Help', u'帮助', u'幫助'],
+                'zh-yue': [u'Help', u'幫手', u'幫助', u'說明', u'帮手', u'帮助', u'说明'],
             },
             13: {
                 '_default': u'Help talk',
