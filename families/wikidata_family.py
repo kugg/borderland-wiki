@@ -77,6 +77,11 @@ class Family(family.WikimediaFamily):
             'wikidata': u'Translations talk',
         }
 
+    def scriptpath(self, code):
+        if code == 'client':
+            return ''
+        return super(Family, self).scriptpath(code)
+
     def shared_data_repository(self, code, transcluded=False):
         """Always return a repository tupe. This enables testing whether
         the site opject is the repository itself, see Site.is_data_repository()
