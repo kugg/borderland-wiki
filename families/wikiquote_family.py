@@ -31,8 +31,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
-        self.namespaces[2]['eo'] = [u'Uzanto', u'Vikipediisto', u'Uzulo', u'Uzantino']
-        self.namespaces[3]['eo'] = [u'Uzanto-Diskuto', u'Vikipediista diskuto', u'Uzula diskuto', u'Uzanta diskuto', u'Uzantino-Diskuto']
+        self.namespaces[2]['fa'] = [u'کاربر']
+        self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
@@ -43,9 +43,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
-        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
-        self.namespaces[828]['zh'] = [u'模块']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
