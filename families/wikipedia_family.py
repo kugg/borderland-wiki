@@ -74,7 +74,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T']
         self.namespaces[14]['ru'] = [u'Категория', u'К']
         self.namespaces[12]['zh'] = [u'Help', u'H', u'帮助', u'幫助']
-        self.namespaces[12]['zh-yue']: [u'Help', u'H', u'幫手', u'幫助', u'說明', u'帮手', u'帮助', u'说明']
+        self.namespaces[12]['zh-yue'] = [u'Help', u'H', u'幫手', u'幫助', u'說明', u'帮手', u'帮助', u'说明']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
