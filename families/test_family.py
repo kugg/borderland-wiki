@@ -36,6 +36,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[93] = {
             '_default': u'Summary talk',
         }
+        self.namespaces[460] = {
+            '_default': u'Campaign',
+        }
+        self.namespaces[461] = {
+            '_default': u'Campaign talk',
+        }
         self.namespaces[710] = {
             '_default': u'TimedText',
         }

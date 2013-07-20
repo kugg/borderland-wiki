@@ -36,12 +36,12 @@ class Family(family.WikimediaFamily):
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': [u'Wikidata', u'WD', 'Project'],
-            'client': u'Testwiki',
+            'client': u'Test Wikipedia',
             'repo': u'Testwiki',
         }
         self.namespaces[5] = {
             '_default': [u'Wikidata talk', u'WT', 'Project talk'],
-            'client': u'Testwiki talk',
+            'client': u'Test Wikipedia talk',
             'repo': u'Testwiki talk',
         }
         self.namespaces[102] = {
