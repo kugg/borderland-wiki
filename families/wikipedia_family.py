@@ -73,6 +73,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['ru'] = [u'Участник', u'У', u'Участница']
         self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T']
         self.namespaces[14]['ru'] = [u'Категория', u'К']
+        self.namespaces[12]['zh'] = [u'Help', u'H', u'帮助', u'幫助']
+        self.namespaces[12]['zh-yue']: [u'Help', u'H', u'幫手', u'幫助', u'說明', u'帮手', u'帮助', u'说明']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -122,7 +124,7 @@ class Family(family.WikimediaFamily):
             'ch': u'Wikipedia',
             'chr': u'Wikipedia',
             'chy': u'Wikipedia',
-            'ckb': u'ویکیپیدیا',
+            'ckb': [u'ویکیپیدیا', u'وپ'],
             'co': u'Wikipedia',
             'cr': u'Wikipedia',
             'crh': u'Vikipediya',
@@ -146,7 +148,7 @@ class Family(family.WikimediaFamily):
             'et': u'Vikipeedia',
             'eu': u'Wikipedia',
             'ext': u'Güiquipeya',
-            'fa': [u'ویکی‌پدیا', u'وپ'],
+            'fa': [u'ویکی‌پدیا', u'وپ', u'ویکی پدیا', u'ويكي پديا', u'ويکي‌پديا'],
             'ff': u'Wikipedia',
             'fi': [u'Wikipedia', u'WP'],
             'fiu-vro': u'Wikipedia',
@@ -392,7 +394,7 @@ class Family(family.WikimediaFamily):
             'br': [u'Kaozeadenn Wikipedia', u'Discussion Wikipedia'],
             'bs': u'Razgovor s Wikipediom',
             'bug': u'Pembicaraan Wikipedia',
-            'bxr': u'Обсуждение Википеэди',
+            'bxr': [u'Википеэди тухай хэлэлсэхэ', u'Обсуждение Википеэди'],
             'ca': u'Viquipèdia Discussió',
             'cbk-zam': u'Wikipedia discusión',
             'cdo': u'Wikipedia talk',
@@ -412,7 +414,7 @@ class Family(family.WikimediaFamily):
             'cy': u'Sgwrs Wicipedia',
             'da': u'Wikipedia-diskussion',
             'de': [u'Wikipedia Diskussion', u'WD'],
-            'diq': u'Wikipedia werênayış',
+            'diq': [u'Wikipedia mesac', u'Wikipedia werênayış'],
             'dsb': u'Wikipedija diskusija',
             'dv': [u'ވިކިޕީޑިއާ ޚިޔާ', u'Wikipedia talk'],
             'dz': u'Wikipedia talk',
@@ -425,7 +427,7 @@ class Family(family.WikimediaFamily):
             'et': u'Vikipeedia arutelu',
             'eu': u'Wikipedia eztabaida',
             'ext': u'Güiquipeya talk',
-            'fa': u'بحث ویکی‌پدیا',
+            'fa': [u'بحث ویکی‌پدیا', u'بحث ویکی پدیا', u'بحث ويکي پديا', u'بحث ويکي‌پديا'],
             'ff': u'Discussion Wikipedia',
             'fi': u'Keskustelu Wikipediasta',
             'fiu-vro': [u'Wikipedia arotus', u'Wikipedia arutelu'],
@@ -474,7 +476,7 @@ class Family(family.WikimediaFamily):
             'kaa': [u'Wikipedia sa\'wbeti', u'Wikipedia талқылауы', u'Wikipedia تالقىلاۋى'],
             'kab': u'Amyannan n Wikipedia',
             'kbd': [u'Уикипедиэм и тепсэлъыхьыгъуэ', u'Обсуждение Уикипедиэ'],
-            'kg': u'Wikipedia talk',
+            'kg': u'Disolo Wikipedia',
             'ki': u'Wikipedia talk',
             'kk': [u'Уикипедия талқылауы', u'Уикипедия talqılawı', u'Уикипедия تالقىلاۋى'],
             'kl': [u'Wikipedia-p oqalliffia', u'Wikipedia-diskussion', u'Wikipediaip oqalliffia'],
@@ -493,7 +495,7 @@ class Family(family.WikimediaFamily):
             'lad': [u'Diskusyón de Vikipedya', u'Vikipedya Discusión', u'Diskussión de Vikipedya'],
             'lb': u'Wikipedia Diskussioun',
             'lbe': u'Википедиялиясса ихтилат',
-            'lez': u'Википедия веревирд авун',
+            'lez': [u'Википедия веревирд авун', u'Обсуждение Википедии'],
             'lg': u'Wikipedia talk',
             'li': u'Euverlèk Wikipedia',
             'lij': [u'Discûscioîn Wikipedia', u'Discussioni Wikipedia'],
@@ -506,9 +508,9 @@ class Family(family.WikimediaFamily):
             'map-bms': u'Dhiskusi Wikipedia',
             'mdf': [u'Википедиесь корхнема', u'Обсуждение Википедиесь'],
             'mg': [u'Dinika amin\'ny Wikipedia', u'Discussion Wikipedia'],
-            'mhr': [u'Википедийын каҥашымаш', u'Обсуждение Википедий'],
+            'mhr': [u'Википедийын каҥашымашыже', u'Обсуждение Википедий', u'Википедийын каҥашымаш'],
             'mi': u'Wikipedia talk',
-            'min': u'Pembicaraan Wikipedia',
+            'min': [u'Rundiang Wikipedia', u'Pembicaraan Wikipedia'],
             'mk': u'Разговор за Википедија',
             'ml': [u'വിക്കിപീഡിയ സംവാദം', u'വിക്കിസം'],
             'mn': u'Wikipedia-н хэлэлцүүлэг',
@@ -608,7 +610,7 @@ class Family(family.WikimediaFamily):
             'tw': u'Wikipedia talk',
             'ty': u'Discussion Wikipedia',
             'udm': [u'Википедия сярысь вераськон', u'Wikipedia сярысь вераськон'],
-            'ug': u'مۇنازىرىسىWikipedia',
+            'ug': [u'Wikipediaمۇنازىرىسى', u'مۇنازىرىسىWikipedia'],
             'uk': u'Обговорення Вікіпедії',
             'ur': u'تبادلۂ خیال ویکیپیڈیا',
             'uz': [u'Vikipediya munozarasi', u'VM'],
@@ -1003,14 +1005,14 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[446] = {
             'en': u'Education Program',
-            'he': u'Education Program',
+            'he': u'הוראה',
             'mk': u'Education Program',
             'sv': u'Education Program',
         }
 
         self.namespaces[447] = {
             'en': u'Education Program talk',
-            'he': u'Education Program talk',
+            'he': u'שיחת הוראה',
             'mk': u'Education Program talk',
             'sv': u'Education Program talk',
         }
