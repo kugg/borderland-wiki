@@ -23,8 +23,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[1]['repo'] = [u'Talk', u'Item talk']
         del(self.namespaces[828]['_default'])
         del(self.namespaces[829]['_default'])
-        self.namespaces[828]['client'] = u'Module'
-        self.namespaces[829]['client'] = u'Module talk'
         self.namespaces[828]['test'] = u'Module'
         self.namespaces[829]['test'] = u'Module talk'
         self.namespaces[828]['wikidata'] = u'Module'
