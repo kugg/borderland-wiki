@@ -282,14 +282,21 @@ about which system it runs on."""
         return False
     else:
         files = dependency_dictionary[distro]
-        if files and show_question(files):
-            callable_ = globals()[distro.replace('-', '_') + '_install']
+        func = distro.replace('-', '_') + '_install'
+        if files and (func in globals()) and show_question(files):
+            callable_ = globals()[func]
             return callable_(files)
         else:
             return False
 
 
+def sunos_install(dependency_dictionary):
+    lowlevel_warning(u'Not implemented yet, download mode will be used.')
+    return False    # skip this in order to trigger 'download_install' next
+
+
 def windows_install(dependency_dictionary):
+    lowlevel_warning(u'Not available in windows OS, download mode will be used.')
     return False    # skip this in order to trigger 'download_install' next
 
 ### END of VisTrails inspired and copied code   ### ### ### ### ### ### ### ###
@@ -376,11 +383,15 @@ def check_setup(m):
         return
 
     # install the missing module
-    dist = guess_system().split(u'-')
-    if globals()[dist[0] + '_install'](modules_needed[m][0]):
+    dist = guess_system()
+    func = dist.split(u'-')[0] + '_install'
+    lowlevel_warning(u'Trying to install by use of "%s" package management system:' % dist)
+    if (func in globals()) and globals()[func](modules_needed[m][0]):
         return
+    lowlevel_warning(u'Trying to install by download from source URL:')
     if download_install(modules_needed[m][1], m, path):
         return
+    lowlevel_warning(u'Trying to install by use of mercurial:')
     if (len(modules_needed[m]) > 2) and\
        mercurial_repo_install(modules_needed[m][2], m, path):
         return
