@@ -35,6 +35,10 @@ http://wordlist.sourceforge.net/. This source has as its licensing information:
   about the suitability of this array for any purpose. It is provided
   "as is" without express or implied warranty.
 
-The 'BeautifulSoup.py' module is Copyright (c) 2004-2007 Leonard Richardson,
-and is licensed under the terms of the Python Software Foundation license,
-which is available at http://www.python.org/download/releases/2.5/license/.
+Everything in the 'externals' directory is general released under seperate
+licenses. Some parts may come from Pywikipedia bot team and share the same
+permissions, but in general they have to be checked for any external package
+seperately.
+For example the 'BeautifulSoup.py' module is Copyright (c) 2004-2007 Leonard
+Richardson, and licensed under the terms of the Python Software Foundation
+license, available at http://www.python.org/download/releases/2.5/license/.
