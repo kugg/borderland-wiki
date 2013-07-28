@@ -20,7 +20,7 @@ will only touch a single page.
 #
 # (C) Pywikipedia team
 #
-__version__='$Id: touch.py 6549 2009-03-24 02:58:56Z nicdumz $'
+__version__='$Id$'
 #
 # Distributed under the terms of the MIT license.
 #
