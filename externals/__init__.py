@@ -20,7 +20,7 @@ __version__ = '$Id$'
 #
 
 
-# supports: 0. svn:externals
+# supports: 0. svn:externals / git submodule
 #           1. package management system (yum, apt-get, ...)
 #           2. download from url (or svn, git repo)
 #           3. checkout from mercurial repo ('hg clone ...' since url not
@@ -53,8 +53,11 @@ modules_needed = {
                         {}),                                               # OK
 #           'spelling': $ svn propedit svn:externals externals/.
 #                         spelling http://svn.wikimedia.org/svnroot/pywikipedia/trunk/spelling/
+#                       $ git submodule add https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git externals/spelling
 #         'simplejson': $ svn propedit svn:externals externals/.
 #                         simplejson http://simplejson.googlecode.com/svn/tags/simplejson-2.1.3/simplejson/
+#                       $ git submodule add https://github.com/simplejson/simplejson.git externals/simplejson
+#                       $ cd externals/simplejson; git checkout v2.1.3
 #         'simplejson': ({'linux-fedora': ['python-simplejson'],
 #                         'linux-ubuntu': [''],},
    'BeautifulSoup.py': ({'linux-fedora': ['python-BeautifulSoup'],
