@@ -11,7 +11,7 @@ Please refer to delinker.txt for full documentation.
 #
 __version__ = '$Id$'
 import config, wikipedia
-import simplejson   # after 'wikipedia' because of externals path
+import json
 import re, time
 import sys, os, signal, traceback
 
@@ -163,7 +163,7 @@ class Replacer(object):
         if since:
             predata.append(('rvend', since))
         response, data = self.site.postForm(address, predata)
-        data = simplejson.loads(data)
+        data = json.loads(data)
         if 'error' in data:
             raise RuntimeError(data['error'])
 

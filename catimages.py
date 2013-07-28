@@ -48,7 +48,7 @@ __version__ = '$Id$'
 
 # python default packages
 import re, urllib2, os, locale, sys, datetime, math, shutil, mimetypes, shelve
-import StringIO, json # fallback: simplejson
+import StringIO, json
 from subprocess import Popen, PIPE
 try:
     import Image            # classic 'PIL'

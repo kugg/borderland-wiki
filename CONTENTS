@@ -259,8 +259,6 @@ disambiguations        : If you run solve_disambiguation.py with the -primary
 externals              : Contains all external software that might be used by
                          by PyWikipediaBot scripts and libraries. The most
                          important among them are:
-                         * simplejson; used by query.py and needed for python
-                                       release prev. 2.6
                          * spelling; dictionaries for spellcheck.py
                          * BeautifulSoup.py; http://www.crummy.com/software/BeautifulSoup
                          (and more)

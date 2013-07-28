@@ -29,15 +29,7 @@ import time
 import wikipedia as pywikibot
 import config
 from pywikibot.support import deprecate_arg
-try:
-    #For Python 2.6 newer
-    import json
-    if not hasattr(json, 'loads'):
-        # 'json' can also be the name in for
-        # http://pypi.python.org/pypi/python-json
-        raise ImportError
-except ImportError:
-    import simplejson as json   # after 'wikipedia' because of externals path
+import json
 
 @deprecate_arg("encodeTitle", None)
 def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,

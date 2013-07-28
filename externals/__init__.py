@@ -54,12 +54,6 @@ modules_needed = {
 #           'spelling': $ svn propedit svn:externals externals/.
 #                         spelling http://svn.wikimedia.org/svnroot/pywikipedia/trunk/spelling/
 #                       $ git submodule add https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git externals/spelling
-#         'simplejson': $ svn propedit svn:externals externals/.
-#                         simplejson http://simplejson.googlecode.com/svn/tags/simplejson-2.1.3/simplejson/
-#                       $ git submodule add https://github.com/simplejson/simplejson.git externals/simplejson
-#                       $ cd externals/simplejson; git checkout v2.1.3
-#         'simplejson': ({'linux-fedora': ['python-simplejson'],
-#                         'linux-ubuntu': [''],},
    'BeautifulSoup.py': ({'linux-fedora': ['python-BeautifulSoup'],
                          'linux-ubuntu': ['']},
                         {  'url': 'https://pypi.python.org/packages/source/B/BeautifulSoup/BeautifulSoup-3.2.0.tar.gz',

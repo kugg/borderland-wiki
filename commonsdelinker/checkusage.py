@@ -43,7 +43,7 @@ from urllib import urlencode
 
 import wikipedia, family
 
-import simplejson   # after 'wikipedia' because of externals path
+import json
 
 try:
     import MySQLdb
@@ -141,7 +141,7 @@ class HTTP(object):
             self._conn.close()
             self.__init__(self.host)
         try:
-            data = simplejson.load(res)
+            data = json.load(res)
         finally:
             res.close()
 

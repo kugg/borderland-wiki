@@ -27,10 +27,6 @@ os.chdir( os.path.join(scriptdir, '..') )
 
 class PyWikiExternalImporterTestCase(test_pywiki.PyWikiTestCase):
 
-    def test_simplejson(self):
-        import simplejson
-        self.assertTrue( "simplejson" in sys.modules )
-
     def test_spelling(self):
         self.assertTrue(os.path.exists(os.path.join(scriptdir, '../externals/spelling')))
 

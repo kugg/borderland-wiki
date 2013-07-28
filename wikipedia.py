@@ -151,16 +151,7 @@ externals.check_setup('BeautifulSoup.py')
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, SoupStrainer
 import weakref
 import logging, logging.handlers
-try:
-    #For Python 2.6 newer
-    import json
-    if not hasattr(json, 'loads'):
-        # 'json' can also be the name in for
-        # http://pypi.python.org/pypi/python-json
-        raise ImportError
-except ImportError:
-    externals.check_setup('simplejson')
-    import simplejson as json
+import json
 # Splitting the bot into library parts
 from pywikibot.support import *
 import config, login, query
