@@ -4716,7 +4716,8 @@ class DataPage(Page):
         self._interwiki = [Page(getSite(code.replace('wiki',
                                                      '').replace('_', '-'),
                                         fam='wikipedia'),
-                                links[code]) for code in links]
+                                links[code]) for code in links
+                                if code.endswith('wiki')]
         return self._interwiki
 
     def linktitles(self):
