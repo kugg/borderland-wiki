@@ -7,6 +7,3 @@
 [submodule "externals/spelling"]
 	path = externals/spelling
 	url = https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git
-[submodule "externals/simplejson"]
-	path = externals/simplejson
-	url = https://github.com/simplejson/simplejson.git

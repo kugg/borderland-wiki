@@ -45,10 +45,7 @@ externals.check_setup('BeautifulSoup.py')   #  'externals'
 # parsing response data
 from BeautifulSoup import BeautifulSoup
 
-try:
-    import json
-except ImportError:
-    import simplejson as json   # after 'wikipedia' because of externals path
+import json
 
 class FamilyFileGenerator(object):
     def __init__(self, url=None, name=None, dointerwiki=None):
