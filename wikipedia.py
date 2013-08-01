@@ -4696,19 +4696,25 @@ class DataPage(Page):
     def isEmpty(self):
         return not self.exists()
 
-    def interwiki(self):
+    def interwiki(self, family='wikipedia'):
         """Return a list of interwiki links from data repository.
 
         The return value is a list of Page objects for each of the
         interwiki links.
 
+        @param family: Which family of links to get
+        @type family: str
         """
+        if family == 'wikipedia':
+            suffix = 'wiki'
+        else:
+            suffix = family
         links = self.get()['links']
-        self._interwiki = [Page(getSite(code.replace('wiki',
+        self._interwiki = [Page(getSite(code.replace(suffix,
                                                      '').replace('_', '-'),
-                                        fam='wikipedia'),
+                                        fam=family),
                                 links[code]) for code in links
-                                if code.endswith('wiki')]
+                                if code.endswith(suffix)]
         return self._interwiki
 
     def linktitles(self):
