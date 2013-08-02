@@ -162,6 +162,8 @@ modules_order = ['crontab', 'odf', 'openpyxl', 'BeautifulSoup.py', 'irclib',
                  'pydmtx', 'py_w3c', '_zbar', ]
 # OPEN: 'opencv', 'slic', '_bob', 'xbob_flandmark',
 
+_patch_permission = None
+
 
 import os
 import sys
@@ -206,6 +208,15 @@ def show_question(which_files):
                      " (y/N)")
     v = raw_input().upper()
     return v == 'Y' or v == 'YES'
+
+def show_patch_question():
+    globals _patch_permission
+    if _patch_permission is None:
+        lowlevel_warning("Give externals permission to execute the patch command?"
+                         " (y/N)")
+        v = raw_input().upper()
+        _patch_permission = (v == 'Y') or (v == 'YES')
+    return _patch_permission
 
 
 def python_module_exists(module_name):
@@ -335,7 +346,7 @@ def download_install(package, module, path):
             shutil.rmtree(os.path.join(path, '__setup_tmp/'))
 
             result = 0
-            if 'patch' in package:
+            if ('patch' in package) and show_patch_question():
                 lowlevel_warning(u'Install package "%s" by applying patch to %s.'
                                  % (module, os.path.join(path, module)))
                 if sys.platform == 'win32':
@@ -389,6 +400,12 @@ def check_setup(m):
         return
 
     lowlevel_warning(u'Package "%s" could not be found nor installed!' % m)
+    lowlevel_warning(u'Several scripts might fail, if some modules are not'
+                     u' installed as needed! You can either install them'
+                     u' by yourself to the system or extract them into the'
+                     u' externals/ directory. If you chose to not install them'
+                     u' this script will ask you again next time whether you'
+                     u' whish to install the external code.')
 
 
 def check_setup_all():
