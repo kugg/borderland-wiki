@@ -57,9 +57,7 @@ modules_needed = {
    'BeautifulSoup.py': ({'linux-fedora': ['python-BeautifulSoup'],
                          'linux-ubuntu': ['']},
                         {  'url': 'https://pypi.python.org/packages/source/B/BeautifulSoup/BeautifulSoup-3.2.0.tar.gz',
-                          'path': 'BeautifulSoup-3.2.0/BeautifulSoup.py',
-                         #$ diff -Nau TEST_BeautifulSoup.py BeautifulSoup.py > patch-BeautifulSoup
-                         'patch': 'patch-BeautifulSoup'},
+                          'path': 'BeautifulSoup-3.2.0/BeautifulSoup.py'},
                         {}),                                               # OK
              'irclib': ({'linux-fedora': ['python-irclib'],
                          'linux-ubuntu': ['']},
