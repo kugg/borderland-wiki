@@ -9231,7 +9231,7 @@ def writelogheader():
     output(u'MODULES:')
     for item in sys.modules.keys():
         ver = version.getfileversion('%s.py' % item.replace('.', '/'))
-        if ver and (ver[0] == u'$'):
+        if ver:
             output(u'  %s' % ver)
 
     # messages on bot discussion page?
