@@ -2703,9 +2703,10 @@ class _OggFile(_JpegFile):
 
             result.append({ 'ID':         int(s["index"]) + 1,
                             'Format':     u'%s/%s' % (s["codec_type"], s.get("codec_name",u'?')),
-                            'Rate':       rate or u'-',
+                            'Rate':       rate or None,
                             'Dimensions': dim or (None, None),
-                            'Duration':   float(s['duration']),
+                            'Duration':   None if (s['duration'].lower() == 'n/a')
+                                               else float(s['duration']),
                             })
 
         if 'image' in d["format"]["format_name"]:
@@ -3826,6 +3827,18 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         return (tagged, logged)
 
     def _make_infoblock(self, cat, res, tmpl_available=None):
+        """ Create infoblocks for pasting into wikitext from Templates
+            available on the wiki.
+
+            Nested values are flattened and numbered for output. Invalid or
+            unknown values can be marked e.g. by using u'-' or None.
+            Values like None, [] (empty list), ... that resolve by bool() to
+            False are hidden/omitted and not outputted at all. Unknown values
+            should be hidden to save space (make human readable) and be handled
+            by the Templates.
+            Unknown values that are NEEDED should be set to u'-' everything
+            else (not needed) to None, [] and so on.
+        """
         if not res:
             return u''
 
@@ -3852,7 +3865,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             for item in res:
                 result.append( u"  {{FileContentsByBot/%s" % cat )
                 for key in titles:
-                    if item[key]:   # (work-a-round for empty 'Eyes')
+                    if item[key]:   # hide/omit (work-a-round for empty 'Eyes')
                         result.append( self._output_format_flatten(key, item[key]) )
                 result.append( u"  }}" )
         result.append( u"}}" )
