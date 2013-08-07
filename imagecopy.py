@@ -208,7 +208,7 @@ def pageTextPost(url,parameters):
     gotInfo = False;
     while(not gotInfo):
         try:
-            commonsHelperPage = urllib.urlopen("http://toolserver.org/~magnus/commonshelper.php", parameters)
+            commonsHelperPage = urllib.urlopen("http://tools.wmflabs.org/commonshelper/index.php", parameters)
             data = commonsHelperPage.read().decode('utf-8')
             gotInfo = True;
         except IOError:
@@ -239,7 +239,7 @@ class imageTransfer (threading.Thread):
 
         tosend=urllib.urlencode(tosend)
         print tosend
-        CH=pageTextPost('http://www.toolserver.org/~magnus/commonshelper.php', tosend)
+        CH=pageTextPost('http://tools.wmflabs.org/commonshelper/index.php', tosend)
         print 'Got CH desc.'
 
         tablock=CH.split('<textarea ')[1].split('>')[0]
