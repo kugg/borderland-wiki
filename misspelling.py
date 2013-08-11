@@ -12,7 +12,7 @@ Command line options:
                some choices for XY don't make sense and will result in a loop,
                e.g. "l" or "m".
 
-    -start:XY  goes through all misspellings in the category on your wiki
+   -start:XY   goes through all misspellings in the category on your wiki
                that is defined (to the bot) as the category containing
                misspelling pages, starting at XY. If the -start argument is not
                given, it starts at the beginning.
@@ -23,34 +23,34 @@ Command line options:
 __version__ = '$Id$'
 
 # (C) Daniel Herding, 2007
+# (C) Pywikipedia bot team 2007-2013
 #
 # Distributed under the terms of the MIT license.
 
 import wikipedia as pywikibot
-import catlib, pagegenerators
+import catlib
+import pagegenerators as pg
 import solve_disambiguation
+
 
 class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
 
     misspellingTemplate = {
         'da': None,                     # uses simple redirects
         'de': u'Falschschreibung',
-        #'en': u'Template:Misspelling', # rarely used on en:
         'en': None,                     # uses simple redirects
         'hu': None,                     # uses simple redirects
         'nl': None,
-        #'pt': u'Pseudo-redirect',      # replaced by another system on pt:
     }
 
     # Optional: if there is a category, one can use the -start
     # parameter.
     misspellingCategory = {
-        'da': u'Omdirigeringer af fejlstavninger', # only contains date redirects at the moment
+        'da': u'Omdirigeringer af fejlstavninger',  # only contains date redirects at the moment
         'de': u'Kategorie:Wikipedia:Falschschreibung',
         'en': u'Redirects from misspellings',
         'hu': u'Átirányítások hibás névről',
         'nl': u'Categorie:Wikipedia:Redirect voor spelfout',
-        #'pt': u'Categoria:!Pseudo-redirects',
     }
 
     msg = {
@@ -67,7 +67,8 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
 
     def __init__(self, always, firstPageTitle, main_only):
         solve_disambiguation.DisambiguationRobot.__init__(
-            self, always, [], True, False, self.createPageGenerator(firstPageTitle),
+            self, always, [], True, False,
+            self.createPageGenerator(firstPageTitle),
             False, main_only)
 
     def createPageGenerator(self, firstPageTitle):
@@ -75,19 +76,20 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
             misspellingCategoryTitle = self.misspellingCategory[pywikibot.getSite().lang]
             misspellingCategory = catlib.Category(pywikibot.getSite(),
                                                   misspellingCategoryTitle)
-            generator = pagegenerators.CategorizedPageGenerator(
-                misspellingCategory, recurse = True, start=firstPageTitle)
+            generator = pg.CategorizedPageGenerator(misspellingCategory,
+                                                    recurse=True,
+                                                    start=firstPageTitle)
         else:
             misspellingTemplateName = 'Template:%s' \
                                       % self.misspellingTemplate[pywikibot.getSite().lang]
             misspellingTemplate = pywikibot.Page(pywikibot.getSite(),
                                                  misspellingTemplateName)
-            generator = pagegenerators.ReferringPageGenerator(
-                misspellingTemplate, onlyTemplateInclusion=True)
+            generator = pg.ReferringPageGenerator(misspellingTemplate,
+                                                  onlyTemplateInclusion=True)
             if firstPageTitle:
                 pywikibot.output(
                     u'-start parameter unsupported on this wiki because there is no category for misspellings.')
-        preloadingGen = pagegenerators.PreloadingGenerator(generator)
+        preloadingGen = pg.PreloadingGenerator(generator)
         return preloadingGen
 
     # Overrides the DisambiguationRobot method.
@@ -113,12 +115,14 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
                     return True
 
     # Overrides the DisambiguationRobot method.
-    def setSummaryMessage(self, disambPage, new_targets=[], unlink=False, dn=False):
+    def setSummaryMessage(self, disambPage, new_targets=[], unlink=False,
+                          dn=False):
         # TODO: setSummaryMessage() in solve_disambiguation now has parameters
         # new_targets and unlink. Make use of these here.
         comment = pywikibot.translate(self.mysite, self.msg) \
                   % disambPage.title()
         pywikibot.setAction(comment)
+
 
 def main():
     # the option that's always selected when the bot wonders what to do with
@@ -138,7 +142,6 @@ def main():
                 firstPageTitle = arg[7:]
         elif arg == '-main':
             main_only = True
-
 
     bot = MisspellingRobot(always, firstPageTitle, main_only)
     bot.run()
