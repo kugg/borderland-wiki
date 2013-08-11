@@ -55,8 +55,10 @@ featured_articles = {
     'zh': u'Wikipedia:特色条目',
 }
 
+
 def firstcap(string):
     return string[0].upper()+string[1:]
+
 
 def treat(text, linkedPage, targetPage):
     """
@@ -160,7 +162,7 @@ def workon(page):
     pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
                      % page.title())
     links = page.linkedPages()
-    if len(links) > 0:
+    if len(links):
         pywikibot.getall(mysite,links)
     else:
         pywikibot.output('Nothing left to do.')
@@ -188,6 +190,7 @@ def workon(page):
             page.put(text, comment)
         except (pywikibot.Error):
             pywikibot.error('unable to put %s' % page)
+
 
 def main():
     featured = False
