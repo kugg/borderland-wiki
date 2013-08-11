@@ -642,7 +642,7 @@ class _GetAllUI(object):
                     data = self.getData()
                 except Exception, e:
                     # Print the traceback of the caught exception
-                    print e
+                    pywikibot.output(e)
                     raise
                 else:
                     break
