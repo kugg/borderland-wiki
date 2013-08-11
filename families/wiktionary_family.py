@@ -12,19 +12,19 @@ class Family(family.WikimediaFamily):
 
         self.languages_by_size = [
             'en', 'mg', 'fr', 'zh', 'lt', 'ru', 'el', 'pl', 'ko', 'sv', 'tr',
-            'de', 'ta', 'nl', 'ku', 'kn', 'fi', 'vi', 'io', 'hu', 'pt', 'ml',
-            'no', 'es', 'my', 'id', 'it', 'li', 'et', 'ja', 'te', 'fa', 'ro',
-            'cs', 'ar', 'ca', 'eu', 'jv', 'gl', 'lo', 'uk', 'fj', 'br', 'bg',
-            'eo', 'hr', 'oc', 'is', 'vo', 'th', 'zh-min-nan', 'simple', 'ps',
-            'cy', 'scn', 'sr', 'af', 'ast', 'sw', 'fy', 'tl', 'uz', 'da', 'he',
-            'nn', 'ur', 'wa', 'la', 'hy', 'sq', 'sm', 'nah', 'sl', 'hi', 'az',
-            'pnb', 'ka', 'tt', 'bs', 'lb', 'lv', 'tk', 'hsb', 'sk', 'kk', 'ky',
-            'mk', 'km', 'nds', 'be', 'ga', 'wo', 'ms', 'ang', 'co', 'gn', 'mr',
-            'csb', 'sa', 'st', 'ia', 'sd', 'si', 'sh', 'tg', 'ug', 'mn', 'kl',
-            'or', 'jbo', 'an', 'ln', 'zu', 'fo', 'gu', 'kw', 'gv', 'rw', 'qu',
-            'ss', 'vec', 'ie', 'mt', 'om', 'chr', 'bn', 'roa-rup', 'iu', 'pa',
-            'so', 'am', 'su', 'za', 'gd', 'mi', 'tpi', 'ne', 'yi', 'ti', 'sg',
-            'na', 'dv', 'tn', 'ha', 'ks', 'ts', 'ay',
+            'de', 'nl', 'ku', 'ta', 'kn', 'io', 'fi', 'vi', 'hu', 'pt', 'es',
+            'ml', 'no', 'my', 'id', 'it', 'li', 'et', 'ja', 'te', 'fa', 'ro',
+            'cs', 'ca', 'ar', 'eu', 'jv', 'gl', 'lo', 'uk', 'chr', 'fj', 'br',
+            'bg', 'eo', 'hr', 'oc', 'is', 'vo', 'th', 'ps', 'zh-min-nan',
+            'simple', 'cy', 'scn', 'sr', 'af', 'ast', 'sw', 'fy', 'tl', 'uz',
+            'da', 'he', 'nn', 'ur', 'wa', 'la', 'az', 'hy', 'sq', 'sm', 'sl',
+            'nah', 'pnb', 'hi', 'ka', 'bs', 'tt', 'lb', 'lv', 'tk', 'sk', 'hsb',
+            'kk', 'ky', 'mk', 'km', 'nds', 'be', 'ga', 'wo', 'ms', 'ang', 'co',
+            'gn', 'mr', 'sa', 'csb', 'st', 'ia', 'sd', 'sh', 'si', 'tg', 'ug',
+            'mn', 'kl', 'or', 'jbo', 'an', 'ln', 'fo', 'zu', 'gu', 'kw', 'gv',
+            'rw', 'qu', 'vec', 'ss', 'ie', 'mt', 'om', 'bn', 'roa-rup', 'iu',
+            'pa', 'so', 'am', 'su', 'za', 'gd', 'mi', 'tpi', 'ne', 'yi', 'ti',
+            'sg', 'na', 'dv', 'tn', 'ha', 'ks', 'ts', 'ay',
         ]
 
         self.langs = dict([(lang, '%s.wiktionary.org' % lang)
@@ -628,7 +628,7 @@ class Family(family.WikimediaFamily):
             'ps', 'dv', 'ks', 'ne', 'pi', 'bh', 'mr', 'sa', 'hi', 'as', 'bn',
             'pa', 'pnb', 'gu', 'or', 'ta', 'te', 'kn', 'ml', 'si', 'th', 'lo',
             'dz', 'ka', 'ti', 'am', 'chr', 'iu', 'km', 'zh', 'ja', 'ko',
-        ]
+           ]
 
         self.interwiki_putfirst = {
             'da': self.alphabetic,
