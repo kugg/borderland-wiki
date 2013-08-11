@@ -105,12 +105,16 @@ pages:
 #
 __version__='$Id$'
 #
-import re, sys, string
+import re
+import sys
+import string
 import wikipedia as pywikibot
 from pywikibot import i18n
-import config, catlib
+import config
+import catlib
 import pagegenerators as pg
 import replace
+
 
 def UserEditFilterGenerator(generator, username, timestamp=None, skip=False):
     """
@@ -153,15 +157,14 @@ class XmlDumpTemplatePageGenerator:
             * templateNames - A list of Page object representing the searched
                               templates
             * xmlfilename   - The dump's path, either absolute or relative
+
         """
 
         self.templates = templates
         self.xmlfilename = xmlfilename
 
     def __iter__(self):
-        """
-        Yield page objects until the entire XML dump has been read.
-        """
+        """Yield page objects until the entire XML dump has been read."""
         import xmlreader
         mysite = pywikibot.getSite()
         dump = xmlreader.XmlDump(self.xmlfilename)
@@ -189,9 +192,10 @@ class TemplateRobot:
     This robot will load all pages yielded by a page generator and replace or
     remove all occurences of the old template, or substitute them with the
     template's text.
+
     """
-    def __init__(self, generator, templates, subst = False, remove = False,
-                 editSummary = '', acceptAll = False, addedCat = None):
+    def __init__(self, generator, templates, subst=False, remove=False,
+                 editSummary='', acceptAll=False, addedCat=None):
         """
         Arguments:
             * generator    - A page generator.
@@ -201,6 +205,7 @@ class TemplateRobot:
                              removed/resolved to None.
             * remove       - True if the template should be removed.
             * subst        - True if the template should be resolved.
+
         """
         self.generator = generator
         self.templates = templates
@@ -217,7 +222,7 @@ class TemplateRobot:
         comma = self.summary = site.mediawiki_message('comma-separator')
 
         # get edit summary message if it's empty
-        if (self.editSummary==''):
+        if not self.editSummary:
             Param = {'list': comma.join(self.templates.keys()),
                      'num' : len(self.templates)}
             if self.remove:
@@ -231,9 +236,7 @@ class TemplateRobot:
                     site, 'template-changing', Param)
 
     def run(self):
-        """
-        Starts the robot's action.
-        """
+        """Starts the robot's action."""
         # regular expression to find the original template.
         # {{vfd}} does the same thing as {{Vfd}}, so both will be found.
         # The old syntax, {{msg:vfd}}, will also be found.
@@ -277,6 +280,7 @@ class TemplateRobot:
                                           addedCat=self.addedCat,
                                           editSummary=self.editSummary)
         replaceBot.run()
+
 
 def main(*args):
     templateNames = []
@@ -355,7 +359,7 @@ u'Unless using solely -subst or -remove, you must give an even number of templat
                 for t in oldTemplates]
         gen = pg.CombinedPageGenerator(gens)
         gen = pg.DuplicateFilterPageGenerator(gen)
-        
+
     preloadingGen = pg.PreloadingGenerator(gen)
     bot = TemplateRobot(preloadingGen, templates, subst, remove, editSummary,
                         acceptAll, addedCat)
