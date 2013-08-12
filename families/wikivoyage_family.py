@@ -6,13 +6,14 @@ __version__ = '$Id$'
 
 import family
 
+
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()
         self.name = 'wikivoyage'
         self.languages_by_size = [
             'en', 'de', 'pt', 'nl', 'fr', 'it', 'pl', 'ru', 'es', 'sv', 'ro',
-            'uk', 'he', 'el',
+            'uk', 'he', 'el', 'vi',
         ]
 
         self.langs = dict([(lang, '%s.wikivoyage.org' % lang)
@@ -48,6 +49,7 @@ class Family(family.WikimediaFamily):
             'ru': u'Wikivoyage',
             'sv': u'Wikivoyage',
             'uk': u'Вікімандри',
+            'vi': u'Wikivoyage',
         }
 
         self.namespaces[5] = {
@@ -65,6 +67,7 @@ class Family(family.WikimediaFamily):
             'ru': u'Обсуждение Wikivoyage',
             'sv': u'Wikivoyagediskussion',
             'uk': u'Обговорення Вікімандри',
+            'vi': u'Thảo luận Wikivoyage',
         }
 
         self.namespaces[100] = {
