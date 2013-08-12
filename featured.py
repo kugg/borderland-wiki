@@ -346,7 +346,7 @@ def featuredArticles(site, pType):
             articles.append(p)
         # Article talk (like in English)
         elif p.namespace() == 1 and site.lang != 'el':
-            articles.append(pywikibot.Page(p.site(),
+            articles.append(pywikibot.Page(p.site,
                             p.title(withNamespace=False)))
     pywikibot.output(
         '\03{lightred}** wikipedia:%s has %i %s articles\03{default}'
@@ -371,6 +371,7 @@ def findTranslated(page, oursite=None, quiet=False):
         if p.site() == oursite:
             ourpage = p
             break
+
     if not ourpage:
         if not quiet:
             pywikibot.output(u"%s -> no corresponding page in %s"
@@ -410,6 +411,7 @@ def findTranslated(page, oursite=None, quiet=False):
         if p.site() == page.site():
             backpage = p
             break
+
     if not backpage:
         pywikibot.output(u"%s -> no back interwiki ref" % page.title())
         return
@@ -448,8 +450,7 @@ def getTemplateList(lang, pType):
     return templates
 
 
-def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
-                          dry=False):
+def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet):
     if not fromsite.lang in cache:
         cache[fromsite.lang] = {}
     if not tosite.lang in cache[fromsite.lang]:
@@ -474,7 +475,8 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
             continue
 
         if a.title() in cc:
-            pywikibot.output(u"(cached) %s -> %s" % (a.title(), cc[a.title()]))
+            pywikibot.output(u"(cached) %s -> %s"
+                             % (a.title(), cc[a.title()]))
             continue
 
         if a.isRedirectPage():
@@ -520,12 +522,11 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
                                         (u" {{%s|%s}}" % (templatelist[0],
                                                           fromsite.lang)) +
                                         text[m.end():])
-                            if not dry:
-                                try:
-                                    atrans.put(text, comment)
-                                except pywikibot.LockedPage:
-                                    pywikibot.output(u'Page %s is locked!'
-                                                     % atrans.title())
+                            try:
+                                atrans.put(text, comment)
+                            except pywikibot.LockedPage:
+                                pywikibot.output(u'Page %s is locked!'
+                                                 % atrans.title())
                     cc[a.title()] = atrans.title()
             else:
                 if atrans:
@@ -542,12 +543,11 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
                                 i18n.twtranslate(site, 'featured-former',
                                                  {'page': unicode(a)}))
                             text = re.sub(re_Link_FA, '', text)
-                            if not dry:
-                                try:
-                                    atrans.put(text, comment)
-                                except pywikibot.LockedPage:
-                                    pywikibot.output(u'Page %s is locked!'
-                                                     % atrans.title())
+                            try:
+                                atrans.put(text, comment)
+                            except pywikibot.LockedPage:
+                                pywikibot.output(u'Page %s is locked!'
+                                                 % atrans.title())
                     else:
                         pywikibot.output(u"(already done)")
                     cc[a.title()] = atrans.title()
@@ -665,8 +665,7 @@ def main(*args):
                 break
             elif fromsite != pywikibot.getSite():
                 featuredWithInterwiki(fromsite, pywikibot.getSite(),
-                                      template_on_top, processType, quiet,
-                                      pywikibot.simulate)
+                                      template_on_top, processType, quiet)
     except KeyboardInterrupt:
         pywikibot.output('\nQuitting program...')
     finally:
