@@ -1033,10 +1033,10 @@ not supported by PyWikipediaBot!"""
         # TODO: should this default to change_edit_time = False? If we're not
         # getting the current version, why change the timestamps?
         return self._getEditPage(
-                        get_redirect=get_redirect, throttle=throttle,
-                        sysop=sysop, oldid=oldid,
-                        change_edit_time=change_edit_time
-                    )
+            get_redirect=get_redirect, throttle=throttle,
+            sysop=sysop, oldid=oldid,
+            change_edit_time=change_edit_time
+        )
 
     ## @since   r10309
     #  @remarks needed by various bots
@@ -1125,13 +1125,14 @@ not supported by PyWikipediaBot!"""
                     break
                 except Error:
                     pos = None
-            if (pos == None):
+            if pos is None:
                 raise  # re-raise
 
         # check min. level
         data = []
         for item in r:
-            if (item[u'level'] < minLevel): continue
+            if item[u'level'] < minLevel:
+                continue
             data.append( item )
         r = data
 
@@ -1758,10 +1759,9 @@ not supported by PyWikipediaBot!"""
             else:
                 allDone = True
 
-
     def getReferencesOld(self,
-            follow_redirects=True, withTemplateInclusion=True,
-            onlyTemplateInclusion=False, redirectsOnly=False):
+                         follow_redirects=True, withTemplateInclusion=True,
+                         onlyTemplateInclusion=False, redirectsOnly=False):
         """Yield all pages that link to the page.
         """
         # Temporary bug-fix while researching more robust solution:
@@ -1770,11 +1770,11 @@ not supported by PyWikipediaBot!"""
         site = self.site()
         path = self.site().references_address(self.urlname())
         if withTemplateInclusion:
-            path+=u'&hidetrans=0'
+            path += u'&hidetrans=0'
         if onlyTemplateInclusion:
-            path+=u'&hidetrans=0&hidelinks=1&hideredirs=1&hideimages=1'
+            path += u'&hidetrans=0&hidelinks=1&hideredirs=1&hideimages=1'
         if redirectsOnly:
-            path+=u'&hideredirs=0&hidetrans=1&hidelinks=1&hideimages=1'
+            path += u'&hideredirs=0&hidetrans=1&hidelinks=1&hideimages=1'
         content = SoupStrainer("div", id=self.site().family.content_id)
         try:
             next_msg = self.site().mediawiki_message('whatlinkshere-next')
@@ -3718,10 +3718,10 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         """
         # Login
-        self._getActionUser(action = 'protect', sysop = True)
+        self._getActionUser(action='protect', sysop=True)
 
         # Check blocks
-        self.site().checkBlocks(sysop = True)
+        self.site().checkBlocks(sysop=True)
 
         #if self.exists() and editcreate != move: # check protect level if edit/move not same
         #    if editcreate == 'sysop' and move != 'sysop':
@@ -3734,8 +3734,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         if throttle:
             put_throttle()
         if reason is None:
-            reason = input(
-              u'Please enter a reason for the change of the protection level:')
+            reason = input(u'Please enter a reason for the change of the protection level:')
         reason = reason.encode(self.site().encoding())
         answer = 'y'
         if prompt and not hasattr(self.site(), '_noProtectPrompt'):
@@ -3751,7 +3750,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                                         editcreate_duration, move_duration,
                                         cascading, prompt, throttle)
 
-            token = self.site().getToken(self, sysop = True)
+            token = self.site().getToken(self, sysop=True)
 
             # Translate 'none' to ''
             protections = []
@@ -3811,22 +3810,26 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         return False
 
-    def _oldProtect(self, editcreate = 'sysop', move = 'sysop', unprotect = False, reason = None, editcreate_duration = 'infinite',
-                move_duration = 'infinite', cascading = False, prompt = True, throttle = True):
+    def _oldProtect(self, editcreate='sysop', move='sysop', unprotect=False, reason=None, editcreate_duration='infinite',
+                move_duration='infinite', cascading=False, prompt=True, throttle=True):
         """internal use for protect page by ordinary web page form"""
         host = self.site().hostname()
-        token = self.site().getToken(sysop = True)
+        token = self.site().getToken(sysop=True)
 
         # Translate 'none' to ''
-        if editcreate == 'none': editcreate = ''
-        if move == 'none': move = ''
+        if editcreate == 'none':
+            editcreate = ''
+        if move == 'none':
+            move = ''
 
         # Translate no duration to infinite
-        if editcreate_duration == 'none' or not editcreate_duration: editcreate_duration = 'infinite'
-        if move_duration == 'none' or not move_duration: move_duration = 'infinite'
+        if editcreate_duration == 'none' or not editcreate_duration:
+            editcreate_duration = 'infinite'
+        if move_duration == 'none' or not move_duration:
+            move_duration = 'infinite'
 
         # Get cascading
-        if cascading == False:
+        if not cascading:
             cascading = '0'
         else:
             if editcreate != 'sysop' or move != 'sysop' or not self.exists():
@@ -3848,7 +3851,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         predata['mwProtect-reason'] = reason
 
-        if not self.exists(): #and self.site().versionnumber() >= :
+        if not self.exists():  # and self.site().versionnumber() >= :
             #create protect
             predata['mwProtect-level-create'] = editcreate
             predata['wpProtectExpirySelection-create'] = editcreate_duration
@@ -9055,6 +9058,7 @@ getSite(noLogin=True)
 
 # Set socket timeout
 socket.setdefaulttimeout(config.socket_timeout)
+
 
 def writeToCommandLogFile():
     """
