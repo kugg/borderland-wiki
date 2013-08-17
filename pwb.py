@@ -149,12 +149,11 @@ else:
 
     error = u''
     try:
-        __release_ver = str(version.getversion_svn(pywikibot.config.datafilepath('..'))[1])
-        #__release_ver = version.getversion().strip()
+        __release = version.getversiondict()
         d = shelve.open(pywikibot.config.datafilepath('cache', 'state_bots'))
-        d['bot_control'] = {  'release_ver': __release_ver,
-                            'framework_ver': __release_ver,
-                               'online_ver': version.getversion_onlinerepo(),
+        d['bot_control'] = {'release_rev': str(__release['rev']),
+                            'release_ver': __release['hsh'][:7],
+                             'online_ver': version.getversion_onlinerepo()[:7],
                            }
         pywikibot.output(d['bot_control'])
         pywikibot.output(u'=== ' * 14)
