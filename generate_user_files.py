@@ -27,11 +27,20 @@ def listchoice(clist = [], message = None, default = None):
 
         if choice == '' and default:
             return default
-
+        try:
+            choice=int(choice)
+        except ValueError:
+            pass
+        if isinstance(choice, basestring):
+            if not choice in clist:
+                print("Invalid response")
+            else:
+                return choice
         try:
             return clist[int(choice) - 1]
         except:
-            print("Invalid response")
+            if not isinstance(choice, basestring):
+                print("Invalid response")
     return response
 
 def file_exists(filename):
@@ -48,8 +57,21 @@ def create_user_config(base_dir):
                                        os.path.join(base_dir,
                                                     "families"))))
         fam = listchoice(known_families,
-                         "Select family of sites we are working on",
+                         "Select family of sites we are working on, " \
+                         "just enter the number not name",
                          default='wikipedia')
+        codesds=codecs.open("families/%s_family.py" % fam, "r","utf-8").read()
+        rre=re.compile("self\.languages\_by\_size *\= *(.+?)\]",re.DOTALL)
+        known_langs=[]
+        if not rre.findall(codesds):
+            rre=re.compile("self\.langs *\= *(.+?)\}",re.DOTALL)
+            if rre.findall(codesds):
+                import ast
+                known_langs=ast.literal_eval(rre.findall(codesds)[0]+u"}").keys()
+        else:
+            known_langs=eval(rre.findall(codesds)[0]+u"]")
+        print "This is the list of known language(s):"
+        print ",".join(known_langs)
         mylang = raw_input(
 "The language code of the site we're working on (default: 'en'): ") or 'en'
         username = raw_input("Username (%s %s): "
@@ -57,7 +79,8 @@ def create_user_config(base_dir):
         username = unicode(username, console_encoding)
         while True:
             choice = raw_input(
-"Which variant of user_config.py:\n[S]mall or [E]xtended (with further information)? "
+"Which variant of user_config.py:\n"\
+"[S]mall or [E]xtended (with further information)? "
                                ).upper()
             if choice in "SE":
                 break
@@ -137,10 +160,10 @@ fixes['example'] = {
         print("'%s' written." % _fnf)
 
 if __name__ == "__main__":
-    print("1: Create user_config.py file")
-    print("2: Create user_fixes.py file")
+    print("1: Create user_config.py file (required)")
+    print("2: Create user_fixes.py file (optional, for advanced usage)")
     print("3: The two files")
-    choice = raw_input("What do you do? ")
+    choice = raw_input("What do you do? Just enter the number: ")
     if choice == "1":
         create_user_config('')
     if choice == "2":
