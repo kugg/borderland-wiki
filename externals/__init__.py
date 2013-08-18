@@ -210,7 +210,7 @@ def show_question(which_files):
     return v == 'Y' or v == 'YES'
 
 def show_patch_question():
-    globals _patch_permission
+    global _patch_permission
     if _patch_permission is None:
         lowlevel_warning("Give externals permission to execute the patch command?"
                          " (y/N)")
