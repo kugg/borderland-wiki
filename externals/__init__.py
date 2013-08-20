@@ -55,12 +55,12 @@ modules_needed = {
 #                         spelling http://svn.wikimedia.org/svnroot/pywikipedia/trunk/spelling/
 #                       $ git submodule add https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git externals/spelling
    'BeautifulSoup.py': ({'linux-fedora': ['python-BeautifulSoup'],
-                         'linux-ubuntu': ['']},
+                         'linux-ubuntu': ['python-beautifulsoup']},
                         {  'url': 'https://pypi.python.org/packages/source/B/BeautifulSoup/BeautifulSoup-3.2.0.tar.gz',
                           'path': 'BeautifulSoup-3.2.0/BeautifulSoup.py'},
                         {}),                                               # OK
              'irclib': ({'linux-fedora': ['python-irclib'],
-                         'linux-ubuntu': ['']},
+                         'linux-ubuntu': ['python-irclib']},
                         {}, # http://python-irclib.sourceforge.net/
                         {}),                                               # OK
    'mwparserfromhell': ({},
@@ -197,13 +197,15 @@ def guess_system():
     return ("%s-%s" % (platform.system(), platform.dist()[0])).lower()
 
 
-def show_question(which_files):
+def show_question(which_files, admin=True):
     lowlevel_warning("Required package missing: %s" % which_files)
     lowlevel_warning("A required package is missing, but externals can"
-                     " automatically install it."
-                     " If you say Yes, externals will need administrator"
-                     " privileges, and you might be asked for the administrator"
-                     " password. For more info, please confer:\n"
+                     " automatically install it.")
+    if admin:
+        lowlevel_warning("If you say Yes, externals will need administrator"
+                         " privileges, and you might be asked for the"
+                         " administrator password.")
+    lowlevel_warning("For more info, please confer:\n"
                      "  http://www.mediawiki.org/wiki/Manual:Pywikipediabot/"
                      "Installation#Dependencies")
     lowlevel_warning("Give externals permission to try to install package?"
@@ -308,7 +310,7 @@ def windows_install(dependency_dictionary):
 
 
 def download_install(package, module, path):
-    if package and show_question(module):
+    if package and show_question(module, admin=False):
         lowlevel_warning(u'Download package "%s" from %s'
                          % (module, package['url']))
         import mimetypes
@@ -393,13 +395,19 @@ def check_setup(m):
     lowlevel_warning(u'Trying to install by use of "%s" package management system:' % dist)
     if (func in globals()) and globals()[func](modules_needed[m][0]):
         return
+    else:
+        lowlevel_warning(u'No suitable package could be installed or found!')
     lowlevel_warning(u'Trying to install by download from source URL:')
     if download_install(modules_needed[m][1], m, path):
         return
+    else:
+        lowlevel_warning(u'No suitable package could be installed or found!')
     lowlevel_warning(u'Trying to install by use of mercurial:')
     if (len(modules_needed[m]) > 2) and\
        mercurial_repo_install(modules_needed[m][2], m, path):
         return
+    else:
+        lowlevel_warning(u'No suitable package could be installed or found!')
 
     lowlevel_warning(u'Package "%s" could not be found nor installed!' % m)
     lowlevel_warning(u'Several scripts might fail, if some modules are not'
