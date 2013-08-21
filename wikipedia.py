@@ -6491,12 +6491,12 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             address = address[:-1]
 
         headers = {
-            'User-agent': useragent,
+            'User-agent': str(useragent),
             'Content-Length': str(len(data)),
-            'Content-type':contentType,
+            'Content-type': str(contentType),
         }
         if cookies:
-            headers['Cookie'] = cookies
+            headers['Cookie'] = str(cookies)
 
         if compress:
             headers['Accept-encoding'] = 'gzip'
@@ -6510,7 +6510,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         retry_attempt = 0
         while True:
             try:
-                request = urllib2.Request(url, data, headers)
+                request = urllib2.Request(str(url), str(data), headers)
                 f = MyURLopener.open(request)
 
                 # read & info can raise socket.error
