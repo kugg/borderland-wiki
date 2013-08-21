@@ -171,7 +171,7 @@ class Family(family.Family):
 """.lstrip() % {'url': self.base_url, 'name': self.name})
 
         for w in self.wikis.itervalues():
-            f.write("            '%(lang)s': u'%(hostname)s',\n" % {'lang': w.lang, 'hostname': urlparse(w.server).netloc})
+            f.write("            '%(lang)s': '%(hostname)s',\n" % {'lang': w.lang, 'hostname': urlparse(w.server).netloc})
 
         f.write("        }\n\n")
 
@@ -182,7 +182,7 @@ class Family(family.Family):
         f.write("        return {\n")
 
         for w in self.wikis.itervalues():
-            f.write("            '%(lang)s': u'%(path)s',\n" % {'lang': w.lang, 'path': w.scriptpath})
+            f.write("            '%(lang)s': '%(path)s',\n" % {'lang': w.lang, 'path': w.scriptpath})
         f.write("        }[code]\n")
         f.write("\n")
 
