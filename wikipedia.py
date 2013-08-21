@@ -5657,13 +5657,16 @@ def unicode2html(x, encoding):
 
 # Utility functions for parsing page titles
 
-def html2unicode(text, ignore = []):
+def html2unicode(text, ignore = None):
     """Return text, replacing HTML entities by equivalent unicode characters."""
+
+    if ignore is None:
+        ignore = []
     # This regular expression will match any decimal and hexadecimal entity and
     # also entities that might be named entities.
     entityR = re.compile(
         r'&(?:amp;)?(#(?P<decimal>\d+)|#x(?P<hex>[0-9a-fA-F]+)|(?P<name>[A-Za-z]+));')
-	
+
     ignore.extend((38,     # Ampersand (&amp;)
                    39,     # Bugzilla 24093
                    60,     # Less than (&lt;)
