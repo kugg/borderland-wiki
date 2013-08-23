@@ -203,7 +203,9 @@ def show_question(which_files):
                      " automatically install it."
                      " If you say Yes, externals will need administrator"
                      " privileges, and you might be asked for the administrator"
-                     " password.")
+                     " password. For more info, please confer:\n"
+                     "  http://www.mediawiki.org/wiki/Manual:Pywikipediabot/"
+                     "Installation#Dependencies")
     lowlevel_warning("Give externals permission to try to install package?"
                      " (y/N)")
     v = raw_input().upper()
