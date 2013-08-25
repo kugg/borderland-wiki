@@ -167,6 +167,7 @@ _patch_permission = None
 
 import os
 import sys
+import inspect
 import wikipedia as pywikibot   # sets externals path
 #from pywikibot.comms import http
 
@@ -197,27 +198,52 @@ def guess_system():
     return ("%s-%s" % (platform.system(), platform.dist()[0])).lower()
 
 
-def show_question(which_files, admin=True):
-    lowlevel_warning("Required package missing: %s" % which_files)
-    lowlevel_warning("A required package is missing, but externals can"
-                     " automatically install it.")
-    if admin:
-        lowlevel_warning("If you say Yes, externals will need administrator"
-                         " privileges, and you might be asked for the"
-                         " administrator password.")
-    lowlevel_warning("For more info, please confer:\n"
-                     "  http://www.mediawiki.org/wiki/Manual:Pywikipediabot/"
+def show_question(module):
+    lowlevel_warning("Required package missing: %s\n"
+                     "This package is not installed, but required by the file"
+                     " '%s'." % (module, inspect.stack()[2][1]))
+    lowlevel_warning("For more and additional information, please confer:\n"
+                     "http://www.mediawiki.org/wiki/Manual:Pywikipediabot/"
                      "Installation#Dependencies")
-    lowlevel_warning("Give externals permission to try to install package?"
-                     " (y/N)")
-    v = raw_input().upper()
-    return v == 'Y' or v == 'YES'
+    options = [(i+1) for i, item in enumerate(modules_needed[module]) if item]
+    options += [0, 's', '']
+    options.sort()
+    options_msg = ("There are multiple ways to solve this:\n"
+    "RECOMMENDED for     admins: always option [0] or the next available"
+    " (e.g. [1])\n"
+    "RECOMMENDED for non-admins: always option [2] (if available)\n"
+    "0: automatically determine the best of the following methods (may need\n"
+    "   administrator privileges)\n")
+    if 1 in options:
+        options_msg += ("1: install the package using the OS package"
+                        " management system like yum\n"
+                        "   or apt (needs administrator privileges)\n")
+    if 2 in options:
+        options_msg += ("2: download the package from its source URL and"
+                        " install it locally into\n"
+                        "   the pywikipedia package externals directory\n")
+    if 3 in options:
+        options_msg += ("3: download the package from its mercurial repo and"
+                        " install it locally into\n"
+                        "   the pywikipedia package externals directory\n")
+    options_msg += "s: SKIP and solve manually"
+    lowlevel_warning(options_msg)
+    v = None
+    while (v not in options):
+        lowlevel_warning("Please choose [%s, s - default]: " % 
+                           (", ".join(map(str, options[:-2]))))
+        v = raw_input().lower()
+        try:
+            v = int(v)
+        except:
+            pass
+    return v
 
 def show_patch_question():
     global _patch_permission
     if _patch_permission is None:
         lowlevel_warning("Give externals permission to execute the patch command?"
-                         " (y/N)")
+                         " [y(es), n(o) - default]: ")
         v = raw_input().upper()
         _patch_permission = (v == 'Y') or (v == 'YES')
     return _patch_permission
@@ -253,8 +279,6 @@ def linux_ubuntu_install(package_name):
                 raise TypeError("Expected string or list of strings")
             cmd += ' ' + package
 
-    lowlevel_warning("externals wants to install package(s) '%s'" %
-                     package_name)
     sucmd = "sudo %s" % cmd
     result = os.system(sucmd)
     return (result == 0)  # 0 indicates success
@@ -271,8 +295,6 @@ def linux_fedora_install(package_name):
                 raise TypeError("Expected string or list of strings")
             cmd += ' ' + package
 
-    lowlevel_warning("externals wants to install package(s) '%s'" %
-                     package_name)
     sucmd = "su -c'%s'" % cmd
     result = os.system(sucmd)
     return (result == 0)
@@ -289,8 +311,13 @@ about which system it runs on."""
         return False
     else:
         files = dependency_dictionary[distro]
+        lowlevel_warning('Installing package(s) "%s"' % files)
         func = distro.replace('-', '_') + '_install'
-        if files and (func in globals()) and show_question(files):
+        lowlevel_warning("Externals will need administrator privileges, and"
+                         " you might get asked for the administrator"
+                         " password. This prompt can be skipped with [Ctrl]+"
+                         "[c] or [Enter].")
+        if files and (func in globals()):
             callable_ = globals()[func]
             return callable_(files)
         else:
@@ -310,7 +337,7 @@ def windows_install(dependency_dictionary):
 
 
 def download_install(package, module, path):
-    if package and show_question(module, admin=False):
+    if package:
         lowlevel_warning(u'Download package "%s" from %s'
                          % (module, package['url']))
         import mimetypes
@@ -351,8 +378,9 @@ def download_install(package, module, path):
 
             result = 0
             if ('patch' in package) and show_patch_question():
-                lowlevel_warning(u'Install package "%s" by applying patch to %s.'
-                                 % (module, os.path.join(path, module)))
+                lowlevel_warning(u'Applying patch to %s in order to finish'
+                                 u'installation of package "%s".'
+                                 % (os.path.join(path, module), module))
                 if sys.platform == 'win32':
                     cmd = '%s -p0 -d %s -i %s --binary' \
                           % (os.path.join(path, 'patch.exe'), path,
@@ -369,7 +397,7 @@ def download_install(package, module, path):
 
 
 def mercurial_repo_install(package, module, path):
-    if package and show_question(module):
+    if package:
         cmd = 'hg clone'
         lowlevel_warning(u'Mercurial clone "%s" from %s'
                          % (module, package['url']))
@@ -389,33 +417,32 @@ def check_setup(m):
     if os.path.exists(mf):
         return
 
+    sel = show_question(m)
+
     # install the missing module
     dist = guess_system()
     func = dist.split(u'-')[0] + '_install'
-    lowlevel_warning(u'Trying to install by use of "%s" package management system:' % dist)
-    if (func in globals()) and globals()[func](modules_needed[m][0]):
-        return
-    else:
-        lowlevel_warning(u'No suitable package could be installed or found!')
-    lowlevel_warning(u'Trying to install by download from source URL:')
-    if download_install(modules_needed[m][1], m, path):
-        return
-    else:
-        lowlevel_warning(u'No suitable package could be installed or found!')
-    lowlevel_warning(u'Trying to install by use of mercurial:')
-    if (len(modules_needed[m]) > 2) and\
-       mercurial_repo_install(modules_needed[m][2], m, path):
-        return
-    else:
-        lowlevel_warning(u'No suitable package could be installed or found!')
+    if sel in [0, 1]:
+        lowlevel_warning(u'(1) Trying to install by use of "%s" package management system:' % dist)
+        if (func in globals()) and globals()[func](modules_needed[m][0]):
+            return
+    if sel in [0, 2]:
+        lowlevel_warning(u'(2) Trying to install by download from source URL:')
+        if download_install(modules_needed[m][1], m, path):
+            return
+    if sel in [0, 3]:
+        lowlevel_warning(u'(3) Trying to install by use of mercurial:')
+        if (len(modules_needed[m]) > 2) and\
+           mercurial_repo_install(modules_needed[m][2], m, path):
+            return
+    if sel in [0, 1, 2, 3]:
+        lowlevel_warning(u'No suitable package could be found nor installed!')
 
-    lowlevel_warning(u'Package "%s" could not be found nor installed!' % m)
-    lowlevel_warning(u'Several scripts might fail, if some modules are not'
+    lowlevel_warning(u'Several scripts might fail, if the modules are not'
                      u' installed as needed! You can either install them'
                      u' by yourself to the system or extract them into the'
-                     u' externals/ directory. If you chose to not install them'
-                     u' this script will ask you again next time whether you'
-                     u' whish to install the external code.')
+                     u' externals/ directory. If you do not install them, this'
+                     u' script will ask you again next time when executed.')
 
 
 def check_setup_all():
