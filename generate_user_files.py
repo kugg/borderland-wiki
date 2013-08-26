@@ -71,7 +71,7 @@ def create_user_config(base_dir):
         else:
             known_langs=eval(rre.findall(codesds)[0]+u"]")
         print "This is the list of known language(s):"
-        print ",".join(known_langs)
+        print " ".join(sorted(known_langs))
         mylang = raw_input(
 "The language code of the site we're working on (default: 'en'): ") or 'en'
         username = raw_input("Username (%s %s): "
