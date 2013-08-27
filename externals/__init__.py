@@ -325,12 +325,12 @@ about which system it runs on."""
 
 
 def sunos_install(dependency_dictionary):
-    lowlevel_warning(u'Not implemented yet, download mode will be used.')
+    lowlevel_warning(u'Not implemented yet, use download mode (2) instead.')
     return False    # skip this in order to trigger 'download_install' next
 
 
 def windows_install(dependency_dictionary):
-    lowlevel_warning(u'Not available in windows OS, download mode will be used.')
+    lowlevel_warning(u'Not available in windows OS, use download mode (2) instead.')
     return False    # skip this in order to trigger 'download_install' next
 
 ### END of VisTrails inspired and copied code   ### ### ### ### ### ### ### ###
