@@ -549,6 +549,12 @@ class Family(family.WikimediaFamily):
             'fr': u'Discussion Livre',
             'he': u'שיחת מפתח',
         }
+        self.namespaces[114] = {
+            'en': u'Translation',
+        }
+        self.namespaces[115] = {
+            'en': u'Translation talk',
+        }
 
         self.namespaces[250] = {
             'az': u'Page',
