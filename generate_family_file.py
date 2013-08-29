@@ -32,9 +32,15 @@ def urlopen(url):
 import wikipediatools
 wikipediatools.get_base_dir = lambda: '.'
 
-# Set some config settings
+# Set some config settings, but monkey-patch os.path.exists to prevent loading user_config.py
+import os
+oldexists = os.path.exists
+os.path.exists = lambda x: False
+
 import config
 config.mylang = 'en'
+
+os.path.exists = oldexists
 
 # Now we can boot the framework
 import wikipedia
