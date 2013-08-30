@@ -13,8 +13,8 @@
 [submodule "externals/opencv"]
 	path = externals/opencv
 	url = https://gerrit.wikimedia.org/r/pywikibot/opencv.git
-	branch = master
+	branch = .
 [submodule "externals/pycolorname"]
 	path = externals/pycolorname
 	url = https://gerrit.wikimedia.org/r/pywikibot/pycolorname.git
-	branch = master
+	branch = .
