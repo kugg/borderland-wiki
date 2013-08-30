@@ -10,3 +10,11 @@
 	path = externals/spelling
 	url = https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git
 	branch = .
+[submodule "externals/opencv"]
+	path = externals/opencv
+	url = https://gerrit.wikimedia.org/r/pywikibot/opencv.git
+	branch = master
+[submodule "externals/pycolorname"]
+	path = externals/pycolorname
+	url = https://gerrit.wikimedia.org/r/pywikibot/pycolorname.git
+	branch = master
