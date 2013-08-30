@@ -379,7 +379,7 @@ def download_install(package, module, path):
             result = 0
             if ('patch' in package) and show_patch_question():
                 lowlevel_warning(u'Applying patch to %s in order to finish'
-                                 u'installation of package "%s".'
+                                 u' the installation of package "%s".'
                                  % (os.path.join(path, module), module))
                 if sys.platform == 'win32':
                     cmd = '%s -p0 -d %s -i %s --binary' \
