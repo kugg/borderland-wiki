@@ -3994,6 +3994,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         params = {
             u'action'    : u'purge',
             u'titles'    : self.title(),
+            u'forcelinkupdate':'',
         }
 
         pywikibot.get_throttle()
