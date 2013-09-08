@@ -445,7 +445,7 @@ class Family(family.WikimediaFamily):
             'gl': u'Conversa Wikipedia',
             'glk': u'بحث Wikipedia',
             'gn': u'Vikipetã myangekõi',
-            'got': u'??? Wikipedia ?????????',
+            'got': u'𐌸𐌹𐍃 Wikipedia 𐌲𐌰𐍅𐌰𐌿𐍂𐌳𐌾𐌰',
             'gu': u'વિકિપીડિયા ચર્ચા',
             'gv': u'Resooney Wikipedia',
             'ha': u'Wikipedia talk',
@@ -874,6 +874,7 @@ class Family(family.WikimediaFamily):
             'ba': u'Проект',
             'bar': u'Buach',
             'ca': u'Viquiprojecte',
+            'ckb': u'ویکیپرۆژە',
             'cs': u'Rejstřík',
             'da': u'Artikeldata',
             'eo': u'Projekto',
@@ -894,6 +895,7 @@ class Family(family.WikimediaFamily):
             'lt': u'Vikiprojektas',
             'lv': u'Vikiprojekts',
             'oc': u'Projècte',
+            'pfl': u'Buch',
             'pl': u'Wikiprojekt',
             'pt': u'Anexo',
             'ro': u'Proiect',
@@ -908,6 +910,7 @@ class Family(family.WikimediaFamily):
             'ba': u'Проект буйынса фекерләшеү',
             'bar': u'Buach Dischkrian',
             'ca': u'Viquiprojecte Discussió',
+            'ckb': u'لێدوانی ویکیپرۆژە',
             'cs': u'Diskuse k rejstříku',
             'da': u'Artikeldatadiskussion',
             'eo': u'Projekta diskuto',
@@ -928,6 +931,7 @@ class Family(family.WikimediaFamily):
             'lt': u'Vikiprojekto aptarimas',
             'lv': u'Vikiprojekta diskusija',
             'oc': u'Discussion Projècte',
+            'pfl': u'Buch Dischbediere',
             'pl': u'Dyskusja wikiprojektu',
             'pt': u'Anexo Discussão',
             'ro': u'Discuție Proiect',
@@ -946,6 +950,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Référence',
             'frr': u'Index',
             'lt': u'Sąrašas',
+            'pfl': u'Wort',
             'pt': u'Livro',
             'ru': u'Проект',
         }
@@ -959,6 +964,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Discussion Référence',
             'frr': u'Index Diskussion',
             'lt': u'Sąrašo aptarimas',
+            'pfl': u'Wort Dischbediere',
             'pt': u'Livro Discussão',
             'ru': u'Обсуждение проекта',
         }
@@ -967,6 +973,7 @@ class Family(family.WikimediaFamily):
             'als': u'Text',
             'bar': u'Text',
             'frr': u'Text',
+            'pfl': u'Text',
             'ru': u'Арбитраж',
         }
 
@@ -974,6 +981,7 @@ class Family(family.WikimediaFamily):
             'als': u'Text Diskussion',
             'bar': u'Text Dischkrian',
             'frr': u'Text Diskussion',
+            'pfl': u'Text Dischbediere',
             'ru': u'Обсуждение арбитража',
         }
 
@@ -982,6 +990,7 @@ class Family(family.WikimediaFamily):
             'bar': u'Spruch',
             'en': u'Book',
             'he': u'ספר',
+            'pfl': u'Spruch',
             'ro': u'Cod',
             'yo': u'Ìwé',
         }
@@ -991,6 +1000,7 @@ class Family(family.WikimediaFamily):
             'bar': u'Spruch Dischkrian',
             'en': u'Book talk',
             'he': u'שיחת ספר',
+            'pfl': u'Spruch Dischbediere',
             'ro': u'Discuție Cod',
             'yo': u'Ọ̀rọ̀ ìwé',
         }
@@ -998,17 +1008,20 @@ class Family(family.WikimediaFamily):
         self.namespaces[110] = {
             'als': u'Nochricht',
             'bar': u'Nochricht',
+            'pfl': u'Nochricht',
         }
 
         self.namespaces[111] = {
             'als': u'Nochricht Diskussion',
             'bar': u'Nochricht Dischkrian',
+            'pfl': u'Nochricht Dischbediere',
         }
 
         self.namespaces[446] = {
             'en': u'Education Program',
             'he': u'הוראה',
             'mk': u'Education Program',
+            'pt': u'Education Program',
             'sv': u'Education Program',
         }
 
@@ -1016,6 +1029,7 @@ class Family(family.WikimediaFamily):
             'en': u'Education Program talk',
             'he': u'שיחת הוראה',
             'mk': u'Education Program talk',
+            'pt': u'Education Program talk',
             'sv': u'Education Program talk',
         }
 
