@@ -3,8 +3,8 @@ import family
 
 __version__ = '$Id$'
 
-# The Wikimedia family that is known as Wikinews
 
+# The Wikimedia family that is known as Wikinews
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()
@@ -23,17 +23,18 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['cs'] = [u'Redaktor', u'Redaktorka', u'Uživatel', u'Uživatelka']
-        self.namespaces[3]['cs'] = [u'Diskuse s redaktorem', u'Diskuse s redaktorkou', u'Diskuse s uživatelem', u'Redaktor diskuse', u'Redaktorka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[3]['cs'] = [u'Diskuse s redaktorem', u'Diskuse s redaktorkou', u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Redaktor diskuse', u'Redaktorka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[14]['en'] = [u'Category', u'CAT']
         self.namespaces[2]['fa'] = [u'کاربر']
         self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[2]['pl'] = [u'Wikireporter', u'Wikireporterka']
         self.namespaces[3]['pl'] = [u'Dyskusja wikireportera', u'Dyskusja wikireporterki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
@@ -42,7 +43,7 @@ class Family(family.WikimediaFamily):
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': self.namespaces[4]['_default'],
-            'ar': [u'ويكي الأخبار', u'وخ', u'Wikinews'],
+            'ar': [u'ويكي الأخبار', u'Wikinews', u'وخ'],
             'bg': [u'Уикиновини', u'Wikinews'],
             'bs': [u'Wikivijesti', u'Wikinews'],
             'ca': [u'Viquinotícies', u'Wikinews'],
@@ -52,25 +53,22 @@ class Family(family.WikimediaFamily):
             'en': [u'Wikinews', u'WN'],
             'eo': [u'Vikinovaĵoj', u'Wikinews'],
             'es': [u'Wikinoticias', u'Wikinews'],
-            'fa': [u'ویکی‌خبر', u'وخ', u'Wikinews'],
+            'fa': [u'ویکی‌خبر', u'Wikinews', u'وخ'],
             'fi': [u'Wikiuutiset', u'Wikinews'],
             'fr': [u'Wikinews', u'WN'],
             'he': [u'ויקיחדשות', u'Wikinews'],
-            'hu': u'Wikihírek',
             'it': [u'Wikinotizie', u'Wikinews'],
             'ja': [u'ウィキニュース', u'Wikinews'],
-            'ko': [u'위키뉴스', u'뉴', u'Wikinews'],
+            'ko': [u'위키뉴스', u'Wikinews', u'뉴'],
             'no': [u'Wikinytt', u'Wikinews'],
             'pl': u'Wikinews',
             'pt': [u'Wikinotícias', u'Wikinews'],
-            'ro': [u'Wikiștiri', u'Wikiştiri', u'Wikinews'],
-            'ru': [u'Викиновости', u'ВикиНовости', u'ВН', u'Wikinews'],
-            'sd': u'Wikinews',
+            'ro': [u'Wikiștiri', u'Wikinews', u'Wikiştiri'],
+            'ru': [u'Викиновости', u'Wikinews', u'ВН', u'ВикиНовости'],
             'sq': [u'Wikilajme', u'WL', u'Wikinews'],
             'sr': [u'Викивести', u'Wikinews'],
             'sv': [u'Wikinews', u'WN'],
             'ta': [u'விக்கிசெய்தி', u'Wikinews', u'விக்கிபீடியா'],
-            'th': u'วิกิข่าว',
             'tr': [u'Vikihaber', u'Wikinews'],
             'uk': [u'ВікіНовини', u'Wikinews'],
             'zh': u'Wikinews',
@@ -91,22 +89,18 @@ class Family(family.WikimediaFamily):
             'fi': u'Keskustelu Wikiuutisista',
             'fr': u'Discussion Wikinews',
             'he': u'שיחת ויקיחדשות',
-            'hu': u'Wikihírek-vita',
             'it': u'Discussioni Wikinotizie',
             'ja': [u'ウィキニュース・トーク', u'ウィキニュース‐ノート'],
             'ko': [u'위키뉴스토론', u'뉴토'],
-            'nl': u'Overleg Wikinews',
             'no': u'Wikinytt-diskusjon',
             'pl': u'Dyskusja Wikinews',
             'pt': u'Wikinotícias Discussão',
             'ro': [u'Discuție Wikiștiri', u'Discuţie Wikiştiri', u'Discuţie Wikiștiri'],
             'ru': [u'Обсуждение Викиновостей', u'Обсуждение ВикиНовостей'],
-            'sd': u'Wikinews بحث',
             'sq': u'Wikilajme diskutim',
             'sr': [u'Разговор о Викивестима', u'Razgovor o Викивести'],
             'sv': u'Wikinewsdiskussion',
             'ta': [u'விக்கிசெய்தி பேச்சு', u'விக்கிபீடியா பேச்சு'],
-            'th': u'คุยเรื่องวิกิข่าว',
             'tr': u'Vikihaber tartışma',
             'uk': u'Обговорення ВікіНовини',
             'zh': u'Wikinews talk',
@@ -257,12 +251,12 @@ class Family(family.WikimediaFamily):
         }
 
         self.obsolete = {
-            'hu': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28342
+            'hu': None,  # https://bugzilla.wikimedia.org/show_bug.cgi?id=28342
             'jp': 'ja',
             'nb': 'no',
-            'nl': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
+            'nl': None,  # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
             'sd': None,
-            'th': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28341
+            'th': None,  # https://bugzilla.wikimedia.org/show_bug.cgi?id=28341
             'zh-tw': 'zh',
             'zh-cn': 'zh'
         }

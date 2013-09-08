@@ -3,8 +3,8 @@ import family
 
 __version__ = '$Id$'
 
-# The Wikimedia family that is known as Wikibooks
 
+# The Wikimedia family that is known as Wikibooks
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()
@@ -30,7 +30,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[14]['en'] = [u'Category', u'CAT']
@@ -40,13 +40,14 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
-        self.namespaces[2]['pl'] = [u'Wikipedysta', u'Wikipedystka', u'Użytkownik', u'Użytkowniczka']
-        self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty', u'Dyskusja wikipedystki', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
+        self.namespaces[829]['ja'] = [u'モジュール・トーク']
+        self.namespaces[2]['pl'] = [u'Wikipedysta', u'Użytkowniczka', u'Użytkownik', u'Wikipedystka']
+        self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty', u'Dyskusja użytkowniczki', u'Dyskusja użytkownika', u'Dyskusja wikipedystki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[14]['tr'] = [u'Kategori', u'KAT']
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -57,7 +58,6 @@ class Family(family.WikimediaFamily):
             'af': u'Wikibooks',
             'ang': u'Wikibooks',
             'ar': [u'ويكي الكتب', u'Wikibooks'],
-            'ast': u'Wikibooks',
             'az': u'Wikibooks',
             'be': u'Wikibooks',
             'bg': [u'Уикикниги', u'Wikibooks'],
@@ -79,7 +79,6 @@ class Family(family.WikimediaFamily):
             'fi': [u'Wikikirjasto', u'Wikibooks'],
             'fr': [u'Wikilivres', u'WL', u'Wikibooks'],
             'fy': u'Wikibooks',
-            'ga': u'Vicíleabhair',
             'gl': u'Wikibooks',
             'he': [u'ויקיספר', u'Wikibooks'],
             'hi': u'Wikibooks',
@@ -103,59 +102,48 @@ class Family(family.WikimediaFamily):
             'lt': u'Wikibooks',
             'mg': u'Wikibooks',
             'mk': u'Wikibooks',
-            'ml': [u'വിക്കിപാഠശാല', u'വിക്കി‌‌ പുസ്തകശാല', u'Wikibooks'],
-            'mn': u'Wikibooks',
+            'ml': [u'വിക്കിപാഠശാല', u'Wikibooks', u'വിക്കി‌‌ പുസ്തകശാല'],
             'mr': u'Wikibooks',
             'ms': u'Wikibooks',
-            'my': u'Wikibooks',
             'ne': u'Wikibooks',
             'nl': u'Wikibooks',
             'no': [u'Wikibøker', u'Wikibooks'],
             'oc': [u'Wikilibres', u'Wikibooks'],
             'pa': u'Wikibooks',
             'pl': [u'Wikibooks', u'WB'],
-            'ps': u'ويکيتابونه',
             'pt': [u'Wikilivros', u'Wikibooks'],
             'ro': [u'Wikimanuale', u'Wikibooks'],
-            'ru': [u'Викиучебник', u'ВУ', u'Wikibooks'],
+            'ru': [u'Викиучебник', u'Wikibooks', u'ВУ'],
             'sa': u'Wikibooks',
             'si': [u'විකිපොත්', u'Wikibooks'],
-            'sk': u'Wikibooks',
+            'sk': [u'Wikiknihy', u'Wikibooks'],
             'sl': [u'Wikiknjige', u'Wikibooks'],
             'sq': u'Wikibooks',
             'sr': [u'Викикњиге', u'Wikibooks'],
-            'su': u'Wikibooks',
             'sv': u'Wikibooks',
             'ta': [u'விக்கிநூல்கள்', u'Wikibooks', u'விக்கிபீடியா'],
             'te': u'Wikibooks',
             'tg': u'Wikibooks',
             'th': [u'วิกิตำรา', u'Wikibooks'],
-            'tk': u'Wikibooks',
             'tl': u'Wikibooks',
             'tr': [u'Vikikitap', u'VK', u'Wikibooks'],
             'tt': u'Wikibooks',
-            'uk': [u'Вікіпідручник', u'ВП', u'Wikibooks'],
+            'uk': [u'Вікіпідручник', u'Wikibooks', u'ВП'],
             'ur': [u'وکی کتب', u'Wikibooks'],
             'uz': [u'Vikikitob', u'Wikibooks'],
             'vi': u'Wikibooks',
-            'vo': [u'Vükibuks', u'Wikibooks'],
-            'zh': [u'Wikibooks', u'维基教科书', u'維基教科書', u'WB'],
+            'zh': [u'Wikibooks', u'WB', u'維基教科書', u'维基教科书'],
             'zh-min-nan': u'Wikibooks',
         }
 
         self.namespaces[5] = {
             '_default': self.namespaces[5]['_default'],
             'af': u'Wikibooksbespreking',
-            'als': u'Wikibooks Diskussion',
             'ang': u'Wikibooks talk',
             'ar': u'نقاش ويكي الكتب',
-            'ast': [u'Wikibooks alderique', u'Wikibooks discusión'],
-            'ay': u'Wikibooks Discusión',
             'az': u'Wikibooks müzakirəsi',
-            'ba': u'Wikibooks б-са фекер алышыу',
             'be': [u'Размовы пра Wikibooks', u'Wikibooks размовы'],
             'bg': u'Уикикниги беседа',
-            'bm': u'Discussion Wikibooks',
             'bn': [u'উইকিবই আলোচনা', u'উইকিবই আলাপ'],
             'bs': u'Razgovor s Wikiknjigama',
             'ca': u'Viquillibres Discussió',
@@ -174,9 +162,7 @@ class Family(family.WikimediaFamily):
             'fi': u'Keskustelu Wikikirjastosta',
             'fr': u'Discussion Wikilivres',
             'fy': u'Wikibooks oerlis',
-            'ga': u'Plé Vicíleabhar',
             'gl': u'Conversa Wikibooks',
-            'gn': u'Wikibooks myangekõi',
             'he': u'שיחת ויקיספר',
             'hi': u'Wikibooks वार्ता',
             'hr': u'Razgovor Wikiknjige',
@@ -191,60 +177,44 @@ class Family(family.WikimediaFamily):
             'ka': u'ვიკიწიგნები განხილვა',
             'kk': [u'Уикикітап талқылауы', u'Уикикітап talqılawı', u'Уикикітап تالقىلاۋى'],
             'km': [u'ការពិភាក្សាអំពីWikibooks', u'Wikibooks ពិភាក្ស'],
-            'kn': u'Wikibooks ಚರ್ಚೆ',
             'ko': u'위키책토론',
             'ku': [u'Gotûbêja Wîkîpirtûkê', u'Wîkîpirtûk nîqaş'],
             'ky': u'Wikibooks баарлашуу',
             'la': u'Disputatio Vicilibrorum',
-            'lb': u'Wikibooks Diskussioun',
             'li': u'Euverlèk Wikibeuk',
-            'ln': u'Discussion Wikibooks',
             'lt': u'Wikibooks aptarimas',
-            'lv': u'Wikibooks diskusija',
             'mg': [u'Dinika amin\'ny Wikibooks', u'Discussion Wikibooks'],
             'mk': u'Разговор за Wikibooks',
-            'ml': [u'വിക്കിപാഠശാല സംവാദം', u'വിക്കി‌‌ പുസ്തകശാല സംവാദം', u'Wikibooks talk'],
-            'mn': u'Wikibooks-н хэлэлцүүлэг',
+            'ml': [u'വിക്കിപാഠശാല സംവാദം', u'Wikibooks talk', u'വിക്കി‌‌ പുസ്തകശാല സംവാദം'],
             'mr': u'Wikibooks चर्चा',
             'ms': [u'Perbincangan Wikibooks', u'Perbualan Wikibooks'],
-            'my': u'Wikibooks talk',
-            'nah': u'Wikibooks Discusión',
-            'nds': u'Wikibooks Diskuschoon',
             'ne': u'Wikibooks वार्ता',
             'nl': u'Overleg Wikibooks',
             'no': u'Wikibøker-diskusjon',
             'oc': u'Discussion Wikilibres',
             'pa': [u'Wikibooks ਗੱਲ-ਬਾਤ', u'Wikibooks ਚਰਚਾ'],
             'pl': u'Dyskusja Wikibooks',
-            'ps': u'د ويکيتابونه خبرې اترې',
-            'pt': [u'Wikilivros Discussão', u'Wikibooks Talk', u'Wikibooks Discussão'],
-            'qu': u'Wikibooks rimanakuy',
+            'pt': [u'Wikilivros Discussão', u'Wikibooks Discussão', u'Wikibooks Talk'],
             'ro': [u'Discuție Wikimanuale', u'Discuţie Wikibooks', u'Discuţie Wikimanuale'],
             'ru': u'Обсуждение Викиучебника',
             'sa': [u'Wikibooksसम्भाषणम्', u'Wikibooksसंभाषणं'],
             'si': [u'විකිපොත් සාකච්ඡාව', u'Wikibooks talk'],
-            'sk': [u'Diskusia k Wikibooks', u'Komentár k Wikipédii'],
+            'sk': [u'Diskusia k Wikiknihám', u'Komentár k Wikipédii', u'Wikibooks talk'],
             'sl': u'Pogovor o Wikiknjigah',
             'sq': u'Wikibooks diskutim',
             'sr': [u'Разговор о викикњигама', u'Razgovor o Викикњиге'],
-            'su': u'Obrolan Wikibooks',
             'sv': u'Wikibooksdiskussion',
-            'sw': u'Majadiliano ya Wikibooks',
             'ta': [u'விக்கிநூல்கள் பேச்சு', u'விக்கிபீடியா பேச்சு'],
             'te': u'Wikibooks చర్చ',
             'tg': u'Баҳси Wikibooks',
             'th': [u'คุยเรื่องวิกิตำรา', u'คุยเรื่องWikibooks'],
-            'tk': u'Wikibooks çekişme',
             'tl': u'Usapang Wikibooks',
             'tr': u'Vikikitap tartışma',
-            'tt': [u'Wikibooks бәхәсе', u'Обсуждение Wikibooks', u'Wikibooks bäxäse'],
+            'tt': [u'Wikibooks бәхәсе', u'Wikibooks bäxäse', u'Обсуждение Wikibooks'],
             'uk': u'Обговорення Вікіпідручника',
             'ur': u'تبادلۂ خیال وکی کتب',
             'uz': u'Vikikitob munozarasi',
             'vi': u'Thảo luận Wikibooks',
-            'vo': u'Bespik dö Vükibuks',
-            'wa': u'Wikibooks copene',
-            'za': u'Wikibooks讨论',
             'zh': u'Wikibooks talk',
             'zh-min-nan': u'Wikibooks talk',
         }
@@ -437,53 +407,53 @@ class Family(family.WikimediaFamily):
         }
 
         self.obsolete = {
-            'aa': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Afar_Wikibooks
-            'ak': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Akan_Wikibooks
-            'als': None, # http://als.wikipedia.org/wiki/Wikipedia:Stammtisch/Archiv_2008-1#Afterwards.2C_closure_and_deletion_of_Wiktionary.2C_Wikibooks_and_Wikiquote_sites
-            'as': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Assamese_Wikibooks
+            'aa': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Afar_Wikibooks
+            'ak': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Akan_Wikibooks
+            'als': None,  # http://als.wikipedia.org/wiki/Wikipedia:Stammtisch/Archiv_2008-1#Afterwards.2C_closure_and_deletion_of_Wiktionary.2C_Wikibooks_and_Wikiquote_sites
+            'as': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Assamese_Wikibooks
             'ast': None,
-            'ay': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Aymar_Wikibooks
-            'ba': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bashkir_Wikibooks
-            'bi': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bislama_Wikibooks
-            'bm': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bambara_Wikibooks
-            'bo': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Tibetan_Wikibooks
-            'ch': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Chamorro_Wikibooks
-            'co': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28644
+            'ay': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Aymar_Wikibooks
+            'ba': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bashkir_Wikibooks
+            'bi': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bislama_Wikibooks
+            'bm': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bambara_Wikibooks
+            'bo': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Tibetan_Wikibooks
+            'ch': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Chamorro_Wikibooks
+            'co': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=28644
             'dk': 'da',
-            'ga': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gaeilge_Wikibooks
-            'got': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gothic_Wikibooks
-            'gn': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Guarani_Wikibooks
-            'gu': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gujarati_Wikibooks
+            'ga': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gaeilge_Wikibooks
+            'got': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gothic_Wikibooks
+            'gn': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Guarani_Wikibooks
+            'gu': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gujarati_Wikibooks
             'jp': 'ja',
-            'kn': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
-            'ks': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kashmiri_Wikibooks
-            'lb': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_L%C3%ABtzebuergesch_Wikibooks
-            'ln': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Lingala_Wikibooks
-            'lv': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Latvian_Wikibooks
-            'mi': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Maori_Wikibooks
-            'minnan':'zh-min-nan',
+            'kn': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
+            'ks': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kashmiri_Wikibooks
+            'lb': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_L%C3%ABtzebuergesch_Wikibooks
+            'ln': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Lingala_Wikibooks
+            'lv': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Latvian_Wikibooks
+            'mi': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Maori_Wikibooks
+            'minnan': 'zh-min-nan',
             'mn': None,
             'my': None,
-            'na': None, #http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nauruan_Wikibooks
-            'nah': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nahuatl_Wikibooks
+            'na': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nauruan_Wikibooks
+            'nah': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nahuatl_Wikibooks
             'nb': 'no',
-            'nds': None, #http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Plattd%C3%BC%C3%BCtsch_Wikibooks
-            'ps': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Pashto_Wikibooks
-            'qu': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Quechua_Wikibooks
-            'rm': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Rumantsch_Wikibooks
-            'se': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Sami_Wikibooks
-            'simple' : 'en', # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
-            'su': None, #http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Basa_Sunda_Wikibooks_(2)
-            'sw': None, #https://bugzilla.wikimedia.org/show_bug.cgi?id=25170
+            'nds': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Plattd%C3%BC%C3%BCtsch_Wikibooks
+            'ps': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Pashto_Wikibooks
+            'qu': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Quechua_Wikibooks
+            'rm': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Rumantsch_Wikibooks
+            'se': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Sami_Wikibooks
+            'simple': 'en',  # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
+            'su': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Basa_Sunda_Wikibooks_(2)
+            'sw': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=25170
             'tk': None,
             'tokipona': None,
-            'ug': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Uyghur_Wikibooks
-            'vo': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=37413
-            'wa': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Walon_Wikibooks
-            'xh': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Xhosa_Wikibooks
-            'yo': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Yoruba_Wikibooks
-            'za': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
+            'ug': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Uyghur_Wikibooks
+            'vo': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=37413
+            'wa': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Walon_Wikibooks
+            'xh': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Xhosa_Wikibooks
+            'yo': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Yoruba_Wikibooks
+            'za': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
             'zh-tw': 'zh',
             'zh-cn': 'zh',
-            'zu': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=25425
+            'zu': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=25425
         }

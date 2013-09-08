@@ -3,8 +3,8 @@ import family
 
 __version__ = '$Id$'
 
-# The Wikimedia family that is known as Wikiquote
 
+# The Wikimedia family that is known as Wikiquote
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()
@@ -27,7 +27,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
@@ -37,12 +37,13 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
+        self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[2]['pl'] = [u'Użytkownik', u'Użytkowniczka']
         self.namespaces[3]['pl'] = [u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
@@ -211,6 +212,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[100] = {
+            'cs': u'Dílo',
             'de': u'Portal',
             'fr': u'Portail',
             'he': u'פורטל',
@@ -220,6 +222,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[101] = {
+            'cs': u'Diskuse k dílu',
             'de': u'Portal Diskussion',
             'fr': u'Discussion Portail',
             'he': u'שיחת פורטל',
@@ -294,32 +297,32 @@ class Family(family.WikimediaFamily):
         }
 
         self.obsolete = {
-            'als': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Alemannic_Wikiquote
-            'ang': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=29150
-            'ast': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28964
-            'bm': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bambara_Wikiquote
+            'als': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Alemannic_Wikiquote
+            'ang': None,  # https://bugzilla.wikimedia.org/show_bug.cgi?id=29150
+            'ast': None,  # https://bugzilla.wikimedia.org/show_bug.cgi?id=28964
+            'bm': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bambara_Wikiquote
             'co': None,
-            'cr': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nehiyaw_Wikiquote
+            'cr': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nehiyaw_Wikiquote
             'dk': 'da',
-            'ga': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gaeilge_Wikiquote
+            'ga': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gaeilge_Wikiquote
             'jp': 'ja',
-            'kk': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
-            'kr': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kanuri_Wikiquote
-            'ks': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kashmiri_Wikiquote
-            'kw': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kernewek_Wikiquote
+            'kk': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
+            'kr': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kanuri_Wikiquote
+            'ks': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kashmiri_Wikiquote
+            'kw': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kernewek_Wikiquote
             'lb': None,
-            'minnan':'zh-min-nan',
-            'na': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nauruan_Wikiquote
+            'minnan': 'zh-min-nan',
+            'na': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nauruan_Wikiquote
             'nb': 'no',
-            'nds': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Low_Saxon_Wikiquote
-            'qu': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Quechua_Wikiquote
-            'simple': 'en', #http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Simple_English_(3)_Wikiquote
-            'tk': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Turkmen_Wikiquote
+            'nds': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Low_Saxon_Wikiquote
+            'qu': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Quechua_Wikiquote
+            'simple': 'en',  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Simple_English_(3)_Wikiquote
+            'tk': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Turkmen_Wikiquote
             'tokipona': None,
-            'tt': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Tatar_Wikiquote
-            'ug': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Oyghurque_Wikiquote
-            'vo': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Volapuk_Wikiquote
-            'za':None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Zhuang_Wikiquote
+            'tt': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Tatar_Wikiquote
+            'ug': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Oyghurque_Wikiquote
+            'vo': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Volapuk_Wikiquote
+            'za': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Zhuang_Wikiquote
             'zh-tw': 'zh',
             'zh-cn': 'zh'
         }

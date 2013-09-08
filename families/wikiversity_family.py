@@ -3,8 +3,8 @@ import family
 
 __version__ = '$Id$'
 
-# The Wikimedia family that is known as Wikiversity
 
+# The Wikimedia family that is known as Wikiversity
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()
@@ -20,9 +20,10 @@ class Family(family.WikimediaFamily):
 
         # Override defaults
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
 
@@ -32,7 +33,7 @@ class Family(family.WikimediaFamily):
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': self.namespaces[4]['_default'],
-            'ar': [u'ويكي الجامعة', u'وج', u'Wikiversity'],
+            'ar': [u'ويكي الجامعة', u'Wikiversity', u'وج'],
             'beta': u'Wikiversity',
             'cs': [u'Wikiverzita', u'WV', u'Wikiversity'],
             'de': u'Wikiversity',
@@ -157,4 +158,4 @@ class Family(family.WikimediaFamily):
         }
 
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
-        self.cross_allowed = ['ja',]
+        self.cross_allowed = ['ja', ]

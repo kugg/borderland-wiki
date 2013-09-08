@@ -3,8 +3,8 @@ import family
 
 __version__ = '$Id$'
 
-# The Wikimedia family that is known as Wikisource
 
+# The Wikimedia family that is known as Wikisource
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()
@@ -30,21 +30,22 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[2]['fa'] = [u'کاربر']
         self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']
-        self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
-        self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
+        self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkowniczka', u'Użytkownik']
+        self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkowniczki', u'Dyskusja użytkownika']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[6]['vec'] = [u'File', u'Imagine']
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
@@ -54,76 +55,72 @@ class Family(family.WikimediaFamily):
         self.namespaces[4] = {
             '_default': self.namespaces[4]['_default'],
             '-': u'Wikisource',
-            'ang': u'Wicifruma',
-            'ar': u'ويكي مصدر',
-            'as': u'ৱিকিউৎস',
-            'az': u'VikiMənbə',
-            'be': u'Вікікрыніцы',
-            'bg': u'Уикиизточник',
-            'bn': u'উইকিসংকলন',
-            'br': u'Wikimammenn',
-            'bs': u'Wikizvor',
-            'ca': u'Viquitexts',
-            'cs': u'Wikizdroje',
-            'cy': u'Wicitestun',
+            'ar': [u'ويكي مصدر', u'Wikisource', u'وم'],
+            'as': [u'ৱিকিউৎস', u'Wikisource'],
+            'az': [u'VikiMənbə', u'Wikisource'],
+            'be': [u'Вікікрыніцы', u'Wikisource', u'ВК'],
+            'bg': [u'Уикиизточник', u'Wikisource'],
+            'bn': [u'উইকিসংকলন', u'Wikisource'],
+            'br': [u'Wikimammenn', u'Wikisource'],
+            'bs': [u'Wikizvor', u'Wikisource'],
+            'ca': [u'Viquitexts', u'Wikisource'],
+            'cs': [u'Wikizdroje', u'WS', u'WZ', u'Wikisource'],
+            'cy': [u'Wicitestun', u'Wikisource'],
             'da': u'Wikisource',
-            'de': u'Wikisource',
-            'el': u'Βικιθήκη',
-            'en': u'Wikisource',
-            'eo': u'Vikifontaro',
+            'de': [u'Wikisource', u'WS'],
+            'el': [u'Βικιθήκη', u'Wikisource'],
+            'en': [u'Wikisource', u'WS'],
+            'eo': [u'Vikifontaro', u'Wikisource'],
             'es': u'Wikisource',
-            'et': u'Vikitekstid',
-            'fa': u'ویکی‌نبشته',
-            'fi': u'Wikiaineisto',
-            'fo': u'Wikiheimild',
+            'et': [u'Vikitekstid', u'Wikisource'],
+            'fa': [u'ویکی‌نبشته', u'Wikisource', u'ون'],
+            'fi': [u'Wikiaineisto', u'Wikisource'],
+            'fo': [u'Wikiheimild', u'Wikisource'],
             'fr': u'Wikisource',
             'gl': u'Wikisource',
-            'gu': u'વિકિસ્રોત',
-            'he': u'ויקיטקסט',
-            'hr': u'Wikizvor',
-            'ht': u'Wikisòrs',
-            'hu': u'Wikiforrás',
-            'hy': u'Վիքիդարան',
+            'gu': [u'વિકિસ્રોત', u'Wikisource'],
+            'he': [u'ויקיטקסט', u'Wikisource'],
+            'hr': [u'Wikizvor', u'Wikisource'],
+            'hu': [u'Wikiforrás', u'Wikisource'],
+            'hy': [u'Վիքիդարան', u'Wikisource'],
             'id': u'Wikisource',
-            'is': u'Wikiheimild',
+            'is': [u'Wikiheimild', u'Wikisource'],
             'it': u'Wikisource',
             'ja': u'Wikisource',
             'kn': u'Wikisource',
-            'ko': u'위키문헌',
-            'la': u'Vicifons',
-            'li': u'Wikibrónne',
-            'lt': u'Vikišaltiniai',
+            'ko': [u'위키문헌', u'Wikisource'],
+            'la': [u'Vicifons', u'Wikisource'],
+            'li': [u'Wikibrónne', u'Wikisource'],
+            'lt': [u'Vikišaltiniai', u'Wikisource'],
             'mk': u'Wikisource',
-            'ml': u'വിക്കിഗ്രന്ഥശാല',
-            'mr': u'विकिस्रोत',
-            'nb': u'Wikikilden',
+            'ml': [u'വിക്കിഗ്രന്ഥശാല', u'WS', u'Wikisource'],
+            'mr': [u'विकिस्रोत', u'Wikisource'],
             'nl': u'Wikisource',
-            'no': u'Wikikilden',
-            'pl': u'Wikiźródła',
+            'no': [u'Wikikilden', u'Wikisource'],
+            'pl': [u'Wikiźródła', u'WS', u'Wikisource'],
             'pt': u'Wikisource',
             'ro': u'Wikisource',
-            'ru': u'Викитека',
+            'ru': [u'Викитека', u'Wikisource'],
             'sa': u'Wikisource',
-            'sah': u'Бикитиэкэ',
-            'sk': u'Wikisource',
-            'sl': u'Wikivir',
-            'sr': u'Викизворник',
+            'sah': [u'Бикитиэкэ', u'Wikisource'],
+            'sk': [u'Wikizdroje', u'Wikisource'],
+            'sl': [u'Wikivir', u'Wikisource'],
+            'sr': [u'Викизворник', u'Wikisource'],
             'sv': u'Wikisource',
-            'ta': u'விக்கிமூலம்',
-            'te': u'వికీసోర్స్',
-            'th': u'วิกิซอร์ซ',
-            'tr': u'Vikikaynak',
-            'uk': u'Вікіджерела',
+            'ta': [u'விக்கிமூலம்', u'Wikisource', u'விக்கிபீடியா'],
+            'te': [u'వికీసోర్స్', u'Wikisource'],
+            'th': [u'วิกิซอร์ซ', u'Wikisource'],
+            'tr': [u'Vikikaynak', u'VikiKaynak', u'Wikisource'],
+            'uk': [u'Вікіджерела', u'Wikisource', u'ВД'],
             'vec': u'Wikisource',
             'vi': u'Wikisource',
-            'yi': u'װיקיביבליאָטעק',
+            'yi': [u'װיקיביבליאָטעק', u'Wikisource', u'וויקיביבליאטעק'],
             'zh': u'Wikisource',
             'zh-min-nan': u'Wikisource',
         }
         self.namespaces[5] = {
             '_default': self.namespaces[5]['_default'],
             '-': u'Wikisource talk',
-            'ang': u'Wicifruma talk',
             'ar': [u'نقاش ويكي مصدر', u'نو'],
             'as': [u'ৱিকিউ স বাৰ্তা', u'ৱিকিউৎস वार्ता', u'ৱিকিউৎস বার্তা'],
             'az': u'VikiMənbə müzakirəsi',
@@ -150,7 +147,6 @@ class Family(family.WikimediaFamily):
             'gu': u'વિકિસ્રોત ચર્ચા',
             'he': u'שיחת ויקיטקסט',
             'hr': u'Razgovor o Wikizvoru',
-            'ht': u'Diskisyon Wikisòrs',
             'hu': [u'Wikiforrás-vita', u'Wikiforrás vita'],
             'hy': u'Վիքիդարանի քննարկում',
             'id': u'Pembicaraan Wikisource',
@@ -165,7 +161,6 @@ class Family(family.WikimediaFamily):
             'mk': u'Разговор за Wikisource',
             'ml': u'വിക്കിഗ്രന്ഥശാല സംവാദം',
             'mr': u'विकिस्रोत चर्चा',
-            'nb': u'Wikikilden-diskusjon',
             'nl': u'Overleg Wikisource',
             'no': u'Wikikilden-diskusjon',
             'pl': u'Dyskusja Wikiźródeł',
@@ -174,7 +169,7 @@ class Family(family.WikimediaFamily):
             'ru': u'Обсуждение Викитеки',
             'sa': [u'Wikisourceसम्भाषणम्', u'Wikisourceसंभाषणं'],
             'sah': u'Бикитиэкэ Ырытыы',
-            'sk': [u'Diskusia k Wikisource', u'Komentár k Wikipédii'],
+            'sk': [u'Diskusia k Wikizdrojom', u'Komentár k Wikipédii', u'Wikisource talk'],
             'sl': u'Pogovor o Wikiviru',
             'sr': [u'Разговор о Викизворнику', u'Razgovor o Викизворник'],
             'sv': u'Wikisourcediskussion',
@@ -551,9 +546,11 @@ class Family(family.WikimediaFamily):
         }
         self.namespaces[114] = {
             'en': u'Translation',
+            'uk': u'Переклад',
         }
         self.namespaces[115] = {
             'en': u'Translation talk',
+            'uk': u'Обговорення перекладу',
         }
 
         self.namespaces[250] = {
@@ -678,11 +675,11 @@ class Family(family.WikimediaFamily):
         }
 
         self.obsolete = {
-            'ang': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Old_English_Wikisource
+            'ang': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Old_English_Wikisource
             'dk': 'da',
-            'ht': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Haitian_Creole_Wikisource
+            'ht': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Haitian_Creole_Wikisource
             'jp': 'ja',
-            'minnan':'zh-min-nan',
+            'minnan': 'zh-min-nan',
             'nb': 'no',
             'tokipona': None,
             'zh-tw': 'zh',
@@ -712,7 +709,7 @@ class Family(family.WikimediaFamily):
             'tr': [100],
             'vi': [102],
             'zh': [102],
-            }
+        }
 
         self.crossnamespace[0] = {
             '_default': self.authornamespaces,
