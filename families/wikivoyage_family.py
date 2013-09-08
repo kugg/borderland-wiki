@@ -20,6 +20,10 @@ class Family(family.WikimediaFamily):
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[2]['de'] = [u'Benutzer', u'BN', u'Benutzerin']
+        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
+        self.namespaces[12]['de'] = [u'Hilfe', u'H']
+        self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[2]['pl'] = [u'Użytkownik', u'Użytkowniczka']
@@ -118,3 +122,6 @@ class Family(family.WikimediaFamily):
 
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = ['es', 'ru', ]
+
+    def shared_data_repository(self, code, transcluded=False):
+        return ('wikidata', 'wikidata')
