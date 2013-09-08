@@ -3,15 +3,16 @@ __version__ = '$Id$'
 
 import family
 
-# ZRHwiki, formerly known as SouthernApproachWiki, a wiki about Zürich Airport.
 
+# ZRHwiki, formerly known as SouthernApproachWiki, a wiki about Zürich Airport.
 class Family(family.Family):
     def __init__(self):
         family.Family.__init__(self)
         self.name = 'southernapproach'
         self.langs = {
-            'de':'www.zrhwiki.ch',
+            'de': 'www.zrhwiki.ch',
         }
+
         # Most namespaces are inherited from family.Family.
         self.namespaces[4] = {
             '_default': [u'ZRHwiki', self.namespaces[4]['_default']],

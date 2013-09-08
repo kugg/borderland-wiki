@@ -4,8 +4,8 @@ __version__ = '$Id$'
 
 import family
 
-# The Wikimedia i18n family
 
+# The Wikimedia i18n family
 class Family(family.Family):
 
     def __init__(self):
@@ -243,5 +243,6 @@ class Family(family.Family):
         self.namespaces[1253] = {
             '_default': [u'Vicuna talk'],
         }
+
     def version(self, code):
         return "1.21alpha"

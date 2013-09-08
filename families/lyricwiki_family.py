@@ -3,18 +3,18 @@ __version__ = '$Id$'
 
 import family
 
+
 # The LyricWiki family
 
 # user_config.py:
 # usernames['lyricwiki']['en'] = 'user'
-
 class Family(family.Family):
     def __init__(self):
         family.Family.__init__(self)
         self.name = 'lyricwiki'
         self.langs = {
             'en': 'lyrics.wikia.com',
-           }
+        }
 
         self.namespaces[4] = {
             '_default': [u'LyricWiki', self.namespaces[4]['_default']],

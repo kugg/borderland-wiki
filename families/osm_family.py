@@ -4,8 +4,8 @@ __version__ = '$Id$'
 
 import family
 
-# The project wiki of OpenStreetMap (OSM).
 
+# The project wiki of OpenStreetMap (OSM).
 class Family(family.Family):
 
     def __init__(self):

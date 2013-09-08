@@ -4,8 +4,8 @@ __version__ = '$Id$'
 
 import family
 
-# The wikispecies family
 
+# The wikispecies family
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()
@@ -22,3 +22,4 @@ class Family(family.WikimediaFamily):
         }
 
         self.interwiki_forward = 'wikipedia'
+

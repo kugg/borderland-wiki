@@ -4,8 +4,8 @@ __version__ = '$Id$'
 
 import family, config
 
-# The Wikimedia Strategy family
 
+# The Wikimedia Strategy family
 class Family(family.WikimediaFamily):
     def __init__(self):
         super(Family, self).__init__()

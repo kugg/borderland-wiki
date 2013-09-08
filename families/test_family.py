@@ -4,6 +4,7 @@ __version__ = '$Id$'
 
 import family
 
+
 # The test wikipedia family
 class Family(family.WikimediaFamily):
     def __init__(self):
@@ -66,4 +67,5 @@ class Family(family.WikimediaFamily):
         self.namespaces[2501] = {
             '_default': u'VisualEditor talk',
         }
+
         self.interwiki_forward = 'wikipedia'
