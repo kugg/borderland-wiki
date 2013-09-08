@@ -978,7 +978,7 @@ class Family(object):
                 'bxr': [u'Хэрэглэгшые хэлэлсэхэ', u'Обсуждение участника'],
                 'ca': [u'Usuari Discussió', u'Usuària discussió'],
                 'cbk-zam': [u'Usuario discusión', u'Usuario Discusión', u'Usuaria Discusión'],
-                'ce': [u'Декъашхон дийцаре', u'Юзери дийца', u'Дийцаре декъашхо'],
+                'ce': [u'Декъашхочун дийцаре', u'Декъашхон дийцаре', u'Дийцаре декъашхо', u'Юзери дийца'],
                 'ceb': u'Hisgot sa Gumagamit',
                 'ch': u'Kombetsasion ni muna\'sesetbi',
                 'ckb': [u'لێدوانی بەکارھێنەر', u'قسەی بەکارھێنەر'],
@@ -4606,7 +4606,7 @@ class WikimediaFamily(Family):
             'bxr': u'Обсуждение модуля',
             'ca': u'Mòdul Discussió',
             'cbk-zam': u'Módulo discusión',
-            'ce': u'Обсуждение модуля',
+            'ce': u'Модулин дийцаре',
             'cs': u'Diskuse k modulu',
             'csb': u'Dyskusja modułu',
             'cv': u'Обсуждение модуля',
@@ -4722,10 +4722,10 @@ class WikimediaFamily(Family):
         """Return Wikimedia projects version number as a string."""
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
-        return '1.22wmf12'
+        return '1.22wmf15'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
-        
+
     def protocol(self, code):
         return 'https'
