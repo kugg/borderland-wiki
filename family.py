@@ -4639,7 +4639,7 @@ class WikimediaFamily(Family):
             'id': u'Pembicaraan Modul',
             'ilo': u'Modulo tungtungan',
             'it': u'Discussioni modulo',
-            'ja': u'モジュール・トーク',
+            'ja': [u'モジュール‐ノート', u'モジュール・トーク'],
             'jv': u'Pembicaraan Modul',
             'kl': u'Moduldiskussion',
             'ko': u'모듈토론',
