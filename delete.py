@@ -75,7 +75,10 @@ def main():
     generator = None
 
     # read command line parameters
-    for arg in pywikibot.handleArgs():
+    localargs = pywikibot.handleArgs()
+    mysite = pywikibot.getSite()
+
+    for arg in localargs:
         if arg == '-always':
             always = True
         elif arg.startswith('-summary'):
@@ -105,7 +108,7 @@ def main():
                 summary = i18n.twtranslate(mysite, 'delete-referring-pages', {'page': pageName})
             elif arg.startswith('-file'):
                 summary = i18n.twtranslate(mysite, 'delete-from-file')
-    mysite = pywikibot.getSite()
+
     if doImages:
         if not summary:
             summary = i18n.twtranslate(mysite, 'delete-images',
