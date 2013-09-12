@@ -4309,7 +4309,7 @@ class DataPage(Page):
                     except ValueError:
                         search=self.searchentities(value, 'item',
                                                    lang=self._originSite.lang)
-                        value=int(search[0]["id"].replace("q", ""))
+                        value=int(search[0]["id"][1:])
                     else:
                         pass
                 else:
@@ -4349,7 +4349,7 @@ class DataPage(Page):
         else:
             params = {
             'action': 'wbcreateclaim',
-            'entity': self.title().replace("Q", "q"),
+            'entity': self.title(),
             'snaktype': 'value',
             'property': "p%d" % propertyID,
             'value': value,
@@ -4388,9 +4388,7 @@ class DataPage(Page):
                                 value = int(ref[i])
                             except ValueError:
                                 try:
-                                    value = int(
-                                        ref[i].lower().replace("Q",
-                                                               "").replace("P", ""))
+                                    value = int(ref[i][1:])
                                 except ValueError:
                                     if i == 0:
                                         typesearch = 'property'
@@ -4400,9 +4398,7 @@ class DataPage(Page):
                                         ref[i], typesearch,
                                         lang=self._originSite.lang)
                                     value = int(
-                                        search[0]["id"].replace("q",
-                                                                "").replace("p",
-                                                                            ""))
+                                        search[0]["id"][1:])
                                 else:
                                     pass
                             else:
@@ -4480,7 +4476,7 @@ class DataPage(Page):
                     except ValueError:
                         search=self.searchentities(value, 'item',
                                                    lang=self._originSite.lang)
-                        value=int(search[0]["id"].replace("q", ""))
+                        value=int(search[0]["id"][1:])
                     else:
                         pass
                 else:
