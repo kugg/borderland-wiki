@@ -302,7 +302,8 @@ class LoginManager:
             # As we don't want the password to appear on the screen, we set
             # password = True
             self.password = pywikibot.input(
-                                u'Password for user %(name)s on %(site)s:'
+                                u'Password for user %(name)s on %(site)s\n' \
+                                u'No characters will be shown:'
                                 % {'name': self.username, 'site': self.site},
                                 password = True)
 
@@ -372,8 +373,8 @@ def main():
     for arg in pywikibot.handleArgs():
         if arg.startswith("-pass"):
             if len(arg) == 5:
-                password = pywikibot.input(u'Password for all accounts:',
-                                           password = True)
+                password = pywikibot.input(u'Password for all accounts ' \
+                    u'(no characters will be shown):', password = True)
             else:
                 password = arg[6:]
         elif arg == "-clean":
