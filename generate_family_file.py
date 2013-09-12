@@ -46,7 +46,6 @@ os.path.exists = oldexists
 import wikipedia
 import family
 import externals                            # check for and install needed
-externals.check_setup('BeautifulSoup.py')   #  'externals'
 
 # parsing response data
 from BeautifulSoup import BeautifulSoup

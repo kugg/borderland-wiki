@@ -21,7 +21,6 @@ __version__='$Id$'
 import re, sys, os
 import wikipedia as pywikibot
 import externals                            # check for and install needed
-externals.check_setup('BeautifulSoup.py')   #  'externals'
 import urllib
 import BeautifulSoup
 import upload
