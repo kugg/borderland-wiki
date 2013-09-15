@@ -109,7 +109,7 @@ modules_needed = {
 #                         createtestsamples.pl https://svn.toolserver.org/svnroot/drtrigon/externals/haartraining/createtestsamples.pl
 #                         createtrainsamples.pl https://svn.toolserver.org/svnroot/drtrigon/externals/haartraining/createtrainsamples.pl
 'opencv/haarcascades': ({},
-                        {  'url': 'https://svn.toolserver.org/svnroot/drtrigon/externals/haarcascades-full.tar.gz',
+                        {  'url': 'https://github.com/wikimedia/pywikibot-bots-drtrigonbot/raw/master/externals/haarcascades-full.tar.gz',
                           'path': 'haarcascades'},
                         {}),  # OK
 #          'pdfminer' is not used anymore/at the moment...
