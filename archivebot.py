@@ -81,7 +81,7 @@ from pywikibot import i18n
 import pagegenerators, query
 Site = pywikibot.getSite()
 
-import os, re, time, locale, traceback, string, urllib
+import os, re, time, locale, traceback, string, urllib, unicodedata
 
 try: #Get a constructor for the MD5 hash object
     import hashlib
@@ -234,33 +234,41 @@ class DiscussionThread(object):
         if not TM:
             TM = re.search(r'(\d\d?) (\S+) (\d\d\d\d) (\d\d):(\d\d) \(.*?\)', line)
         if TM:
-            TIME = txt2timestamp(TM.group(0),"%d. %b %Y kl. %H:%M (%Z)")
+            # Strip away all diacritics in the Mn ('Mark, non-spacing') category
+            # NFD decomposition splits combined characters (e.g. 'ä", LATIN SMALL
+            # LETTER A WITH DIAERESIS) into two entities: LATIN SMALL LETTER A
+            # and COMBINING DIAERESIS. The latter falls in the Mn category and is
+            # filtered out, resuling in 'a'.
+            _TM = ''.join(c for c in unicodedata.normalize('NFD', TM.group(0))
+                    if unicodedata.category(c) != 'Mn')
+
+            TIME = txt2timestamp(_TM,"%d. %b %Y kl. %H:%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%Y. %B %d., %H:%M (%Z)")
+                TIME = txt2timestamp(_TM, "%Y. %B %d., %H:%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%d. %b %Y kl.%H:%M (%Z)")
+                TIME = txt2timestamp(_TM, "%d. %b %Y kl.%H:%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)),
+                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', _TM),
                                      "%H:%M, %d %B %Y")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%H:%M, %d %b %Y (%Z)")
+                TIME = txt2timestamp(_TM, "%H:%M, %d %b %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)),
+                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', _TM),
                                      "%H:%M, %d %b %Y")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%H:%M, %b %d %Y (%Z)")
+                TIME = txt2timestamp(_TM, "%H:%M, %b %d %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%H:%M, %B %d %Y (%Z)")
+                TIME = txt2timestamp(_TM, "%H:%M, %B %d %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%H:%M, %b %d, %Y (%Z)")
+                TIME = txt2timestamp(_TM, "%H:%M, %b %d, %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%H:%M, %B %d, %Y (%Z)")
+                TIME = txt2timestamp(_TM, "%H:%M, %B %d, %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%d. %Bta %Y kello %H.%M (%Z)")
+                TIME = txt2timestamp(_TM,"%d. %Bta %Y kello %H.%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0), "%d %B %Y %H:%M (%Z)")
+                TIME = txt2timestamp(_TM, "%d %B %Y %H:%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)),
+                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', _TM),
                                      "%H:%M, %d. %b. %Y")
             if TIME:
                 self.timestamp = max(self.timestamp, time.mktime(TIME))
