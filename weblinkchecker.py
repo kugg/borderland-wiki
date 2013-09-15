@@ -143,22 +143,27 @@ def weblinksIn(text, withoutBracketed = False, onlyBracketed = False):
     while nestedTemplateR.search(text):
         text = nestedTemplateR.sub(r'{{\1 \2 \3}}', text)
 
-    # Then blow up the templates with spaces so that the | and }} will not be regarded as part of the link:.
+    # Then blow up the templates with spaces so that the | and }} will not
+    # be regarded as part of the link:.
     templateWithParamsR = re.compile(r'{{([^}]*?[^ ])\|([^ ][^}]*?)}}',
                                      re.DOTALL)
     while templateWithParamsR.search(text):
         text = templateWithParamsR.sub(r'{{ \1 | \2 }}', text)
 
-    linkR = pywikibot.compileLinkR(withoutBracketed, onlyBracketed)
+    # Add <blank> at the end of a template
+    # URL as last param of multiline template would not be correct
+    text = text.replace('}}', ' }}')
 
     # Remove HTML comments in URLs as well as URLs in HTML comments.
     # Also remove text inside nowiki links etc.
     text = pywikibot.removeDisabledParts(text)
+    linkR = pywikibot.compileLinkR(withoutBracketed, onlyBracketed)
     for m in linkR.finditer(text):
         if m.group('url'):
             yield m.group('url')
         else:
             yield m.group('urlb')
+
 class InternetArchiveConsulter:
     def __init__(self, url):
         self.url = url
