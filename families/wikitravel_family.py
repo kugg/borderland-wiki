@@ -12,11 +12,11 @@ class Family(family.Family):
 
         self.languages_by_size = [
             'en', 'de', 'ja', 'it', 'nl', 'pt', 'fr', 'pl', 'es', 'fi', 'ru',
-            'sv', 'hu', 'ca', 'ro', 'eo', 'hi', 'he',
+            'sv', 'hu', 'ca', 'zh', 'ro', 'eo', 'ko', 'hi', 'ar', 'he',
         ]
 
-        self.langs = dict([(lang, '%s.wikibooks.org' % lang)
-                           for lang in self.languages_by_size])
+        self.langs = dict([(lang, lang) for lang in self.languages_by_size])
+        self.langs['wts'] = 'wts'
 
         self.namespaces[-2] = {
             '_default': u'Media',
