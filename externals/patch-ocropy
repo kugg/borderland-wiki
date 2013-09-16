@@ -1,0 +1,39 @@
+diff -Naur '--exclude=.hg' '--exclude=.pynative' '--exclude=Notebooks' '--exclude=OLD' '--exclude=models' '--exclude=tests' '--exclude=*.pyc' '--exclude=*.jpg' TEST__ocropus/ocropy/ocrolib/morph.py _ocropus/ocropy/ocrolib/morph.py
+--- TEST__ocropus/ocropy/ocrolib/morph.py	2013-09-16 15:53:44.604627542 +0200
++++ _ocropus/ocropy/ocrolib/morph.py	2012-09-09 15:16:48.000000000 +0200
+@@ -4,7 +4,7 @@
+ 
+ from numpy import *
+ import pylab
+-from scipy.ndimage import morphology,measurements
++from scipy.ndimage import morphology,measurements,filters
+ from scipy.ndimage.morphology import *
+ from toplevel import *
+ 
+diff -Naur '--exclude=.hg' '--exclude=.pynative' '--exclude=Notebooks' '--exclude=OLD' '--exclude=models' '--exclude=tests' '--exclude=*.pyc' '--exclude=*.jpg' TEST__ocropus/README _ocropus/README
+--- TEST__ocropus/README	2013-09-16 15:53:28.971885005 +0200
++++ _ocropus/README	2012-09-09 20:24:32.000000000 +0200
+@@ -7,6 +7,23 @@
+     $ sudo python setup.py install
+     $ ./run-test
+ 
++On a fedora 17 system:
++
++  ( $ hg clone -r ocropus-0.6 https://code.google.com/p/ocropus )
++    $ cd ocropy
++    $ su -c'yum install $(cat PACKAGES)'
++      (install 'scipy' instead of 'python-scipy' and 'ImageMagick' instead
++       of 'imagemagick' manually by su -c'yum install scipy ImageMagick')
++    $ python setup.py download_models
++    $ sudo python setup.py build
++      (patch morph.py [1] to get 'filters')
++    $ export OCROPUS_DATA=~/ocropus/ocropy/models/
++    $ ./run-test
++
++[1] "from scipy.ndimage import morphology,measurements"
++ -> "from scipy.ndimage import morphology,measurements,filters"
++
++
+ Other subdirectories contain examples for training etc.:
+ 
+   - fraktur-boxes: An example of training OCRopus models on the same box

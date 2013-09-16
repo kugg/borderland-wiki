@@ -24,7 +24,7 @@ __version__ = '$Id$'
 #           1. package management system (yum, apt-get, ...)
 #           2. download from url (or svn, git repo)
 #           3. checkout from mercurial repo ('hg clone ...' since url not
-#              available)
+#              available) - still needed??
 #           (what about python eggs?!)
 # dependencies: (svn, python)
 #               yum, apt-get or whatever your system uses
@@ -93,11 +93,18 @@ modules_needed = {
                          #$ diff -Naur --exclude="*.pyc" TEST__music21/ _music21/ > patch-music21
                          'patch': 'patch-music21'},
                         {}),  # OK
-# TODO: vvv (future; enable for and use in 'catimages.py', patch needed)
+# TODO: vvv (future; enable for and use in 'catimages.py')
+# TODO: needs an '__init__.py' in order to download models according to ../_ocropus/ocropy/models/README and finish setup/install (post-install)
            '_ocropus': ({},
-                        {},
-                        {  'url': 'https://code.google.com/p/ocropus',
-                           'rev': 'ocropus-0.6'}),  # OK
+                        {  'url': 'https://ocropus.googlecode.com/archive/ocropus-0.6.zip',
+                          'path': 'ocropus-1598de2c16ec',},
+                        {}),  # OK
+    '_ocropus/ocropy': ({},
+                        {  'url': 'https://ocropy.ocropus.googlecode.com/archive/7888246ee98dd6e5ee8002dc95d71f1fdabcc05f.zip',
+                          'path': 'ocropy.ocropus-7888246ee98d',
+                         #$ diff -Naur --exclude=".hg" --exclude=".pynative" --exclude="Notebooks" --exclude="OLD" --exclude="models" --exclude="tests" --exclude="*.pyc" --exclude="*.jpg" TEST__ocropus/ _ocropus/ > patch-ocropy
+                         'patch': 'patch-ocropy'},
+                        {}),  # OK
 # TODO: vvv (further clean-up and unlink - check with 'svn list')
 #             'opencv': $ svn propedit svn:externals externals/.
 #                         opencv https://svn.toolserver.org/svnroot/drtrigon/externals/opencv
@@ -125,14 +132,16 @@ modules_needed = {
                         {  'url': 'https://bitbucket.org/nmb10/py_w3c/downloads/py_w3c-v0.1.0.tar.gz',
                           'path': 'py_w3c-0.1.0/py_w3c'},
                         {}),  # OK
-# TODO: vvv (include)
+# TODO: ISSUE; how to install 2 packages into the same dir??
+# TODO: vvv (future; enable for and use in 'catimages.py')
+# TODO: needs an '__init__.py' in order to handle complex installation; files from 'slic/python' dir have to be symlinked or copied to 'slic' dir... (post-install)
 #               'TEST_slic': ({},
 #                        {  'url': 'http://ivrg.epfl.ch/files/content/sites/ivrg/files/supplementary_material/RK_SLICsuperpixels/SLICSuperpixelsAndSupervoxelsCode.zip',
-#                          'path': 'SLICSuperpixelsAndSupervoxelsCode/SLICSuperpixels',}),# OPEN
+#                          'path': 'SLICSuperpixelsAndSupervoxelsCode/SLICSuperpixels',}),     # OPEN
 #               'TEST_slic': ({},
-#                        {  'url': 'https://github.com/amueller/slic-python/archive/master.zip',
-#                          'path': 'slic-python-master',}),                 # OPEN
-# (2 download sources to same dir, compilation) + patch (at least for '__init__.py') needed
+#                        {  'url': 'https://github.com/amueller/slic-python/archive/9aede5ef38495e2dbd0ca126821b7dd7e0e5304f.zip',
+#                          'path': 'slic-python-9aede5ef38495e2dbd0ca126821b7dd7e0e5304f',
+#                         'patch': 'patch-slic',}),  # OPEN
               '_zbar': ({'linux-fedora': ['zbar'],
                          'linux-ubuntu': ['python-zbar']},
                         {  'url': 'https://pypi.python.org/packages/source/z/zbar/zbar-0.10.tar.bz2',
@@ -140,20 +149,20 @@ modules_needed = {
                          #$ diff -Nau --exclude="*.pyc" TEST__zbar/ _zbar/ > patch-zbar
                          'patch': 'patch-zbar'},
                         {}),  # OK
-# TODO: vvv (include)
-#               'TEST__bob': ({},
-#                        {  'url': 'https://www.idiap.ch/software/bob/packages/bob-1.1.2.zip',
-#                          'path': 'bob-1.1.2',
-#                         #$ diff -Nau --exclude="*.pyc" TEST__bob/ _bob/ > patch-bob
-#                         'patch': 'patch-bob',},
-#                        {}),                                               # OPEN
-# (complex compilation) + patch (at least for '__init__.py') needed
-#     'TEST_xbob_flandmark': ({},
-#                        {  'url': 'https://pypi.python.org/packages/source/x/xbob.flandmark/xbob.flandmark-1.0.9.zip',
-#                          'path': 'xbob.flandmark-1.0.9',},
-#                         #'patch': '',},
-#                        {}),                                               # OPEN
-# (complex compilation, dependent on '_bob') + patch (at least for '__init__.py') needed
+# TODO: vvv (future; '_bob' & 'xbob_flandmark' might be used some day in 'catimages.py' - but is quite big...)
+               '_bob': ({},
+                        {  'url': 'https://www.idiap.ch/software/bob/packages/bob-1.1.2.zip',
+                          'path': 'bob-1.1.2',
+                         #$ diff -Naur --exclude="*.pyc" --exclude="build" --exclude="bob.egg-info" TEST__bob/ _bob/ > patch-bob
+                         'patch': 'patch-bob',},
+                        {}),  # OK
+# TODO: needs an '__init__.py' in order to handle complex compilation, dependent on '_bob'... (post-install)
+     'xbob_flandmark': ({},
+                        {  'url': 'https://pypi.python.org/packages/source/x/xbob.flandmark/xbob.flandmark-1.0.9.zip',
+                          'path': 'xbob.flandmark-1.0.9',
+                         #$ diff -Naur --exclude="*.pyc" --exclude="*.so" --exclude="bin" --exclude="build" --exclude="develop-eggs" --exclude="eggs" --exclude="parts" TEST_xbob_flandmark/ xbob_flandmark/ > patch-xbob-flandmark
+                         'patch': 'patch-xbob-flandmark',},
+                        {}),  # OK
 }
 
 modules_order = ['crontab', 'odf', 'openpyxl', 'BeautifulSoup.py', 'irclib',
@@ -201,7 +210,7 @@ def guess_system():
 def show_question(module):
     lowlevel_warning("Required package missing: %s\n"
                      "This package is not installed, but required by the file"
-                     "\n'%s'." % (module, inspect.stack()[2][1]))
+                     " '%s'." % (module, inspect.stack()[2][1]))
     lowlevel_warning("For more and additional information, please confer:\n"
                      "http://www.mediawiki.org/wiki/Manual:Pywikipediabot/"
                      "Installation#Dependencies")
@@ -213,7 +222,6 @@ RECOMMENDED for     admins: always option [0] or the next available (e.g. [1])
 RECOMMENDED for non-admins: always option [2] (if available)
 0: automatically determine the best of the following methods (may need
    administrator privileges)
-
 """)
     if 1 in options:
         options_msg += ("1: install the package using the OS package"
@@ -356,10 +364,13 @@ def download_install(package, module, path):
         #response = http.request(pywikibot.getSite(), package['url'],
         #                        no_hostname = True, back_response = True)[0]
         if 'Content-Length' in response.headers:
+            size = response.headers['Content-Length']
+            break
+        if response.headers.get('Transfer-Encoding', '') == 'chunked':
+            size = '<unknown>'
             break
         lowlevel_warning(u'Could not retrieve data, re-trying ...')
-    lowlevel_warning(u'Size of download: %s byte(s)'
-                     % response.headers['Content-Length'])
+    lowlevel_warning(u'Size of download: %s byte(s)' % size)
     #mime = response.headers['Content-Type'].lower().split('/')
     mime = mimetypes.guess_type(package['url'],
                                 strict=True)[0].lower().split('/')
