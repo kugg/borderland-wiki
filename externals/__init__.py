@@ -36,14 +36,14 @@ modules_needed = {
                           'path': 'bin/patch.exe'},
                         {}),  # OK
             'crontab': ({},
-##                        {  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
-##                          'path': 'parse-crontab-master/crontab',}),  # OK
+#                        {  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
+#                          'path': 'parse-crontab-master/crontab',}),  # OK
                         {  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/1ec538ff67df6a207993a6c5b6988f4f628c5776.zip',
                           'path': 'parse-crontab-1ec538ff67df6a207993a6c5b6988f4f628c5776/crontab',},
                         {}),  # OK
                 'odf': ({},
-##                        {  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.6.tar.gz',
-##                          'path': 'odfpy-0.9.6/odf',}),  # OK
+#                        {  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.6.tar.gz',
+#                          'path': 'odfpy-0.9.6/odf',}),  # OK
                         {  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.4.tar.gz',
                           'path': 'odfpy-0.9.4/odf'},
                         {}),  # OK
@@ -65,7 +65,7 @@ modules_needed = {
                         {}),  # OK
    'mwparserfromhell': ({},
                         {  'url': 'https://github.com/earwig/mwparserfromhell/archive/v0.2.zip',
-##                        {  'url': 'https://github.com/earwig/mwparserfromhell/archive/master.zip',
+#                        {  'url': 'https://github.com/earwig/mwparserfromhell/archive/master.zip',
                           'path': 'mwparserfromhell-0.2/mwparserfromhell'},
                         {}),  # OK
           'colormath': ({'linux-fedora': [],
@@ -105,7 +105,6 @@ modules_needed = {
                          #$ diff -Naur --exclude=".hg" --exclude=".pynative" --exclude="Notebooks" --exclude="OLD" --exclude="models" --exclude="tests" --exclude="*.pyc" --exclude="*.jpg" TEST__ocropus/ _ocropus/ > patch-ocropy
                          'patch': 'patch-ocropy'},
                         {}),  # OK
-# TODO: vvv (further clean-up and unlink - check with 'svn list')
 #             'opencv': $ svn propedit svn:externals externals/.
 #                         opencv https://svn.toolserver.org/svnroot/drtrigon/externals/opencv
 #                       $ svn propedit svn:externals externals/opencv/haarcascades/haartraining/
@@ -132,16 +131,20 @@ modules_needed = {
                         {  'url': 'https://bitbucket.org/nmb10/py_w3c/downloads/py_w3c-v0.1.0.tar.gz',
                           'path': 'py_w3c-0.1.0/py_w3c'},
                         {}),  # OK
-# TODO: ISSUE; how to install 2 packages into the same dir??
 # TODO: vvv (future; enable for and use in 'catimages.py')
-# TODO: needs an '__init__.py' in order to handle complex installation; files from 'slic/python' dir have to be symlinked or copied to 'slic' dir... (post-install)
-#               'TEST_slic': ({},
+# TODO: needs an '__init__.py' in order to handle complex installation... compile needed? (post-install)
+               'slic': ({},
 #                        {  'url': 'http://ivrg.epfl.ch/files/content/sites/ivrg/files/supplementary_material/RK_SLICsuperpixels/SLICSuperpixelsAndSupervoxelsCode.zip',
-#                          'path': 'SLICSuperpixelsAndSupervoxelsCode/SLICSuperpixels',}),     # OPEN
-#               'TEST_slic': ({},
+#                          'path': 'SLICSuperpixelsAndSupervoxelsCode/SLICSuperpixels',},
+#                        {}),  # OK
+#        'slic/python': ({},
 #                        {  'url': 'https://github.com/amueller/slic-python/archive/9aede5ef38495e2dbd0ca126821b7dd7e0e5304f.zip',
-#                          'path': 'slic-python-9aede5ef38495e2dbd0ca126821b7dd7e0e5304f',
-#                         'patch': 'patch-slic',}),  # OPEN
+#                          'path': 'slic-python-9aede5ef38495e2dbd0ca126821b7dd7e0e5304f',},
+#                         #'patch': 'patch-slic',},
+#                        {}),  # OK
+                        {  'url': 'https://github.com/wikimedia/pywikibot-bots-drtrigonbot/raw/master/externals/amueller-slic-python-9aede5e-with-SLICSuperpixelsAndSupervoxelsCode.tar.gz',
+                          'path': 'slic'},
+                        {}),  # OK
               '_zbar': ({'linux-fedora': ['zbar'],
                          'linux-ubuntu': ['python-zbar']},
                         {  'url': 'https://pypi.python.org/packages/source/z/zbar/zbar-0.10.tar.bz2',
@@ -168,8 +171,7 @@ modules_needed = {
 modules_order = ['crontab', 'odf', 'openpyxl', 'BeautifulSoup.py', 'irclib',
                  'mwparserfromhell', 'colormath', 'jseg', 'jseg/jpeg-6b',
                  '_mlpy', '_music21', '_ocropus', 'opencv/haarcascades',
-                 'pydmtx', 'py_w3c', '_zbar', ]
-# OPEN: 'opencv', 'slic', '_bob', 'xbob_flandmark',
+                 'pydmtx', 'py_w3c', 'slic', '_zbar', '_bob', 'xbob_flandmark']
 
 _patch_permission = None
 
