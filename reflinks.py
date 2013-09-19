@@ -43,7 +43,6 @@ import sys, re, urllib2, httplib, socket, codecs, ftplib
 import subprocess, tempfile, os, gzip, StringIO
 import wikipedia as pywikibot
 import externals                            # check for and install needed
-externals.check_setup('BeautifulSoup.py')   #  'externals'
 from BeautifulSoup import UnicodeDammit
 import pagegenerators
 import noreferences

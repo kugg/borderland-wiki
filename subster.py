@@ -80,7 +80,6 @@ from pywikibot import i18n
 from pywikibot.comms import http
 import catlib
 import externals                            # check for and install needed
-externals.check_setup('BeautifulSoup.py')   #  'externals'
 externals.check_setup('crontab')            #
 externals.check_setup('odf')                #
 externals.check_setup('openpyxl')           #

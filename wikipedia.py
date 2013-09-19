@@ -147,7 +147,6 @@ import warnings
 import unicodedata
 import xmlreader
 import externals     # allow imports from externals
-externals.check_setup('BeautifulSoup.py')
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, SoupStrainer
 import weakref
 import logging, logging.handlers
