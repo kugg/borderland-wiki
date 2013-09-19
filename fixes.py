@@ -669,6 +669,6 @@ fixes = {
 import config
 
 try:
-    execfile(config.datafilepath(config.base_dir, "user-fixes.py"))
+    exec open(config.datafilepath(config.base_dir, "user-fixes.py"), 'r').read()
 except IOError:
     pass

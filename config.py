@@ -603,7 +603,7 @@ for _filename in _fns:
         _fileuid = _filestatus[4]
         if __sys.platform == 'win32' or _fileuid in [os.getuid(), 0]:
             if __sys.platform == 'win32' or _filemode & 002 == 0:
-                execfile(_filename)
+                exec open(_filename, 'r').read()
             else:
                 print "WARNING: Skipped '%s': writeable by others."%_filename
         else:
