@@ -21,7 +21,7 @@ If you have the messages as instance constants you may call the bot as follows:
 #
 # Distributed under the terms of the MIT license.
 #
-__version__ = '$Id: ccfc4aeb961d4031c93d2b7851a4417481283d8a $'
+__version__ = '$Id$'
 #
 import sys
 sys.path.insert(1, '..')
