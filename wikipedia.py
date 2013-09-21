@@ -9100,7 +9100,9 @@ def setLogfileStatus(enabled, logname=None, header=False):
     if not logger:
         init_handlers()
 
-    if not logger.handlers:         # init just once (if re-called)
+    logger = logging.getLogger('pywiki')
+    # three handlers allowed (Null, one for pwb.py, one for script)
+    if len(logger.handlers) < 3:
         moduleName = calledModuleName()
         if not moduleName:
             moduleName = "terminal-interface"
@@ -9116,15 +9118,17 @@ def setLogfileStatus(enabled, logname=None, header=False):
             fh = logging.handlers.RotatingFileHandler(filename=logfn,
                                            maxBytes=1024 * config.logfilesize,
                                            backupCount=config.logfilecount,
-                                           encoding='utf-8')
+                                           encoding="utf-8")
         else:
-            ver = int( '%02i%02i' % tuple(sys.version_info)[:2] )
-            kwargs = {     'when': 'midnight',
+            ver = int('%02i%02i' % tuple(sys.version_info)[:2])
+            kwargs = {'when': 'midnight',
                        #'encoding': 'bz2-codec')
-                       'encoding': 'utf-8' }
+                       'encoding': "utf-8" }
+                       
             if ver > int('0205'):
                 # For Python > 2.5 (added in version 2.6)
                 kwargs['utc'] = True
+
             fh = logging.handlers.TimedRotatingFileHandler(logfn, **kwargs)
             # patch for "Issue 8117: TimedRotatingFileHandler doesn't rotate log
             # file at startup."
@@ -9133,10 +9137,11 @@ def setLogfileStatus(enabled, logname=None, header=False):
             if os.path.exists(logfn) and (ver == int('0206')):
                 t = os.stat(logfn).st_mtime
                 fh.rolloverAt = fh.computeRollover(t)
-        fh.setLevel(DEBUG)
+                
+        #fh.setLevel(DEBUG)
         # create console handler with a higher log level
-        ch = logging.StreamHandler()
-        ch.setLevel(DEBUG)
+        #ch = logging.StreamHandler()
+        #ch.setLevel(DEBUG)
         # create formatter and add it to the handlers (using LogRecord attributes)
         formatter = logging.Formatter(
                     fmt="%(asctime)s %(caller_file)18s, %(caller_line)4s "
@@ -9149,12 +9154,10 @@ def setLogfileStatus(enabled, logname=None, header=False):
         logger.addHandler(fh)           # output to logfile
         #logger.addHandler(ch)           # output to terminal/shell console
 
-        logger = logging.getLogger('pywiki')
+    if header:
+        writelogheader()
 
-        if header:
-            writelogheader()
-
-    logger.propagate = enabled
+    #logger.propagate = enabled
 
 def init_handlers(strm=None):#, logname=None, header=False):
     """Initialize logging system for terminal-based bots.
@@ -9200,12 +9203,22 @@ def init_handlers(strm=None):#, logname=None, header=False):
             # for prompts requiring user response
 
         logger = logging.getLogger()    # root logger
-        if logger.handlers:             # init just once (if re-called)
-            logger = logging.getLogger('pywiki')
-            return
-        logger.setLevel(DEBUG+1) # all records except DEBUG go to logger
+        
+        nh = logging.NullHandler()
+        logger.addHandler(nh)
+        logger.setLevel(DEBUG+1)
+
         if hasattr(logger, 'captureWarnings'):
             logger.captureWarnings(True)    # introduced in Python >= 2.7
+
+        logger = logging.getLogger('pywiki')
+        logger.addHandler(nh)
+        logger.setLevel(DEBUG)
+            
+        logger.propagate = True
+
+        return
+
 
 def writelogheader():
     """
