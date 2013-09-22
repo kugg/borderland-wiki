@@ -20,15 +20,25 @@ __version__ = '$Id$'
 #
 
 
-# supports: 0. svn:externals / git submodule
+# External dependencies for the compat repository. Please confer the docu at
+# https://www.mediawiki.org/wiki/Manual:Pywikibot/Installation#Dependencies and
+# 'externals/README' also.
+# The very essential packages are PRE-INSTALLED (e.g. 'BeautifulSoup.py'),
+# please make sure to match/sync them with the list here. Best is to first
+# update the PACKAGE in the list here and then use:
+# >>> import wikipedia, externals
+# >>> externals.check_setup('PACKAGE')
+# in order to to pull the correct version easily it into the repo for commit.
+#
+# supports: 0. git submodule
 #           1. package management system (yum, apt-get, ...)
-#           2. download from url (or svn, git repo)
-#           3. checkout from mercurial repo ('hg clone ...' since url not
-#              available) - still needed??
+#           2. download from url (e.g. archive, svn or git repo)
+#           3. checkout from mercurial repo ('hg clone ...' if no url is
+#              available) - not needed at the moment
 #           (what about python eggs?!)
-# dependencies: (svn, python)
+# dependencies: (git, python)
 #               yum, apt-get or whatever your system uses
-#               mercurial (hg)
+#               mercurial (hg) / subversion (svn)
 #               patch (unix/linux & gnuwin32 version/flavour)
 modules_needed = {
           'patch.exe': ({},  # for win32 only, unix/linux is already equipped with a patch tool
@@ -36,14 +46,14 @@ modules_needed = {
                           'path': 'bin/patch.exe'},
                         {}),  # OK
             'crontab': ({},
-#                        {  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
-#                          'path': 'parse-crontab-master/crontab',}),  # OK
+                        #{  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/master.zip',
+                        #  'path': 'parse-crontab-master/crontab',}),  # OK
                         {  'url': 'https://github.com/josiahcarlson/parse-crontab/archive/1ec538ff67df6a207993a6c5b6988f4f628c5776.zip',
                           'path': 'parse-crontab-1ec538ff67df6a207993a6c5b6988f4f628c5776/crontab',},
                         {}),  # OK
                 'odf': ({},
-#                        {  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.6.tar.gz',
-#                          'path': 'odfpy-0.9.6/odf',}),  # OK
+                        #{  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.6.tar.gz',
+                        #  'path': 'odfpy-0.9.6/odf',}),  # OK
                         {  'url': 'https://pypi.python.org/packages/source/o/odfpy/odfpy-0.9.4.tar.gz',
                           'path': 'odfpy-0.9.4/odf'},
                         {}),  # OK
@@ -51,21 +61,20 @@ modules_needed = {
                         {  'url': 'https://bitbucket.org/ericgazoni/openpyxl/get/1.5.6.tar.gz',
                           'path': 'ericgazoni-openpyxl-e5934500ffac/openpyxl'},
                         {}),  # OK
-#           'spelling': $ svn propedit svn:externals externals/.
-#                         spelling http://svn.wikimedia.org/svnroot/pywikipedia/trunk/spelling/
-#                       $ git submodule add https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git externals/spelling
+# git submodule: see '.gitmodules' files
+#          'spelling': $ git submodule add https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git externals/spelling
    'BeautifulSoup.py': ({'linux-fedora': ['python-BeautifulSoup'],
                          'linux-ubuntu': ['python-beautifulsoup']},
                         {  'url': 'https://pypi.python.org/packages/source/B/BeautifulSoup/BeautifulSoup-3.2.0.tar.gz',
                           'path': 'BeautifulSoup-3.2.0/BeautifulSoup.py'},
-                        {}),  # OK
+                        {}),  # PRE-INSTALLED
              'irclib': ({'linux-fedora': ['python-irclib'],
                          'linux-ubuntu': ['python-irclib']},
                         {},  # http://python-irclib.sourceforge.net/
                         {}),  # OK
    'mwparserfromhell': ({},
                         {  'url': 'https://github.com/earwig/mwparserfromhell/archive/v0.2.zip',
-#                        {  'url': 'https://github.com/earwig/mwparserfromhell/archive/master.zip',
+                        #{  'url': 'https://github.com/earwig/mwparserfromhell/archive/master.zip',
                           'path': 'mwparserfromhell-0.2/mwparserfromhell'},
                         {}),  # OK
           'colormath': ({'linux-fedora': [],
@@ -105,8 +114,8 @@ modules_needed = {
                          #$ diff -Naur --exclude=".hg" --exclude=".pynative" --exclude="Notebooks" --exclude="OLD" --exclude="models" --exclude="tests" --exclude="*.pyc" --exclude="*.jpg" TEST__ocropus/ _ocropus/ > patch-ocropy
                          'patch': 'patch-ocropy'},
                         {}),  # OK
-#             'opencv': $ svn propedit svn:externals externals/.
-#                         opencv https://svn.toolserver.org/svnroot/drtrigon/externals/opencv
+# git submodule: see '.gitmodules' files
+#             'opencv': $ git submodule add https://gerrit.wikimedia.org/r/pywikibot/opencv.git externals/opencv
 #                       $ svn propedit svn:externals externals/opencv/haarcascades/haartraining/
 #                         HaarTraining https://svn.toolserver.org/svnroot/drtrigon/externals/haartraining/HaarTraining
 #                         HaarTraining.tar.gz https://svn.toolserver.org/svnroot/drtrigon/externals/haartraining/HaarTraining.tar.gz
@@ -118,8 +127,8 @@ modules_needed = {
                         {  'url': 'https://github.com/wikimedia/pywikibot-bots-drtrigonbot/raw/master/externals/haarcascades-full.tar.gz',
                           'path': 'haarcascades'},
                         {}),  # OK
-#          'pdfminer' is not used anymore/at the moment...
-#       'pycolorname': $ svn propset svn:externals 'pycolorname https://svn.toolserver.org/svnroot/drtrigon/externals/pycolorname' externals/.
+# git submodule: see '.gitmodules' files
+#       'pycolorname': $ git submodule add https://gerrit.wikimedia.org/r/pywikibot/pycolorname.git externals/pycolorname
              'pydmtx': ({'linux-fedora': ['python-libdmtx'],
                          'linux-ubuntu': ['libdmtx-dev']},
                         {  'url': 'https://github.com/dmtx/dmtx-wrappers/archive/master.zip',
@@ -201,7 +210,7 @@ def lowlevel_warning(text):
     if has_logger():
         pywikibot.warning(text)
     else:
-        print "\nWARNING:", text
+        print "WARNING:", text
 
 
 def guess_system():
