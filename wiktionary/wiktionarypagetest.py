@@ -9,18 +9,27 @@ import unittest
 
 
 class SortEntriesCheckSortOrder(unittest.TestCase):
-    """Entries should be sorted as follows on a page: Translingual first, Wikilang next, then the others alphabetically on the language name in the Wiktionary's language """
+    """Entries should be sorted as follows on a page: Translingual first,
+    Wikilang next, then the others alphabetically on the language name in the
+    Wiktionary's language
+
+    """
+
     def testHeaderInitKnownValuesType(self):
         """Sorting order of Entries on a page"""
-        examples=((('en','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'en', 'nl', 'eo', 'fr', 'de', 'es']),
-                  (('nl','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'nl', 'de', 'en', 'eo', 'fr', 'es']),
-                  (('fr','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'fr', 'de', 'en', 'es', 'eo', 'nl']),
-                  (('de','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'de', 'en', 'eo', 'fr', 'nl', 'es']),
-                 )
+        examples = ((('en', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'en', 'nl', 'eo', 'fr', 'de', 'es']),
+                    (('nl', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'nl', 'de', 'en', 'eo', 'fr', 'es']),
+                    (('fr', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'fr', 'de', 'en', 'es', 'eo', 'nl']),
+                    (('de', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'de', 'en', 'eo', 'fr', 'nl', 'es']),
+                    )
         for example in examples:
             page = wiktionarypage.WiktionaryPage(example[0][0], example[0][1])
             for lang in example[1]:
@@ -29,9 +38,13 @@ class SortEntriesCheckSortOrder(unittest.TestCase):
             page.sortEntries()
             self.assertEqual(page.sortedentries, example[2])
 
+
 class TestKnownValuesInParser(unittest.TestCase):
-    """This class will check various aspects of parsing Wiktionary entries into our object model"""
-    knownvalues=(
+    """This class will check various aspects of parsing Wiktionary entries into
+    our object model
+
+    """
+    knownvalues = (
 {'wikilang': 'en',
  'term': 'nut',
  'wikiformat': u"""==English==
@@ -168,11 +181,12 @@ The translations below need to be checked by native speakers and inserted into t
 """,
    'internalrep':
     (
-     [u'1000 English basic words',u'Colors',u'Browns',u'Trees',u'Foods'],
-     [u'io','la'],
+     [u'1000 English basic words', u'Colors', u'Browns', u'Trees', u'Foods'],
+     [u'io', 'la'],
      {u'en':
       [u'nut', None, u'nuts',
-       [{'definition': u'A hard-shelled seed.', 'concisedef': u'seed',
+       [{'definition': u'A hard-shelled seed.',
+         'concisedef': u'seed',
          'trans': {'remark': '',
                    'alltrans': {
                              'nl': {'remark': '',
@@ -199,7 +213,8 @@ The translations below need to be checked by native speakers and inserted into t
                                }
                   }
         },
-        {'definition': u"A piece of metal, often [[hexagonal]], with a hole through it with internal threading intended to fit on to a bolt.", 'concisedef': u'that fits on a bolt',
+        {'definition': u"A piece of metal, often [[hexagonal]], with a hole through it with internal threading intended to fit on to a bolt.",
+         'concisedef': u'that fits on a bolt',
          'trans': {'remark': '',
                    'alltrans': {
                              'nl': {'remark': '',
@@ -225,7 +240,8 @@ The translations below need to be checked by native speakers and inserted into t
                                 }
                     }
         },
-        {'definition': u"(''informal'') An insane person.", 'concisedef': u"informal: insane person",
+        {'definition': u"(''informal'') An insane person.",
+         'concisedef': u"informal: insane person",
          'syns': {'remark': '',
                   'synonyms': [{'remark': '',
                                 'synonym': u"loony"},
@@ -265,7 +281,8 @@ The translations below need to be checked by native speakers and inserted into t
                                }
                     }
         },
-        {'definition': u"(''slang'') The head.", 'concisedef': u"slang: the head",
+        {'definition': u"(''slang'') The head.",
+         'concisedef': u"slang: the head",
          'syns': {'remark': '(See further synonyms under [[head]])',
                   'synonyms': [{'remark': '',
                                 'synonym': u"bonce"},
@@ -285,7 +302,8 @@ The translations below need to be checked by native speakers and inserted into t
                                 }
                    }
         },
-        {'definition': u"(''slang; rarely used in the singular'') A testicle.", 'concisedef': u"slang: testicle",
+        {'definition': u"(''slang; rarely used in the singular'') A testicle.",
+         'concisedef': u"slang: testicle",
          'syns': {'remark': '',
                   'synonyms': [{'remark': '',
                                 'synonym': u"ball"},
@@ -347,7 +365,8 @@ The translations below need to be checked by native speakers and inserted into t
      [u''],
      {u'nl':
       [u'dummy', 'm', u"dummy's",
-       [{'definition': u'', 'concisedef': u'',
+       [{'definition': u'',
+         'concisedef': u'',
          'trans': {'remark': '',
                    'alltrans': {
                              'nl': {'remark': '',
@@ -451,26 +470,28 @@ The translations below need to be checked by native speakers and inserted into t
     def testWhetherTranslationsAreParsedProperly(self):
         """Test whether translations are parsed properly"""
         for value in self.knownvalues:
-            internalrepresentation=value['internalrep'][2]
-            apage = wiktionarypage.WiktionaryPage(value['wikilang'],value['term'])
+            internalrepresentation = value['internalrep'][2]
+            apage = wiktionarypage.WiktionaryPage(value['wikilang'],
+                                                  value['term'])
             apage.parseWikiPage(value['wikiformat'])
             for entrylang in internalrepresentation.keys():
                 definitions=internalrepresentation[entrylang][3]
                 reftrans={}
                 for definition in definitions:
-                    if 'trans' in definition and definition['trans']!='':
+                    if 'trans' in definition and definition['trans']:
                         reftrans[definition['concisedef']] = definition['trans']
 
-                resulttrans={}
+                resulttrans = {}
                 for key in apage.entries[entrylang].meanings.keys():
                     print key
                     for resultmeaning in apage.entries[entrylang].meanings[key]:
                         print resultmeaning.concisedef
-                        print 'Translations: ',resultmeaning.getTranslations()
+                        print 'Translations: ', resultmeaning.getTranslations()
                         resulttrans[resultmeaning.concisedef] = resultmeaning.getTranslations()
 
                 for concisedef in resulttrans.keys():
-                    if concisedef != '' and concisedef in reftrans and concisedef in resulttrans:
+                    if concisedef != '' and concisedef in reftrans and \
+                       concisedef in resulttrans:
                         print concisedef
                         print resulttrans[concisedef]
 #                        raw_input()
