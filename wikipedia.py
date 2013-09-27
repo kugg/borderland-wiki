@@ -436,6 +436,7 @@ not supported by PyWikipediaBot!"""
             self._ipedit = None
             self._editTime = None
             self._startTime = '0'
+            self._page_id  = None
             # For the Flagged Revisions MediaWiki extension
             self._revisionId = None
             self._deletedRevs = None
@@ -473,7 +474,12 @@ not supported by PyWikipediaBot!"""
 
         """
         return self._namespace
-
+    def ID(self):
+      if self._page_id:
+        return self._page_id
+      else:
+        self.get()
+        return self._page_id
     def encoding(self):
         """Return the character encoding used on this Page's wiki Site."""
         return self._site.encoding()
@@ -824,6 +830,7 @@ not supported by PyWikipediaBot!"""
                 output(unicode(pageInfo))
             raise ServerError('ServerError: No textarea found in %s' % self)
 
+        self._page_id = pageInfo['pageid']
         self.editRestriction = ''
         self.moveRestriction = ''
 
