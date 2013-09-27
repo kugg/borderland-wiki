@@ -41,7 +41,7 @@ def get_base_dir():
                     print sys.modules
                     base_dir = '.'
     if not os.path.isabs(base_dir):
-        base_dir = os.path.normpath(os.path.join(os.getcwd(), base_dir))
+        base_dir = os.path.normpath(os.path.join(os.getcwdu(), base_dir))
     # make sure this path is valid and that it contains user-config file
     if not os.path.isdir(base_dir):
         raise RuntimeError("Directory '%s' does not exist." % base_dir)
