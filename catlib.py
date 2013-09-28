@@ -274,7 +274,10 @@ class Category(pywikibot.Page):
                 else:
                     page = pywikibot.Page(self.site(), memb['title'],
                                           defaultNamespace=memb['ns'])
-                    page.sortkeyprefix = memb['sortkeyprefix']
+                    if 'sortkeyprefix' in memb:
+                        page.sortkeyprefix = memb['sortkeyprefix']
+                    else:
+                        page.sortkeyprefix = None
                     yield ARTICLE, page
                 if count >= params['cmlimit']:
                     break
