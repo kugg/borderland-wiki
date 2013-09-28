@@ -76,3 +76,6 @@ class Family(family.WikimediaFamily):
 
     def dbName(self, code):
         return 'commonswiki_p'
+
+    def shared_data_repository(self, code, transcluded=False):
+        return ('wikidata', 'wikidata')
