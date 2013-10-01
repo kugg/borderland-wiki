@@ -1517,11 +1517,38 @@ not supported by PyWikipediaBot!"""
     def isImage(self):
         """Return True if this is an image description page, False otherwise."""
         return self.namespace() == 6
-
     def isDisambig(self, get_Index=True):
-        """Return True if this is a disambiguation page, False otherwise.
+        """Return True if this is a disambiguation page, False otherwise."""
+        if not hasattr(self, "_isDisambig"):
+            extensions = self._site.siteinfo('extensions')
+            namesofextensions = []
+            for extension in extensions:
+                namesofextensions.append(extension['name'])
+            if not u'Disambiguator' in namesofextensions:
+                return self._isDisambig_disambiguationspage(get_Index)
+            else:
+                return self._isDisambig_disambiguator(get_Index)
+        else:
+            return self._isDisambig
 
-        Relies on the presence of specific templates, identified in
+    def _isDisambig_disambiguator(self, get_Index=True):
+        params = {
+            'action' : 'query',
+            'titles' : self.title(),
+            'prop' : 'pageprops',
+            'ppprop' : 'disambiguation'
+        }
+        data = query.GetData(params, self._site)['query']['pages'].values()[0]
+        self._isDisambig = False
+        if data.has_key(u'missing'):
+            raise NoPage('Page %s does not exist' % self.title(asLink=True))
+        if data.has_key(u'pageprops'):
+            if data[u'pageprops'].has_key(u'disambiguation'):
+                self._isDisambig = True
+        return self._isDisambig
+
+    def _isDisambig_disambiguationspage(self, get_Index=True):
+        """Relies on the presence of specific templates, identified in
         the Family file or on a wiki page, to identify disambiguation
         pages.
 
@@ -1534,9 +1561,7 @@ not supported by PyWikipediaBot!"""
         which are given on en-wiki
 
         Template:Disambig is always assumed to be default, and will be
-        appended regardless of its existence.
-
-        """
+        appended regardless of its existence."""
         if not hasattr(self, "_isDisambig"):
             if not hasattr(self._site, "_disambigtemplates"):
                 try:
