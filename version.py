@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8  -*-
 """ Script to determine the pywikipedia version (tag, revision and date) """
 #
@@ -15,7 +16,7 @@ from pywikibot.version import *
 import config
 
 if __name__ == '__main__':
-    print 'Pywikibot %s' % getversion()
+    print 'Pywikibot: %s' % getversion()
     print 'Release version: %s' % pywikibot.__release__
     print 'Python: %s' % sys.version
     print 'config-settings:'
