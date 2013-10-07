@@ -5198,7 +5198,7 @@ class _GetAll(object):
                     page2._userName = username
                     page2._ipedit = ipedit
                     page2._revisionId = revisionId
-                    page2._editTime = timestamp
+                    page2._editTime = parsetime2stamp(timestamp)
                     page2._versionhistory = [
                         (revisionId,
                          time.strftime("%Y-%m-%dT%H:%M:%SZ",
@@ -5369,7 +5369,7 @@ class _GetAll(object):
                     if rev:
                         page2._userName = username
                         page2._ipedit = ipedit
-                        page2._editTime = timestamp
+                        page2._editTime = parsetime2stamp(timestamp)
                         page2._contents = text
                     else:
                         raise KeyError(
