@@ -40,7 +40,11 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
+        self.namespaces[10]['hi'] = [u'साँचा']
+        self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
+        self.namespaces[828]['mk'] = [u'Модул']
+        self.namespaces[829]['mk'] = [u'Разговор за модул']
         self.namespaces[2]['pl'] = [u'Wikipedysta', u'Użytkowniczka', u'Użytkownik', u'Wikipedystka']
         self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty', u'Dyskusja użytkowniczki', u'Dyskusja użytkownika', u'Dyskusja wikipedystki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
@@ -48,6 +52,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[14]['tr'] = [u'Kategori', u'KAT']
         self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'使用說明', u'帮助', u'幫助']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -206,16 +211,16 @@ class Family(family.WikimediaFamily):
             'sv': u'Wikibooksdiskussion',
             'ta': [u'விக்கிநூல்கள் பேச்சு', u'விக்கிபீடியா பேச்சு'],
             'te': u'Wikibooks చర్చ',
-            'tg': u'Баҳси Wikibooks',
+            'tg': [u'Баҳси Wikibooks', u'Wikibooks talk'],
             'th': [u'คุยเรื่องวิกิตำรา', u'คุยเรื่องWikibooks'],
             'tl': u'Usapang Wikibooks',
             'tr': u'Vikikitap tartışma',
             'tt': [u'Wikibooks бәхәсе', u'Wikibooks bäxäse', u'Обсуждение Wikibooks'],
             'uk': u'Обговорення Вікіпідручника',
             'ur': u'تبادلۂ خیال وکی کتب',
-            'uz': u'Vikikitob munozarasi',
+            'uz': [u'Vikikitob munozarasi', u'Vikikitob talk'],
             'vi': u'Thảo luận Wikibooks',
-            'zh': u'Wikibooks talk',
+            'zh': [u'Wikibooks talk', u'Wikibooks討論', u'Wikibooks讨论'],
             'zh-min-nan': u'Wikibooks talk',
         }
 
@@ -277,6 +282,7 @@ class Family(family.WikimediaFamily):
             'de': u'Regal',
             'en': u'Cookbook',
             'fr': u'Wikijunior',
+            'hy': u'Եփութուխ',
             'id': u'Wisata',
             'it': u'Ripiano',
             'ml': u'വിഷയം',
@@ -297,6 +303,7 @@ class Family(family.WikimediaFamily):
             'de': u'Regal Diskussion',
             'en': u'Cookbook talk',
             'fr': u'Discussion Wikijunior',
+            'hy': u'Եփութուխի քննարկում',
             'id': u'Pembicaraan Wisata',
             'it': u'Discussioni ripiano',
             'ml': u'വിഷയസം‌വാദം',
@@ -352,6 +359,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[110] = {
             'az': u'Vikiuşaq',
             'en': u'Wikijunior',
+            'hy': u'Վիքիփոքրիկ',
             'tr': u'Vikiçocuk',
             'zh': u'Wikijunior',
         }
@@ -359,6 +367,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[111] = {
             'az': u'Vikiuşaq müzakirəsi',
             'en': u'Wikijunior talk',
+            'hy': u'Վիքիփոքրիկի քննարկում',
             'tr': u'Vikiçocuk tartışma',
             'zh': u'Wikijunior talk',
         }

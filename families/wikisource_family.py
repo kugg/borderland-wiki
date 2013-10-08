@@ -38,6 +38,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
+        self.namespaces[828]['mk'] = [u'Модул']
+        self.namespaces[829]['mk'] = [u'Разговор за модул']
         self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']
         self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkowniczka', u'Użytkownik']
         self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkowniczki', u'Dyskusja użytkownika']
@@ -45,7 +47,11 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[6]['vec'] = [u'File', u'Imagine']
+        self.namespaces[2]['zh'] = [u'User', u'用戶', u'用户']
+        self.namespaces[3]['zh'] = [u'User talk', u'用戶對話', u'用戶討論', u'用户对话', u'用户讨论']
         self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[13]['zh'] = [u'Help talk', u'帮助对话', u'帮助讨论', u'幫助對話', u'幫助討論']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
@@ -65,7 +71,7 @@ class Family(family.WikimediaFamily):
             'bs': [u'Wikizvor', u'Wikisource'],
             'ca': [u'Viquitexts', u'Wikisource'],
             'cs': [u'Wikizdroje', u'WS', u'WZ', u'Wikisource'],
-            'cy': [u'Wicitestun', u'Wikisource'],
+            'cy': [u'Wicidestun', u'Wicitestun', u'Wikisource'],
             'da': u'Wikisource',
             'de': [u'Wikisource', u'WS'],
             'el': [u'Βικιθήκη', u'Wikisource'],
@@ -131,7 +137,7 @@ class Family(family.WikimediaFamily):
             'bs': u'Razgovor s Wikizvor',
             'ca': u'Viquitexts Discussió',
             'cs': [u'Diskuse k Wikizdrojům', u'Wikisource diskuse', u'Wikisource talk', u'Wikizdroje diskuse'],
-            'cy': u'Sgwrs Wicitestun',
+            'cy': [u'Sgwrs Wicidestun', u'Sgwrs Wicitestun'],
             'da': [u'Wikisource diskussion', u'Wikisource-diskussion'],
             'de': u'Wikisource Diskussion',
             'el': [u'Συζήτηση Βικιθήκη', u'Βικιθήκη συζήτηση'],
@@ -181,7 +187,7 @@ class Family(family.WikimediaFamily):
             'vec': u'Discussion Wikisource',
             'vi': u'Thảo luận Wikisource',
             'yi': [u'װיקיביבליאָטעק רעדן', u'וויקיביבליאטעק רעדן'],
-            'zh': u'Wikisource talk',
+            'zh': [u'Wikisource talk', u'Wikisource討論', u'Wikisource讨论'],
             'zh-min-nan': u'Wikisource talk',
         }
 

@@ -34,7 +34,10 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['pl'] = [u'Dyskusja wikireportera', u'Dyskusja wikireporterki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[12]['uk'] = [u'Довідка', u'Д']
+        self.namespaces[14]['uk'] = [u'Категорія', u'К']
         self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'使用說明', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
@@ -70,7 +73,7 @@ class Family(family.WikimediaFamily):
             'sv': [u'Wikinews', u'WN'],
             'ta': [u'விக்கிசெய்தி', u'Wikinews', u'விக்கிபீடியா'],
             'tr': [u'Vikihaber', u'Wikinews'],
-            'uk': [u'ВікіНовини', u'Wikinews'],
+            'uk': [u'Вікіновини', u'Wikinews', u'ВН', u'ВікіНовини'],
             'zh': u'Wikinews',
         }
         self.namespaces[5] = {
@@ -102,8 +105,8 @@ class Family(family.WikimediaFamily):
             'sv': u'Wikinewsdiskussion',
             'ta': [u'விக்கிசெய்தி பேச்சு', u'விக்கிபீடியா பேச்சு'],
             'tr': u'Vikihaber tartışma',
-            'uk': u'Обговорення ВікіНовини',
-            'zh': u'Wikinews talk',
+            'uk': [u'Обговорення Вікіновин', u'Обговорення ВікіНовини'],
+            'zh': [u'Wikinews talk', u'Wikinews討論', u'Wikinews讨论'],
         }
 
         self.namespaces[90] = {

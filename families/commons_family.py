@@ -45,6 +45,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[107] = {
             '_default': [u'Institution talk', u'Museum talk'],
         }
+        self.namespaces[460] = {
+            '_default': [u'Campaign'],
+        }
+        self.namespaces[461] = {
+            '_default': [u'Campaign talk'],
+        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }

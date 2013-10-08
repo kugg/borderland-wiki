@@ -46,12 +46,20 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
+        self.namespaces[10]['hi'] = [u'साँचा']
+        self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
+        self.namespaces[828]['mk'] = [u'Модул']
+        self.namespaces[829]['mk'] = [u'Разговор за модул']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[6]['vec'] = [u'File', u'Imagine']
+        self.namespaces[2]['zh'] = [u'User', u'用戶', u'用户']
+        self.namespaces[3]['zh'] = [u'User talk', u'用戶對話', u'用戶討論', u'用户对话', u'用户讨论']
         self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[13]['zh'] = [u'Help talk', u'帮助对话', u'帮助讨论', u'幫助對話', u'幫助討論']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
@@ -334,7 +342,7 @@ class Family(family.WikimediaFamily):
             'sw': [u'Majadiliano ya Wiktionary', u'Wiktionary majadiliano'],
             'ta': [u'விக்சனரி பேச்சு', u'விக்கிபீடியா பேச்சு'],
             'te': [u'విక్షనరీ చర్చ', u'Wiktionary చర్చ'],
-            'tg': u'Баҳси Wiktionary',
+            'tg': [u'Баҳси Wiktionary', u'Wiktionary talk'],
             'th': [u'คุยเรื่องวิกิพจนานุกรม', u'คุยเรื่องWiktionary'],
             'ti': u'Wiktionary talk',
             'tk': u'Wikisözlük çekişme',
@@ -347,7 +355,7 @@ class Family(family.WikimediaFamily):
             'ug': [u'Wiktionaryمۇنازىرىسى', u'مۇنازىرىسىWiktionary'],
             'uk': u'Обговорення Вікісловника',
             'ur': u'تبادلۂ خیال وکی لغت',
-            'uz': u'Vikilug‘at munozarasi',
+            'uz': [u'Vikilug‘at munozarasi', u'Vikilug‘at talk'],
             'vec': u'Discussion Wikisionario',
             'vi': u'Thảo luận Wiktionary',
             'vo': [u'Bespik dö Vükivödabuk', u'Wiktionary talk'],
@@ -355,7 +363,7 @@ class Family(family.WikimediaFamily):
             'wo': [u'Wiktionary waxtaan', u'Discussion Wiktionary'],
             'yi': [u'װיקיװערטערבוך רעדן', u'וויקיווערטערבוך רעדן'],
             'za': u'Wiktionary讨论',
-            'zh': u'Wiktionary talk',
+            'zh': [u'Wiktionary talk', u'Wiktionary討論', u'Wiktionary讨论'],
             'zh-min-nan': u'Wiktionary talk',
             'zu': u'Wiktionary talk',
         }
