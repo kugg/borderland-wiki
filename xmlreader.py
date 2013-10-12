@@ -189,18 +189,11 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
             text = self.text.rstrip('\n ')
             # Replace newline by cr/nl
             text = u'\r\n'.join(text.split('\n'))
-            # Decode the timestamp
-            timestamp = (self.timestamp[0:4]+
-                         self.timestamp[5:7]+
-                         self.timestamp[8:10]+
-                         self.timestamp[11:13]+
-                         self.timestamp[14:16]+
-                         self.timestamp[17:19])
             self.title = self.title.strip()
             # Report back to the caller
             entry = XmlEntry(self.title, self.ns, self.id,
                              text, self.username,
-                             self.ipedit, timestamp,
+                             self.ipedit, self.timestamp,
                              self.editRestriction, self.moveRestriction,
                              self.revisionid, self.comment, self.isredirect)
             self.inRevisionTag = False

@@ -5105,7 +5105,7 @@ class _GetAll(object):
             # Sometimes query does not contains revisions
             # or some pages are missing. Deactivate api call and use the
             # old API special:export
-            if  self.site.has_api() and logger.isEnabledFor(DEBUG):
+            if self.site.has_api() and logger.isEnabledFor(DEBUG):
                 while True:
                     try:
                         data = self.getDataApi()
@@ -5200,11 +5200,8 @@ class _GetAll(object):
                     page2._revisionId = revisionId
                     page2._editTime = parsetime2stamp(timestamp)
                     page2._versionhistory = [
-                        (revisionId,
-                         time.strftime("%Y-%m-%dT%H:%M:%SZ",
-                                       time.strptime(str(timestamp),
-                                                     "%Y%m%d%H%M%S")),
-                         username, entry.comment)]
+                        (revisionId, timestamp, username, entry.comment)
+                        ]
                     section = page2.section()
                     # Store the content
                     page2._contents = text
