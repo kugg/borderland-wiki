@@ -446,7 +446,7 @@ class Family(family.WikimediaFamily):
             'gl': u'Conversa Wikipedia',
             'glk': u'بحث Wikipedia',
             'gn': u'Vikipetã myangekõi',
-            'got': u'??? Wikipedia ?????????',
+            'got': u'𐌸𐌹𐍃 Wikipedia 𐌲𐌰𐍅𐌰𐌿𐍂𐌳𐌾𐌰',
             'gu': u'વિકિપીડિયા ચર્ચા',
             'gv': u'Resooney Wikipedia',
             'ha': u'Wikipedia talk',
@@ -1020,18 +1020,22 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[446] = {
+            'cs': u'Education Program',
             'en': u'Education Program',
+            'es': u'Education Program',
             'he': u'הוראה',
-            'mk': u'Education Program',
-            'pt': u'Education Program',
+            'mk': u'Образовен програм',
+            'pt': u'Ensino',
             'sv': u'Education Program',
         }
 
         self.namespaces[447] = {
+            'cs': u'Education Program talk',
             'en': u'Education Program talk',
+            'es': u'Education Program talk',
             'he': u'שיחת הוראה',
-            'mk': u'Education Program talk',
-            'pt': u'Education Program talk',
+            'mk': u'Разговор за Образовен програм',
+            'pt': u'Ensino Discussão',
             'sv': u'Education Program talk',
         }
 
