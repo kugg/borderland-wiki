@@ -16,14 +16,14 @@ class Family(family.WikimediaFamily):
             'no', 'ml', 'my', 'id', 'it', 'chr', 'li', 'et', 'ja', 'te', 'fa',
             'ro', 'cs', 'ca', 'ar', 'eu', 'jv', 'gl', 'lo', 'uk', 'br', 'fj',
             'eo', 'bg', 'hr', 'oc', 'th', 'is', 'vo', 'ps', 'zh-min-nan',
-            'simple', 'cy', 'scn', 'sr', 'af', 'ast', 'uz', 'sw', 'fy', 'da',
+            'simple', 'cy', 'scn', 'sr', 'af', 'uz', 'ast', 'sw', 'fy', 'da',
             'tl', 'he', 'nn', 'az', 'wa', 'ur', 'la', 'sq', 'hy', 'sm', 'sl',
-            'nah', 'pnb', 'ka', 'hi', 'bs', 'tt', 'lb', 'lv', 'tk', 'sk', 'hsb',
+            'nah', 'pnb', 'ka', 'hi', 'tt', 'bs', 'lb', 'lv', 'tk', 'sk', 'hsb',
             'kk', 'nds', 'ky', 'be', 'mk', 'km', 'ga', 'wo', 'ms', 'ang', 'co',
-            'gn', 'sa', 'mr', 'csb', 'st', 'ia', 'sd', 'ug', 'sh', 'si', 'tg',
-            'mn', 'kl', 'or', 'jbo', 'an', 'ln', 'fo', 'zu', 'gu', 'kw', 'gv',
-            'rw', 'qu', 'vec', 'ss', 'ie', 'mt', 'om', 'bn', 'roa-rup', 'iu',
-            'pa', 'so', 'am', 'su', 'za', 'gd', 'mi', 'ne', 'tpi', 'yi', 'ti',
+            'sa', 'gn', 'mr', 'csb', 'st', 'ia', 'sd', 'ug', 'sh', 'si', 'tg',
+            'mn', 'kl', 'or', 'jbo', 'an', 'vec', 'ln', 'fo', 'zu', 'gu', 'kw',
+            'gv', 'rw', 'qu', 'ss', 'ie', 'mt', 'om', 'bn', 'roa-rup', 'iu',
+            'pa', 'so', 'am', 'su', 'za', 'gd', 'mi', 'tpi', 'ne', 'yi', 'ti',
             'sg', 'na', 'dv', 'tn', 'ts', 'ha', 'ks', 'ay',
         ]
 
@@ -49,8 +49,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
-        self.namespaces[828]['mk'] = [u'Модул']
-        self.namespaces[829]['mk'] = [u'Разговор за модул']
+        self.namespaces[3]['ko'] = [u'사용자토론']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']

@@ -14,7 +14,7 @@ class Family(family.WikimediaFamily):
             'fr', 'en', 'de', 'ru', 'it', 'pl', 'zh', 'he', 'pt', 'es', 'sv',
             'ca', 'fa', 'cs', 'hu', 'ar', 'ko', 'sl', 'te', 'fi', 'ro', 'vi',
             'sa', 'el', 'sr', 'hr', 'bn', 'no', 'th', 'hy', 'is', 'nl', 'ml',
-            'la', 'ja', 'vec', 'gu', 'tr', 'eo', 'br', 'uk', 'mk', 'yi', 'ta',
+            'la', 'ja', 'vec', 'gu', 'tr', 'eo', 'uk', 'br', 'mk', 'yi', 'ta',
             'be', 'id', 'da', 'li', 'et', 'bg', 'as', 'mr', 'bs', 'sah', 'az',
             'gl', 'kn', 'lt', 'cy', 'sk', 'zh-min-nan', 'fo',
         ]
@@ -38,8 +38,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
-        self.namespaces[828]['mk'] = [u'Модул']
-        self.namespaces[829]['mk'] = [u'Разговор за модул']
+        self.namespaces[3]['ko'] = [u'사용자토론']
         self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']
         self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkowniczka', u'Użytkownik']
         self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkowniczki', u'Dyskusja użytkownika']
