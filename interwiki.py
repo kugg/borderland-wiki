@@ -302,7 +302,7 @@ The following arguments influence how many pages the bot works on at once:
                    interwiki_min_subjects
 
     -query:        The maximum number of pages that the bot will load at once.
-                   Default value is 60.
+                   Default value is 50.
 
 Some configuration option can be used to change the working of this robot:
 
@@ -467,7 +467,7 @@ class Global(object):
     force = False
     cleanup = False
     remove = []
-    maxquerysize = 60
+    maxquerysize = 50
     same = False
     skip = set()
     skipauto = False
