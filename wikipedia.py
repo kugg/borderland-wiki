@@ -813,8 +813,7 @@ not supported by PyWikipediaBot!"""
         pageInfo = data['query']['pages'].values()[0]
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:
-                raise NoPage(self.site(), unicode(self),
-"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
+                raise NoPage(self.site(), unicode(self), "Page does not exist.")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
         elif 'revisions' in pageInfo: #valid Title
@@ -4580,9 +4579,7 @@ class DataPage(Page):
         pageInfo = ndata['query']['pages'].values()[0]
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:
-                raise NoPage(self.site(), unicode(self),
-"Page does not exist. In rare cases, if you are certain the page does exist, "
-                             "look into overriding family.RversionTab")
+                raise NoPage(self.site(), unicode(self), "Page does not exist.")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
         elif 'revisions' in pageInfo: #valid Title
@@ -4674,9 +4671,7 @@ class DataPage(Page):
             raise RuntimeError("API query error: %s" % data)
         pageInfo = entities
         if 'missing' in pageInfo:
-            raise NoPage(self.site(), unicode(self),
-"Page does not exist. In rare cases, if you are certain the page does exist, "
-                         "look into overriding family.RversionTab")
+            raise NoPage(self.site(), unicode(self), "Page does not exist.")
         elif 'invalid' in pageInfo:
             raise BadTitle('BadTitle: %s' % self)
         return entities
@@ -4708,8 +4703,7 @@ class DataPage(Page):
             raise RuntimeError("API query error: %s" % data)
         pageInfo = search
         if 'missing' in pageInfo:
-            raise NoPage(self.site(), unicode(self),
-"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
+            raise NoPage(self.site(), unicode(self), "Page does not exist.")
         elif 'invalid' in pageInfo:
             raise BadTitle('BadTitle: %s' % self)
 
