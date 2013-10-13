@@ -9119,6 +9119,23 @@ def writeToCommandLogFile():
 logger = None
 #_handlers_initialized = False
 
+
+class NullHandler(logging.Handler):
+    """
+    For backward-compatibility with Python 2.6, a local class definition
+    is used instead of logging.NullHandler
+    """
+
+    def handle(self, record):
+        pass
+
+    def emit(self, record):
+        pass
+
+    def createLock(self):
+        self.lock = None
+
+
 def setLogfileStatus(enabled, logname=None, header=False):
     # NOTE-1: disable 'fh.setFormatter(formatter)' below in order to get "old"
     #         logging format (without additional info)
@@ -9233,7 +9250,7 @@ def init_handlers(strm=None):#, logname=None, header=False):
 
         logger = logging.getLogger()    # root logger
         
-        nh = logging.NullHandler()
+        nh = NullHandler()
         logger.addHandler(nh)
         logger.setLevel(DEBUG+1)
 
