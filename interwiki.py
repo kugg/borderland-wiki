@@ -347,7 +347,7 @@ import sys
 import copy
 import re
 import os
-import time
+import datetime
 import codecs
 import socket
 import webbrowser
@@ -1614,26 +1614,6 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
 
         """
 
-        #from clean_sandbox
-        def minutesDiff(time1, time2):
-            if type(time1) is long:
-                time1 = str(time1)
-            if type(time2) is long:
-                time2 = str(time2)
-            if '-' in time1:
-                pywikibot.output(u'BUG>>> in %s' % self.originPage.aslink(True))
-                pywikibot.output(u'time1:%s' % time1)
-                pywikibot.output(u'time2:%s' % time2)
-                time1 = str(pywikibot.parsetime2stamp(time1))
-
-            t1 = (((int(time1[0:4]) * 12 + int(time1[4:6])) * 30 +
-                   int(time1[6:8])) * 24 + int(time1[8:10])) * 60 + \
-                   int(time1[10:12])
-            t2 = (((int(time2[0:4]) * 12 + int(time2[4:6])) * 30 +
-                   int(time2[6:8])) * 24 + int(time2[8:10])) * 60 + \
-                   int(time2[10:12])
-            return abs(t2 - t1)
-
         if not self.isDone():
             raise "Bugcheck: finish called before done"
         if not self.workonme:
@@ -1766,15 +1746,15 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                            and not 'bot' in page.userName().lower(): #erstmal auch keine namen mit bot
                             smallWikiAllowed = True
                         else:
-                            diff = minutesDiff(page.editTime(),
-                                               time.strftime("%Y%m%d%H%M%S",
-                                                             time.gmtime()))
-                            if diff > 30 * 24 * 60:
+                            _now = datetime.datetime.utcnow()
+                            _editTime = datetime.datetime.strptime(str(page.editTime()),
+                                                                   "%Y%m%d%H%M%S")
+                            if abs((_now - _editTime).days) > 30:
                                 smallWikiAllowed = True
                             else:
                                 pywikibot.output(
-u'NOTE: number of edits are restricted at %s'
-                                    % page.site.sitename())
+                                        u'NOTE: number of edits are restricted at %s'
+                                        % page.site.sitename())
 
                 # if we have an account for this site
                 if site.family.name in config.usernames and \
