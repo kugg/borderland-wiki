@@ -140,7 +140,7 @@ def getFlinfoDescription(photo_id = 0):
 
     return rawDescription.decode('utf-8')
 
-def getFilename(photoInfo=None, site=None, project=u'Flickr'):
+def getFilename(photoInfo=None, site=None, project=u'Flickr', photoId=None):
     """ Build a good filename for the upload based on the username and the
     title. Prevents naming collisions.
 
@@ -166,8 +166,7 @@ def getFilename(photoInfo=None, site=None, project=u'Flickr'):
                 description = description[:items]
             title = cleanUpTitle(description)
         else:
-            title = u''
-            # Should probably have the id of the photo as last resort.
+            title = photoId
 
     if pywikibot.Page(site, u'File:%s - %s - %s.jpg'
                       % (title, project, username)).exists():
@@ -256,7 +255,7 @@ def processPhoto(flickr=None, photo_id=u'', flickrreview=False, reviewer=u'',
         if duplicates:
             pywikibot.output(u'Found duplicate image at %s' % duplicates.pop())
         else:
-            filename = getFilename(photoInfo)
+            filename = getFilename(photoInfo, photoId=photo_id)
             flinfoDescription = getFlinfoDescription(photo_id)
             photoDescription = buildDescription(flinfoDescription,
                                                 flickrreview, reviewer,
