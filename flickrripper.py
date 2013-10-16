@@ -17,7 +17,6 @@ Tool to copy a flickr stream to Commons
 #*Upload the image
 
 Todo:
-*Check if the image is already uploaded (SHA hash)
 *Check and prevent filename collisions
 **Initial suggestion
 **User input
