@@ -34,12 +34,14 @@ bandwidth. Instead, use the -xml parameter, or use another way to generate
 a list of affected articles
 """
 
-__version__='$Id$'
+__version__ = '$Id$'
 
-import re, sys
+import re
+import sys
 import pywikibot
 from pywikibot import i18n
-import pagegenerators, catlib
+import pagegenerators
+import catlib
 import editarticle
 
 # This is required for the text that is shown when you run this script
@@ -73,7 +75,7 @@ placeBeforeSections = {
         u'Siehe auch',
         u'Weblink',      # bad, but common singular form of Weblinks
     ],
-    'dsb':[
+    'dsb': [
         u'Nožki',
     ],
     'en': [              # no explicit policy on where to put the references
@@ -114,7 +116,7 @@ placeBeforeSections = {
         u'Voir aussi',
         u'Notes'
     ],
-    'hsb':[
+    'hsb': [
         u'Nóžki',
     ],
     'hu': [
@@ -128,12 +130,12 @@ placeBeforeSections = {
         u'Collegamenti esterni',
         u'Vedi anche',
     ],
-    'ja':[
+    'ja': [
         u'関連項目',
         u'参考文献',
         u'外部リンク',
     ],
-    'ko':[               # no explicit policy on where to put the references
+    'ko': [              # no explicit policy on where to put the references
         u'외부 링크',
         u'외부링크',
         u'바깥 고리',
@@ -200,7 +202,7 @@ referencesSections = {
     'da': [
         u'Noter',
     ],
-    'de': [             #see [[de:WP:REF]]
+    'de': [             # see [[de:WP:REF]]
         u'Einzelnachweise',
         u'Anmerkungen',
         u'Belege',
@@ -210,7 +212,7 @@ referencesSections = {
         u'Quellen',
         u'Quellenangaben',
     ],
-    'dsb':[
+    'dsb': [
         u'Nožki',
     ],
     'en': [             # not sure about which ones are preferred.
@@ -247,7 +249,7 @@ referencesSections = {
     'he': [
         u'הערות שוליים',
     ],
-    'hsb':[
+    'hsb': [
         u'Nóžki',
     ],
     'hu': [
@@ -323,20 +325,22 @@ referencesSections = {
 referencesTemplates = {
     'wikipedia': {
         'ar': [u'Reflist', u'ثبت المراجع', u'قائمة المراجع'],
-        'be': [u'Зноскі', u'Примечания', u'Reflist', u'Спіс заўваг', u'Заўвагі'],
+        'be': [u'Зноскі', u'Примечания', u'Reflist', u'Спіс заўваг',
+               u'Заўвагі'],
         'be-x-old': [u'Зноскі'],
         'da': [u'Reflist'],
-        'dsb':[u'Referency'],
+        'dsb': [u'Referency'],
         'en': [u'Reflist', u'Refs', u'FootnotesSmall', u'Reference',
                u'Ref-list', u'Reference list', u'References-small', u'Reflink',
                u'Footnotes', u'FootnotesSmall'],
         'eo': [u'Referencoj'],
         'es': ['Listaref', 'Reflist', 'muchasref'],
         'fa': [u'Reflist', u'Refs', u'FootnotesSmall', u'Reference',
-               u'پانویس', u'پانویس‌ها ', u'پانویس ۲', u'پانویس۲',u'فهرست منابع'],
+               u'پانویس', u'پانویس‌ها ', u'پانویس ۲', u'پانویس۲',
+               u'فهرست منابع'],
         'fi': [u'Viitteet', u'Reflist'],
         'fr': [u'Références', u'Notes', u'References', u'Reflist'],
-        'hsb':[u'Referency'],
+        'hsb': [u'Referency'],
         'hu': [u'reflist', u'források', u'references', u'megjegyzések'],
         'is': [u'reflist'],
         'it': [u'References'],
@@ -353,7 +357,7 @@ referencesTemplates = {
         'ru': [u'Reflist', u'Ref-list', u'Refs', u'Sources',
                u'Примечания', u'Список примечаний',
                u'Сноска', u'Сноски'],
-        'szl':[u'Przipisy', u'Připisy'],
+        'szl': [u'Przipisy', u'Připisy'],
         'zh': [u'Reflist', u'RefFoot', u'NoteFoot'],
     },
 }
@@ -364,14 +368,14 @@ referencesSubstitute = {
     'wikipedia': {
         'be': u'{{зноскі}}',
         'da': u'{{reflist}}',
-        'dsb':u'{{referency}}',
+        'dsb': u'{{referency}}',
         'fa': u'{{پانویس}}',
         'fi': u'{{viitteet}}',
-        'hsb':u'{{referency}}',
+        'hsb': u'{{referency}}',
         'hu': u'{{Források}}',
         'pl': u'{{Przypisy}}',
         'ru': u'{{примечания}}',
-        'szl':u'{{Przipisy}}',
+        'szl': u'{{Przipisy}}',
         'zh': u'{{reflist}}',
     },
 }
@@ -394,6 +398,7 @@ maintenance_category = {
         'zh': u'参考资料格式错误的页面',
     },
 }
+
 
 class XmlDumpNoReferencesPageGenerator:
     """
@@ -430,7 +435,7 @@ class NoReferencesBot:
         self.refR = re.compile('</ref>', re.IGNORECASE)
         self.referencesR = re.compile('<references.*?/>', re.IGNORECASE)
         self.referencesTagR = re.compile('<references>.*?</references>',
-                                         re.IGNORECASE|re.DOTALL)
+                                         re.IGNORECASE | re.DOTALL)
         try:
             self.referencesTemplates = referencesTemplates[
                 pywikibot.getSite().family.name][pywikibot.getSite().lang]
@@ -454,7 +459,7 @@ class NoReferencesBot:
             return False
         elif self.referencesTemplates:
             templateR = u'{{(' + u'|'.join(self.referencesTemplates) + ')'
-            if re.search(templateR, oldTextCleaned, re.IGNORECASE|re.UNICODE):
+            if re.search(templateR, oldTextCleaned, re.IGNORECASE | re.UNICODE):
                 if verbose:
                     pywikibot.output(
                         u'No changes necessary: references template found.')
@@ -478,7 +483,7 @@ class NoReferencesBot:
         """
         # Is there an existing section where we can add the references tag?
         for section in pywikibot.translate(self.site, referencesSections):
-            sectionR = re.compile(r'\r\n=+ *%s *=+ *\r\n' % section)
+            sectionR = re.compile(r'\r?\n=+ *%s *=+ *\r?\n' % section)
             index = 0
             while index < len(oldText):
                 match = sectionR.search(oldText, index)
@@ -492,7 +497,9 @@ class NoReferencesBot:
                         pywikibot.output(
                             u'Adding references tag to existing %s section...\n'
                             % section)
-                        newText = oldText[:match.end()] + u'\n' + self.referencesText + u'\n' + oldText[match.end():]
+                        newText = oldText[:match.end()] + u'\n' + \
+                                  self.referencesText + u'\n' + \
+                                  oldText[match.end():]
                         return newText
                 else:
                     break
@@ -500,7 +507,7 @@ class NoReferencesBot:
         # Create a new section for the references tag
         for section in pywikibot.translate(self.site, placeBeforeSections):
             # Find out where to place the new section
-            sectionR = re.compile(r'\r\n(?P<ident>=+) *%s *(?P=ident) *\r\n'
+            sectionR = re.compile(r'\r?\n(?P<ident>=+) *%s *(?P=ident) *\r?\n'
                                   % section)
             index = 0
             while index < len(oldText):
@@ -508,8 +515,8 @@ class NoReferencesBot:
                 if match:
                     if pywikibot.isDisabled(oldText, match.start()):
                         pywikibot.output(
-                            'Existing  %s section is commented out, won\'t add the references in front of it.'
-                            % section)
+                            'Existing  %s section is commented out, won\'t add '
+                            'the references in front of it.' % section)
                         index = match.end()
                     else:
                         pywikibot.output(
@@ -517,7 +524,8 @@ class NoReferencesBot:
                             % section)
                         index = match.start()
                         ident = match.group('ident')
-                        return self.createReferenceSection(oldText, index, ident)
+                        return self.createReferenceSection(oldText, index,
+                                                           ident)
                 else:
                     break
         # This gets complicated: we want to place the new references
@@ -530,7 +538,7 @@ class NoReferencesBot:
         # At the end, look at the length of the temp text. That's the position
         # where we'll insert the references section.
         catNamespaces = '|'.join(self.site.category_namespaces())
-        categoryPattern  = r'\[\[\s*(%s)\s*:[^\n]*\]\]\s*' % catNamespaces
+        categoryPattern = r'\[\[\s*(%s)\s*:[^\n]*\]\]\s*' % catNamespaces
         interwikiPattern = r'\[\[([a-zA-Z\-]+)\s?:([^\[\]\n]*)\]\]\s*'
         # won't work with nested templates
         # the negative lookahead assures that we'll match the last template
@@ -539,9 +547,9 @@ class NoReferencesBot:
         ### {{commons}} or {{commonscat}} are part of Weblinks section
         ### * {{template}} is mostly part of a section
         ### so templatePattern must be fixed
-        templatePattern  = r'\r\n{{((?!}}).)+?}}\s*'
-        commentPattern   = r'<!--((?!-->).)*?-->\s*'
-        metadataR = re.compile(r'(\r\n)?(%s|%s|%s|%s)$'
+        templatePattern = r'\r?\n{{((?!}}).)+?}}\s*'
+        commentPattern = r'<!--((?!-->).)*?-->\s*'
+        metadataR = re.compile(r'(\r?\n)?(%s|%s|%s|%s)$'
                                % (categoryPattern, interwikiPattern,
                                   templatePattern, commentPattern), re.DOTALL)
         tmpText = oldText
@@ -552,11 +560,13 @@ class NoReferencesBot:
             else:
                 break
         pywikibot.output(
-            u'Found no section that can be preceeded by a new references section.\nPlacing it before interwiki links, categories, and bottom templates.')
+            u'Found no section that can be preceeded by a new references '
+            u'section.\nPlacing it before interwiki links, categories, and '
+            u'bottom templates.')
         index = len(tmpText)
         return self.createReferenceSection(oldText, index)
 
-    def createReferenceSection(self, oldText, index, ident = '=='):
+    def createReferenceSection(self, oldText, index, ident='=='):
         if self.site.language() in noTitleRequired:
             newSection = u'\n%s\n' % (self.referencesText)
         else:
@@ -621,13 +631,16 @@ class NoReferencesBot:
                 pywikibot.output(u"Page %s is locked?!"
                                  % page.title(asLink=True))
                 continue
-            if pywikibot.getSite().sitename() == 'wikipedia:en' and page.isIpEdit():
+            if pywikibot.getSite().sitename() == 'wikipedia:en' and \
+               page.isIpEdit():
                 pywikibot.output(
-                    u"Page %s is edited by IP. Possible vandalized" % page.title(asLink=True))
+                    u"Page %s is edited by IP. Possible vandalized"
+                    % page.title(asLink=True))
                 continue
             if self.lacksReferences(text):
                 newText = self.addReferences(text)
                 self.save(page, newText)
+
 
 def main():
     #page generator
@@ -684,7 +697,7 @@ def main():
         pywikibot.showHelp('noreferences')
     else:
         if namespaces:
-            gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
+            gen = pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
         preloadingGen = pagegenerators.PreloadingGenerator(gen)
         bot = NoReferencesBot(preloadingGen, always)
         bot.run()
@@ -694,4 +707,3 @@ if __name__ == "__main__":
         main()
     finally:
         pywikibot.stopme()
-
