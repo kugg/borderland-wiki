@@ -19,18 +19,20 @@ and for a description.
 """
 #
 # (C) Rob W.W. Hooft, Andre Engels 2003-2004
-# (C) Pywikipedia bot team, 2003-2011
+# (C) Pywikipedia bot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__='$Id$'
 #
 
-import os, sys, time
+import os
+import time
 import urllib
 import mimetypes
 import wikipedia as pywikibot
-import config, query
+import config
+import query
 
 def post_multipart(site, address, fields, files, cookies):
     """ Post fields and files to an http host as multipart/form-data.
@@ -82,8 +84,9 @@ def get_content_type(filename):
 
 class UploadRobot:
     def __init__(self, url, urlEncoding=None, description=u'',
-                 useFilename=None, keepFilename=False, verifyDescription=True,
-                 ignoreWarning=False, targetSite=None, uploadByUrl=False):
+                 useFilename=None, keepFilename=False,
+                 verifyDescription=True, ignoreWarning=False,
+                 targetSite=None, uploadByUrl=False):
         """
         @param ignoreWarning: Set this to True if you want to upload even if
             another file would be overwritten or another mistake would be
@@ -199,7 +202,7 @@ u"No check length to retrieved data is possible.")
                 % filename)
             ok = False
             # FIXME: these 2 belong somewhere else, presumably in family
-            forbidden = '/' # to be extended
+            forbidden = '/'  # to be extended
             allowed_formats = (u'gif', u'jpg', u'jpeg', u'mid', u'midi',
                                u'ogg', u'png', u'svg', u'xcf', u'djvu',
                                u'ogv', u'oga', u'tif', u'tiff')
@@ -207,7 +210,7 @@ u"No check length to retrieved data is possible.")
             while not ok:
                 ok = True
                 newfn = pywikibot.input(
-                            u'Enter a better name, or press enter to accept:')
+                    u'Enter a better name, or press enter to accept:')
                 if newfn == "":
                     newfn = filename
                 ext = os.path.splitext(newfn)[1].lower().strip('.')
@@ -260,6 +263,8 @@ u"No check length to retrieved data is possible.")
 
         filename = self.process_filename()
 
+        site = self.targetSite
+
         params = {
             'action': 'upload',
             'token': self.targetSite.getToken(),
@@ -277,7 +282,7 @@ u"No check length to retrieved data is possible.")
         if self.ignoreWarning:
             params['ignorewarnings'] = 1
 
-        pywikibot.output(u'Uploading file to %s via API....' % self.targetSite)
+        pywikibot.output(u'Uploading file to %s via API....' % site)
 
         data = query.GetData(params, self.targetSite)
 
