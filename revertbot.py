@@ -4,7 +4,7 @@
 """
 #
 # (C) Bryan Tong Minh, 2008
-# (C) Pywikipedia bot team, 2008-2012
+# (C) Pywikipedia bot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -13,19 +13,20 @@ __version__ = '$Id$'
 
 import re
 import wikipedia as pywikibot
-import query, userlib
+import query
 
 
 class BaseRevertBot(object):
     """ Base revert bot
 
     Subclass this bot and override callback to get it to do something useful.
+
     """
-    def __init__(self, site, comment = None):
+    def __init__(self, site, comment=None):
         self.site = site
         self.comment = comment
 
-    def get_contributions(self, max = -1, ns = None):
+    def get_contributions(self, max=-1, ns=None):
         predata = {
             'action': 'query',
             'list': 'usercontribs',
@@ -33,7 +34,8 @@ class BaseRevertBot(object):
             'ucuser': self.site.username(),
         }
         if ns: predata['ucnamespace'] = ns
-        if max < 500 and max != -1: predata['uclimit'] = str(max)
+        if max < 500 and max != -1:
+            predata['uclimit'] = str(max)
 
         count = 0
         iterator = iter(xrange(0))
@@ -55,7 +57,7 @@ class BaseRevertBot(object):
                 count += 1
                 yield item
 
-    def revert_contribs(self, callback = None):
+    def revert_contribs(self, callback=None):
         self.site.forceLogin()
 
         if callback is None:
@@ -93,9 +95,11 @@ class BaseRevertBot(object):
             raise RuntimeError(data['error'])
 
         pages = data['query'].get('pages', ())
-        if not pages: return False
+        if not pages:
+            return False
         page = pages.itervalues().next()
-        if len(page.get('revisions', ())) != 2: return False
+        if len(page.get('revisions', ())) != 2:
+            return False
         rev = page['revisions'][1]
 
         comment = u'Reverted to revision %s by %s on %s' % (rev['revid'],
@@ -128,10 +132,9 @@ class myRevertBot(BaseRevertBot):
 
 
 def main():
-    item = None
     for arg in pywikibot.handleArgs():
         continue
-    bot = myRevertBot(site = pywikibot.getSite())
+    bot = myRevertBot(site=pywikibot.getSite())
     bot.revert_contribs()
 
 if __name__ == "__main__":
