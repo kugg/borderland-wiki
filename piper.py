@@ -32,7 +32,7 @@ supported.
 
 """
 #
-# (C) Pywikipedia bot team, 2008-2010
+# (C) Pywikipedia bot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -51,6 +51,7 @@ docuReplacements = {
     '&params;': pagegenerators.parameterHelp
 }
 
+
 class PiperBot:
     # Edit summary message that should be used.
     # NOTE: Put a good description here, and add translations, if possible!
@@ -62,25 +63,22 @@ class PiperBot:
         'nl': u'Bot: paginatekst door %s geleid'
     }
 
-    def __init__(self, generator, dry, filters, always):
+    def __init__(self, generator, filters, always):
         """
         Constructor. Parameters:
             * generator - The page generator that determines on which pages
                           to work on.
-            * dry       - If True, doesn't do any real changes, but only shows
-                          what would have been changed.
             * always    - If True, don't prompt for changes
         """
         self.generator = generator
-        self.dry = dry
         self.always = always
         self.filters = filters
+        self.command = None
 
     def run(self):
         # Set the edit summary message
-        pipes = ', '.join(self.filters)
-        pywikibot.setAction(pywikibot.translate(pywikibot.getSite(), self.msg)
-                            % pipes)
+        s = ', '.join(self.filters)
+        self.command = pywikibot.translate(pywikibot.getSite(), self.msg) % s
         for page in self.generator:
             self.treat(page)
 
@@ -136,28 +134,27 @@ class PiperBot:
             pywikibot.output(u"\n\n>>> %s <<<" % page.title())
             # show what was changed
             pywikibot.showDiff(page.get(), text)
-            if not self.dry:
-                if not self.always:
-                    choice = pywikibot.inputChoice(
-                        u'Do you want to accept these changes?',
-                        ['Yes', 'No'], ['y', 'N'], 'N')
-                else:
-                    choice = 'y'
-                if choice == 'y':
-                    try:
-                        # Save the page
-                        page.put(text)
-                    except pywikibot.LockedPage:
-                        pywikibot.output(u"Page %s is locked; skipping."
-                                         % page.title(asLink=True))
-                    except pywikibot.EditConflict:
-                        pywikibot.output(
-                            u'Skipping %s because of edit conflict'
-                            % (page.title()))
-                    except pywikibot.SpamfilterError, error:
-                        pywikibot.output(
-                            u'Cannot change %s because of spam blacklist entry %s'
-                            % (page.title(), error.url))
+            if not self.always:
+                choice = pywikibot.inputChoice(
+                    u'Do you want to accept these changes?',
+                    ['Yes', 'No'], ['y', 'N'], 'N')
+            else:
+                choice = 'y'
+            if choice == 'y':
+                try:
+                    # Save the page
+                    page.put(text, self.comment)
+                except pywikibot.LockedPage:
+                    pywikibot.output(u"Page %s is locked; skipping."
+                                     % page.title(asLink=True))
+                except pywikibot.EditConflict:
+                    pywikibot.output(
+                        u'Skipping %s because of edit conflict'
+                        % (page.title()))
+                except pywikibot.SpamfilterError, error:
+                    pywikibot.output(
+                        u'Cannot change %s because of spam blacklist entry %s'
+                        % (page.title(), error.url))
 
 
 def main():
@@ -200,7 +197,7 @@ def main():
         # The preloading generator is responsible for downloading multiple
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(gen)
-        bot = PiperBot(gen, pywikibot.simulate, filters, always)
+        bot = PiperBot(gen, filters, always)
         bot.run()
     else:
         pywikibot.showHelp()
