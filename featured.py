@@ -3,6 +3,20 @@
 """
 This script understands various command-line arguments:
 
+ Task commands:
+
+                  Without additional task command this script is used for
+                  featured articles as default. 
+
+-good             use this script for good articles.
+
+-lists            use this script for featured lists.
+
+-former           use this script for removing {{Link FA|xx}} from former
+                  featured articles
+
+ Option commands:
+
 -interactive:     ask before changing each page
 
 -nocache          doesn't include /cache/featured /cache/lists or /cache/good
@@ -18,6 +32,7 @@ This script understands various command-line arguments:
 -side             use -side if you want to move all {{Link FA|lang}} next to the
                   corresponding interwiki links. Default is placing
                   {{Link FA|lang}} on top of the interwiki links.
+                  (This option is deprecated with wikidata)
 
 -count            Only counts how many featured/good articles exist
                   on all wikis (given with the "-fromlang" argument) or
@@ -25,13 +40,6 @@ This script understands various command-line arguments:
                   Example: featured.py -fromlang:en,he -count
                   counts how many featured articles exist in the en and he
                   wikipedias.
-
--lists            use this script for featured lists.
-
--good             use this script for good articles.
-
--former           use this script for removing {{Link FA|xx}} from former
-                  fearured articles
 
 -quiet            no corresponding pages are displayed.
 
@@ -85,7 +93,7 @@ template = {
     'ast': ['Enllaz AD'],
     'az': ['Link FM'],
     'br': ['Liamm PuB', 'Lien AdQ'],
-    'ca': [u'Enllaç AD', 'Destacat'],
+    'ca': [u'Enllaç AD', 'Link FA', 'Destacat'],
     'cy': ['Cyswllt erthygl ddethol', 'Dolen ED'],
     'eo': ['LigoElstara'],
     'en': ['Link FA', 'FA link'],
@@ -110,6 +118,7 @@ template = {
 template_good = {
     '_default': ['Link GA'],
     'ar': [u'وصلة مقالة جيدة'],
+    'ca': [u'Enllaç AB', 'Lien BA', 'Abo', 'Link GA']
     'da': ['Link GA', 'Link AA'],
     'eo': ['LigoLeginda'],
     'es': ['Bueno'],
