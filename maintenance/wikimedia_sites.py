@@ -91,7 +91,7 @@ def update_family(families):
             pywikibot.output(text)
             family_file_name = '../families/%s_family.py' % family
             family_file = codecs.open(family_file_name, 'r', 'utf8')
-            old_text = family_text = family_file.read()
+            family_text = family_file.read()
             old = re.findall(ur'(?msu)^ {8}self.languages_by_size.+?\]',
                              family_text)[0]
             family_text = family_text.replace(old, text)
