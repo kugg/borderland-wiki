@@ -39,6 +39,7 @@ Options for "remove" action:
 Options for "move" action:
  * -hist        - Creates a nice wikitable on the talk page of target category
                   that contains detailed page history of the source category.
+ * -nodelete    - Don't delete the old category after move
 
 Options for several actions:
  * -rebuild     - reset the database
@@ -885,6 +886,7 @@ def main(*args):
     sort_by_last_name = False
     restore = False
     create_pages = False
+    deleteEmptySourceCat = True
     for arg in pywikibot.handleArgs(*args):
         if arg == 'add':
             action = 'add'
@@ -898,6 +900,8 @@ def main(*args):
             action = 'tree'
         elif arg == 'listify':
             action = 'listify'
+        elif arg =='-nodelete':
+            deleteEmptySourceCat = False
         elif arg == '-person':
             sort_by_last_name = True
         elif arg == '-rebuild':
@@ -971,8 +975,9 @@ u'Please enter the name of the category that should be removed:')
             newCatTitle = pywikibot.input(
                 u'Please enter the new name of the category:')
         bot = CategoryMoveRobot(oldCatTitle, newCatTitle, batchMode,
-                                editSummary, inPlace, titleRegex=titleRegex,
-                                withHistory=withHistory)
+                                editSummary, inPlace,
+                                deleteEmptySourceCat=deleteEmptySourceCat,
+                                titleRegex=titleRegex, withHistory=withHistory)
         bot.run()
     elif action == 'tidy':
         catTitle = pywikibot.input(u'Which category do you want to tidy up?')
