@@ -3201,8 +3201,9 @@ class Page(object):
 
         """
         if not self.site().has_api() or self.site().versionnumber() < 8:
-            return self._getVersionHistoryOld(reExist, getAll, skipFirst,
+            return self._getVersionHistoryOld(getAll, skipFirst,
                                               reverseOrder, revCount)
+
         dataQ = []
         thisHistoryDone = False
 
