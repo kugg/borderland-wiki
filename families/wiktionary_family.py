@@ -49,6 +49,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
+        self.namespaces[2]['ko'] = [u'사용자']
         self.namespaces[3]['ko'] = [u'사용자토론']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']

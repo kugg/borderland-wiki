@@ -43,8 +43,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
-        self.namespaces[828]['mk'] = [u'Модул']
-        self.namespaces[829]['mk'] = [u'Разговор за модул']
+        self.namespaces[2]['ko'] = [u'사용자']
+        self.namespaces[3]['ko'] = [u'사용자토론']
         self.namespaces[2]['pl'] = [u'Wikipedysta', u'Użytkowniczka', u'Użytkownik', u'Wikipedystka']
         self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty', u'Dyskusja użytkowniczki', u'Dyskusja użytkownika', u'Dyskusja wikipedystki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
@@ -146,7 +146,7 @@ class Family(family.WikimediaFamily):
             'af': u'Wikibooksbespreking',
             'ang': u'Wikibooks talk',
             'ar': u'نقاش ويكي الكتب',
-            'az': u'Wikibooks müzakirəsi',
+            'az': [u'Wikibooks müzakirəsi', u'Wikibooks talk'],
             'be': [u'Размовы пра Wikibooks', u'Wikibooks размовы'],
             'bg': u'Уикикниги беседа',
             'bn': [u'উইকিবই আলোচনা', u'উইকিবই আলাপ'],

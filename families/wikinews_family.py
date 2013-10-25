@@ -30,6 +30,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
+        self.namespaces[2]['ko'] = [u'사용자']
         self.namespaces[3]['ko'] = [u'사용자토론']
         self.namespaces[2]['pl'] = [u'Wikireporter', u'Wikireporterka']
         self.namespaces[3]['pl'] = [u'Dyskusja wikireportera', u'Dyskusja wikireporterki']
