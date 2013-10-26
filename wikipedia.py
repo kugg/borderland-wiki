@@ -9581,7 +9581,7 @@ def handleArgs(*args):
         elif arg == '-debug':
             if not logger:
                 init_handlers()
-            logging.getLogger().setLevel(DEBUG)
+            logger.setLevel(DEBUG)
             config.special_page_limit = 500
         else:
             # the argument is not global. Let the specific bot script care
@@ -9891,7 +9891,7 @@ def init_handlers(strm=None):  # , logname=None, header=False):
 
         logger = logging.getLogger('pywiki')
         logger.addHandler(nh)
-        logger.setLevel(DEBUG)
+        logger.setLevel(DEBUG+1)
 
         logger.propagate = True
 
