@@ -129,6 +129,7 @@ def request(site, uri, retry=None, sysop=False, data=None, compress=True,
         except KeyboardInterrupt:
             raise
         except urllib2.HTTPError, e:
+            debug(u'Page %s could not be retrieved: HTTP/%i %s: %r' % (url, e.code, e.message, e.read()))
             if e.code in [401, 404]:
                 raise PageNotFound(
                     u'Page %s could not be retrieved. Check your family file.'
