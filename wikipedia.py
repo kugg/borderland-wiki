@@ -5504,7 +5504,7 @@ class _GetAll(object):
             # Sometimes query does not contains revisions
             # or some pages are missing. Deactivate api call and use the
             # old API special:export
-            if self.site.has_api() and logger.isEnabledFor(DEBUG):
+            if self.site.has_api() and False:
                 while True:
                     try:
                         data = self.getDataApi()
@@ -5926,8 +5926,7 @@ def getall(site, pages, throttle=True, force=False):
         u'Getting %(count)d page{{PLURAL:count||s}} %(API)sfrom %(site)s...',
         {'count': len(pages),
          # API is deactivated since r8036 because some pages are missing
-         'API': (u'', u'via API ')[site.has_api() and
-                                   logger.isEnabledFor(DEBUG)],
+         'API': (u'', u'via API ')[site.has_api() and False],
          'site': site}))
 
     # default is 500/4, but It might have good point for server.
