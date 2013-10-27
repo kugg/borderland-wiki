@@ -7028,6 +7028,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 raise
             except urllib2.HTTPError, e:
                 if e.code in [401, 404]:
+                    debug(u"Got HTTP/%i %s: \n %r" % (e.code, e.message, e.read()))
                     raise PageNotFound(u'Page %s could not be retrieved. Check '
                                        u'your family file ?' % url)
                 # just check for HTTP Status 500 (Internal Server Error)?
