@@ -196,16 +196,16 @@ class Family(family.Family):
             '_default': [u'Europeana talk'],
         }
         self.namespaces[1238] = {
-            '_default': [u'Pywikipedia'],
+            '_default': [u'Pywikibot'],
         }
         self.namespaces[1239] = {
-            '_default': [u'Pywikipedia talk'],
+            '_default': [u'Pywikibot talk'],
         }
         self.namespaces[1240] = {
-            '_default': [u'Toolserver'],
+            '_default': [u'Intuition'],
         }
         self.namespaces[1241] = {
-            '_default': [u'Toolserver talk'],
+            '_default': [u'Intuition talk'],
         }
         self.namespaces[1242] = {
             '_default': [u'EOL'],
@@ -225,9 +225,6 @@ class Family(family.Family):
         self.namespaces[1247] = {
             '_default': [u'Mozilla talk'],
         }
-        self.namespaces[1248] = {
-            '_default': [u'FrontlineSMS'],
-        }
         self.namespaces[1249] = {
             '_default': [u'FrontlineSMS talk'],
         }
@@ -243,6 +240,24 @@ class Family(family.Family):
         self.namespaces[1253] = {
             '_default': [u'Vicuna talk'],
         }
+        self.namespaces[1254] = {
+            '_default': [u'FUEL'],
+        }
+        self.namespaces[1255] = {
+            '_default': [u'FUEL talk'],
+        }
+        self.namespaces[1256] = {
+            '_default': [u'Blockly'],
+        }
+        self.namespaces[1257] = {
+            '_default': [u'Blockly talk'],
+        }
+        self.namespaces[1258] = {
+            '_default': [u'MathJax'],
+        }
+        self.namespaces[1259] = {
+            '_default': [u'MathJax talk'],
+        }
 
     def version(self, code):
-        return "1.21alpha"
+        return "1.23alpha"
