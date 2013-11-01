@@ -18,6 +18,7 @@ and option can be one of these:
 Options for "add" action:
  * -person      - sort persons by their last name
  * -create      - If a page doesn't exist, do not skip it, create it instead
+ * -redirect    - Follow redirects
 
 If action is "add", the following options are supported:
 
@@ -229,10 +230,11 @@ class AddCategory:
     '''A robot to mass-add a category to a list of pages.'''
 
     def __init__(self, generator, sort_by_last_name=False, create=False,
-                 editSummary='', dry=False):
+                 editSummary='', follow_redirects = False, dry=False):
         self.generator = generator
         self.sort = sort_by_last_name
         self.create = create
+        self.follow_redirects = follow_redirects
         self.site = pywikibot.getSite()
         self.always = False
         self.dry = dry
@@ -303,7 +305,10 @@ class AddCategory:
                                  % page.title(asLink=True))
         except pywikibot.IsRedirectPage, arg:
             redirTarget = pywikibot.Page(self.site, arg.args[0])
-            pywikibot.warning(u"Page %s is a redirect to %s; skipping."
+            if self.follow_redirects:
+                text = redirTarget.get()
+            else:
+                pywikibot.warning(u"Page %s is a redirect to %s; skipping."
                               % (page.title(asLink=True),
                                  redirTarget.title(asLink=True)))
         else:
@@ -886,6 +891,7 @@ def main(*args):
     sort_by_last_name = False
     restore = False
     create_pages = False
+    follow_redirects = False
     deleteEmptySourceCat = True
     for arg in pywikibot.handleArgs(*args):
         if arg == 'add':
@@ -938,6 +944,8 @@ def main(*args):
             pagesonly = True
         elif arg == '-create':
             create_pages = True
+        elif arg =='-redirect':
+            follow_redirects = True
         elif arg == '-hist':
             withHistory = True
         else:
@@ -957,7 +965,7 @@ def main(*args):
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(
             genFactory.getCombinedGenerator())
-        bot = AddCategory(gen, sort_by_last_name, create_pages, editSummary)
+        bot = AddCategory(gen, sort_by_last_name, create_pages, editSummary, follow_redirects)
         bot.run()
     elif action == 'remove':
         if (fromGiven == False):
