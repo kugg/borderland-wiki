@@ -9534,14 +9534,10 @@ def handleArgs(*args):
         arg = _decodeArg(arg)
         if arg == '-help':
             do_help = True
-        elif arg.startswith('-dir:'):
-            # currently handled in wikipediatools.py - possibly before this
-            # routine is called.
-            pass  # config_dir = arg[5:]
         elif arg.startswith('-family:'):
-            default_family = arg[8:]
+            default_family = arg[len("-family:"):]
         elif arg.startswith('-lang:'):
-            default_code = arg[6:]
+            default_code = arg[len("-lang:"):]
         elif arg.startswith("-user:"):
             username = arg[len("-user:"):]
         elif arg.startswith('-putthrottle:'):
@@ -9555,20 +9551,12 @@ def handleArgs(*args):
         elif arg == '-log':
             setLogfileStatus(True)
         elif arg.startswith('-log:'):
-            setLogfileStatus(True, arg[5:])
+            setLogfileStatus(True, arg[len("-log:"):])
         elif arg.startswith('-loghandler:'):
-            config.loghandler = arg[12:]
+            config.loghandler = arg[len('-loghandler:'):]
         elif arg == '-nolog':
             setLogfileStatus(False)
-        elif arg in ['-verbose', '-v']:
-            verbose += 1
-        elif arg == '-daemonize':
-            import daemonize
-            daemonize.daemonize()
-        elif arg.startswith('-daemonize:'):
-            import daemonize
-            daemonize.daemonize(redirect_std=arg[11:])
-        elif arg in ['-cosmeticchanges', '-cc']:
+        elif arg in ('-cosmeticchanges', '-cc'):
             config.cosmetic_changes = not config.cosmetic_changes
             output(u'NOTE: option cosmetic_changes is %s\n'
                    % config.cosmetic_changes)
@@ -9577,15 +9565,21 @@ def handleArgs(*args):
         elif arg == '-dry':
             output(u"Usage of -dry is deprecated; use -simulate instead.")
             simulate = True
-        # global debug option for development purposes. Normally does nothing.
         elif arg == '-debug':
             if not logger:
                 init_handlers()
             logger.setLevel(DEBUG)
             config.special_page_limit = 500
+        elif arg in ('-verbose', '-v'):
+            verbose += 1
+        elif arg == '-daemonize':
+            import daemonize
+            daemonize.daemonize()
+        elif arg.startswith('-daemonize:'):
+            import daemonize
+            daemonize.daemonize(redirect_std=arg[len('-daemonize:'):])
         else:
-            # the argument is not global. Let the specific bot script care
-            # about it.
+            # argument not global -> specific bot script will take care
             nonGlobalArgs.append(arg)
 
     if username:
@@ -9645,10 +9639,6 @@ Global arguments available for all bots:
 
 -help             Show this help text.
 
--loghandler:xyz   Choose a value for 'xyz' from 'TRFH' (TimedRotatingFile-
-                  Handler) or 'RFH' (RotatingFileHandler). Has to be defined
-                  before '-log' on command line.
-
 -log              Enable the logfile, using the default filename
                   "%s.log"
                   Logs will be stored in the logs subdirectory.
@@ -9656,6 +9646,10 @@ Global arguments available for all bots:
 -log:xyz          Enable the logfile, using 'xyz' as the filename.
 
 -nolog            Disable the logfile (if it is enabled by default).
+
+-loghandler:xyz   Choose a value for 'xyz' from 'TRFH' (TimedRotatingFile-
+                  Handler) or 'RFH' (RotatingFileHandler). Has to be defined
+                  before '-log' on command line.
 
 -maxlag           Sets a new maxlag parameter to a number of seconds. Defer bot
                   edits during periods of database server lag. Default is set by
@@ -9672,9 +9666,8 @@ Global arguments available for all bots:
                   settings and restrictions are untouched.
 
 -simulate         Disables writing to the server. Useful for testing and
-(-dry)            debugging of new code (if given, doesn't do any real
+                  debugging of new code (if given, doesn't do any real
                   changes, but only shows what would have been changed).
-                  DEPRECATED: please use -simulate instead of -dry
 ''' % moduleName
     output(globalHelp, toStdout=True)
     try:
