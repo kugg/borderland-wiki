@@ -13,6 +13,8 @@ class Family(family.Family):
         self.langs = {
             'fr': 'fr.vikidia.org',
             'es': 'es.vikidia.org',
+            'it': 'it.vikidia.org',
+            'ru': 'ru.vikidia.org',
         }
 
         self.namespaces[1] = {
@@ -24,11 +26,14 @@ class Family(family.Family):
             'es': [u'Mensajes de usuario', u'Usuario Discusión'],
         }
         self.namespaces[4] = {
-            '_default': [u'Vikidia', self.namespaces[4]['_default']], # REQUIRED
+            '_default': [u'Vikidia', self.namespaces[4]['_default']],
+            'fr': [u'Vikidia', u'VD'],
         }
         self.namespaces[5] = {
             '_default': [u'Discussion Vikidia', self.namespaces[5]['_default']],
-            'es' : u'Conversación acerca de Vikidia',
+            'es': u'Conversación acerca de Vikidia',
+            'it': u'Discussioni Vikidia',
+            'ru': u'Обсуждение Vikidia',
         }
         self.namespaces[6] = {
             'fr': [u'Fichier', u'Image'],
@@ -60,12 +65,14 @@ class Family(family.Family):
             'es': u'Conversación de proyecto',
         }
         self.namespaces[102] = {
-            'fr': u'Portail',
             'es': u'Portal',
+            'fr': u'Portail',
+            'it': u'Portale',
         }
         self.namespaces[103] = {
-            'fr': u'Discussion Portail',
             'es': u'Conversación acerca de portal',
+            'fr': u'Discussion Portail',
+            'it': u'Discussioni portale',
         }
         self.namespaces[104] = {
             'fr': u'Quiz',
