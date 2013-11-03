@@ -360,7 +360,7 @@ def main():
             targetLang = pywikibot.getSite().language
         if not targetFamily:
             targetFamily = pywikibot.getSite().family
-        targetSite = pywikibot.Site(targetLang, targetFamily)
+        targetSite = pywikibot.getSite(targetLang, targetFamily)
     bot = ImageTransferBot(gen, interwiki=interwiki, targetSite=targetSite,
                            keep_name=keep_name)
     bot.run()
