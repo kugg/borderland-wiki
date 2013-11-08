@@ -237,7 +237,7 @@ class AddCategory:
     '''A robot to mass-add a category to a list of pages.'''
 
     def __init__(self, generator, sort_by_last_name=False, create=False,
-                 editSummary='', follow_redirects = False, dry=False):
+                 editSummary='', follow_redirects=False, dry=False):
         self.generator = generator
         self.sort = sort_by_last_name
         self.create = create
@@ -315,8 +315,8 @@ class AddCategory:
                 text = redirTarget.get()
             else:
                 pywikibot.warning(u"Page %s is a redirect to %s; skipping."
-                              % (page.title(asLink=True),
-                                 redirTarget.title(asLink=True)))
+                                  % (page.title(asLink=True),
+                                     redirTarget.title(asLink=True)))
         else:
             return text
 
@@ -993,7 +993,7 @@ def main(*args):
             pagesonly = True
         elif arg == '-create':
             create_pages = True
-        elif arg =='-redirect':
+        elif arg == '-redirect':
             follow_redirects = True
         elif arg == '-hist':
             withHistory = True
@@ -1014,7 +1014,8 @@ def main(*args):
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(
             genFactory.getCombinedGenerator())
-        bot = AddCategory(gen, sort_by_last_name, create_pages, editSummary, follow_redirects)
+        bot = AddCategory(gen, sort_by_last_name, create_pages, editSummary,
+                          follow_redirects)
         bot.run()
     elif action == 'remove':
         if not fromGiven:
