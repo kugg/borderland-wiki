@@ -25,7 +25,7 @@ def _altlang(code):
     @param code The language code
     @type code string
     @return a list of strings as language codes
-    
+
     If no translation is available to a specified language, translate() will
     try each of the specified fallback languages, in order, until it finds
     one with a translation, with 'en' and '_default' as a last resort.
@@ -387,7 +387,7 @@ def twntranslate(code, twtitle, parameters=None):
     Support is implemented like in MediaWiki extension. If the tw message
     contains a plural tag inside which looks like
     {{PLURAL:<number>|<variant1>|<variant2>[|<variantn>]}}
-    it takes that variant calculated by the plural_func depending on the number
+    it takes that variant calculated by the plural_rules depending on the number
     value.
 
     Examples:
@@ -455,7 +455,7 @@ def twntranslate(code, twtitle, parameters=None):
         # Compatibility check for old python releases which are unable
         # to use plural.py - use _default rules for all
         if sys.version_info < (2, 5):
-            plural_func = lambda n: (n != 1)
+            plural_rules = lambda n: (n != 1)
             index = plural_rules(num)
         else:
             from plural import plural_rules
