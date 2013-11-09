@@ -22,6 +22,7 @@ import config
 TEMP_REGEX = re.compile(
     '{{(?:msg:)?(?P<name>[^{\|]+?)(?:\|(?P<params>[^{]+?(?:{[^{]+?}[^{]*?)?))?}}')
 
+
 def unescape(s):
     """Replace escaped HTML-special characters by their originals"""
     if '&' not in s:
@@ -90,6 +91,10 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
         'property':     re.compile(r'(?i)\{\{\s*#property:\s*p\d+\s*\}\}'),
         # Module invocations (currently only Lua)
         'invoke':       re.compile(r'(?i)\{\{\s*#invoke:.*?}\}'),
+        # categories
+        'category':     re.compile(ur'\[\[ *(?:%s)\s*:.*?\]\]' % ur'|'.join(site.namespace(14, all=True))),
+        #files
+        'file':         re.compile(ur'\[\[ *(?:%s)\s*:.*?\]\]' % ur'|'.join(site.namespace(6, all=True))),
 
     }
 
@@ -215,12 +220,12 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
                     groupMatch = groupR.search(replacement)
                     if not groupMatch:
                         break
-                    groupID = groupMatch.group('name') or \
-                              int(groupMatch.group('number'))
+                    groupID = (groupMatch.group('name') or
+                               int(groupMatch.group('number')))
                     try:
-                        replacement = replacement[:groupMatch.start()] + \
-                                      match.group(groupID) + \
-                                      replacement[groupMatch.end():]
+                        replacement = (replacement[:groupMatch.start()] +
+                                       match.group(groupID) + \
+                                       replacement[groupMatch.end():])
                     except IndexError:
                         print '\nInvalid group reference:', groupID
                         print 'Groups found:\n', match.groups()
@@ -353,7 +358,7 @@ def expandmarker(text, marker='', separator=''):
                                   lenseparator:firstinseparator]):
                 firstinseparator -= lenseparator
                 striploopcontinue = True
-            elif text[firstinseparator-1] < ' ':
+            elif text[firstinseparator - 1] < ' ':
                 firstinseparator -= 1
                 striploopcontinue = True
         marker = text[firstinseparator:firstinmarker] + marker
@@ -510,10 +515,10 @@ def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
         if site.language() in site.family.interwiki_attop or \
            u'<!-- interwiki at top -->' in oldtext:
             #do not add separator if interiki links are on one line
-            newtext = s + \
-                      [separator, u''][site.language() in
-                                       site.family.interwiki_on_one_line] + \
-                      s2.replace(marker, '').strip()
+            newtext = (s +
+                       [separator, u''][site.language() in
+                                        site.family.interwiki_on_one_line] +
+                       s2.replace(marker, '').strip())
         else:
             # calculate what was after the language links on the page
             firstafter = s2.find(marker)
@@ -525,8 +530,9 @@ def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
             if "</noinclude>" in s2[firstafter:]:
                 if separatorstripped:
                     s = separator + s
-                newtext = s2[:firstafter].replace(marker, '') + s + \
-                          s2[firstafter:]
+                newtext = (s2[:firstafter].replace(marker, '') +
+                           s +
+                           s2[firstafter:])
             elif site.language() in site.family.categories_last:
                 cats = getCategoryLinks(s2, site=site)
                 s2 = removeCategoryLinksAndSeparator(
@@ -538,8 +544,9 @@ def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
             # (not supported by rewrite - no API)
             elif site.family.name == 'wikitravel':
                 s = separator + s + separator
-                newtext = s2[:firstafter].replace(marker, '') + s + \
-                          s2[firstafter:]
+                newtext = (s2[:firstafter].replace(marker, '') +
+                           s +
+                           s2[firstafter:])
             else:
                 if template or template_subpage:
                     if template_subpage:
@@ -558,8 +565,10 @@ def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
                         newtext = regexp.sub(s + includeOff, s2)
                     else:
                         # Put the langlinks at the end, inside noinclude's
-                        newtext = s2.replace(marker, '').strip() + separator + \
-                                  u'%s\n%s%s\n' % (includeOn, s, includeOff)
+                        newtext = (s2.replace(marker, '').strip() +
+                                   separator +
+                                   u'%s\n%s%s\n' % (includeOn, s, includeOff)
+                                   )
                 else:
                     newtext = s2.replace(marker, '').strip() + separator + s
     else:
@@ -646,8 +655,9 @@ def getCategoryLinks(text, site=None):
                    r'(?:\|(?P<sortKey>.+?))?\s*\]\]'
                    % catNamespace, re.I)
     for match in R.finditer(text):
-        cat = catlib.Category(site, '%s:%s' % (match.group('namespace'),
-                                               match.group('catName')),
+        cat = catlib.Category(site,
+                              '%s:%s' % (match.group('namespace'),
+                                         match.group('catName')),
                               sortKey=match.group('sortKey'))
         result.append(cat)
     return result
@@ -788,8 +798,9 @@ See http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#
             if "</noinclude>" in s2[firstafter:]:
                 if separatorstripped:
                     s = separator + s
-                newtext = s2[:firstafter].replace(marker, '') + s + \
-                          s2[firstafter:]
+                newtext = (s2[:firstafter].replace(marker, '') +
+                           s +
+                           s2[firstafter:])
             elif site.language() in site.family.categories_last:
                 newtext = s2.replace(marker, '').strip() + separator + s
             else:
@@ -823,7 +834,7 @@ def categoryFormat(categories, insite=None):
         if categories[0][0] == '[':
             catLinks = categories
         else:
-            catLinks = ['[[Category:'+category+']]' for category in categories]
+            catLinks = ['[[Category:' + category + ']]' for category in categories]
     else:
         catLinks = [category.aslink(noInterwiki=True)
                     for category in categories]
@@ -865,8 +876,8 @@ def compileLinkR(withoutBracketed=False, onlyBracketed=False):
             r'(?=[%(notAtEnd)s]*\'\')|http[s]?://[^%(notInside)s]*' \
             r'[^%(notAtEnd)s])' % {'notInside': notInside, 'notAtEnd': notAtEnd}
     regexb = r'(?P<urlb>http[s]?://[^%(notInside)s]*?[^%(notAtEnd)s]' \
-            r'(?=[%(notAtEnd)s]*\'\')|http[s]?://[^%(notInside)s]*' \
-            r'[^%(notAtEnd)s])' % {'notInside': notInside, 'notAtEnd': notAtEndb}
+             r'(?=[%(notAtEnd)s]*\'\')|http[s]?://[^%(notInside)s]*' \
+             r'[^%(notAtEnd)s])' % {'notInside': notInside, 'notAtEnd': notAtEndb}
     if withoutBracketed:
         regex = r'(?<!\[)' + regex
     elif onlyBracketed:
