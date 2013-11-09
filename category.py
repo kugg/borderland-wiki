@@ -90,8 +90,8 @@ This will move all pages in the category US to the category United States.
 # (C) leogregianin, 2004-2008
 # (C) Cyde, 2006-2010
 # (C) Anreas J Schwab, 2007
-# (C) xqt, 2009-2012
-# (C) Pywikipedia team, 2008-2012
+# (C) xqt, 2009-2013
+# (C) Pywikipedia team, 2008-2013
 #
 __version__ = '$Id$'
 #
@@ -140,10 +140,10 @@ class CategoryDatabase:
         else:
             try:
                 if not os.path.isabs(filename):
-                    filename = pywikibot.config.datafilepath(filename)
+                    filename = config.datafilepath(filename)
                 f = bz2.BZ2File(filename, 'r')
                 pywikibot.output(u'Reading dump from %s'
-                                 % pywikibot.config.shortpath(filename))
+                                 % config.shortpath(filename))
                 databases = pickle.load(f)
                 f.close()
                 # keys are categories, values are 2-tuples with lists as
@@ -208,10 +208,10 @@ class CategoryDatabase:
 
         '''
         if not os.path.isabs(filename):
-            filename = pywikibot.config.datafilepath(filename)
+            filename = config.datafilepath(filename)
         if self.catContentDB or self.superclassDB:
             pywikibot.output(u'Dumping to %s, please wait...'
-                             % pywikibot.config.shortpath(filename))
+                             % config.shortpath(filename))
             f = bz2.BZ2File(filename, 'w')
             databases = {
                 'catContentDB': self.catContentDB,
@@ -230,7 +230,7 @@ class CategoryDatabase:
                 pass
             else:
                 pywikibot.output(u'Database is empty. %s removed'
-                                 % pywikibot.config.shortpath(filename))
+                                 % config.shortpath(filename))
 
 
 class AddCategory:
@@ -319,7 +319,6 @@ class AddCategory:
                                  redirTarget.title(asLink=True)))
         else:
             return text
-        return None
 
     def save(self, text, page, comment, minorEdit=True, botflag=True):
         # only save if something was changed
@@ -838,7 +837,7 @@ class CategoryTreeRobot:
         self.catTitle = catTitle
         self.catDB = catDB
         if filename and not os.path.isabs(filename):
-            filename = pywikibot.config.datafilepath(filename)
+            filename = config.datafilepath(filename)
         self.filename = filename
         # TODO: make maxDepth changeable with a parameter or config file entry
         self.maxDepth = maxDepth
