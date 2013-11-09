@@ -110,6 +110,8 @@ parameterHelp = u"""\
                   "-recentchanges:n" where n is the number of pages to be
                   returned, else 100 pages are returned.
 
+-rc-nobots        Same as above but doesn't work on pages that bots have edited
+
 -ref              Work on all pages that link to a certain page.
                   Argument can also be given as "-ref:referredpagetitle".
 
@@ -352,9 +354,15 @@ class GeneratorFactory(object):
                 gen = RandomRedirectPageGenerator(number=int(arg[16:]))
         elif arg.startswith('-recentchanges'):
             if len(arg) >= 15:
-                gen = RecentchangesPageGenerator(number=int(arg[15:]))
+                gen = RecentchangesPageGenerator(number=int(arg[15:]), nobots=False)
             else:
-                gen = RecentchangesPageGenerator()
+                gen = RecentchangesPageGenerator(nobots=False)
+            gen = DuplicateFilterPageGenerator(gen)
+        elif arg.startswith('-rc-nobots'):
+            if len(arg) >= 11:
+                gen = RecentchangesPageGenerator(number=int(arg[11:]), nobots=True)
+            else:
+                gen = RecentchangesPageGenerator(nobots=True)
             gen = DuplicateFilterPageGenerator(gen)
         elif arg.startswith('-file'):
             textfilename = arg[6:]
@@ -587,7 +595,7 @@ def NewpagesPageGenerator(number=100, repeat=False, site=None, namespace=0):
         yield item[0]
 
 
-def RecentchangesPageGenerator(number=100, site=None):
+def RecentchangesPageGenerator(number=100, site=None, nobots=False):
     """Generate pages that are in the recent changes list.
 
     @param number: iterate no more than this number of entries
@@ -595,7 +603,7 @@ def RecentchangesPageGenerator(number=100, site=None):
     """
     if site is None:
         site = pywikibot.getSite()
-    for item in site.recentchanges(number=number):
+    for item in site.recentchanges(number=number, nobots=nobots):
         yield item[0]
 
 
