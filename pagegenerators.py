@@ -340,16 +340,16 @@ class GeneratorFactory(object):
                 title = i18n.input('pywikibot-enter-page-processing')
             page = pywikibot.Page(site, title)
             gen = InterwikiPageGenerator(page)
-        elif arg.startswith('-random'):
-            if len(arg) == 7:
-                gen = RandomPageGenerator()
-            else:
-                gen = RandomPageGenerator(number=int(arg[8:]))
         elif arg.startswith('-randomredirect'):
             if len(arg) == 15:
                 gen = RandomRedirectPageGenerator()
             else:
                 gen = RandomRedirectPageGenerator(number=int(arg[16:]))
+        elif arg.startswith('-random'):
+            if len(arg) == 7:
+                gen = RandomPageGenerator()
+            else:
+                gen = RandomPageGenerator(number=int(arg[8:]))
         elif arg.startswith('-recentchanges'):
             if len(arg) >= 15:
                 gen = RecentchangesPageGenerator(number=int(arg[15:]))
