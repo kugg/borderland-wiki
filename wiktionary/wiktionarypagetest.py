@@ -45,9 +45,9 @@ class TestKnownValuesInParser(unittest.TestCase):
 
     """
     knownvalues = (
-{'wikilang': 'en',
- 'term': 'nut',
- 'wikiformat': u"""==English==
+        {'wikilang': 'en',
+         'term': 'nut',
+         'wikiformat': u"""==English==
 ===Etymology===
 From Middle English [[nute]], from Old English [[hnutu]]. <!-- Is Latin [[nux]], nuc- a cognate? -->
 ===Pronunciation===
@@ -179,210 +179,242 @@ The translations below need to be checked by native speakers and inserted into t
 [[Category:Trees]]
 [[category:Foods]]
 """,
-   'internalrep':
-    (
-     [u'1000 English basic words', u'Colors', u'Browns', u'Trees', u'Foods'],
-     [u'io', 'la'],
-     {u'en':
-      [u'nut', None, u'nuts',
-       [{'definition': u'A hard-shelled seed.',
-         'concisedef': u'seed',
+         'internalrep':
+         (
+             [u'1000 English basic words', u'Colors', u'Browns', u'Trees',
+              u'Foods'],
+             [u'io', 'la'],
+             {u'en':
+              [u'nut', None, u'nuts',
+               [{'definition': u'A hard-shelled seed.',
+                 'concisedef': u'seed',
+                 'trans': {'remark': '',
+                           'alltrans': {
+                               'nl': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"noot", 'f', 1)}
+                                                       ]
+                                      },
+                               'de': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"Nuss", 'f', 1)}
+                                                       ]
+                                      },
+                               'it': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"noce", 'f', 1)}
+                                                       ]
+                                      },
+                               'la': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"nux", '', 1)}
+                                                       ]
+                                      },
+                           }
+                           }
+                 },
+                {'definition':
+                 u"A piece of metal, often [[hexagonal]], with a hole through it with internal threading intended to fit on to a bolt.",
+                 'concisedef': u'that fits on a bolt',
+                 'trans': {'remark': '',
+                           'alltrans': {
+                               'nl': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"moer", 'f', 1)}
+                                                       ]
+                                      },
+                               'fr': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"Ã©crou", 'm', 1)}
+                                                       ]
+                                      },
+                               'de': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"Mutter", 'f', 1)}
+                                                       ]
+                                      },
+                               'it': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"dado", 'm', 1)}
+                                                       ]
+                                      }
+                           }
+                           }
+                 },
+                {'definition': u"(''informal'') An insane person.",
+                 'concisedef': u"informal: insane person",
+                 'syns': {'remark': '',
+                          'synonyms': [{'remark': '',
+                                        'synonym': u"loony"},
+                                       {'remark': '',
+                                        'synonym': u"nutcase"},
+                                       {'remark': '',
+                                        'synonym': u"nutter"}
+                                       ]
+                          },
          'trans': {'remark': '',
                    'alltrans': {
-                             'nl': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"noot", 'f', 1)}
-                                                    ]
-                                   },
-#                            'fr': u"""''no generic translation exists''; [[noix]] ''f'' ''is often used, but this actually means "[[walnut]]"''""",
-                             'de': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"Nuss", 'f', 1)}
-                                                    ]
-                                   },
-                             'it': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"noce", 'f', 1)}
-                                                    ]
-                                   },
-                             'la': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"nux", '', 1)}
-                                                    ]
-                                   },
-                               }
-                  }
-        },
-        {'definition': u"A piece of metal, often [[hexagonal]], with a hole through it with internal threading intended to fit on to a bolt.",
-         'concisedef': u'that fits on a bolt',
-         'trans': {'remark': '',
-                   'alltrans': {
-                             'nl': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"moer", 'f', 1)}
-                                                    ]
-                                   },
-                             'fr': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"Ã©crou", 'm', 1)}
-                                                    ]
-                                   },
-                             'de': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"Mutter", 'f', 1)}
-                                                    ]
-                                   },
-                             'it': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"dado", 'm', 1)}
-                                                    ]
-                                   }
-                                }
-                    }
-        },
-        {'definition': u"(''informal'') An insane person.",
-         'concisedef': u"informal: insane person",
-         'syns': {'remark': '',
-                  'synonyms': [{'remark': '',
-                                'synonym': u"loony"},
-                               {'remark': '',
-                                'synonym': u"nutcase"},
-                               {'remark': '',
-                                'synonym': u"nutter"}
-                              ]
-                  },
-         'trans': {'remark': '',
-                   'alltrans': {
-                             'nl': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"gek", 'm', 1)},
-                                                     {'remark': '',
-                                                      'translation': (u"gekkin", 'f', 1)},
-                                                     {'remark': '',
-                                                      'translation': (u"zot", 'm', 1)},
-                                                     {'remark': '',
-                                                      'translation': (u"zottin", 'f', 1)}
-                                                    ]
-                                    },
-                             'fr': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': ("fou", 'm', 1)},
-                                                     {'remark': '',
-                                                      'translation': ("folle", 'f', 1)}
-                                                    ]
-                                   },
-                             'de': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': ("Irre", 'mf', 1)},
-                                                     {'remark': '',
-                                                      'translation': ("Irrer", 'm indef.', 1)}
-                                                    ]
-                                   }
-                               }
-                    }
-        },
-        {'definition': u"(''slang'') The head.",
-         'concisedef': u"slang: the head",
-         'syns': {'remark': '(See further synonyms under [[head]])',
-                  'synonyms': [{'remark': '',
-                                'synonym': u"bonce"},
-                               {'remark': '',
-                                'synonym': u"noddle"}]},
-         'trans': {'remark': '',
-                   'alltrans': {
-                            'de': {'remark': '',
-                                   'translations': [{'remark': '',
-                                                     'translation': (u"Birne", 'f', 1)},
-                                                    {'remark': '',
-                                                     'translation': ("RÃ¼be", 'f', 1)},
-                                                    {'remark': '',
-                                                     'translation': ("DÃ¶tz", 'm', 1)}
-                                                   ]
-                                   }
-                                }
+                       'nl': {'remark': '',
+                              'translations': [{'remark': '',
+                                                'translation':
+                                                (u"gek", 'm', 1)},
+                                               {'remark': '',
+                                                'translation':
+                                                (u"gekkin", 'f', 1)},
+                                               {'remark': '',
+                                                'translation':
+                                                (u"zot", 'm', 1)},
+                                               {'remark': '',
+                                                'translation':
+                                                (u"zottin", 'f', 1)}
+                                               ]
+                              },
+                       'fr': {'remark': '',
+                              'translations': [{'remark': '',
+                                                'translation': ("fou", 'm', 1)},
+                                               {'remark': '',
+                                                'translation':
+                                                ("folle", 'f', 1)}
+                                               ]
+                              },
+                       'de': {'remark': '',
+                              'translations': [{'remark': '',
+                                                'translation':
+                                                ("Irre", 'mf', 1)},
+                                               {'remark': '',
+                                                'translation':
+                                                ("Irrer", 'm indef.', 1)}
+                                               ]
+                              }
                    }
-        },
-        {'definition': u"(''slang; rarely used in the singular'') A testicle.",
-         'concisedef': u"slang: testicle",
-         'syns': {'remark': '',
-                  'synonyms': [{'remark': '',
-                                'synonym': u"ball"},
-                               {'remark': "(''taboo slang'')",
-                                'synonym': u"bollock"},
-                               {'remark': '',
-                                'synonym': u"nad"}]},
-         'trans': {'remark': '',
-                   'alltrans': {'nl': {'remark': '<!--Never heard this before-->',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"noten", 'm', 2)},
-                                                     {'remark': '',
-                                                      'translation': ("bal", 'm', 1)},
-                                                     {'remark': '',
-                                                      'translation': ("teelbal", 'm', 1)}
-                                                    ]
-                                    },
-                              'fr': {'remark': '',
-                                     'translations': [{'remark': '',
-                                                       'translation': (u"couille", 'f', 1)}
-                                                     ]
-                                    },
-                              'de': {'remark': '',
-                                     'translations': [{'remark': '',
-                                                       'translation': (u"Ei", 'n', 1)},
-                                                      {'remark': u"''lately:''",
-                                                       'translation': (u"Nuss", 'f', 1)}
-                                                     ]
-                                    },
-                              'es': {'remark': '',
-                                     'translations': [{'remark': '',
-                                                       'translation': (u"cojone", '', 1)},
-                                                      {'remark': '',
-                                                       'translation': (u"huevo", '', 1)}
-                                                     ]
-                                    }
-                            }
-                  },
-        }
-       ],
-      ],
-       u'nl':
-      [u'nut', 'n', None,
-       [{'definition': u'[[use]], [[benefit]]', 'concisedef': u''}]
-      ],
-     }
-    )
-   },
-{'wikilang': 'nl',
- 'term': 'dummy',
- 'wikiformat': u"""
+                   }
+                 },
+                {'definition': u"(''slang'') The head.",
+                 'concisedef': u"slang: the head",
+                 'syns': {'remark': '(See further synonyms under [[head]])',
+                          'synonyms': [{'remark': '',
+                                        'synonym': u"bonce"},
+                                       {'remark': '',
+                                        'synonym': u"noddle"}]},
+                 'trans': {'remark': '',
+                           'alltrans': {
+                               'de': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"Birne", 'f', 1)},
+                                                       {'remark': '',
+                                                        'translation':
+                                                        ("RÃ¼be", 'f', 1)},
+                                                       {'remark': '',
+                                                        'translation':
+                                                        ("DÃ¶tz", 'm', 1)}
+                                                       ]
+                                      }
+                           }
+                           }
+                 },
+                {'definition':
+                 u"(''slang; rarely used in the singular'') A testicle.",
+                 'concisedef': u"slang: testicle",
+                 'syns': {'remark': '',
+                          'synonyms': [{'remark': '',
+                                        'synonym': u"ball"},
+                                       {'remark': "(''taboo slang'')",
+                                        'synonym': u"bollock"},
+                                       {'remark': '',
+                                        'synonym': u"nad"}]},
+                 'trans': {'remark': '',
+                           'alltrans': {
+                               'nl': {'remark':
+                                      '<!--Never heard this before-->',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"noten", 'm', 2)},
+                                                       {'remark': '',
+                                                        'translation':
+                                                        ("bal", 'm', 1)},
+                                                       {'remark': '',
+                                                        'translation':
+                                                        ("teelbal", 'm', 1)}
+                                                       ]
+                                      },
+                               'fr': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"couille", 'f', 1)}
+                                                       ]
+                                      },
+                               'de': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"Ei", 'n', 1)},
+                                                       {'remark':
+                                                        u"''lately:''",
+                                                        'translation':
+                                                        (u"Nuss", 'f', 1)}
+                                                       ]
+                                      },
+                               'es': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"cojone", '', 1)},
+                                                       {'remark': '',
+                                                        'translation':
+                                                        (u"huevo", '', 1)}
+                                                       ]
+                                      }
+                           }
+                           },
+                 }
+                ],
+               ],
+              u'nl':
+              [u'nut', 'n', None,
+               [{'definition': u'[[use]], [[benefit]]', 'concisedef': u''}]
+               ],
+              }
+         )
+         },
+        {'wikilang': 'nl',
+         'term': 'dummy',
+         'wikiformat': u"""
 {{-nl-}}
 {{-noun-}}
 '''dummy''' {{m}}
 """,
-   'internalrep':
-    (
-     [u''],
-     [u''],
-     {u'nl':
-      [u'dummy', 'm', u"dummy's",
-       [{'definition': u'',
-         'concisedef': u'',
-         'trans': {'remark': '',
-                   'alltrans': {
-                             'nl': {'remark': '',
-                                    'translations': [{'remark': '',
-                                                      'translation': (u"", '', 1)}
-                                                    ]
-                                   },
-                               }
-                  }
+         'internalrep':
+         (
+             [u''],
+             [u''],
+             {u'nl':
+              [u'dummy', 'm', u"dummy's",
+               [{'definition': u'',
+                 'concisedef': u'',
+                 'trans': {'remark': '',
+                           'alltrans': {
+                               'nl': {'remark': '',
+                                      'translations': [{'remark': '',
+                                                        'translation':
+                                                        (u"", '', 1)}
+                                                       ]
+                                      },
+                           }
+                           }
+                 }
+                ],
+               ],
+              }
+         )
          }
-       ],
-      ],
-     }
     )
-   }
-  )
 #     def testWhetherCategoriesAreParsedProperly(self):
 #         """Test whether Categories are parsed properly"""
 #         for value in self.knownvalues:
@@ -467,6 +499,7 @@ The translations below need to be checked by native speakers and inserted into t
 #                     if concisedef!='' and refsyns.has_key(concisedef) and resultsyns.has_key(concisedef):
 #                         self.assertEqual(resultsyns[concisedef], refsyns[concisedef])
 #
+
     def testWhetherTranslationsAreParsedProperly(self):
         """Test whether translations are parsed properly"""
         for value in self.knownvalues:
@@ -475,8 +508,8 @@ The translations below need to be checked by native speakers and inserted into t
                                                   value['term'])
             apage.parseWikiPage(value['wikiformat'])
             for entrylang in internalrepresentation.keys():
-                definitions=internalrepresentation[entrylang][3]
-                reftrans={}
+                definitions = internalrepresentation[entrylang][3]
+                reftrans = {}
                 for definition in definitions:
                     if 'trans' in definition and definition['trans']:
                         reftrans[definition['concisedef']] = definition['trans']
@@ -487,7 +520,8 @@ The translations below need to be checked by native speakers and inserted into t
                     for resultmeaning in apage.entries[entrylang].meanings[key]:
                         print resultmeaning.concisedef
                         print 'Translations: ', resultmeaning.getTranslations()
-                        resulttrans[resultmeaning.concisedef] = resultmeaning.getTranslations()
+                        resulttrans[
+                            resultmeaning.concisedef] = resultmeaning.getTranslations()
 
                 for concisedef in resulttrans.keys():
                     if concisedef != '' and concisedef in reftrans and \
