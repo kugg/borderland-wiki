@@ -13,10 +13,11 @@
 __version__ = '$Id$'
 
 import unittest
-import test_pywiki, test_wikipedia
+import sys
+import time
 
-import sys, time
-
+import test_pywiki
+import test_wikipedia
 import wikipedia as pywikibot
 import pagegenerators
 
@@ -29,22 +30,21 @@ class PyWikiPageGeneratorsTestCase(test_pywiki.PyWikiTestCase):
     def setUp(self):
         pywikibot.setLogfileStatus(False)
 
-        result    = test_pywiki.PyWikiTestCase.setUp(self)
+        result = test_pywiki.PyWikiTestCase.setUp(self)
         self.site = pywikibot.getSite('de', 'wikipedia')
 
-        self.ignore_list = { self.site.family.name: 
-                                { self.site.lang: [u'Benutzer Diskussion'] } }
-
+        self.ignore_list = {self.site.family.name:
+                            {self.site.lang: [u'Benutzer Diskussion']}}
         return result
 
     def test_module_import(self):
-        self.assertTrue( "pagegenerators" in sys.modules )       
+        self.assertTrue("pagegenerators" in sys.modules)
 
     def test_PagesFromTitlesGenerator(self):
         self._check_member(pagegenerators, "PagesFromTitlesGenerator",
                            call=True)
         gen0 = pagegenerators.PagesFromTitlesGenerator(PAGE_SET_GENERIC)
-        self.assertTrue( len(PAGE_SET_GENERIC) == len(list(gen0)) )
+        self.assertTrue(len(PAGE_SET_GENERIC) == len(list(gen0)))
         # more tests ... ?!
 
     def test_PageTitleFilterPageGenerator(self):
@@ -53,7 +53,7 @@ class PyWikiPageGeneratorsTestCase(test_pywiki.PyWikiTestCase):
         gen0 = pagegenerators.PagesFromTitlesGenerator(PAGE_SET_GENERIC)
         gen1 = pagegenerators.PageTitleFilterPageGenerator(gen0,
                                                            self.ignore_list)
-        self.assertTrue( len(PAGE_SET_GENERIC) > len(list(gen1)) )
+        self.assertTrue(len(PAGE_SET_GENERIC) > len(list(gen1)))
         # more tests ... ?!
 
     def test_PreloadingGenerator(self):
@@ -75,14 +75,14 @@ class PyWikiPageGeneratorsTestCase(test_pywiki.PyWikiTestCase):
         """
 
         gen0 = pagegenerators.PagesFromTitlesGenerator(PAGE_SET_GENERIC)
-        gen1 = pagegenerators.PageTitleFilterPageGenerator(gen0, 
+        gen1 = pagegenerators.PageTitleFilterPageGenerator(gen0,
                                                            self.ignore_list)
-        num  = len(list(gen1))
+        num = len(list(gen1))
 
         gen0 = pagegenerators.PagesFromTitlesGenerator(PAGE_SET_GENERIC)
-        gen1 = pagegenerators.PageTitleFilterPageGenerator(gen0, 
+        gen1 = pagegenerators.PageTitleFilterPageGenerator(gen0,
                                                            self.ignore_list)
-        gen2 = pagegenerators.PreloadingGenerator(gen1) # ThreadedGenerator would be nice!
+        gen2 = pagegenerators.PreloadingGenerator(gen1)  # ThreadedGenerator would be nice!
 
 # TODO: solve this API buffering (speed) issue !
 #        # to enable the use of the API here (seams to be slower... ?!?)
@@ -95,13 +95,13 @@ class PyWikiPageGeneratorsTestCase(test_pywiki.PyWikiTestCase):
             u = page.get()
             buffd['get'] = time.time()-start
 
-            self.assertAlmostEqual( buffd['get'], 0., places=3 )
+            self.assertAlmostEqual(buffd['get'], 0., places=3)
 
             start = time.time()
             u = page.getVersionHistory(revCount=1)
             buffd['getVersionHistory'] = time.time()-start
 
-            self.assertAlmostEqual( buffd['getVersionHistory'], 0., places=4 )
+            self.assertAlmostEqual(buffd['getVersionHistory'], 0., places=4)
 
             start = time.time()
             u = page.getSections(minLevel=1)
@@ -111,7 +111,7 @@ class PyWikiPageGeneratorsTestCase(test_pywiki.PyWikiTestCase):
             u = page.getSections(minLevel=1)
             buffd['getSections'] = time.time()-start
 
-            self.assertAlmostEqual( buffd['getSections'], 0., places=4 )
+            self.assertAlmostEqual(buffd['getSections'], 0., places=4)
 
             start = time.time()
             u = page.get(force=True)  # triggers reload of 'getSections' also
@@ -119,13 +119,15 @@ class PyWikiPageGeneratorsTestCase(test_pywiki.PyWikiTestCase):
 
             start = time.time()
             u = page.getVersionHistory(revCount=1, forceReload=True)
-            unbuffd['getVersionHistory'] = time.time()-start
+            unbuffd['getVersionHistory'] = time.time() - start
 
-            self.assertGreaterEqual(unbuffd['get']/buffd['get'],
+            self.assertGreaterEqual(unbuffd['get'] / buffd['get'],
                                     1E3)
-            self.assertGreaterEqual(unbuffd['getVersionHistory']/buffd['getVersionHistory'],
+            self.assertGreaterEqual(unbuffd['getVersionHistory'] /
+                                    buffd['getVersionHistory'],
                                     1E4)
-            self.assertGreaterEqual(unbuffd['getSections']/buffd['getSections'],
+            self.assertGreaterEqual(unbuffd['getSections'] /
+                                    buffd['getSections'],
                                     1E5)
 
             num -= 1
