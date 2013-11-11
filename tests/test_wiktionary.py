@@ -9,24 +9,28 @@ import test_utils
 
 import wiktionary
 
+
 class KnownValues(unittest.TestCase):
     knownValues = (
-                    ('==English==', 'en', 2, 'lang'),
-                    ('=={{en}}==', 'en', 2, 'lang'),
-                    ('{{-en-}}', 'en', None, 'lang'),
-                    ('===Noun===', 'noun', 3, 'pos'),
-                    ('==={{noun}}===', 'noun', 3, 'pos'),
-                    ('{{-noun-}}', 'noun', None, 'pos'),
-                    ('===Verb===', 'verb', 3, 'pos'),
-                    ('==={{verb}}===', 'verb', 3, 'pos'),
-                    ('{{-verb-}}', 'verb', None, 'pos'),
-                    ('====Translations====', 'trans', 4, 'other'),
-                    ('===={{trans}}====', 'trans', 4, 'other'),
-                    ('{{-trans-}}', 'trans', None, 'other'),
-                  )
+        ('==English==', 'en', 2, 'lang'),
+        ('=={{en}}==', 'en', 2, 'lang'),
+        ('{{-en-}}', 'en', None, 'lang'),
+        ('===Noun===', 'noun', 3, 'pos'),
+        ('==={{noun}}===', 'noun', 3, 'pos'),
+        ('{{-noun-}}', 'noun', None, 'pos'),
+        ('===Verb===', 'verb', 3, 'pos'),
+        ('==={{verb}}===', 'verb', 3, 'pos'),
+        ('{{-verb-}}', 'verb', None, 'pos'),
+        ('====Translations====', 'trans', 4, 'other'),
+        ('===={{trans}}====', 'trans', 4, 'other'),
+        ('{{-trans-}}', 'trans', None, 'other'),
+    )
 
     def testHeaderInitKnownValuesContents(self):
-        """Header parsing comparing known result with known input for contents"""
+        """Header parsing comparing known result with known input for contents
+
+        """
+
         for wikiline, contents, level, type in self.knownValues:
             result = wiktionary.Header(wikiline).contents
             self.assertEqual(contents, result)
@@ -45,18 +49,27 @@ class KnownValues(unittest.TestCase):
 
 
 class SortEntriesCheckSortOrder(unittest.TestCase):
-    """Entries should be sorted as follows on a page: Translingual first, Wikilang next, then the others alphabetically on the language name in the Wiktionary's language """
+    """Entries should be sorted as follows on a page: Translingual first,
+    Wikilang next, then the others alphabetically on the language name in the
+    Wiktionary's language
+
+    """
+
     def testHeaderInitKnownValuesType(self):
         """Sorting order of Entries on a page"""
-        examples=((('en','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'en', 'nl', 'eo', 'fr', 'de', 'es']),
-                  (('nl','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'nl', 'de', 'en', 'eo', 'fr', 'es']),
-                  (('fr','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'fr', 'de', 'en', 'es', 'eo', 'nl']),
-                  (('de','C'),('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
-                              ['translingual', 'de', 'en', 'eo', 'fr', 'nl', 'es']),
-                 )
+        examples = ((('en', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'en', 'nl', 'eo', 'fr', 'de', 'es']),
+                    (('nl', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'nl', 'de', 'en', 'eo', 'fr', 'es']),
+                    (('fr', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'fr', 'de', 'en', 'es', 'eo', 'nl']),
+                    (('de', 'C'),
+                     ('eo', 'en', 'de', 'nl', 'es', 'translingual', 'fr'),
+                     ['translingual', 'de', 'en', 'eo', 'fr', 'nl', 'es']),
+                    )
         for example in examples:
             page = wiktionary.WiktionaryPage(example[0][0], example[0][1])
             for lang in example[1]:
@@ -65,9 +78,16 @@ class SortEntriesCheckSortOrder(unittest.TestCase):
             page.sortEntries()
             self.assertEqual(page.sortedentries, example[2])
 
+
 class TestKnownValuesInParser(unittest.TestCase):
-    """This class will check various aspects of parsing Wiktionary entries into our object model"""
-    knownvalues=({'wikilang': 'en', 'term': 'nut', 'wikiformat': u"""==English==
+    """This class will check various aspects of parsing Wiktionary entries into
+    our object model
+
+    """
+    knownvalues = (
+        {'wikilang': 'en',
+         'term': 'nut',
+         'wikiformat': u"""==English==
 ===Etymology===
 From Middle English [[nute]], from Old English [[hnutu]]. <!-- Is Latin [[nux]], nuc- a cognate? -->
 ===Pronunciation===
@@ -199,41 +219,66 @@ The translations below need to be checked by native speakers and inserted into t
 [[Category:Trees]]
 [[category:Foods]]
 """,
-   'internalrep':
-    (
-     [u'1000 English basic words',u'Colors',u'Browns',u'Trees',u'Foods'],
-     [u'io','la'],
-     {u'en':
-      [u'nut', None, u'nuts',
-       [{'definition': u'A hard-shelled seed', 'concisedef': u'seed',
-         'trans': {'nl': u"[[noot]] ''f''", 'fr': u"""''no generic translation exists''; [[noix]] ''f'' ''is often used, but this actually means "[[walnut]]"''""", 'de': u"[[Nuss]] ''f''", 'it': u"[[noce]] {{f}}", 'la': u"[[nux]]"}},
-        {'definition': u"A piece of metal, often [[hexagonal]], with a hole through it with internal threading intended to fit on to a bolt.", 'concisedef': u'that fits on a bolt',
-         'trans': {'nl': u"[[moer]] ''f''", 'fr': u"[[Ã©crou]] ''m''", 'de': u"[[Mutter]] ''f''", 'it': u"[[dado]] {{m}}"}},
-        {'definition': u"(''informal'') An insane person.", 'concisedef': u"'''informal: insane person'''",
-         'syns': u"[[loony]], [[nutcase]], [[nutter]]",
-         'trans': {'nl': u"[[gek]] ''m'', [[gekkin]] ''f'', [[zot]] ''m'', [[zottin]] ''f''", 'fr': "[[fou]] ''m'', [[folle]] ''f''", 'de': "[[Irre]] ''m/f'', [[Irrer]] ''m indef.''"}},
-        {'definition': u"(''slang'') The head.", 'concisedef': u"'''slang: the head'''",
-         'syns': u"[[bonce]], [[noddle]] (See further synonyms under [[head]])",
-         'trans': {'de': u"[[Birne]] ''f'', [[RÃ¼be]] ''f'', [[DÃ¶tz]] ''m''"}},
-        {'definition': u"(''slang; rarely used in the singular'') A testicle.", 'concisedef': u"'''slang: testicle'''",
-         'syns': u"[[ball]], [[bollock]] (''taboo slang''), [[nad]]",
-         'trans': {'nl': u"[[noten]] ''m (plural)'' <!--Never heard this before-->, [[bal]] ''m'', [[teelbal]] ''m''", 'fr': u"[[couille]] ''f''", 'de': u"[[Ei]] ''n'', ''lately:'' [[Nuss]] ''f''", 'es': u"[[cojone]], [[huevo]]"}},
-       ],
-      ],
-       u'nl':
-      [u'nut', 'n', None,
-       [{'definition': u'[[use]], [[benefit]]'}]
-      ],
-     }
-     )
-    },{'wikilang': 'en', 'term': 'nut', 'wikiformat': u"""[[category:Foods]]
-[[category:Drinks]]""", 'internalrep': ([u'Foods', u'Drinks'],[],{})})
+         'internalrep': (
+             [u'1000 English basic words', u'Colors', u'Browns', u'Trees',
+              u'Foods'],
+             [u'io', 'la'],
+             {u'en':
+              [u'nut', None, u'nuts',
+               [{'definition': u'A hard-shelled seed',
+                 'concisedef': u'seed',
+                 'trans': {
+                     'nl': u"[[noot]] ''f''",
+                     'fr': u"""''no generic translation exists''; [[noix]] ''f'' ''is often used, but this actually means "[[walnut]]"''""",
+                     'de': u"[[Nuss]] ''f''",
+                     'it': u"[[noce]] {{f}}",
+                     'la': u"[[nux]]"}},
+                {'definition': u"A piece of metal, often [[hexagonal]], with a hole through it with internal threading intended to fit on to a bolt.",
+                 'concisedef': u'that fits on a bolt',
+                 'trans': {
+                     'nl': u"[[moer]] ''f''",
+                     'fr': u"[[Ã©crou]] ''m''", 'de': u"[[Mutter]] ''f''",
+                     'it': u"[[dado]] {{m}}"}},
+                {'definition': u"(''informal'') An insane person.",
+                 'concisedef': u"'''informal: insane person'''",
+                 'syns': u"[[loony]], [[nutcase]], [[nutter]]",
+                 'trans': {
+                     'nl': u"[[gek]] ''m'', [[gekkin]] ''f'', [[zot]] ''m'', [[zottin]] ''f''",
+                     'fr': "[[fou]] ''m'', [[folle]] ''f''",
+                     'de': "[[Irre]] ''m/f'', [[Irrer]] ''m indef.''"}},
+                {'definition': u"(''slang'') The head.",
+                 'concisedef': u"'''slang: the head'''",
+                 'syns': u"[[bonce]], [[noddle]] (See further synonyms under [[head]])",
+                 'trans': {
+                     'de': u"[[Birne]] ''f'', [[RÃ¼be]] ''f'', [[DÃ¶tz]] ''m''"}},
+                {'definition': u"(''slang; rarely used in the singular'') A testicle.",
+                 'concisedef': u"'''slang: testicle'''",
+                 'syns': u"[[ball]], [[bollock]] (''taboo slang''), [[nad]]",
+                 'trans': {
+                     'nl': u"[[noten]] ''m (plural)'' <!--Never heard this before-->, [[bal]] ''m'', [[teelbal]] ''m''",
+                     'fr': u"[[couille]] ''f''",
+                     'de': u"[[Ei]] ''n'', ''lately:'' [[Nuss]] ''f''",
+                     'es': u"[[cojone]], [[huevo]]"}},
+                ],
+               ],
+              u'nl':
+              [u'nut', 'n', None,
+               [{'definition': u'[[use]], [[benefit]]'}]
+               ],
+              }
+         )
+         },
+        {'wikilang': 'en',
+         'term': 'nut',
+         'wikiformat': u"""[[category:Foods]]
+[[category:Drinks]]""",
+         'internalrep': ([u'Foods', u'Drinks'], [], {})})
 
     def testWhetherCategoriesAreParsedProperly(self):
         """Test whether Categories are parsed properly"""
         for value in self.knownvalues:
-            internalrepresentation=value['internalrep']
-            apage = wiktionary.WiktionaryPage(value['wikilang'],value['term'])
+            internalrepresentation = value['internalrep']
+            apage = wiktionary.WiktionaryPage(value['wikilang'], value['term'])
             apage.parseWikiPage(value['wikiformat'])
 
             self.assertEqual(apage.categories, internalrepresentation[0])
@@ -241,8 +286,8 @@ The translations below need to be checked by native speakers and inserted into t
     def testWhetherLinksAreParsedProperly(self):
         """Test whether Links are parsed properly"""
         for value in self.knownvalues:
-            internalrepresentation=value['internalrep']
-            apage = wiktionary.WiktionaryPage(value['wikilang'],value['term'])
+            internalrepresentation = value['internalrep']
+            apage = wiktionary.WiktionaryPage(value['wikilang'], value['term'])
             apage.parseWikiPage(value['wikiformat'])
 
             self.assertEqual(apage.interwikilinks, internalrepresentation[1])
@@ -250,31 +295,31 @@ The translations below need to be checked by native speakers and inserted into t
     def testWhetherDefsAreParsedProperly(self):
         """Test whether Definitions are parsed properly"""
         for value in self.knownvalues:
-            internalrepresentation=value['internalrep'][2]
-            apage = wiktionary.WiktionaryPage(value['wikilang'],value['term'])
+            internalrepresentation = value['internalrep'][2]
+            apage = wiktionary.WiktionaryPage(value['wikilang'], value['term'])
             apage.parseWikiPage(value['wikiformat'])
             for entrylang in internalrepresentation.keys():
-                term=internalrepresentation[entrylang][0]
-                gender=internalrepresentation[entrylang][1]
-                plural=internalrepresentation[entrylang][2]
-                definitions=internalrepresentation[entrylang][3]
-                refdefs=[]
+                term = internalrepresentation[entrylang][0]
+                gender = internalrepresentation[entrylang][1]
+                plural = internalrepresentation[entrylang][2]
+                definitions = internalrepresentation[entrylang][3]
+                refdefs = []
                 for definition in definitions:
                     refdefs.append(definition['definition'])
 
-                resultmeanings=[]
+                resultmeanings = []
                 for key in apage.entries[entrylang].meanings.keys():
                     for resultmeaning in apage.entries[entrylang].meanings[key]:
                         resultmeanings.append(resultmeaning.definition)
 
                 self.assertEqual(resultmeanings.sort(), refdefs.sort())
 
-'''
-class ToRomanBadInput(unittest.TestCase):
-    def testTooLarge(self):
-        """toRoman should fail with large input"""
-        self.assertRaises(roman.OutOfRangeError, roman.toRoman, 4000)
-'''
+
+##class ToRomanBadInput(unittest.TestCase):
+##    def testTooLarge(self):
+##        """toRoman should fail with large input"""
+##        self.assertRaises(roman.OutOfRangeError, roman.toRoman, 4000)
+
 
 if __name__ == "__main__":
     unittest.main()
