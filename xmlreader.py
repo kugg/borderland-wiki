@@ -16,16 +16,17 @@ http://www.effbot.org/ for earlier versions). If not found, it falls back
 to the older method using regular expressions.
 """
 #
-# (C) Pywikipedia bot team, 2005-2012
+# (C) Pywikibot team, 2005-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 
 import threading
 import xml.sax
-import codecs, re
+import codecs
+import re
 import wikipedia as pywikibot
 
 try:
@@ -35,6 +36,7 @@ except ImportError:
         from cElementTree import iterparse
     except ImportError:
         pass
+
 
 def parseRestrictions(restrictions):
     """
@@ -68,7 +70,7 @@ class XmlEntry:
         # TODO: there are more tags we can read.
         self.title = title
         self.ns = ns
-        self.id =id
+        self.id = id
         self.text = text
         self.username = username.strip()
         self.ipedit = ipedit
@@ -131,7 +133,7 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
                 pass
         elif name == 'text':
             self.destination = 'text'
-            self.text=u''
+            self.text = u''
         elif name == 'id':
             if self.inContributorTag:
                 self.destination = 'userid'
@@ -158,13 +160,13 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
             self.restrictions = u''
         elif name == 'title':
             self.destination = 'title'
-            self.title=u''
+            self.title = u''
         elif name == 'ns':
             self.destination = 'ns'
             self.ns = u''
         elif name == 'timestamp':
             self.destination = 'timestamp'
-            self.timestamp=u''
+            self.timestamp = u''
         elif self.headercallback:
             if name == 'siteinfo':
                 self.header = XmlHeaderEntry()
@@ -179,8 +181,8 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
         if name == 'contributor':
             self.inContributorTag = False
         elif name == 'restrictions':
-            self.editRestriction, self.moveRestriction \
-                                  = parseRestrictions(self.restrictions)
+            self.editRestriction, self.moveRestriction = parseRestrictions(
+                self.restrictions)
         elif name == 'redirect':
             self.isredirect = True
         elif name == 'revision':
@@ -347,7 +349,6 @@ Consider installing the python-celementtree package.''')
         self.editRestriction, self.moveRestriction \
                               = parseRestrictions(self.restrictions)
 
-
     def _create_revision(self, revision):
         """Creates a Single revision"""
         revisionid = revision.findtext("{%s}id" % self.uri)
@@ -362,7 +363,7 @@ Consider installing the python-celementtree package.''')
                         ns=self.ns,
                         id=self.pageid,
                         text=text or u'',
-                        username=username or u'', #username might be deleted
+                        username=username or u'',  # username might be deleted
                         ipedit=bool(ipeditor),
                         timestamp=timestamp,
                         editRestriction=self.editRestriction,
@@ -370,7 +371,7 @@ Consider installing the python-celementtree package.''')
                         revisionid=revisionid,
                         comment=comment,
                         redirect=self.isredirect
-                       )
+                        )
 
     def regex_parse(self):
         """
@@ -382,25 +383,30 @@ Consider installing the python-celementtree package.''')
         haven't installed cElementTree.
         """
         Rpage = re.compile(
-            '<page>\s*'+
-            '<title>(?P<title>.+?)</title>\s*'+
-            '<ns>(?P<namespace>\d+?)</ns>\s*'+
-            '<id>(?P<pageid>\d+?)</id>\s*'+
-            '(<restrictions>(?P<restrictions>.+?)</restrictions>)?\s*'+
-            '<revision>\s*'+
-              '<id>(?P<revisionid>\d+?)</id>\s*'+
-              '<timestamp>(?P<timestamp>.+?)</timestamp>\s*'+
-              '<contributor>\s*'+
-                '(<username>(?P<username>.+?)</username>\s*'+
-                '<id>(?P<userid>\d+?)</id>|<ip>(?P<ip>.+?)</ip>)\s*'+
-              '</contributor>\s*'+
-              '(?P<minor>(<minor />))?\s*'+
-              '(?:<comment>(?P<comment>.+?)</comment>\s*)?'+
-              '(<text xml:space="preserve">(?P<text>.*?)</text>|<text xml:space="preserve" />)\s*'+
-            '</revision>\s*'+
+            '<page>\s*' +
+            '<title>(?P<title>.+?)</title>\s*' +
+            '<ns>(?P<namespace>\d+?)</ns>\s*' +
+            '<id>(?P<pageid>\d+?)</id>\s*' +
+            '(<restrictions>(?P<restrictions>.+?)</restrictions>)?\s*' +
+            '<revision>\s*' +
+
+            '<id>(?P<revisionid>\d+?)</id>\s*' +
+            '<timestamp>(?P<timestamp>.+?)</timestamp>\s*' +
+            '<contributor>\s*' +
+
+            '(<username>(?P<username>.+?)</username>\s*' +
+            '<id>(?P<userid>\d+?)</id>|<ip>(?P<ip>.+?)</ip>)\s*' +
+
+            '</contributor>\s*' +
+            '(?P<minor>(<minor />))?\s*' +
+            '(?:<comment>(?P<comment>.+?)</comment>\s*)?' +
+            '(<text xml:space="preserve">(?P<text>.*?)</text>|<text xml:space="preserve" />)\s*' +
+
+            '</revision>\s*' +
             '</page>',
-                re.DOTALL)
-        f = codecs.open(self.filename, 'r', encoding = pywikibot.getSite().encoding(),
+            re.DOTALL)
+        f = codecs.open(self.filename, 'r',
+                        encoding=pywikibot.getSite().encoding(),
                         errors='replace')
         eof = False
         lines = u''
@@ -438,7 +444,7 @@ Consider installing the python-celementtree package.''')
                                    id=m.group('pageid'), text=text,
                                    username=username, ipedit=ipedit,
                                    timestamp=m.group('timestamp'),
-                                   editRestriction = editRestriction,
+                                   editRestriction=editRestriction,
                                    moveRestriction=moveRestriction,
                                    revisionid=m.group('revisionid')
-                                  )
+                                   )
