@@ -181,14 +181,19 @@ badword at all but can be used for some bad-nickname.
 __version__ = '$Id$'
 #
 
-import time, re, urllib, locale
+import time
+import re
+import urllib
+import locale
 import codecs
 from datetime import timedelta
 from random import choice
 from string import capitalize
 import wikipedia as pywikibot
 from pywikibot import i18n
-import config, query, userlib
+import config
+import query
+import userlib
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -227,7 +232,7 @@ logbook = {
 # that is your signature (the bot has a random parameter to add different
 # sign, so in this way it will change according to your parameters).
 netext = {
-    'commons': {'_default': u'{{subst:welcome}} %s', } ,
+    'commons': {'_default': u'{{subst:welcome}} %s', },
     'wikipedia': {
         'am': u'{{subst:Welcome}} %s',
         'ar': u'{{subst:ترحيب}} %s',
@@ -246,7 +251,7 @@ netext = {
         'nap': u'{{Bemmenuto}}%s',
         'nl': u'{{hola|bot|%s}}',
         'no': u'{{subst:bruker:jhs/vk}} %s',
-        'pdc':u'{{subst:Wilkum}}%s',
+        'pdc': u'{{subst:Wilkum}}%s',
         'pt': u'{{subst:bem vindo}} %s',
         'roa-tara': u'{{Bovègne}} %s',
         'ru': u'{{Hello}} %s',
@@ -257,17 +262,17 @@ netext = {
         'zh': u'{{subst:welcome|sign=%s}}',
         'zh-yue': u'{{歡迎}}--%s',
     },
-    'wikinews':{
+    'wikinews': {
         'fa': u'{{خوشامد۲|%s}}',
         'it': u'{{subst:benvenuto}}',
         'zh': u'{{subst:welcome}} %s',
     },
-    'wiktionary':{
+    'wiktionary': {
         'bn': u'{{subst:User:Wikitanvir/welcome|firma=%s}}',
         'fa': u'{{جا:خوشامد|%s}}',
         'it': u'{{subst:Utente:Filnik/Benve|firma=%s}}',
     },
-    'wikiversity':{
+    'wikiversity': {
         'de': u'{{subst:Willkommen|%s}}',
         'el': u'{{subst:καλωσόρισμα}} %s',
         'en': u'{{subst:Welcome}}\n\n{{subst:Talktome}} %s',
@@ -291,7 +296,7 @@ report_page = {
         'ja': u'利用者:Alexbot/report',
         'nl': u'Project:Verzoekpagina voor moderatoren/RegBlok/Te controleren gebruikersnamen',
         'no': u'Bruker:JhsBot II/Rapport',
-        'pdc':u'Benutzer:Xqt/Report',
+        'pdc': u'Benutzer:Xqt/Report',
         'ru': u'Участник:LatitudeBot/Рапорт',
         'sq': u'User:EagleBot/Report',
         'sr': u'User:SashatoBot/Записи',
@@ -303,7 +308,7 @@ report_page = {
 # (this parameter is optional).
 bad_pag = {
     'commons': {'_default': u'Project:Welcome log/Bad_names', },
-    'wikipedia':{
+    'wikipedia': {
         'am': u'User:Beria/Bad_names',
         'ar': u'Project:سجل الترحيب/أسماء سيئة',
         'en': u'Project:Welcome log/Bad_names',
@@ -320,12 +325,13 @@ bad_pag = {
     }
 }
 
-timeselected = u' ~~~~~' # Defining the time used after the signature
+timeselected = u' ~~~~~'  # Defining the time used after the signature
 
-# The text for reporting a possibly bad username (e.g. *[[Talk_page:Username|Username]]).
+# The text for reporting a possibly bad username
+# e.g. *[[Talk_page:Username|Username]]).
 report_text = {
-    'commons': {'_default': u"\n*{{user3|%s}}" + timeselected,},
-    'wikipedia':{
+    'commons': {'_default': u"\n*{{user3|%s}}" + timeselected, },
+    'wikipedia': {
         'am': u"\n*[[User talk:%s]]" + timeselected,
         'ar': u"\n*{{user13|%s}}" + timeselected,
         'da': u'\n*[[Bruger Diskussion:%s]] ' + timeselected,
@@ -338,7 +344,7 @@ report_text = {
         'ja': u"\n*{{User2|%s}}" + timeselected,
         'nl': u'\n*{{linkgebruiker%s}} ' + timeselected,
         'no': u'\n*{{bruker|%s}} ' + timeselected,
-        'pdc':u'\n*[[Benutzer Diskussion:%s]] ' + timeselected,
+        'pdc': u'\n*[[Benutzer Diskussion:%s]] ' + timeselected,
         'sq': u'\n*[[User:%s]] ' + timeselected,
         'zh': u"\n*{{User|%s}}" + timeselected
     }
@@ -353,37 +359,40 @@ random_sign = {
     'fa': u'Project:سیاهه خوشامد/امضاها',
     'fr': u'Projet:Service de Parrainage Actif/Signatures',
     'it': u'Project:Benvenuto_Bot/Firme',
-    'ja': None, #jawiki comminuty discussion oppose , [[ja:Wikipedia:Bot作業依頼/ウェルカムメッセージ貼り付け依頼]]
+
+    # jawiki comminuty discussion oppose,
+    # [[ja:Wikipedia:Bot作業依頼/ウェルカムメッセージ貼り付け依頼]]
+    'ja': None,
     'nap': u'User:Cellistbot/Firme',
     'roa-tara': u'Wikipedia:Bovègne Bot/Firme',
     'ru': u'Участник:LatitudeBot/Sign',
     'vec': u'Utente:FriBot/Firme',
     'zh': u'User:Welcomebot/欢迎日志/用户',
-    }
+}
 # The page where the bot reads the real-time whitelist page.
 # (this parameter is optional).
 whitelist_pg = {
     '_default': None,
-    'ar':u'Project:سجل الترحيب/قائمة بيضاء',
-    'en':u'User:Filnik/whitelist',
-    'ga':u'Project:Log fáilte/Bánliosta',
-    'it':u'Project:Benvenuto_Bot/Lista_Whitewords',
-    'ru':u'Участник:LatitudeBot/Белый_список',
-    }
+    'ar': u'Project:سجل الترحيب/قائمة بيضاء',
+    'en': u'User:Filnik/whitelist',
+    'ga': u'Project:Log fáilte/Bánliosta',
+    'it': u'Project:Benvenuto_Bot/Lista_Whitewords',
+    'ru': u'Участник:LatitudeBot/Белый_список',
+}
 
 # Text after the {{welcome}} template, if you want to add something
 # Default (en): nothing.
 final_new_text_additions = {
-    'it':u'\n<!-- fine template di benvenuto -->',
-    'zh':'<small>(via ~~~)</small>',
-    }
+    'it': u'\n<!-- fine template di benvenuto -->',
+    'zh': '<small>(via ~~~)</small>',
+}
 
 #
 #
 logpage_header = {
-    '_default' :u'{|border="2" cellpadding="4" cellspacing="0" style="margin: 0.5em 0.5em 0.5em 1em; padding: 0.5em; background: #bfcda5; border: 1px #b6fd2c solid; border-collapse: collapse; font-size: 95%;"',
-    'no':u'[[Kategori:Velkomstlogg|{{PAGENAME}}]]\n{| class="wikitable"',
-    'it':u'[[Categoria:Benvenuto log|{{subst:PAGENAME}}]]\n{|border="2" cellpadding="4" cellspacing="0" style="margin: 0.5em 0.5em 0.5em 1em; padding: 0.5em; background: #bfcda5; border: 1px #b6fd2c solid; border-collapse: collapse; font-size: 95%;"'
+    '_default': u'{|border="2" cellpadding="4" cellspacing="0" style="margin: 0.5em 0.5em 0.5em 1em; padding: 0.5em; background: #bfcda5; border: 1px #b6fd2c solid; border-collapse: collapse; font-size: 95%;"',
+    'no': u'[[Kategori:Velkomstlogg|{{PAGENAME}}]]\n{| class="wikitable"',
+    'it': u'[[Categoria:Benvenuto log|{{subst:PAGENAME}}]]\n{|border="2" cellpadding="4" cellspacing="0" style="margin: 0.5em 0.5em 0.5em 1em; padding: 0.5em; background: #bfcda5; border: 1px #b6fd2c solid; border-collapse: collapse; font-size: 95%;"'
 }
 
 # Ok, that's all. What is below, is the rest of code, now the code is fixed
@@ -392,8 +401,10 @@ logpage_header = {
 ############################################################################
 ############################################################################
 
+
 class FilenameNotSet(pywikibot.Error):
     """An exception indicating that a signature filename was not specifed."""
+
 
 class Global(object):
     """Container class for global settings.
@@ -416,8 +427,8 @@ class Global(object):
     queryLimit = 50         # number of users that the bot load to check
     quiet = False           # Prevents users without contributions are displayed
     quick = False           # Provide quick check by API bulk-retrieve user datas
+##    fileOption = False     # check if the user wants to use a file or the wikipage
 
-    #fileOption = False     # check if the user wants to use a file or the wikipage
 
 class WelcomeBot(object):
 
@@ -431,10 +442,10 @@ class WelcomeBot(object):
 
         if globalvar.randomSign:
             self.defineSign(True)
-        if __name__ != '__main__': #use only in module call
+        if __name__ != '__main__':  # use only in module call
             self._checkQueue = []
 
-    def badNameFilter(self, name, force = False):
+    def badNameFilter(self, name, force=False):
         if not globalvar.filtBadName:
             return False
 
@@ -464,19 +475,23 @@ class WelcomeBot(object):
                 'testicol', 'troia', 'universetoday.net', 'vaffanculo', 'vagina',
                 'vibrator', "vacca", 'yiddiot', "zoccola",
             ]
-            elenco_others = ['@', ".com", ".sex", ".org", ".uk", ".en", ".it", "admin",
-                "administrator", "amministratore", '@yahoo.com', '@alice.com', "amministratrice",
-                "burocrate", "checkuser", "developer", "http://", "jimbo", "mediawiki",
-                "on wheals", "on wheal", "on wheel", "planante", "razinger", "sysop", "troll",
-                "vandal", " v.f. ", "v. fighter", "vandal f.", "vandal fighter", 'wales jimmy',
-                "wheels", "wales", "www.",
+            elenco_others = [
+                '@', ".com", ".sex", ".org", ".uk", ".en", ".it", "admin",
+                "administrator", "amministratore", '@yahoo.com', '@alice.com',
+                "amministratrice", "burocrate", "checkuser", "developer", "http://",
+                "jimbo", "mediawiki", "on wheals", "on wheal", "on wheel", "planante",
+                "razinger", "sysop", "troll", "vandal", " v.f. ", "v. fighter",
+                "vandal f.", "vandal fighter", 'wales jimmy', "wheels", "wales",
+                "www.",
             ]
 
-            #blacklist from wikipage
-            badword_page = pywikibot.Page(self.site, pywikibot.translate(self.site, bad_pag) )
+            # blacklist from wikipage
+            badword_page = pywikibot.Page(self.site,
+                                          pywikibot.translate(self.site, bad_pag))
             list_loaded = list()
             if badword_page.exists():
-                pywikibot.output(u'\nLoading the bad words list from %s...' % self.site )
+                pywikibot.output(u'\nLoading the bad words list from %s...'
+                                 % self.site)
                 list_loaded = load_word_function(badword_page.get())
             else:
                 showStatus(4)
@@ -485,14 +500,15 @@ class WelcomeBot(object):
             del elenco, elenco_others, list_loaded
 
         if not hasattr(self, '_whitelist') or force:
-            #initialize whitelist
+            # initialize whitelist
             whitelist_default = ['emiliano']
             wtlpg = pywikibot.translate(self.site, whitelist_pg)
             list_white = list()
             if wtlpg:
                 whitelist_page = pywikibot.Page(self.site, wtlpg)
                 if whitelist_page.exists():
-                    pywikibot.output(u'\nLoading the whitelist from %s...' % self.site )
+                    pywikibot.output(u'\nLoading the whitelist from %s...'
+                                     % self.site)
                     list_white = load_word_function(whitelist_page.get())
                 else:
                     showStatus(4)
@@ -516,19 +532,21 @@ class WelcomeBot(object):
             pass
         try:
             for bname in self._blacklist:
-                if bname.lower() in str(name).lower(): #bad name positive
+                if bname.lower() in str(name).lower():  # bad name positive
                     self.bname[name] = bname
                     return True
         except UnicodeEncodeError:
             pass
         return False
 
-    def reportBadAccount(self, name = None, final = False):
+    def reportBadAccount(self, name=None, final=False):
         #Queue process
         if name:
             if globalvar.confirm:
-                answer = pywikibot.inputChoice(u'%s may have an unwanted username, do you want to report this user?'
-                                % name, ['Yes', 'No', 'All'], ['y', 'N', 'a'], 'N')
+                answer = pywikibot.inputChoice(
+                    u'%s may have an unwanted username, do you want to report '
+                    u'this user?' % name,
+                    ['Yes', 'No', 'All'], ['y', 'N', 'a'], 'N')
                 if answer in ['a', 'all']:
                     answer = 'y'
                     globalvar.confirm = False
@@ -537,7 +555,9 @@ class WelcomeBot(object):
 
             if answer.lower() in ['yes', 'y'] or not globalvar.confirm:
                 showStatus()
-                pywikibot.output(u'%s is possibly an unwanted username. It will be reported.' % name)
+                pywikibot.output(
+                    u'%s is possibly an unwanted username. It will be reported.'
+                    % name)
                 if hasattr(self, '_BAQueue'):
                     self._BAQueue.append(name)
                 else:
@@ -545,50 +565,58 @@ class WelcomeBot(object):
 
         if len(self._BAQueue) >= globalvar.dumpToLog or final:
             rep_text = ''
-            #name in queue is max, put detail to report page
+            # name in queue is max, put detail to report page
             pywikibot.output("Updating badname accounts to report page...")
-            rep_page = pywikibot.Page(self.site, pywikibot.translate(self.site, report_page) )
+            rep_page = pywikibot.Page(self.site,
+                                      pywikibot.translate(self.site,
+                                                          report_page))
             if rep_page.exists():
                 text_get = rep_page.get()
             else:
                 text_get = u'This is a report page for the Bad-username, please translate me. --~~~'
             pos = 0
-            # The talk page includes "_" between the two names, in this way i replace them to " ".
+            # The talk page includes "_" between the two names, in this way i
+            # replace them to " ".
             for usrna in self._BAQueue:
                 username = pywikibot.url2link(usrna, self.site, self.site)
                 n = re.compile(re.escape(username), re.UNICODE)
                 y = n.search(text_get, pos)
                 if y:
-                    pywikibot.output(u'%s is already in the report page.' % username)
+                    pywikibot.output(u'%s is already in the report page.'
+                                     % username)
                 else:
                     # Adding the log.
-                    rep_text += pywikibot.translate(self.site, report_text) % username
+                    rep_text += pywikibot.translate(self.site, report_text)
+                    % username
                     if self.site.lang == 'it':
                         rep_text = "%s%s}}" % (rep_text, self.bname[username])
 
             com = i18n.twtranslate(self.site, 'welcome-bad_username')
             if rep_text != '':
-                rep_page.put(text_get + rep_text, comment = com, force = True, minorEdit = True)
+                rep_page.put(text_get + rep_text, comment=com, force=True,
+                             minorEdit=True)
                 showStatus(5)
                 pywikibot.output(u'Reported')
             self.BAQueue = list()
         else:
             return True
 
-    def makelogpage(self, queue = []):
-        if not globalvar.makeWelcomeLog:
-            return None
-        if len(queue) == 0:
-            return None
+    def makelogpage(self, queue=None):
+        if queue is None:
+            queue = []
+        if not globalvar.makeWelcomeLog or len(queue) == 0:
+            return
 
         text = u''
         logg = pywikibot.translate(self.site, logbook, fallback=False)
         if not logg:
-            return None
+            return
 
-        target = logg + '/' + time.strftime('%Y/%m/%d', time.localtime(time.time()))
+        target = logg + '/' + time.strftime('%Y/%m/%d',
+                                            time.localtime(time.time()))
         if self.site.lang == 'it':
-            target = logg + '/' + time.strftime('%d/%m/%Y', time.localtime(time.time()))
+            target = logg + '/' + time.strftime('%d/%m/%Y',
+                                                time.localtime(time.time()))
 
         logPage = pywikibot.Page(self.site, target)
         if logPage.exists():
@@ -596,15 +624,18 @@ class WelcomeBot(object):
         else:
             #make new log page
             showStatus()
-            pywikibot.output('Log page is not exist, getting information for page creation')
+            pywikibot.output(
+                'Log page is not exist, getting information for page creation')
             text = pywikibot.translate(self.site, logpage_header)
             text += u'\n!%s' % self.site.namespace(2)
-            text += u'\n!%s' % capitalize(self.site.mediawiki_message('contribslink'))
+            text += u'\n!%s' % capitalize(
+                self.site.mediawiki_message('contribslink'))
 
         for result in queue:
             # Adding the log... (don't take care of the variable's name...).
             luser = pywikibot.url2link(result.name(), self.site, self.site)
-            text += u'\n{{WLE|user=%s|contribs=%d}}' % (luser, result.editCount())
+            text += u'\n{{WLE|user=%s|contribs=%d}}' % (
+                luser, result.editCount())
         #update log page.
         while True:
             try:
@@ -612,7 +643,8 @@ class WelcomeBot(object):
                                                    'welcome-updating'))
                 return True
             except pywikibot.EditConflict:
-                pywikibot.output(u'An edit conflict has occured. Pausing for 10 seconds before continuing.')
+                pywikibot.output(u'An edit conflict has occured. Pausing for '
+                                 u'10 seconds before continuing.')
                 time.sleep(10)
 
     def parseNewUserLog(self):
@@ -628,14 +660,17 @@ class WelcomeBot(object):
 
         starttime = None
         if globalvar.timeoffset != 0:
-            now = self.site.server_time() - timedelta(minutes=globalvar.timeoffset)
+            now = self.site.server_time() - timedelta(
+                minutes=globalvar.timeoffset)
             starttime = int(now.strftime("%Y%m%d%H%M%S"))
         elif globalvar.offset != 0:
             starttime = globalvar.offset
 
         count_auto = 0
         pywikibot.output("Querying new user log from API....")
-        for x in self.site.logpages(number = globalvar.queryLimit, mode = 'newusers',start = starttime, dump = True):
+        for x in self.site.logpages(number=globalvar.queryLimit,
+                                    mode='newusers', start=starttime,
+                                    dump=True):
             someone_found = True
             if 'user' not in x:
                 continue
@@ -645,7 +680,8 @@ class WelcomeBot(object):
             if not globalvar.welcomeAuto and x['action'] == 'autocreate':
                 if not globalvar.quick:
                     showStatus(3)
-                    pywikibot.output(u'%s has been created automatically.' % x['user'])
+                    pywikibot.output(u'%s has been created automatically.'
+                                     % x['user'])
                 count_auto += 1
                 continue
 
@@ -654,7 +690,8 @@ class WelcomeBot(object):
         if someone_found:
             if globalvar.quick and count_auto > 0:
                 showStatus()
-                pywikibot.output(u'Ignored %d user(s) by auto-create' % count_auto)
+                pywikibot.output(u'Ignored %d user(s) by auto-create'
+                                 % count_auto)
 
             showStatus(5)
             pywikibot.output(u'There is nobody left to be welcomed...')
@@ -665,7 +702,8 @@ class WelcomeBot(object):
         someone_found = False
         URL = self.site.log_address(globalvar.queryLimit, 'newusers')
         if globalvar.timeoffset != 0:
-            now = self.site.server_time() - timedelta(minutes=globalvar.timeoffset)
+            now = self.site.server_time() - timedelta(
+                minutes=globalvar.timeoffset)
             globalvar.offset = int(now.strftime("%Y%m%d%H%M%S"))
         if globalvar.offset != 0:
             URL += "&offset=%d" % globalvar.offset
@@ -675,7 +713,7 @@ class WelcomeBot(object):
         # I search with a regex how many user have not the talk page
         # and i put them in a list (i find it more easy and secure).
         # XXX: That's the regex, if there are problems, take a look here.
-        reg =  u'\(<a href=\"' + re.escape(self.site.path())
+        reg = u'\(<a href=\"' + re.escape(self.site.path())
         reg += u'\?title=%s(?P<user>.*?)&(?:amp;|)action=(?:edit|editredlink|edit&amp;redlink=1)\"' % re.escape('%s:' % urllib.quote(self.site.namespace(3).replace(" ", "_").encode(self.site.encoding())))
         reg += u'.*?</span> (?P<reason>.*?) *?</li>'
 
@@ -685,9 +723,11 @@ class WelcomeBot(object):
             someone_found = True
             userN = unicode(urllib.unquote(str(x.group('user'))), 'utf-8')
             #skip autocreated users (SUL)
-            if not globalvar.welcomeAuto and self.site.mediawiki_message('newuserlog-autocreate-entry') in x.group('reason'):
+            if not globalvar.welcomeAuto and self.site.mediawiki_message(
+                    'newuserlog-autocreate-entry') in x.group('reason'):
                 showStatus(3)
-                pywikibot.output(u'%s has been created automatically, skipping...' % userN)
+                pywikibot.output(
+                    u'%s has been created automatically, skipping...' % userN)
                 continue
 
             #FIXME: It counts the first 50 edits
@@ -701,8 +741,8 @@ class WelcomeBot(object):
         else:
             pywikibot.output(u'\nLoaded all users...')
 
-    def defineSign(self, force = False):
-        if hasattr(self,'_randomSignature') and not force:
+    def defineSign(self, force=False):
+        if hasattr(self, '_randomSignature') and not force:
             return self._randomSignature
 
         signText = u''
@@ -711,24 +751,28 @@ class WelcomeBot(object):
             signPageName = pywikibot.translate(self.site, random_sign)
             if not signPageName:
                 showStatus(4)
-                pywikibot.output("%s doesn't allow random signature, force disable." % self.site)
+                pywikibot.output(
+                    "%s doesn't allow random signature, force disable."
+                    % self.site)
                 globalvar.randomSign = False
-                return None
+                return
 
-            signPage = pywikibot.Page(self.site, signPageName )
+            signPage = pywikibot.Page(self.site, signPageName)
             if signPage.exists():
                 pywikibot.output('Loading signature list...')
                 signText = signPage.get()
             else:
-                pywikibot.output('The Signature list page is not exist, random signature will disable.')
+                pywikibot.output('The Signature list page is not exist, random '
+                                 'signature will disable.')
                 globalvar.randomSign = False
         else:
             try:
-                f = codecs.open(pywikibot.config.datafilepath(globalvar.signFileName), 'r',
-                                encoding=config.console_encoding)
+                f = codecs.open(
+                    pywikibot.config.datafilepath(globalvar.signFileName), 'r',
+                    encoding=config.console_encoding)
             except LookupError:
-                f = codecs.open(pywikibot.config.datafilepath(globalvar.signFileName), 'r',
-                                encoding='utf-8')
+                f = codecs.open(pywikibot.config.datafilepath(
+                    globalvar.signFileName), 'r', encoding='utf-8')
             except IOError:
                 pywikibot.error(u'No fileName!')
                 raise FilenameNotSet("No signature filename specified.")
@@ -754,25 +798,28 @@ class WelcomeBot(object):
             for users in us:
                 if users.isBlocked():
                     showStatus(3)
-                    pywikibot.output(u'%s has been blocked!' % users.name() )
+                    pywikibot.output(u'%s has been blocked!' % users.name())
                     continue
                 if 'bot' in users.groups():
                     showStatus(3)
-                    pywikibot.output(u'%s is a bot!' % users.name() )
+                    pywikibot.output(u'%s is a bot!' % users.name())
                     continue
                 if 'bot' in users.name().lower():
                     showStatus(3)
-                    pywikibot.output(u'%s might be a global bot!' % users.name() )
+                    pywikibot.output(u'%s might be a global bot!'
+                                     % users.name())
                     continue
                 #if globalvar.offset != 0 and time.strptime(users.registrationTime(), "%Y-%m-%dT%H:%M:%SZ") >= globalvar.offset:
                 #
                 if users.editCount() >= globalvar.attachEditCount:
                     showStatus(2)
-                    pywikibot.output(u'%s has enough edits to be welcomed.' % users.name() )
+                    pywikibot.output(u'%s has enough edits to be welcomed.'
+                                     % users.name())
                     ustp = users.getUserTalkPage()
                     if ustp.exists():
                         showStatus(3)
-                        pywikibot.output(u'%s has been already welcomed.' % users.name())
+                        pywikibot.output(u'%s has been already welcomed.'
+                                         % users.name())
                         continue
                     else:
                         if self.badNameFilter(users.name()):
@@ -781,35 +828,44 @@ class WelcomeBot(object):
                         welcome_text = pywikibot.translate(self.site, netext)
                         if globalvar.randomSign:
                             if self.site.family != 'wikinews':
-                                welcome_text = welcome_text % choice(self.defineSign())
-                            if self.site.family == 'wiktionary' and self.site.lang == 'it':
+                                welcome_text = (welcome_text
+                                                % choice(self.defineSign()))
+                            if self.site.family == 'wiktionary' and \
+                               self.site.lang == 'it':
                                 pass
                             else:
                                 welcome_text += timeselected
-                        elif (self.site.family != 'wikinews' and self.site.lang != 'it'):
-                            welcome_text = welcome_text % globalvar.defaultSign
+                        elif (self.site.family != 'wikinews' and
+                              self.site.lang != 'it'):
+                            welcome_text = (welcome_text
+                                            % globalvar.defaultSign)
                         if self.site.lang in final_new_text_additions:
-                            welcome_text += pywikibot.translate(self.site, final_new_text_additions)
+                            welcome_text += pywikibot.translate(
+                                self.site, final_new_text_additions)
                         welcome_comment = i18n.twtranslate(self.site,
                                                            'welcome-welcome')
                         try:
                             #append welcomed, welcome_count++
-                            ustp.put(welcome_text, welcome_comment, minorEdit=False)
+                            ustp.put(welcome_text, welcome_comment,
+                                     minorEdit=False)
                             welcomed_count += 1
                             self._totallyCount += 1
                             self.welcomed_users.append(users)
                         except pywikibot.EditConflict:
                             showStatus(4)
-                            pywikibot.output(u'An edit conflict has occured, skipping this user.')
+                            pywikibot.output(u'An edit conflict has occured, '
+                                             u'skipping this user.')
 
-                    if globalvar.makeWelcomeLog and pywikibot.translate(self.site, logbook):
+                    if globalvar.makeWelcomeLog and \
+                       pywikibot.translate(self.site, logbook):
                         showStatus(5)
                         if welcomed_count == 1:
                             pywikibot.output(u'One user has been welcomed.')
                         elif welcomed_count == 0:
                             pywikibot.output(u'No users have been welcomed.')
                         else:
-                            pywikibot.output(u'%s users have been welcomed.' % welcomed_count )
+                            pywikibot.output(u'%s users have been welcomed.'
+                                             % welcomed_count)
                         if welcomed_count >= globalvar.dumpToLog:
                             if self.makelogpage(self.welcomed_users):
                                 self.welcomed_users = list()
@@ -821,18 +877,23 @@ class WelcomeBot(object):
                     if users.editCount() == 0:
                         if not globalvar.quiet:
                             showStatus(1)
-                            pywikibot.output(u'%s has no contributions.' % users.name() )
+                            pywikibot.output(u'%s has no contributions.'
+                                             % users.name())
                     else:
                         showStatus(1)
-                        pywikibot.output(u'%s has only %d contributions.' % (users.name(), users.editCount() ) )
+                        pywikibot.output(u'%s has only %d contributions.'
+                                         % (users.name(), users.editCount()))
                     # That user mustn't be welcomed.
                     continue
-            if globalvar.makeWelcomeLog and pywikibot.translate(self.site, logbook) and welcomed_count > 0:
+            if globalvar.makeWelcomeLog and pywikibot.translate(
+                    self.site, logbook) and welcomed_count > 0:
                 showStatus()
                 if welcomed_count == 1:
                     pywikibot.output(u'Putting the log of the latest user...')
                 else:
-                    pywikibot.output(u'Putting the log of the latest %d users...' % welcomed_count)
+                    pywikibot.output(
+                        u'Putting the log of the latest %d users...'
+                        % welcomed_count)
                 if self.makelogpage(self.welcomed_users):
                     self.welcomed_users = list()
                 else:
@@ -841,15 +902,20 @@ class WelcomeBot(object):
             if hasattr(self, '_BAQueue'):
                 showStatus()
                 pywikibot.output("Putting bad name to report page....")
-                self.reportBadAccount(None, final = True)
+                self.reportBadAccount(None, final=True)
             try:
                 if globalvar.recursive:
                     showStatus()
                     if locale.getlocale()[1]:
-                        strfstr = unicode(time.strftime(u"%d %b %Y %H:%M:%S (UTC)", time.gmtime()), locale.getlocale()[1])
+                        strfstr = unicode(
+                            time.strftime(u"%d %b %Y %H:%M:%S (UTC)",
+                                          time.gmtime()),
+                            locale.getlocale()[1])
                     else:
-                        strfstr = unicode(time.strftime(u"%d %b %Y %H:%M:%S (UTC)", time.gmtime()))
-                    pywikibot.output(u'Sleeping %d seconds before rerun. %s' % (globalvar.timeRecur, strfstr))
+                        strfstr = unicode(time.strftime(
+                            u"%d %b %Y %H:%M:%S (UTC)", time.gmtime()))
+                    pywikibot.output(u'Sleeping %d seconds before rerun. %s'
+                                     % (globalvar.timeRecur, strfstr))
                     time.sleep(globalvar.timeRecur)
                 else:
                     raise KeyboardInterrupt
@@ -870,24 +936,27 @@ class WelcomeBot(object):
     #            self.run()
     #            self._checkQueue = []
 
-def showStatus(n = 0):
+
+def showStatus(n=0):
     staColor = {
-        0:'lightpurple',
-        1:'lightaqua',
-        2:'lightgreen',
-        3:'lightyellow',
-        4:'lightred',
-        5:'lightblue'
+        0: 'lightpurple',
+        1: 'lightaqua',
+        2: 'lightgreen',
+        3: 'lightyellow',
+        4: 'lightred',
+        5: 'lightblue'
     }
     staMsg = {
-        0:'MSG  ',
-        1:'NoAct',
-        2:'Match',
-        3:'Skip ',
-        4:'Warning',
-        5:'Done ',
+        0: 'MSG  ',
+        1: 'NoAct',
+        2: 'Match',
+        3: 'Skip ',
+        4: 'Warning',
+        5: 'Done ',
     }
-    pywikibot.output("\03{%s}[%s]\03{default} " % (staColor[n], staMsg[n]) , newline = False)
+    pywikibot.output("\03{%s}[%s]\03{default} "
+                     % (staColor[n], staMsg[n]), newline=False)
+
 
 def load_word_function(raw):
     """ This is a function used to load the badword and the whitelist."""
@@ -905,36 +974,43 @@ if __name__ == "__main__":
         for arg in pywikibot.handleArgs():
             if arg.startswith('-edit'):
                 if len(arg) == 5:
-                    globalvar.attachEditCount = int(pywikibot.input(u'After how many edits would you like to welcome new users? (0 is allowed)'))
+                    globalvar.attachEditCount = int(pywikibot.input(
+                        u'After how many edits would you like to welcome new users? (0 is allowed)'))
                 else:
                     globalvar.attachEditCount = int(arg[6:])
             elif arg.startswith('-timeoffset'):
                 if len(arg) == 11:
-                    globalvar.timeoffset = int(pywikibot.input(u'Which time offset (in minutest) for new users would you like to use?'))
+                    globalvar.timeoffset = int(pywikibot.input(
+                        u'Which time offset (in minutest) for new users would you like to use?'))
                 else:
                     globalvar.timeoffset = int(arg[12:])
             elif arg.startswith('-time'):
                 if len(arg) == 5:
-                    globalvar.timeRecur = int(pywikibot.input(u'For how many seconds would you like to bot to sleep before checking again?'))
+                    globalvar.timeRecur = int(pywikibot.input(
+                        u'For how many seconds would you like to bot to sleep before checking again?'))
                 else:
                     globalvar.timeRecur = int(arg[6:])
             elif arg.startswith('-offset'):
                 if len(arg) == 7:
-                    globalvar.offset = int(pywikibot.input(u'Which time offset for new users would you like to use? (yyyymmddhhmmss)'))
+                    globalvar.offset = int(pywikibot.input(
+                        u'Which time offset for new users would you like to use? (yyyymmddhhmmss)'))
                 else:
                     globalvar.offset = int(arg[8:])
                 if len(str(globalvar.offset)) != 14:
                     # upon request, we might want to check for software version here
-                    raise ValueError("Mediawiki has changed, -offset:# is not supported anymore, but -offset:TIMESTAMP is, assuming TIMESTAMP is yyyymmddhhmmss. -timeoffset is now also supported. Please read this script source header for documentation.")
+                    raise ValueError(
+                        "Mediawiki has changed, -offset:# is not supported anymore, but -offset:TIMESTAMP is, assuming TIMESTAMP is yyyymmddhhmmss. -timeoffset is now also supported. Please read this script source header for documentation.")
             elif arg.startswith('-file:'):
                 globalvar.randomSign = True
                 if len(arg) == 6:
-                    globalvar.signFileName = pywikibot.input(u'Where have you saved your signatures?')
+                    globalvar.signFileName = pywikibot.input(
+                        u'Where have you saved your signatures?')
                 else:
                     globalvar.signFileName = arg[6:]
             elif arg.startswith('-sign:'):
                 if len(arg) == 6:
-                    globalvar.defaultSign = pywikibot.input(u'Which signature to use?')
+                    globalvar.defaultSign = pywikibot.input(
+                        u'Which signature to use?')
                 else:
                     globalvar.defaultSign = arg[6:]
                 globalvar.defaultSign += timeselected
@@ -954,12 +1030,14 @@ if __name__ == "__main__":
                 globalvar.welcomeAuto = True
             elif arg.startswith('-limit'):
                 if len(arg) == 6:
-                    globalvar.queryLimit = int(pywikibot.input(u'How many of the latest new users would you like to load?'))
+                    globalvar.queryLimit = int(pywikibot.input(
+                        u'How many of the latest new users would you like to load?'))
                 else:
                     globalvar.queryLimit = int(arg[7:])
             elif arg.startswith('-numberlog'):
                 if len(arg) == 10:
-                    globalvar.dumpToLog = int(pywikibot.input(u'After how many welcomed users would you like to update the welcome log?'))
+                    globalvar.dumpToLog = int(pywikibot.input(
+                        u'After how many welcomed users would you like to update the welcome log?'))
                 else:
                     globalvar.dumpToLog = int(arg[11:])
             elif arg == '-quiet':
@@ -969,9 +1047,12 @@ if __name__ == "__main__":
 
         # Filename and pywikipedia path
         # file where is stored the random signature index
-        filename = pywikibot.config.datafilepath('welcome-%s-%s.data' % (pywikibot.default_family, pywikibot.default_code))
+        filename = pywikibot.config.datafilepath('welcome-%s-%s.data'
+                                                 % (pywikibot.default_family,
+                                                    pywikibot.default_code))
         if globalvar.offset and globalvar.timeoffset:
-            pywikibot.warning('both -offset and -timeoffset were provided, ignoring -offset')
+            pywikibot.warning(
+                'both -offset and -timeoffset were provided, ignoring -offset')
             globalvar.offset = 0
         bot = WelcomeBot()
         try:
@@ -984,7 +1065,8 @@ if __name__ == "__main__":
             pywikibot.output("\nQuitting...")
     finally:
         # If there is the savedata, the script must save the number_user.
-        if globalvar.randomSign and globalvar.saveSignIndex and bot.welcomed_users:
+        if globalvar.randomSign and globalvar.saveSignIndex and \
+           bot.welcomed_users:
             import cPickle
             f = file(filename, 'w')
             cPickle.dump(bot.welcomed_users, f)
