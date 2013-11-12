@@ -2,7 +2,7 @@
 
 __version__ = '$Id$'
 
-import family, config
+import family
 
 
 # The Wikimedia Strategy family

@@ -1,6 +1,5 @@
 # -*- coding: utf-8  -*-
 
-import urllib
 import family, wikipedia
 
 # The wikimedia family that is known as Wesolve
