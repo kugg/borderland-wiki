@@ -16,23 +16,25 @@ Specific arguments:
 """
 #
 # (C) Andre Engels, 2004
-# (C) Pywikipedia bot team, 2004-2010
+# (C) Pywikibot team, 2004-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import re, sys
+import re
+import sys
 import wikipedia as pywikibot
+
 
 def main():
     start = '0'
     force = False
-    msg = {'en':'Creating state abbreviation redirect',
-           'ar':u'إنشاء تحويلة اختصار الولاية',
-           'fa':u'ایجاد تغییرمسیر برای نام اختصاری ایالت',
-           'he':u'יוצר הפניה מראשי התיבות של המדינה',
+    msg = {'en': 'Creating state abbreviation redirect',
+           'ar': u'إنشاء تحويلة اختصار الولاية',
+           'fa': u'ایجاد تغییرمسیر برای نام اختصاری ایالت',
+           'he': u'יוצר הפניה מראשי התיבות של המדינה',
            }
 
     abbrev = {
@@ -97,11 +99,11 @@ def main():
                 u'argument "%s" not understood; ignoring.' % arg)
 
     mysite = pywikibot.getSite()
-    for p in mysite.allpages(start = start):
+    for p in mysite.allpages(start=start):
         for sn in abbrev:
-            R=re.compile('[^[]]*' + '\%2C_' + sn)
+            R = re.compile('[^[]]*' + '\%2C_' + sn)
             for res in R.findall(p.title()):
-                pl=pywikibot.Page(mysite, p.title().replace(sn,abbrev[sn]))
+                pl = pywikibot.Page(mysite, p.title().replace(sn, abbrev[sn]))
                 # A bit hacking here - the real work is done in the
                 # 'except pywikibot.NoPage' part rather than the 'try'.
                 try:
@@ -119,26 +121,28 @@ def main():
                         u"Page %s already exists and is not a redirect. Please check page!"
                         % goal)
                 except pywikibot.NoPage:
-                    change=''
+                    change = ''
                     if p.isRedirectPage():
                         p2 = p.getRedirectTarget()
                         wikipeda.ouput(
-                            u'Note: goal page is redirect. Creating redirect to "%s" to avoid double redirect.'
-                            % p2.title().replace("%2C",",").replace("_"," "))
+                            u'Note: goal page is redirect. Creating redirect '
+                            u'to "%s" to avoid double redirect.'
+                            % p2.title().replace("%2C", ",").replace("_", " "))
                     else:
                         p2 = p
                     if force:
-                        change='y'
+                        change = 'y'
                     else:
-                        while not change in ['y','n']:
+                        while not change in ['y', 'n']:
                             pywikibot.output(
                                 u"Create redirect %s" %
-                                pl.title().replace("%2C",",").replace("_"," "))
+                                pl.title().replace("%2C",
+                                                   ",").replace("_", " "))
                             change = raw_input("(y/n)? ")
-                    if change=='y':
-                        text = '#REDIRECT [['+p2.title().replace("%2C",",").replace("_"," ")+']]'
-                        pl.put(text, comment=pywikibot.translate(mysite, msg),
-                               minorEdit = '0')
+                    if change == 'y':
+                        text = '#REDIRECT [[%s]]' % p2.title().replace(
+                            "%2C", ",").replace("_", " ")
+                        pl.put(text, comment=pywikibot.translate(mysite, msg))
 
 try:
     main()
