@@ -3,14 +3,15 @@
 # (C) Rob W.W. Hooft, 2003
 #     parts by holger@trillke.net 2002/03/18
 #     Purodha Blissenbach (Modifier), 2010
-# (C) Pywikipedia bot team, 2003-2012
+# (C) Pywikipedia bot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 
-import os, re
+import os
 import sys as __sys
+import re
 # IMPORTANT:
 # Do not change any of the variables in this file. Instead, make
 # a file user-config.py, and overwrite values in there.
@@ -124,7 +125,7 @@ userinterface = 'terminal'
 
 # i18n setting for user interface language
 # default is config.mylang or 'en'
-userinterface_lang = 'en' # None
+userinterface_lang = 'en'  # None
 
 # Should we transliterate characters that do not exist in the console
 # character set?
@@ -161,13 +162,14 @@ tkvertsize = 1000
 if __sys.platform == 'win32':
     try:
         import _winreg
-        _key1 = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithProgids')
+        _key1 = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER,
+                                'Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithProgids')
         _progID = _winreg.EnumValue(_key1, 1)[0]
-        _key2 = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, '%s\shell\open\command' % _progID)
+        _key2 = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
+                                '%s\shell\open\command' % _progID)
         _cmd = _winreg.QueryValueEx(_key2, None)[0]
         editor = _cmd.replace('%1', '')
         # Notepad is even worse than our Tkinter editor.
-        # Nobody has deserved to use it.
         if editor.lower().endswith('notepad.exe'):
             editor = None
     except:
@@ -305,13 +307,13 @@ noisysleep = 3.0
 # what you are doing and have a good reason for it!
 maxlag = 5
 
-# Number of retries before giving up when putting a page
-maxretries = 5
-
 # Maximum of pages which can be retrieved by special pages. Increase this if
 # you heavily use redirect.py with action "double", and especially if you're
 # running solve_disambiguation.py with the -primary argument.
 special_page_limit = 500
+
+# Maximum number of retries before giving up when putting a page
+maxretries = 5
 
 ############## TABLE CONVERSION BOT SETTINGS ##############
 
@@ -341,17 +343,18 @@ db_password = ''
 
 ############## SEARCH ENGINE SETTINGS ##############
 
-# Some scripts allow querying Google via the Google Web API. To use this feature,
-# you must install the pyGoogle module from http://pygoogle.sf.net/ and have a
-# Google Web API license key. Note that Google doesn't give out license keys
-# anymore.
+# Some scripts allow querying Google via the Google Web API. To use this
+# feature, you must install the pyGoogle module from http://pygoogle.sf.net/
+# and have a Google Web API license key. Note that Google doesn't give out
+# license keys anymore.
 # --------------------
-# Google web API is obsoleted for long time, now we can use Google AJAX Search API,
-# You can signup an API key from http://code.google.com/apis/ajaxsearch/signup.html.
+# Google web API is obsoleted for long time, now we can use Google AJAX Search
+# API. You can signup an API key from
+# http://code.google.com/apis/ajaxsearch/signup.html.
 google_key = ''
 
-# using Google AJAX Search API, it requires the referer website, this variable saves the referer web address
-# when you sign up with the key.
+# using Google AJAX Search API, it requires the referer website, this variable
+# saves the referer web address when you sign up with the key.
 google_api_refer = ''
 
 # Some scripts allow using the Yahoo! Search Web Services. To use this feature,
@@ -368,18 +371,20 @@ flickr = {
     'api_key': u'',  # Provide your key!
     'api_secret': u'',  # Api secret of your key (optional)
     'review': False,  # Do we use automatically make our uploads reviewed?
-    'reviewer': u'', # If so, under what reviewer name?
-    }
+    'reviewer': u'',  # If so, under what reviewer name?
+}
 
 # Using the Panoramio api
 panoramio = {
     'review': False,  # Do we use automatically make our uploads reviewed?
-    'reviewer': u'', # If so, under what reviewer name?
-    }
+    'reviewer': u'',  # If so, under what reviewer name?
+}
 
 # for all connections: proxy handle
-# to use it, proxy['host'] have to support HTTP and include port number (e.g. localhost:8080)
-# if the proxy server needs authentication, set ('ID', 'PASSWORD') to proxy['auth'].
+# to use it, proxy['host'] have to support HTTP and include port number
+# (e.g. localhost:8080)
+# if the proxy server needs authentication,
+# set ('ID', 'PASSWORD') to proxy['auth'].
 proxy = {
     'host': None,
     'auth': None,
@@ -438,18 +443,6 @@ copyright_show_length = True
 # number of results.
 copyright_economize_query = True
 
-############## REPLICATION BOT ################
-# You can add replicate_replace to your user_config.py, which has the following format:
-#
-# replicate_replace = {
-#            'wikipedia:li': {'Hoofdpagina': 'Veurblaad'}
-# }
-#
-# to replace all occurences of 'Hoofdpagina' with 'Veurblaad' when writing to liwiki. Note that this does
-# not take the origin wiki into account.
-replicate_replace = {}
-
-
 ############## HTTP SETTINGS ##############
 # Default socket timeout. Set to None to disable timeouts.
 socket_timeout = 120  # set a pretty long timeout just in case...
@@ -486,6 +479,18 @@ cosmetic_changes_enable = {}
 # cosmetic_changes_disable['wikipedia'] = ('de', 'en', 'fr')
 cosmetic_changes_disable = {}
 
+############## REPLICATION BOT ################
+# You can add replicate_replace to your user_config.py, which has the following
+# format:
+#
+# replicate_replace = {
+#            'wikipedia:li': {'Hoofdpagina': 'Veurblaad'}
+# }
+#
+# to replace all occurences of 'Hoofdpagina' with 'Veurblaad' when writing to
+# liwiki. Note that this does not take the origin wiki into account.
+replicate_replace = {}
+
 ############## FURTHER SETTINGS ##############
 
 # Use the experimental disk cache to prevent huge memory usage
@@ -495,18 +500,20 @@ use_diskcache = False
 # up to 30 minutes)
 retry_on_fail = True
 
+### Simulate settings ###
 # Defines what actions the bots are NOT allowed to do (e.g. 'edit') on wikipedia
 # servers. Allows simulation runs of bots to be carried out without changing any
 # page on the server side. This setting may be overridden in user_config.py.
 actions_to_block = ['edit', 'watch', 'move', 'delete', 'undelete', 'protect',
                     'emailuser',
-                    'submit',                               # for non-API
-                    'wbcreateclaim', 'wbsetclaimvalue',     # for Wikidata
-                    'wbsetclaim', 'wbeditentity',           #
-                    'wbsetlabel', 'wbsetdescription',       #
-                    'wbsetaliases', 'wbsetsitelink',        #
-                    'wbsetreference', 'wblinktitles',       #
-                    'wbremoveclaims', 'wbremovereferences'] #
+                    'submit',                                # for non-API
+                    'wbcreateclaim', 'wbsetclaimvalue',      # for Wikidata
+                    'wbsetclaim', 'wbeditentity',            #
+                    'wbsetlabel', 'wbsetdescription',        #
+                    'wbsetaliases', 'wbsetsitelink',         #
+                    'wbsetreference', 'wblinktitles',        #
+                    'wbremoveclaims', 'wbremovereferences']  #
+# Use -simulate option to block all actions given above.
 
 # How many pages should be put to a queue in asynchroneous mode.
 # If maxsize is <= 0, the queue size is infinite.
@@ -522,6 +529,7 @@ line_separator = LS = u'\r\n'
 
 # End of configuration section
 # ============================
+
 
 def makepath(path):
     """Return a normalized absolute version of the path argument.
@@ -540,8 +548,10 @@ def makepath(path):
     from os.path import normpath, dirname, exists, abspath
 
     dpath = normpath(dirname(path))
-    if not exists(dpath): makedirs(dpath)
+    if not exists(dpath):
+        makedirs(dpath)
     return normpath(abspath(path))
+
 
 def datafilepath(*filename):
     """Return an absolute path to a data file in a standard location.
@@ -551,14 +561,15 @@ def datafilepath(*filename):
     directories in the path that do not already exist are created.
 
     """
-    import os
+    import os.path
     return makepath(os.path.join(base_dir, *filename))
+
 
 def shortpath(path):
     """Return a file path relative to config.base_dir."""
-    import os
+    import os.path
     if path.startswith(base_dir):
-        return path[len(base_dir) + len(os.path.sep) : ]
+        return path[len(base_dir) + len(os.path.sep):]
     return path
 
 # is config verbose?
@@ -605,9 +616,11 @@ for _filename in _fns:
             if __sys.platform == 'win32' or _filemode & 002 == 0:
                 exec open(_filename, 'r').read()
             else:
-                print "WARNING: Skipped '%s': writeable by others."%_filename
+                print "WARNING: Skipped '%(fn)s': writeable by others." \
+                      % {'fn': _filename}
         else:
-            print "WARNING: Skipped '%s': owned by someone else."%_filename
+            print "WARNING: Skipped '%(fn)s': owned by someone else." \
+                  % {'fn': _filename}
 
 # Test for obsoleted and/or unknown variables.
 for _key, _val in globals().items():
@@ -616,19 +629,23 @@ for _key, _val in globals().items():
     elif _key in _gl:
         nt = type(_val)
         ot = _tp[_key]
-        if nt == ot or _val is None or ot == type(None):
+        ov = _glv[_key]
+
+        if nt == ot or _val is None or ov is None:  # nopep8
             pass
         elif nt is int and (ot is float or ot is bool):
             pass
         elif ot is int and (nt is float or nt is bool):
             pass
         else:
-            print "WARNING: Type of '%s' changed"%_key
-            print "       Was: ",ot
-            print "       Now: ",nt
+            print "WARNING: Type of '%(_key)s' changed" % locals()
+            print "         %(was)s: %(old)s" % {'was': "Was", 'old': ot}
+            print "         %(now)s: %(new)s" % {'now': "Now", 'new': nt}
         del nt, ot
     else:
-        print "WARNING: Configuration variable %r is defined but unknown. Misspelled?" %_key
+        print("WARNING: "
+              "Configuration variable %(_key)r is defined but unknown.\n"
+              "Misspelled?" % locals())
 
 # Fix up default console_encoding
 if console_encoding is None:
@@ -641,8 +658,10 @@ if console_encoding is None:
 if transliteration_target == 'not set':
     if __sys.platform == 'win32':
         transliteration_target = console_encoding
-        print "WARNING: Running on Windows and transliteration_target is not set."
-        print "Please see http://www.mediawiki.org/wiki/Manual:Pywikipediabot/Windows"
+        print("WARNING: Running on Windows and transliteration_target is not "
+              "set.")
+        print("Please see "
+              "http://www.mediawiki.org/wiki/Manual:Pywikipediabot/Windows")
     else:
         transliteration_target = None
 elif transliteration_target in ('None', 'none'):
@@ -673,12 +692,13 @@ if __name__ == "__main__":
         elif _arg.startswith("-dir:"):
             pass
         else:
-            print "Unknown arg %s ignored"%_arg
+            print "Unknown arg %(_arg)s ignored" % locals()
     _k = globals().keys()
     _k.sort()
     for _name in _k:
         if _name[0] != '_':
-            if not type(globals()[_name]) in [types.FunctionType, types.ModuleType]:
+            if not type(globals()[_name]) in [types.FunctionType,
+                                              types.ModuleType]:
                 try:
                     if _all or _glv[_name] != globals()[_name]:
                         print _name, "=", repr(globals()[_name])
@@ -692,4 +712,3 @@ for __var in globals().keys():
 
 del __var, __sys
 del os, re
-
