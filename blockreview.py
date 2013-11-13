@@ -26,6 +26,7 @@ import wikipedia as pywikibot
 import userlib
 import query
 
+
 class BlockreviewBot:
     # notes
     note_admin = {
@@ -136,7 +137,7 @@ class BlockreviewBot:
                             for sysop in gen:
                                 print sysop.title()
 
-                        talkText = talkText.replace(u'{{%s}}'   % unblock_tpl,
+                        talkText = talkText.replace(u'{{%s}}' % unblock_tpl,
                                                     u'{{%s|2}}' % unblock_tpl)
                         talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
                                                     u'{{%s|2}}' % unblock_tpl)
@@ -155,7 +156,7 @@ class BlockreviewBot:
                                       '[[WP:BA#SPP-Bot|SPPB-Test]]')
                     else:
                         # nicht blockiert. Fall auf DS abschließen
-                        talkText = talkText.replace(u'{{%s}}'   % unblock_tpl,
+                        talkText = talkText.replace(u'{{%s}}' % unblock_tpl,
                                                     u'{{%s|4}}' % unblock_tpl)
                         talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
                                                     u'{{%s|4}}' % unblock_tpl)
