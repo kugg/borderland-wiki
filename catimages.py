@@ -38,7 +38,7 @@ X                    http://toolserver.org/~daniel/WikiSense/UntaggedImages.php
 
 #
 # (C) Kyle/Orgullomoore, 2006-2007 (newimage.py)
-# (C) Pywikipedia team, 2007-2011 (checkimages.py)
+# (C) Pywikibot team, 2007-2012 (checkimages.py)
 # (C) DrTrigon, 2012
 #
 # Distributed under the terms of the MIT license.
@@ -47,8 +47,18 @@ __version__ = '$Id$'
 #
 
 # python default packages
-import re, urllib2, os, locale, sys, datetime, math, shutil, mimetypes, shelve
-import StringIO, json
+import re
+import urllib2
+import os
+import locale
+import sys
+import datetime
+import math
+import shutil
+import mimetypes
+import shelve
+import StringIO
+import json
 from subprocess import Popen, PIPE
 try:
     import Image            # classic 'PIL'
@@ -65,7 +75,7 @@ if not os.path.isabs(scriptdir):
 sys.exc_clear()
 try:
     import numpy as np
-    from scipy import ndimage, fftpack#, signal
+    from scipy import ndimage, fftpack  # , signal
     import cv
     # TS: nonofficial cv2.so backport of the testing-version of
     # python-opencv because of missing build-host, done by DaB
@@ -76,17 +86,18 @@ try:
     import warnings
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        import gtk                  # ignore warning: "GtkWarning: could not open display"
-    import rsvg                     # gnome-python2-rsvg (binding to librsvg)
+        import gtk  # ignore warning: "GtkWarning: could not open display"
+    import rsvg     # gnome-python2-rsvg (binding to librsvg)
     import cairo
-    import magic                    # python-magic (binding to libmagic)
+    import magic    # python-magic (binding to libmagic)
 except:
     # either raise the ImportError later or skip it
     pass
 
 # pywikipedia framework python packages
 import wikipedia as pywikibot
-import pagegenerators, catlib
+import pagegenerators
+import catlib
 import checkimages
 import externals                    # allow import from externals
 
@@ -99,21 +110,25 @@ import externals                    # allow import from externals
 # TODO:
 #   (pdfminer not used anymore/at the moment...)
 #   python-djvulibre or python-djvu for djvu support
-externals.check_setup('colormath')           # check for and install needed
-externals.check_setup('jseg')                # 'externals' modules
-externals.check_setup('jseg/jpeg-6b')        #
-#externals.check_setup('_mlpy')               #
-externals.check_setup('_music21')            #
-externals.check_setup('opencv/haarcascades') #
-externals.check_setup('pydmtx')              # <<< !!! test OS package management here !!!
-externals.check_setup('py_w3c')              #
-externals.check_setup('_zbar')               #
+
+# check for and install needed 'externals' modules
+externals.check_setup('colormath')
+externals.check_setup('jseg')
+externals.check_setup('jseg/jpeg-6b')
+##externals.check_setup('_mlpy')
+externals.check_setup('_music21')
+externals.check_setup('opencv/haarcascades')
+externals.check_setup('pydmtx')  # <<< !!! test OS package management here !!!
+externals.check_setup('py_w3c')
+externals.check_setup('_zbar')
+
 import pycolorname
-#import _mlpy as mlpy
+##import _mlpy as mlpy
 from colormath.color_objects import RGBColor
 from py_w3c.validators.html.validator import HTMLValidator, ValidationFault
-#from pdfminer import pdfparser, pdfinterp, pdfdevice, converter, cmapdb, layout
-#externals.check_setup('_ocropus')
+##from pdfminer import pdfparser, pdfinterp, pdfdevice, converter, cmapdb
+##from pdfminer import layout
+##externals.check_setup('_ocropus')
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -126,7 +141,7 @@ locale.setlocale(locale.LC_ALL, '')
 # will automatically replaced with the bot's nickname.
 
 # Add your project (in alphabetical order) if you want that the bot start
-project_inserted = [u'commons',]
+project_inserted = [u'commons']
 
 # Ok, that's all. What is below, is the rest of code, now the code is fixed and it will run correctly in your project.
 ################################################################################
@@ -138,44 +153,52 @@ tmpl_FileContentsByBot = u"""}}
 | botName = ~~~
 |"""
 
-# this list is auto-generated during bot run (may be add notifcation about NEW templates)
-#tmpl_available_spec = [ u'Properties', u'ColorRegions', u'Faces', u'ColorAverage' ]
+# this list is auto-generated during bot run (may be add notifcation about NEW
+# templates)
+##tmpl_available_spec = [u'Properties', u'ColorRegions', u'Faces',
+##                       u'ColorAverage']
 tmpl_available_spec = []    # auto-generated
 
 
 # global
 useGuesses = True        # Use guesses which are less reliable than true searches
 
+# all detection and recognition methods - bindings to other classes, modules
+# and libs
 
-# all detection and recognition methods - bindings to other classes, modules and libs
 
 class _UnknownFile(object):
+
     def __init__(self, file_name, file_mime, *args, **kwargs):
         self.file_name = file_name
         self.file_mime = file_mime
         self.image_size = (None, None)
 
         # available file properties and metadata
-        self._properties = { 'Properties':   [{'Format': u'-', 'Length': -1}],
-                             'Metadata':     [], }
+        self._properties = {
+            'Properties': [{'Format': u'-', 'Length': -1}],
+            'Metadata': [],
+        }
         # available feature to extract
-        self._features   = { 'ColorAverage': [],
-                             'ColorRegions': [],
-                             'Faces':        [],
-                             'People':       [],
-                             'OpticalCodes': [],
-                             'Chessboard':   [],
-                             'History':      [],
-                             'Text':         [],
-                             'Streams':      [],
-                             #'Audio':        [],
-                             'Legs':         [],
-                             'Hands':        [],
-                             'Torsos':       [],
-                             'Ears':         [],
-                             'Eyes':         [],
-                             'Automobiles':  [],
-                             'Classify':     [], }
+        self._features = {
+            'ColorAverage': [],
+            'ColorRegions': [],
+            'Faces':        [],
+            'People':       [],
+            'OpticalCodes': [],
+            'Chessboard':   [],
+            'History':      [],
+            'Text':         [],
+            'Streams':      [],
+##            'Audio':        [],
+            'Legs':         [],
+            'Hands':        [],
+            'Torsos':       [],
+            'Ears':         [],
+            'Eyes':         [],
+            'Automobiles':  [],
+            'Classify':     [],
+        }
 
     def __enter__(self):
         return self
@@ -189,7 +212,8 @@ class _UnknownFile(object):
         return self._properties
 
     def getFeatures(self):
-        pywikibot.warning(u"File format '%s/%s' not supported (yet)!" % tuple(self.file_mime[:2]))
+        pywikibot.warning(u"File format '%s/%s' not supported (yet)!"
+                          % tuple(self.file_mime[:2]))
         return self._features
 
     def _detect_HeaderAndMetadata(self):
@@ -204,19 +228,20 @@ class _UnknownFile(object):
         misc += [exif['DescProducer']] if 'DescProducer' in exif else []
         misc += [exif['DescCreator']] if 'DescCreator' in exif else []
 
-        result = { 'Software':         u'%s'%exif['Software'] if 'Software' in exif else u'-',
-                   'Desc':             u'%s'%exif['Desc'] if 'Desc' in exif else u'-',
-                   'Comment':          u'%s'%exif['Comment'] if 'Comment' in exif else u'-',
-                   'Producer':         u'%s'%exif['Producer'] if 'Producer' in exif else u'-',
-                   'Misc':             u'\n'.join(misc) if misc else u'-',}
-                   #'Output_Extension': exif['Output_extension'] if 'Output_extension' in exif else u'-',
-                   #'DescProducer':     exif['DescProducer'] if 'DescProducer' in exif else u'-',
-                   #'DescCreator':      exif['DescCreator'] if 'DescCreator' in exif else u'-',
-                   #'Comments':         exif['Comments'] if 'Comments' in exif else u'-',
-                   #'WorkDesc':         exif['WorkDescription'] if 'WorkDescription' in exif else u'-',
-                   ##'Dimensions':       tuple(map(int, exif['ImageSize'].split(u'x'))),}
-                   #'Dimensions':       tuple(exif['ImageSize'].split(u'x')) if 'ImageSize' in exif else (None, None),}
-                   #'Mode':             exif['ColorType'], }
+        result = {
+            'Software': u'%s' % exif['Software'] if 'Software' in exif else u'-',
+            'Desc':     u'%s' % exif['Desc'] if 'Desc' in exif else u'-',
+            'Comment':  u'%s' % exif['Comment'] if 'Comment' in exif else u'-',
+            'Producer': u'%s' % exif['Producer'] if 'Producer' in exif else u'-',
+            'Misc':     u'\n'.join(misc) if misc else u'-',
+        }
+           #'Output_Extension': exif['Output_extension'] if 'Output_extension' in exif else u'-',
+           #'DescProducer':     exif['DescProducer'] if 'DescProducer' in exif else u'-',
+           #'DescCreator':      exif['DescCreator'] if 'DescCreator' in exif else u'-',
+           #'Comments':         exif['Comments'] if 'Comments' in exif else u'-',
+           #'WorkDesc':         exif['WorkDescription'] if 'WorkDescription' in exif else u'-',
+           #'Dimensions':       tuple(exif['ImageSize'].split(u'x')) if 'ImageSize' in exif else (None, None),}
+           #'Mode':             exif['ColorType'], }
 
         ## https://pypi.python.org/pypi/hachoir-metadata (needs 'core' and 'parser')
         #
@@ -275,35 +300,35 @@ class _UnknownFile(object):
     def _util_get_DataTags_EXIF(self):
         # http://tilloy.net/dev/pyexiv2/tutorial.html
         # (is UNFORTUNATELY NOT ABLE to handle all tags, e.g. 'FacesDetected', ...)
-        
+
         if hasattr(self, '_buffer_EXIF'):
             return self._buffer_EXIF
 
         res = {}
-        enable_recovery()   # enable recovery from hard crash
+        enable_recovery()  # enable recovery from hard crash
         try:
             if hasattr(pyexiv2, 'ImageMetadata'):
                 metadata = pyexiv2.ImageMetadata(self.file_name)
                 metadata.read()
-            
+
                 for key in metadata.exif_keys:
                     res[key] = metadata[key]
-                    
+
                 for key in metadata.iptc_keys:
                     res[key] = metadata[key]
-                    
+
                 for key in metadata.xmp_keys:
                     res[key] = metadata[key]
             else:
                 image = pyexiv2.Image(self.file_name)
                 image.readMetadata()
-            
+
                 for key in image.exifKeys():
                     res[key] = image[key]
-                    
+
                 for key in image.iptcKeys():
                     res[key] = image[key]
-                    
+
                 #for key in image.xmpKeys():
                 #    res[key] = image[key]
         except IOError:
@@ -311,27 +336,28 @@ class _UnknownFile(object):
         except RuntimeError:
             pass
         disable_recovery()  # disable since everything worked out fine
-        
-        
+
+
         # http://www.sno.phy.queensu.ca/~phil/exiftool/
         # MIGHT BE BETTER TO USE AS PYTHON MODULE; either by wrapper or perlmodule:
         # http://search.cpan.org/~gaas/pyperl-1.0/perlmodule.pod
         # (or use C++ with embbedded perl to write a python module)
-        data = Popen("exiftool -j %s" % self.file_name, 
+        data = Popen("exiftool -j %s" % self.file_name,
                      shell=True, stdout=PIPE).stdout.read()
         if not data:
             raise ImportError("exiftool not found!")
-        try:   # work-a-round for badly encoded exif data (from pywikibot/comms/http.py)
-            data = unicode(data, 'utf-8', errors = 'strict')
+        try:  # work-a-round for badly encoded exif data (from pywikibot/comms/http.py)
+            data = unicode(data, 'utf-8', errors='strict')
         except UnicodeDecodeError:
-            data = unicode(data, 'utf-8', errors = 'replace')
+            data = unicode(data, 'utf-8', errors='replace')
         #res  = {}
-        data = re.sub("(?<!\")\(Binary data (?P<size>\d*) bytes\)", "\"(Binary data \g<size> bytes)\"", data)  # work-a-round some issue
+        data = re.sub("(?<!\")\(Binary data (?P<size>\d*) bytes\)",
+                      "\"(Binary data \g<size> bytes)\"",
+                      data)  # work-a-round some issue
         for item in json.loads(data):
-            res.update( item )
+            res.update(item)
         #print res
         self._buffer_EXIF = res
-        
         return self._buffer_EXIF
 
 
@@ -357,17 +383,16 @@ class _JpegFile(_UnknownFile):
         self.image_filename  = os.path.split(self.file_name)[-1]
         self.image_path      = self.file_name
         self.image_path_JPEG = self.image_path + '.jpg'
-
         self._convert()
 
     def __exit__(self, type, value, traceback):
         #if os.path.exists(self.image_path):
-        #    os.remove( self.image_path )
+        #    os.remove(self.image_path)
         if os.path.exists(self.image_path_JPEG):
-            os.remove( self.image_path_JPEG )
+            os.remove(self.image_path_JPEG)
         #image_path_new = self.image_path_JPEG.replace(u"cache/", u"cache/0_DETECTED_")
         #if os.path.exists(image_path_new):
-        #    os.remove( image_path_new )
+        #    os.remove(image_path_new)
 
     def getFeatures(self):
         # Faces (extract EXIF data)
@@ -407,19 +432,18 @@ class _JpegFile(_UnknownFile):
 
         # general (self-trained) detection WITH classification
         # BoW: uses feature detection (SIFT, SURF, ...) AND classification (SVM, ...)
-#        self._detectclassify_ObjectAll()
+##        self._detectclassify_ObjectAll()
         # Wavelet: uses wavelet transformation AND classification (machine learning)
-#        self._detectclassify_ObjectAll_PYWT()
+##        self._detectclassify_ObjectAll_PYWT()
 
         # general file EXIF history information
         self._detect_History()
-        
         return self._features
 
     # supports a lot of different file types thanks to PIL
     def _convert(self):
         try:
-            im = Image.open(self.image_path) # might be png, gif etc, for instance
+            im = Image.open(self.image_path)  # might be png, gif etc, for instance
             #im.thumbnail(size, Image.ANTIALIAS) # size is 640x480
             im.convert('RGB').save(self.image_path_JPEG, "JPEG")
 
@@ -433,7 +457,7 @@ class _JpegFile(_UnknownFile):
             else:
                 try:
                     # since opencv might still work, try this as fall-back
-                    img = cv2.imread( self.image_path, cv.CV_LOAD_IMAGE_COLOR )
+                    img = cv2.imread(self.image_path, cv.CV_LOAD_IMAGE_COLOR)
                     cv2.imwrite(self.image_path_JPEG, img)
 
                     self.image_size = (img.shape[1], img.shape[0])
@@ -462,13 +486,13 @@ class _JpegFile(_UnknownFile):
             return
 
         # http://mail.python.org/pipermail/image-sig/1999-May/000740.html
-        pc=0         # count number of pages
+        pc = 0         # count number of pages
         while True:
             try:
                 i.seek(pc)
             except EOFError:
                 break
-            pc+=1
+            pc += 1
         i.seek(0)    # restore default
 
         # http://grokbase.com/t/python/image-sig/082psaxt6k/embedded-icc-profiles
@@ -520,8 +544,7 @@ class _JpegFile(_UnknownFile):
         # MAY BE USE 'haarcascade_frontalface_alt_tree.xml' ALSO / INSTEAD...?!!
         if not os.path.exists(xml):
             raise IOError(u"No such file: '%s'" % xml)
-        #cascade       = cv.Load(
-        cascade       = cv2.CascadeClassifier(xml)
+        cascade = cv2.CascadeClassifier(xml)
         xml = os.path.join(scriptdir, 'externals/opencv/haarcascades/haarcascade_profileface.xml')
         if not os.path.exists(xml):
             raise IOError(u"No such file: '%s'" % xml)
@@ -557,12 +580,12 @@ class _JpegFile(_UnknownFile):
         # http://opencv.itseez.com/modules/objdetect/doc/cascade_classification.html
         try:
             #image = cv.LoadImage(self.image_path)
-            #img    = cv2.imread( self.image_path, cv.CV_LOAD_IMAGE_COLOR )
-            img    = cv2.imread( self.image_path_JPEG, cv.CV_LOAD_IMAGE_COLOR )
+            #img    = cv2.imread(self.image_path, cv.CV_LOAD_IMAGE_COLOR)
+            img    = cv2.imread(self.image_path_JPEG, cv.CV_LOAD_IMAGE_COLOR)
             #image  = cv.fromarray(img)
             if img == None:
                 raise IOError
-            
+
             # !!! the 'scale' here IS RELEVANT FOR THE DETECTION RATE;
             # how small and how many features are detected as faces (or eyes)
             scale  = max([1., np.average(np.array(img.shape)[0:2]/500.)])
@@ -573,49 +596,49 @@ class _JpegFile(_UnknownFile):
             pywikibot.warning(u'unknown file type [_detect_Faces]')
             return
 
-        #detectAndDraw( image, cascade, nestedCascade, scale );
+        #detectAndDraw(image, cascade, nestedCascade, scale);
         # http://nullege.com/codes/search/cv.CvtColor
-        #smallImg = cv.CreateImage( (cv.Round(img.shape[0]/scale), cv.Round(img.shape[1]/scale)), cv.CV_8UC1 )
-        #smallImg = cv.fromarray(np.empty( (cv.Round(img.shape[0]/scale), cv.Round(img.shape[1]/scale)), dtype=np.uint8 ))
-        smallImg = np.empty( (cv.Round(img.shape[1]/scale), cv.Round(img.shape[0]/scale)), dtype=np.uint8 )
+        #smallImg = cv.CreateImage((cv.Round(img.shape[0]/scale), cv.Round(img.shape[1]/scale)), cv.CV_8UC1)
+        #smallImg = cv.fromarray(np.empty((cv.Round(img.shape[0]/scale), cv.Round(img.shape[1]/scale)), dtype=np.uint8))
+        smallImg = np.empty((cv.Round(img.shape[1]/scale), cv.Round(img.shape[0]/scale)), dtype=np.uint8)
 
-        #cv.CvtColor( image, gray, cv.CV_BGR2GRAY )
-        gray = cv2.cvtColor( img, cv.CV_BGR2GRAY )
-        #cv.Resize( gray, smallImg, smallImg.size(), 0, 0, INTER_LINEAR )        
-        smallImg = cv2.resize( gray, smallImg.shape, interpolation=cv2.INTER_LINEAR )
-        #cv.EqualizeHist( smallImg, smallImg )
-        smallImg = cv2.equalizeHist( smallImg )
+        #cv.CvtColor(image, gray, cv.CV_BGR2GRAY)
+        gray = cv2.cvtColor(img, cv.CV_BGR2GRAY)
+        #cv.Resize(gray, smallImg, smallImg.size(), 0, 0, INTER_LINEAR)
+        smallImg = cv2.resize(gray, smallImg.shape, interpolation=cv2.INTER_LINEAR)
+        #cv.EqualizeHist(smallImg, smallImg)
+        smallImg = cv2.equalizeHist(smallImg)
 
         t = cv.GetTickCount()
-        faces = list(cascade.detectMultiScale( smallImg,
+        faces = list(cascade.detectMultiScale(smallImg,
             1.1, 2, 0
             #|cv.CV_HAAR_FIND_BIGGEST_OBJECT
             #|cv.CV_HAAR_DO_ROUGH_SEARCH
             |cv.CV_HAAR_SCALE_IMAGE,
-            (30, 30) ))
+            (30, 30)))
         #faces = cv.HaarDetectObjects(grayscale, cascade, storage, 1.2, 2,
         #                           cv.CV_HAAR_DO_CANNY_PRUNING, (50,50))
-        facesprofil = list(cascadeprofil.detectMultiScale( smallImg,
+        facesprofil = list(cascadeprofil.detectMultiScale(smallImg,
             1.1, 2, 0
             #|cv.CV_HAAR_FIND_BIGGEST_OBJECT
             #|cv.CV_HAAR_DO_ROUGH_SEARCH
             |cv.CV_HAAR_SCALE_IMAGE,
-            (30, 30) ))
+            (30, 30)))
         #faces = self._util_merge_Regions(faces + facesprofil)[0]
         faces = self._util_merge_Regions(faces + facesprofil, overlap=True)[0]
         faces = np.array(faces)
         #if faces:
         #    self._drawRect(faces) #call to a python pil
         t = cv.GetTickCount() - t
-        #print( "detection time = %g ms\n" % (t/(cv.GetTickFrequency()*1000.)) )
-        #colors = [ (0,0,255),
+        #print("detection time = %g ms\n" % (t/(cv.GetTickFrequency()*1000.)))
+        #colors = [(0,0,255),
         #    (0,128,255),
         #    (0,255,255),
         #    (0,255,0),
         #    (255,128,0),
         #    (255,255,0),
         #    (255,0,0),
-        #    (255,0,255) ]
+        #    (255,0,255)]
         result = []
         for i, r in enumerate(faces):
             #color = colors[i%8]
@@ -623,7 +646,7 @@ class _JpegFile(_UnknownFile):
             #cx = cv.Round((rx + rwidth*0.5)*scale)
             #cy = cv.Round((ry + rheight*0.5)*scale)
             #radius = cv.Round((rwidth + rheight)*0.25*scale)
-            #cv2.circle( img, (cx, cy), radius, color, 3, 8, 0 )
+            #cv2.circle(img, (cx, cy), radius, color, 3, 8, 0)
             #if nestedCascade.empty():
             #    continue
             # Wilson, Fernandez: FACIAL FEATURE DETECTION USING HAAR CLASSIFIERS
@@ -635,131 +658,141 @@ class _JpegFile(_UnknownFile):
             #print r, (rx, ry, rwidth, rheight)
             #smallImgROI = smallImg[ry:(ry+rheight),rx:(rx+rwidth)]
             smallImgROI = smallImg[ry:(ry+6*dy),rx:(rx+rwidth)] # speed up by setting instead of extracting ROI
-            nestedObjects = nestedCascade.detectMultiScale( smallImgROI,
+            nestedObjects = nestedCascade.detectMultiScale(smallImgROI,
                 1.1, 2, 0
                 #|CV_HAAR_FIND_BIGGEST_OBJECT
                 #|CV_HAAR_DO_ROUGH_SEARCH
                 #|CV_HAAR_DO_CANNY_PRUNING
                 |cv.CV_HAAR_SCALE_IMAGE,
-                (30, 30) )
+                (30, 30))
             nestedObjects = self._util_merge_Regions(list(nestedObjects), overlap=True)[0]
             if len(nestedObjects) < 2:
-                nestedLeftEye = cascadelefteye.detectMultiScale( smallImgROI,
+                nestedLeftEye = cascadelefteye.detectMultiScale(smallImgROI,
                     1.1, 2, 0
                     #|CV_HAAR_FIND_BIGGEST_OBJECT
                     #|CV_HAAR_DO_ROUGH_SEARCH
                     #|CV_HAAR_DO_CANNY_PRUNING
                     |cv.CV_HAAR_SCALE_IMAGE,
-                    (30, 30) )
-                nestedRightEye = cascaderighteye.detectMultiScale( smallImgROI,
+                    (30, 30))
+                nestedRightEye = cascaderighteye.detectMultiScale(smallImgROI,
                     1.1, 2, 0
                     #|CV_HAAR_FIND_BIGGEST_OBJECT
                     #|CV_HAAR_DO_ROUGH_SEARCH
                     #|CV_HAAR_DO_CANNY_PRUNING
                     |cv.CV_HAAR_SCALE_IMAGE,
-                    (30, 30) )
+                    (30, 30))
                 nestedObjects = self._util_merge_Regions(list(nestedObjects) +
-                                                  list(nestedLeftEye) + 
+                                                  list(nestedLeftEye) +
                                                   list(nestedRightEye), overlap=True)[0]
             #if len(nestedObjects) > 2:
             #    nestedObjects = self._util_merge_Regions(list(nestedObjects), close=True)[0]
             smallImgROI = smallImg[(ry+4*dy):(ry+rheight),rx:(rx+rwidth)]
-            nestedMouth = cascademouth.detectMultiScale( smallImgROI,
+            nestedMouth = cascademouth.detectMultiScale(smallImgROI,
                 1.1, 2, 0
                 |cv.CV_HAAR_FIND_BIGGEST_OBJECT
                 |cv.CV_HAAR_DO_ROUGH_SEARCH
                 #|CV_HAAR_DO_CANNY_PRUNING
                 |cv.CV_HAAR_SCALE_IMAGE,
-                (30, 30) )
+                (30, 30))
             smallImgROI = smallImg[(ry+(5*dy)/2):(ry+5*dy+(5*dy)/2),(rx+(5*dx)/2):(rx+5*dx+(5*dx)/2)]
-            nestedNose = cascadenose.detectMultiScale( smallImgROI,
+            nestedNose = cascadenose.detectMultiScale(smallImgROI,
                 1.1, 2, 0
                 |cv.CV_HAAR_FIND_BIGGEST_OBJECT
                 |cv.CV_HAAR_DO_ROUGH_SEARCH
                 #|CV_HAAR_DO_CANNY_PRUNING
                 |cv.CV_HAAR_SCALE_IMAGE,
-                (30, 30) )
+                (30, 30))
             smallImgROI = smallImg[(ry+2*dy):(ry+6*dy),rx:(rx+rwidth)]
-            nestedEars = list(cascadeleftear.detectMultiScale( smallImgROI,
+            nestedEars = list(cascadeleftear.detectMultiScale(smallImgROI,
                 1.1, 2, 0
                 |cv.CV_HAAR_FIND_BIGGEST_OBJECT
                 |cv.CV_HAAR_DO_ROUGH_SEARCH
                 #|CV_HAAR_DO_CANNY_PRUNING
                 |cv.CV_HAAR_SCALE_IMAGE,
-                (30, 30) ))
-            nestedEars += list(cascaderightear.detectMultiScale( smallImgROI,
+                (30, 30)))
+            nestedEars += list(cascaderightear.detectMultiScale(smallImgROI,
                 1.1, 2, 0
                 |cv.CV_HAAR_FIND_BIGGEST_OBJECT
                 |cv.CV_HAAR_DO_ROUGH_SEARCH
                 #|CV_HAAR_DO_CANNY_PRUNING
                 |cv.CV_HAAR_SCALE_IMAGE,
-                (30, 30) ))
-            data = { 'ID':       (i+1),
-                     'Position': tuple(np.int_(r*scale)), 
-                     'Type':     u'-',
-                     'Eyes':     [],
-                     'Mouth':    (),
-                     'Nose':     (),
-                     'Ears':     [],
-                     'Pose':     (), }
-            data['Coverage'] = float(data['Position'][2]*data['Position'][3])/(self.image_size[0]*self.image_size[1])
+                (30, 30)))
+            data = {'ID':       (i+1),
+                    'Position': tuple(np.int_(r*scale)),
+                    'Type':     u'-',
+                    'Eyes':     [],
+                    'Mouth':    (),
+                    'Nose':     (),
+                    'Ears':     [],
+                    'Pose':     (), }
+            data['Coverage'] = float(data['Position'][2] *
+                                     data['Position'][3]) / (
+                                         self.image_size[0] *
+                                         self.image_size[1])
             #if (c >= confidence):
             #    eyes = nestedObjects
             #    if not (type(eyes) == type(tuple())):
             #        eyes = tuple((eyes*scale).tolist())
-            #    result.append( {'Position': r*scale, 'eyes': eyes, 'confidence': c} )
+            #    result.append({'Position': r*scale, 'eyes': eyes, 'confidence': c})
             #print {'Position': r, 'eyes': nestedObjects, 'confidence': c}
             for nr in nestedObjects:
                 (nrx, nry, nrwidth, nrheight) = nr
-                cx = cv.Round((rx + nrx + nrwidth*0.5)*scale)
-                cy = cv.Round((ry + nry + nrheight*0.5)*scale)
-                radius = cv.Round((nrwidth + nrheight)*0.25*scale)
-                #cv2.circle( img, (cx, cy), radius, color, 3, 8, 0 )
-                data['Eyes'].append( (cx-radius, cy-radius, 2*radius, 2*radius) )
+                cx = cv.Round((rx + nrx + nrwidth * 0.5) * scale)
+                cy = cv.Round((ry + nry + nrheight * 0.5) * scale)
+                radius = cv.Round((nrwidth + nrheight) * 0.25 * scale)
+                #cv2.circle(img, (cx, cy), radius, color, 3, 8, 0)
+                data['Eyes'].append((cx-radius, cy-radius,
+                                     2 * radius, 2 * radius))
             if len(nestedMouth):
                 (nrx, nry, nrwidth, nrheight) = nestedMouth[0]
-                cx = cv.Round((rx + nrx + nrwidth*0.5)*scale)
-                cy = cv.Round(((ry+4*dy) + nry + nrheight*0.5)*scale)
-                radius = cv.Round((nrwidth + nrheight)*0.25*scale)
-                #cv2.circle( img, (cx, cy), radius, color, 3, 8, 0 )
-                data['Mouth'] = (cx-radius, cy-radius, 2*radius, 2*radius)
+                cx = cv.Round((rx + nrx + nrwidth * 0.5) * scale)
+                cy = cv.Round(((ry+4*dy) + nry + nrheight * 0.5) * scale)
+                radius = cv.Round((nrwidth + nrheight) * 0.25 * scale)
+                #cv2.circle(img, (cx, cy), radius, color, 3, 8, 0)
+                data['Mouth'] = (cx-radius, cy-radius, 2 * radius, 2 * radius)
             if len(nestedNose):
                 (nrx, nry, nrwidth, nrheight) = nestedNose[0]
-                cx = cv.Round(((rx+(5*dx)/2) + nrx + nrwidth*0.5)*scale)
-                cy = cv.Round(((ry+(5*dy)/2) + nry + nrheight*0.5)*scale)
+                cx = cv.Round(((rx+(5*dx)/2) + nrx + nrwidth * 0.5) * scale)
+                cy = cv.Round(((ry+(5*dy)/2) + nry + nrheight * 0.5) * scale)
                 radius = cv.Round((nrwidth + nrheight)*0.25*scale)
-                #cv2.circle( img, (cx, cy), radius, color, 3, 8, 0 )
-                data['Nose'] = (cx-radius, cy-radius, 2*radius, 2*radius)
+                #cv2.circle(img, (cx, cy), radius, color, 3, 8, 0)
+                data['Nose'] = (cx-radius, cy-radius, 2 * radius, 2 * radius)
             for nr in nestedEars:
                 (nrx, nry, nrwidth, nrheight) = nr
                 cx = cv.Round((rx + nrx + nrwidth*0.5)*scale)
                 cy = cv.Round((ry + nry + nrheight*0.5)*scale)
                 radius = cv.Round((nrwidth + nrheight)*0.25*scale)
-                #cv2.circle( img, (cx, cy), radius, color, 3, 8, 0 )
-                data['Ears'].append( (cx-radius, cy-radius, 2*radius, 2*radius) )
-            if data['Mouth'] and data['Nose'] and data['Eyes'] and (len(data['Eyes']) == 2):
+                #cv2.circle(img, (cx, cy), radius, color, 3, 8, 0)
+                data['Ears'].append((cx-radius, cy-radius, 2*radius, 2*radius))
+
+            if data['Mouth'] and data['Nose'] and data['Eyes'] and (
+                    len(data['Eyes']) == 2):
                 # head model "little girl" for use in "MeshLab":
                 # http://www.turbosquid.com/FullPreview/Index.cfm/ID/302581
                 # http://meshlab.sourceforge.net/
-                D3points = [[ 70.0602, 109.898,  20.8234],  # left eye
-                            [ 2.37427, 110.322,  21.7776],  # right eye
-                            [ 36.8301, 78.3185,  52.0345],  # nose
-                            [ 36.6391, 51.1675,  38.5903],] # mouth
-                            #[ 119.268, 91.3111, -69.6397],  # left ear
+                D3points = [[70.0602, 109.898, 20.8234],  # left eye
+                            [2.37427, 110.322, 21.7776],  # right eye
+                            [36.8301, 78.3185, 52.0345],  # nose
+                            [36.6391, 51.1675, 38.5903],] # mouth
+                            #[119.268, 91.3111, -69.6397],  # left ear
                             #[-49.1328, 91.3111, -67.2481],] # right ear
-                D2points = [np.array(data['Eyes'][0]), np.array(data['Eyes'][1]),
-                            np.array(data['Nose']), np.array(data['Mouth']),]
-                D2points = [ item[:2] + item[2:]/2. for item in D2points ]
-                neutral  = np.array([[np.pi],[0.],[0.]])
+                D2points = [np.array(data['Eyes'][0]),
+                            np.array(data['Eyes'][1]),
+                            np.array(data['Nose']),
+                            np.array(data['Mouth'])]
+                D2points = [item[:2] + item[2:]/2. for item in D2points]
+                neutral  = np.array([[np.pi], [0.], [0.]])
                 # calculate pose
-                rvec, tvec, cm, err = self._util_get_Pose_solvePnP(D3points, D2points, self.image_size)
+                rvec, tvec, cm, err = self._util_get_Pose_solvePnP(
+                    D3points, D2points, self.image_size)
                 #data['Pose'] = tuple(rvec[:,0])
                 check = not (err[:,0,:].max() > 0.5)
                 if not check:
-                    rvec = neutral                      # reset to neutral pose
-                    tvec = np.array([[0.],[0.],[100.]]) # reset to neutral position (same order as max of D3points)
-                    pywikibot.warning(u'Could not calculate pose of face, too big errors. '
-                                      u'(looks like neutral pose/position is somehow singular)')
+                    rvec = neutral  # reset to neutral pose
+                    tvec = np.array([[0.], [0.], [100.]])  # reset to neutral position (same order as max of D3points)
+                    pywikibot.warning(
+                        u'Could not calculate pose of face, too big errors. '
+                        u'(looks like neutral pose/position is somehow singular)')
                 ## debug: draw pose
                 ##rvec *= 0
                 #mat, perp = self._util_getD2coords_calc(np.eye(3), cm, rvec, tvec, hacky=False)
@@ -771,8 +804,8 @@ class _JpegFile(_UnknownFile):
                 #cv2.imshow("win", img)
                 #cv2.waitKey()
                 # calculate delta to neutral pose
-                drv  = -cv2.composeRT(-rvec, np.zeros((3,1)),
-                                      neutral, np.zeros((3,1)))[0]
+                drv  = -cv2.composeRT(-rvec, np.zeros((3, 1)),
+                                      neutral, np.zeros((3, 1)))[0]
                 rvec = cv2.Rodrigues(cv2.Rodrigues(rvec)[0])[0] # NOT unique!!!
                 #nrv  = cv2.composeRT(neutral, np.zeros((3,1)),
                 #                     drv, np.zeros((3,1)))[0]
@@ -785,18 +818,20 @@ class _JpegFile(_UnknownFile):
                     pywikibot.output(str(rvec[:,0]))
                     pywikibot.output(str(tvec[:,0]))
                     pywikibot.output(str(err[:,0,:]))
-                    rvec, tvec, cm, err = self._util_get_Pose_POSIT(D3points, D2points)
+                    rvec, tvec, cm, err = self._util_get_Pose_POSIT(D3points,
+                                                                    D2points)
                     pywikibot.output("POSIT:")
                     pywikibot.output(str(rvec[:,0]))
                     pywikibot.output(str(tvec))
-                    pywikibot.output(str(np.array(err)[:,0,:]/max(self.image_size)))
-            result.append( data )
+                    pywikibot.output(str(np.array(err)[:,0,:] /
+                                         max(self.image_size)))
+            result.append(data)
 
         ## see '_drawRect'
         #if result:
         #    #image_path_new = os.path.join(scriptdir, 'cache/0_DETECTED_' + self.image_filename)
         #    image_path_new = self.image_path_JPEG.replace(u"cache/", u"cache/0_DETECTED_")
-        #    cv2.imwrite( image_path_new, img )
+        #    cv2.imwrite(image_path_new, img)
 
         #return faces.tolist()
         self._features['Faces'] += result
@@ -819,30 +854,37 @@ class _JpegFile(_UnknownFile):
         # set-up camera matrix (no calibration needed!)
         max_d = max(shape)
         cameraMatrix = [[max_d,     0, shape[0]/2.0],
-                        [    0, max_d, shape[1]/2.0],
-                        [    0,     0,          1.0],]
+                        [   0, max_d, shape[1]/2.0],
+                        [   0,     0,          1.0],]
 
         # calculate pose
-        rvec, tvec = cv2.solvePnP(np.array(D3points).astype('float32'), np.array(D2points).astype('float32'), np.array(cameraMatrix).astype('float32'), None)
+        rvec, tvec = cv2.solvePnP(np.array(D3points).astype('float32'),
+                                  np.array(D2points).astype('float32'),
+                                  np.array(cameraMatrix).astype('float32'),
+                                  None)
 
         # compare to 2D points
         err = []
         for i, vec in enumerate(np.array(D3points)):
-            nvec = np.dot(cameraMatrix, (np.dot(cv2.Rodrigues(rvec)[0], vec) + tvec[:,0]))
-            err.append(((D2points[i] - nvec[:2]/nvec[2]), D2points[i], nvec[:2]/nvec[2]))
+            nvec = np.dot(cameraMatrix, (np.dot(cv2.Rodrigues(rvec)[0],
+                                                vec) + tvec[:,0]))
+            err.append(((D2points[i] - nvec[:2]/nvec[2]), D2points[i],
+                        nvec[:2] / nvec[2]))
 
-        pywikibot.output(u'result for UN-calibrated camera:\n  rot=%s' % rvec.transpose()[0])
+        pywikibot.output(u'result for UN-calibrated camera:\n  rot=%s'
+                         % rvec.transpose()[0])
 
         return rvec, tvec, np.array(cameraMatrix), (np.array(err)/max_d)
 
     #def _util_get_Pose_POSIT(self, D3points, D2points, shape):
     def _util_get_Pose_POSIT(self, D3points, D2points):
         """ Calculate pose from head model "little girl" w/o camera or other
-            calibrations needed.
+        calibrations needed.
 
-            Method similar to '_util_get_Pose_solvePnP', please compare.
+        Method similar to '_util_get_Pose_solvePnP', please compare.
 
-            D2points: left eye, right eye, nose, mouth
+        D2points: left eye, right eye, nose, mouth
+
         """
         # calculate pose
         import opencv
@@ -857,32 +899,36 @@ class _JpegFile(_UnknownFile):
         # CV_32F, principal point in the centre of the image is (0, 0) instead of (self.image_size[0]*0.5)
         FOCAL_LENGTH = 760.0    # hard-coded in posit_python.cpp, should be changed...
         cameraMatrix = [[FOCAL_LENGTH,          0.0, 0.0],#shape[0]*0.0],
-                        [         0.0, FOCAL_LENGTH, 0.0],#shape[1]*0.0],
-                        [         0.0,          0.0, 1.0],]
+                        [        0.0, FOCAL_LENGTH, 0.0],#shape[1]*0.0],
+                        [        0.0,          0.0, 1.0],]
 
         # compare to 2D points
         err = []
         for i, vec in enumerate(np.array(mdl)):
             nvec = np.dot(cameraMatrix, (np.dot(rmat, vec) + tvec))
-            err.append(((D2points[i] - nvec[:2]/nvec[2]), D2points[i], nvec[:2]/nvec[2]))
+            err.append(((D2points[i] - nvec[:2]/nvec[2]), D2points[i],
+                        nvec[:2]/nvec[2]))
 
-        #pywikibot.output(u'result for UN-calibrated camera:\n  rot=%s' % rvec.transpose()[0])
+##        pywikibot.output(u'result for UN-calibrated camera:\n  rot=%s'
+##                         % rvec.transpose()[0])
 
-        return rvec, tvec, np.array(cameraMatrix), (np.array(err)/1.0)
+        return rvec, tvec, np.array(cameraMatrix), (np.array(err) / 1.0)
 
     # https://pypi.python.org/pypi/xbob.flandmark
     # http://cmp.felk.cvut.cz/~uricamic/flandmark/
     def _detect_FaceLandmark_xBOB(self):
         """Prints the locations of any face landmark(s) found, respective
-           converts them to usual face position data"""
+        converts them to usual face position data
+
+        """
 
         scale = 1.
         try:
             #video = bob.io.VideoReader(self.image_path_JPEG.encode('utf-8'))
-            video = [cv2.imread( self.image_path_JPEG, cv.CV_LOAD_IMAGE_COLOR )]
+            video = [cv2.imread(self.image_path_JPEG, cv.CV_LOAD_IMAGE_COLOR)]
             #if img == None:
             #    raise IOError
-            
+
             # !!! the 'scale' here IS RELEVANT FOR THE DETECTION RATE;
             # how small and how many features are detected as faces (or eyes)
             scale  = max([1., np.average(np.array(video[0].shape)[0:2]/750.)])
@@ -893,8 +939,8 @@ class _JpegFile(_UnknownFile):
             pywikibot.warning(u'unknown file type [_detect_FaceLandmark_xBOB]')
             return
 
-        smallImg = np.empty( (cv.Round(video[0].shape[1]/scale), cv.Round(video[0].shape[0]/scale)), dtype=np.uint8 )
-        video = [ cv2.resize( img, smallImg.shape, interpolation=cv2.INTER_LINEAR ) for img in video ]
+        smallImg = np.empty((cv.Round(video[0].shape[1]/scale), cv.Round(video[0].shape[0]/scale)), dtype=np.uint8)
+        video = [cv2.resize(img, smallImg.shape, interpolation=cv2.INTER_LINEAR) for img in video]
 
         sys.path.append(os.path.join(scriptdir, 'dtbext'))
         import _bob as bob
@@ -909,8 +955,8 @@ class _JpegFile(_UnknownFile):
 
             for i, flm in enumerate(localize(frame)):
                 #for pi, point in enumerate(flm['landmark']):
-                #    cv2.circle(img, tuple(map(int, point)), 3, (  0,   0, 255))
-                #    cv2.circle(img, tuple(map(int, point)), 5, (  0, 255,   0))
+                #    cv2.circle(img, tuple(map(int, point)), 3, ( 0,   0, 255))
+                #    cv2.circle(img, tuple(map(int, point)), 5, ( 0, 255,   0))
                 #    cv2.circle(img, tuple(map(int, point)), 7, (255,   0,   0))
                 #    cv2.putText(img, str(pi), tuple(map(int, point)), cv2.FONT_HERSHEY_PLAIN, 1.0, (0,255,0))
                 #cv2.rectangle(img, tuple(map(int, flm['bbox'][:2])), tuple(map(int, (flm['bbox'][0]+flm['bbox'][2], flm['bbox'][1]+flm['bbox'][3]))), (0, 255, 0))
@@ -926,15 +972,18 @@ class _JpegFile(_UnknownFile):
                 mi  = np.min(mat, axis=0)
                 reye  = tuple(mi.astype(int)) + tuple((np.max(mat, axis=0)-mi).astype(int))
                 #cv2.rectangle(img, tuple(mi.astype(int)), tuple(np.max(mat, axis=0).astype(int)), (0, 255, 0))
-                data = { 'ID':       (i+1),
-                         'Position': flm['bbox'], 
-                         'Type':     u'Landmark',
-                         'Eyes':     [leye, reye],
-                         'Mouth':    mouth,
-                         'Nose':     tuple(np.array(flm['landmark'][7]).astype(int)) + (0, 0),
-                         'Ears':     [],
-                         'Landmark': [tuple(lm) for lm in np.array(flm['landmark']).astype(int)], }
-                data['Coverage'] = float(data['Position'][2]*data['Position'][3])/(self.image_size[0]*self.image_size[1])
+                data = {'ID':       (i+1),
+                        'Position': flm['bbox'],
+                        'Type':     u'Landmark',
+                        'Eyes':     [leye, reye],
+                        'Mouth':    mouth,
+                        'Nose':     tuple(np.array(flm['landmark'][7]).astype(int)) + (0, 0),
+                        'Ears':     [],
+                        'Landmark': [tuple(lm) for lm in np.array(flm['landmark']).astype(int)], }
+                data['Coverage'] = float(data['Position'][2] *
+                                         data['Position'][3]) / (
+                                             self.image_size[0] *
+                                             self.image_size[1])
                 result.append(data)
 
             #img = img.astype('uint8')
@@ -974,17 +1023,19 @@ class _JpegFile(_UnknownFile):
             return
 
         # similar to face detection
-        smallImg = np.empty( (cv.Round(img.shape[1]/scale), cv.Round(img.shape[0]/scale)), dtype=np.uint8 )
-        #gray = cv2.cvtColor( img, cv.CV_BGR2GRAY )
+        smallImg = np.empty((cv.Round(img.shape[1]/scale),
+                             cv.Round(img.shape[0]/scale)), dtype=np.uint8)
+        #gray = cv2.cvtColor(img, cv.CV_BGR2GRAY)
         gray = img
-        smallImg = cv2.resize( gray, smallImg.shape, interpolation=cv2.INTER_LINEAR )
-        #smallImg = cv2.equalizeHist( smallImg )
+        smallImg = cv2.resize(gray, smallImg.shape,
+                              interpolation=cv2.INTER_LINEAR)
+        #smallImg = cv2.equalizeHist(smallImg)
         img = smallImg
-        
+
         hog = cv2.HOGDescriptor()
         hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
         #cv2.namedWindow("people detector", 1)
-        
+
         found = found_filtered = []
         #t = time.time()
         # run the detector with default parameters. to get a higher hit-rate
@@ -1009,12 +1060,12 @@ class _JpegFile(_UnknownFile):
         if not os.path.exists(xml):
             raise IOError(u"No such file: '%s'" % xml)
         cascade       = cv2.CascadeClassifier(xml)
-        objects = list(cascade.detectMultiScale( smallImg,
+        objects = list(cascade.detectMultiScale(smallImg,
             1.1, 3, 0
             #|cv.CV_HAAR_FIND_BIGGEST_OBJECT
             #|cv.CV_HAAR_DO_ROUGH_SEARCH
             |cv.CV_HAAR_SCALE_IMAGE,
-            (30, 30) ))
+            (30, 30)))
         found += objects
 
         #t = time.time() - t
@@ -1027,23 +1078,26 @@ class _JpegFile(_UnknownFile):
             r = found_filtered[i]
             # the HOG detector returns slightly larger rectangles than the real objects.
             # so we slightly shrink the rectangles to get a nicer output.
-            r.x += cv.Round(r.width*0.1)
-            r.width = cv.Round(r.width*0.8)
-            r.y += cv.Round(r.height*0.07)
-            r.height = cv.Round(r.height*0.8)
-            data = { 'ID':       (i+1), }
+            r.x += cv.Round(r.width * 0.1)
+            r.width = cv.Round(r.width * 0.8)
+            r.y += cv.Round(r.height * 0.07)
+            r.height = cv.Round(r.height * 0.8)
+            data = {'ID': (i + 1),
+            }
                      #'Center':   (int(r.x + r.width*0.5), int(r.y + r.height*0.5)), }
             # crop to image size (because of the slightly bigger boxes)
             r = bbox.intersect(r)
             #cv2.rectangle(img, (r.x, r.y), (r.x+r.width, r.y+r.height), cv.Scalar(0,255,0), 3)
-            data['Position'] = tuple(np.int_(np.array(r)*scale))
-            data['Coverage'] = float(data['Position'][2]*data['Position'][3])/(self.image_size[0]*self.image_size[1])
-            result.append( data )
+            data['Position'] = tuple(np.int_(np.array(r) * scale))
+            data['Coverage'] = float(data['Position'][2] *
+                                     data['Position'][3]) / (
+                                         self.image_size[0] *
+                                         self.image_size[1])
+            result.append(data)
         #cv2.imshow("people detector", img)
         #c = cv2.waitKey(0) & 255
 
         self._features['People'] = result
-        return
 
     def _detect_Geometry(self):
         result = self._util_get_Geometry_CVnSCIPY()
@@ -1051,7 +1105,6 @@ class _JpegFile(_UnknownFile):
         self._features['Geometry'] = [{'Lines': result['Lines'],
                                        'Circles': result['Circles'],
                                        'Corners': result['Corners'],}]
-        return
 
     # https://code.ros.org/trac/opencv/browser/trunk/opencv/samples/python/houghlines.py?rev=2770
     def _util_get_Geometry_CVnSCIPY(self):
@@ -1084,13 +1137,13 @@ class _JpegFile(_UnknownFile):
             return self._buffer_Geometry
 
         # similar to face or people detection
-        smallImg = np.empty( (cv.Round(img.shape[1]/scale), cv.Round(img.shape[0]/scale)), dtype=np.uint8 )
-        _gray = cv2.cvtColor( img, cv.CV_BGR2GRAY )
+        smallImg = np.empty((cv.Round(img.shape[1]/scale), cv.Round(img.shape[0]/scale)), dtype=np.uint8)
+        _gray = cv2.cvtColor(img, cv.CV_BGR2GRAY)
         # smooth it, otherwise a lot of false circles may be detected
-        #gray = cv2.GaussianBlur( _gray, (9, 9), 2 )
-        gray = cv2.GaussianBlur( _gray, (5, 5), 2 )
-        smallImg = cv2.resize( gray, smallImg.shape, interpolation=cv2.INTER_LINEAR )
-        #smallImg = cv2.equalizeHist( smallImg )
+        #gray = cv2.GaussianBlur(_gray, (9, 9), 2)
+        gray = cv2.GaussianBlur(_gray, (5, 5), 2)
+        smallImg = cv2.resize(gray, smallImg.shape, interpolation=cv2.INTER_LINEAR)
+        #smallImg = cv2.equalizeHist(smallImg)
         src = smallImg
 
         # https://code.ros.org/trac/opencv/browser/trunk/opencv/samples/python/houghlines.py?rev=2770
@@ -1115,20 +1168,20 @@ class _JpegFile(_UnknownFile):
             #for (rho, theta) in lines[:100]:
             #    a = math.cos(theta)
             #    b = math.sin(theta)
-            #    x0 = a * rho 
+            #    x0 = a * rho
             #    y0 = b * rho
             #    pt1 = (cv.Round(x0 + 1000*(-b)), cv.Round(y0 + 1000*(a)))
             #    pt2 = (cv.Round(x0 - 1000*(-b)), cv.Round(y0 - 1000*(a)))
             #    cv2.line(color_dst, pt1, pt2, cv.RGB(255, 0, 0), 3, 8)
         else:
             #lines = cv.HoughLines2(dst, storage, cv.CV_HOUGH_PROBABILISTIC, 1, pi / 180, 50, 50, 10)
-            lines = cv2.HoughLinesP(dst, 1, math.pi / 180, 100) 
+            lines = cv2.HoughLinesP(dst, 1, math.pi / 180, 100)
             #for line in lines:
             #    cv2.line(color_dst, line[0], line[1], cv.CV_RGB(255, 0, 0), 3, 8)
 
         # circles
         try:
-            #circles = cv2.HoughCircles(src, cv.CV_HOUGH_GRADIENT, 2, src.shape[0]/4)#, 200, 100 )
+            #circles = cv2.HoughCircles(src, cv.CV_HOUGH_GRADIENT, 2, src.shape[0]/4)#, 200, 100)
             circles = cv2.HoughCircles(src, cv.CV_HOUGH_GRADIENT, 2, src.shape[0]/4, param2=200)
         except cv2.error:
             circles = None
@@ -1139,29 +1192,29 @@ class _JpegFile(_UnknownFile):
         #    center = (cv.Round(c[0]), cv.Round(c[1]))
         #    radius = cv.Round(c[2])
         #    # draw the circle center
-        #    cv2.circle( color_dst, center, 3, cv.CV_RGB(0,255,0), -1, 8, 0 )
+        #    cv2.circle(color_dst, center, 3, cv.CV_RGB(0,255,0), -1, 8, 0)
         #    # draw the circle outline
-        #    cv2.circle( color_dst, center, radius, cv.CV_RGB(0,0,255), 3, 8, 0 )
+        #    cv2.circle(color_dst, center, radius, cv.CV_RGB(0,0,255), 3, 8, 0)
 
         # corners
-        corner_dst = cv2.cornerHarris( edges, 2, 3, 0.04 )
+        corner_dst = cv2.cornerHarris(edges, 2, 3, 0.04)
         # Normalizing
-        cv2.normalize( corner_dst, corner_dst, 0, 255, cv2.NORM_MINMAX, cv.CV_32FC1 )
-        #dst_norm_scaled = cv2.convertScaleAbs( corner_dst )
+        cv2.normalize(corner_dst, corner_dst, 0, 255, cv2.NORM_MINMAX, cv.CV_32FC1)
+        #dst_norm_scaled = cv2.convertScaleAbs(corner_dst)
         # Drawing a circle around corners
         corner = []
         for j in range(corner_dst.shape[0]):
             for i in range(corner_dst.shape[1]):
                 if corner_dst[j,i] > 200:
-                    #circle( dst_norm_scaled, Point( i, j ), 5,  Scalar(0), 2, 8, 0 );
-                    corner.append( (j,i) )
+                    #circle(dst_norm_scaled, Point(i, j), 5,  Scalar(0), 2, 8, 0);
+                    corner.append((j,i))
         data['Corners'] = len(corner)
 
         #cv2.imshow("people detector", color_dst)
         #c = cv2.waitKey(0) & 255
 
         # fft spectral/frequency/momentum analysis with svd peak detection
-        gray = cv2.resize( _gray, smallImg.shape, interpolation=cv2.INTER_LINEAR )
+        gray = cv2.resize(_gray, smallImg.shape, interpolation=cv2.INTER_LINEAR)
         ##s = (self.image_size[1], self.image_size[0])
         #s = gray.shape
         fft = fftpack.fftn(gray)
@@ -1183,7 +1236,7 @@ class _JpegFile(_UnknownFile):
 
         #SS = np.zeros(s)
         #ss = min(s)
-        #for i in range(0, len(S)-1, max( int(len(S)/100.), 1 )):   # (len(S)==ss) -> else; problem!
+        #for i in range(0, len(S)-1, max(int(len(S)/100.), 1)):   # (len(S)==ss) -> else; problem!
         #    #SS = np.zeros(s)
         #    #SS[:(ss-i),:(ss-i)] = np.diag(S[:(ss-i)])
         #    SS[:(i+1),:(i+1)] = np.diag(S[:(i+1)])
@@ -1197,7 +1250,7 @@ class _JpegFile(_UnknownFile):
         #data['SVD_Min']  = S[:(i+1)].min()
 
         data['FFT_Peaks'] = float(count)/len(S)
-        #pywikibot.output( u'FFT_Peaks: %s' % data['FFT_Peaks'] )
+        #pywikibot.output(u'FFT_Peaks: %s' % data['FFT_Peaks'])
         # use wavelet transformation (FWT) from e.g. pywt, scipy signal or mlpy
         # (may be other) in addition to FFT and compare the spectra with FFT...
         # confer; "A Practical Guide to Wavelet Analysis" (http://journals.ametsoc.org/doi/pdf/10.1175/1520-0477%281998%29079%3C0061%3AAPGTWA%3E2.0.CO%3B2)
@@ -1218,7 +1271,7 @@ class _JpegFile(_UnknownFile):
         # http://authors.library.caltech.edu/7694/
         # http://www.vision.caltech.edu/Image_Datasets/Caltech256/
         # http://opencv.itseez.com/modules/features2d/doc/object_categorization.html
-        
+
         # http://www.morethantechnical.com/2011/08/25/a-simple-object-classifier-with-bag-of-words-using-opencv-2-3-w-code/
         #   source: https://github.com/royshil/FoodcamClassifier
         # http://app-solut.com/blog/2011/07/using-the-normal-bayes-classifier-for-image-categorization-in-opencv/
@@ -1226,7 +1279,7 @@ class _JpegFile(_UnknownFile):
 
         # parts of code here should/have to be placed into e.g. a own
         # class in 'dtbext/opencv/__init__.py' script/module
-        
+
         trained = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
                    'car', 'cat', 'chair', 'cow', 'diningtable', 'dog',
                    'horse', 'motorbike', 'person', 'pottedplant', 'sheep',
@@ -1247,13 +1300,14 @@ class _JpegFile(_UnknownFile):
         stdout = sys.stdout
         sys.stdout = StringIO.StringIO()
         #result = opencv.BoWclassify.main(0, '', '', '', '', '')
-        result = opencv.BoWclassify(6, 
-                                    os.path.join(scriptdir, 'dtbext/opencv/VOC2007'), 
-                                    os.path.join(scriptdir, 'dtbext/opencv/data'), 
-                                    'HARRIS',      # not important; given by training
-                                    'SIFT',        # not important; given by training
-                                    'BruteForce',  # not important; given by training
-                                    [str(os.path.abspath(self.image_path).encode('latin-1'))])
+        result = opencv.BoWclassify(
+            6,
+            os.path.join(scriptdir, 'dtbext/opencv/VOC2007'),
+            os.path.join(scriptdir, 'dtbext/opencv/data'),
+            'HARRIS',      # not important; given by training
+            'SIFT',        # not important; given by training
+            'BruteForce',  # not important; given by training
+            [str(os.path.abspath(self.image_path).encode('latin-1'))])
         #out = sys.stdout.getvalue()
         sys.stdout = stdout
         #print out
@@ -1265,7 +1319,8 @@ class _JpegFile(_UnknownFile):
         # http://www.xrce.xerox.com/layout/set/print/content/download/18763/134049/file/2004_010.pdf
         # http://people.csail.mit.edu/torralba/shortCourseRLOC/index.html
 
-        self._features['Classify'] = [dict([ (trained[i], r) for i, r in enumerate(result) ])]
+        self._features['Classify'] = [dict([(trained[i], r)
+                                            for i, r in enumerate(result)])]
         return
 
     def _detectclassify_ObjectAll_PYWT(self):
@@ -1316,9 +1371,9 @@ class _JpegFile(_UnknownFile):
             ## crop 25% of the image in order to give the bot a more human eye
             ## (needed for categorization only and thus should be done there/later)
             #scale  = 0.75    # crop 25% percent (area) bounding box
-            #(w, h) = ( self.image_size[0]*math.sqrt(scale), self.image_size[1]*math.sqrt(scale) )
-            #(l, t) = ( (self.image_size[0]-w)/2, (self.image_size[1]-h)/2 )
-            #i = im.crop( (int(l), int(t), int(l+w), int(t+h)) )
+            #(w, h) = (self.image_size[0]*math.sqrt(scale), self.image_size[1]*math.sqrt(scale))
+            #(l, t) = ((self.image_size[0]-w)/2, (self.image_size[1]-h)/2)
+            #i = im.crop((int(l), int(t), int(l+w), int(t+h)))
             (l, t) = (0, 0)
             i = im
         except IOError:
@@ -1349,10 +1404,10 @@ class _JpegFile(_UnknownFile):
             data['ID']       = (i+1)
             data['Center']   = (int(center[0]+l), int(center[1]+t))
             data['Position'] = (int(bbox[0]+l), int(bbox[1]+t), int(bbox[2]), int(bbox[3]))
-            data['Delta_R']  = math.sqrt( (self.image_size[0]/2 - center[0])**2 + \
-                                          (self.image_size[1]/2 - center[1])**2 )
+            data['Delta_R']  = math.sqrt((self.image_size[0]/2 - center[0])**2 + \
+                                          (self.image_size[1]/2 - center[1])**2)
 
-            result.append( data )
+            result.append(data)
             i += 1
 
         self._features['ColorRegions'] = result
@@ -1392,17 +1447,17 @@ class _JpegFile(_UnknownFile):
         r = h[0:256]
         g = h[256:256*2]
         b = h[256*2: 256*3]
-        
+
         # perform the weighted average of each channel:
         # the *index* 'i' is the channel value, and the *value* 'w' is its weight
         rgb = (
-                sum( i*w for i, w in enumerate(r) ) / max(1, sum(r)),
-                sum( i*w for i, w in enumerate(g) ) / max(1, sum(g)),
-                sum( i*w for i, w in enumerate(b) ) / max(1, sum(b))
-        )
+            sum(i * w for i, w in enumerate(r)) / max(1, sum(r)),
+            sum(i * w for i, w in enumerate(g)) / max(1, sum(g)),
+            sum(i * w for i, w in enumerate(b)) / max(1, sum(b))
+       )
 
         # count number of colors used more than 1% of maximum
-        ma    = 0.01*max(h)
+        ma = 0.01 * max(h)
         count = sum([int(c > ma) for c in h])
 
 #        # TODO: peak detection (not supported by my local scipy version yet)
@@ -1418,7 +1473,7 @@ class _JpegFile(_UnknownFile):
         #colors = pycolorname.RAL.colors
         #colors = pycolorname.pantone.Formula_Guide_Solid
         colors = pycolorname.pantone.Fashion_Home_paper
-        
+
         #print "=== RGB Example: RGB->LAB ==="
         # Instantiate an Lab color object with the given values.
         rgb = RGBColor(rgb[0], rgb[1], rgb[2], rgb_type='sRGB')
@@ -1428,7 +1483,7 @@ class _JpegFile(_UnknownFile):
         lab = rgb.convert_to('lab', target_illuminant='D65')
         #print lab
         #print "=== End Example ===\n"
-        
+
         # Reference color.
         #color1 = LabColor(lab_l=0.9, lab_a=16.3, lab_b=-2.22)
         # Color to be compared to the reference.
@@ -1468,44 +1523,44 @@ class _JpegFile(_UnknownFile):
         scale  = max([1., np.average(np.array(im.size)[0:2]/200.)])
         #print np.array(im.size)/scale, scale
         try:
-            smallImg = im.resize( tuple(np.int_(np.array(im.size)/scale)), Image.ANTIALIAS )
+            smallImg = im.resize(tuple(np.int_(np.array(im.size)/scale)),
+                                 Image.ANTIALIAS)
         except IOError:
             pywikibot.warning(u'unknown file type [_util_detect_ColorSegments_JSEG]')
             return
-        
+
         #im.thumbnail(size, Image.ANTIALIAS) # size is 640x480
         smallImg.convert('RGB').save(tmpjpg, "JPEG", quality=100, optimize=True)
-        
+
         # Program limitation: The total number of regions in the image must be less
         # than 256 before the region merging process. This works for most images
         # smaller than 512x512.
-        
+
         # Processing time will be about 10 seconds for an 192x128 image and 60 seconds
         # for a 352x240 image. It will take several minutes for a 512x512 image.
         # Minimum image size is 64x64.
-        
+
         # ^^^  THUS RESCALING TO ABOUT 200px ABOVE  ^^^
 
         # sys.stdout handeled, but with freopen which could give issues
         import jseg
         # e.g. "segdist -i test3.jpg -t 6 -r9 test3.map.gif"
         enable_recovery()   # enable recovery from hard crash
-        jseg.segdist_cpp.main( [ item.encode('utf-8') for item in 
-                                 ("segdist -i %s -t 6 -r9 %s"%(tmpjpg, tmpgif)).split(" ") ] )
+        jseg.segdist_cpp.main([item.encode('utf-8') for item in
+                                 ("segdist -i %s -t 6 -r9 %s"%(tmpjpg, tmpgif)).split(" ")])
         disable_recovery()  # disable since everything worked out fine
         #out = open((tmpgif + ".stdout"), "r").read()    # reading stdout
         #print out
         os.remove(tmpgif + ".stdout")
-        
-        os.remove( tmpjpg )
-        
+
+        os.remove(tmpjpg)
+
         # http://stackoverflow.com/questions/384759/pil-and-numpy
         pic = Image.open(tmpgif)
         #pix = np.array(pic)
         #Image.fromarray(10*pix).show()
-        
-        os.remove( tmpgif )
 
+        os.remove(tmpgif)
         return (pic, scale)
 
     # http://planet.scipy.org/
@@ -1538,7 +1593,7 @@ class _JpegFile(_UnknownFile):
             #Image.fromarray(255*pix/np.max(pix)).show()
 
         try:
-            smallImg = im.resize( tuple(np.int_(np.array(im.size)/scale)), Image.ANTIALIAS )
+            smallImg = im.resize(tuple(np.int_(np.array(im.size)/scale)), Image.ANTIALIAS)
         except IOError:
             pywikibot.warning(u'unknown file type [_util_get_ColorSegmentsHist_PIL]')
             return
@@ -1549,11 +1604,11 @@ class _JpegFile(_UnknownFile):
             mask   = np.uint8(pix == i)*255
             (y, x) = np.where(mask != 0)
             center = (np.average(x)*scale, np.average(y)*scale)
-            bbox   = (np.min(x)*scale, np.min(y)*scale, 
+            bbox   = (np.min(x)*scale, np.min(y)*scale,
                       (np.max(x)-np.min(x))*scale, (np.max(y)-np.min(y))*scale)
             #coverage = np.count_nonzero(mask)/imgsize
             coverage = (mask != 0).sum()/imgsize    # count_nonzero is missing in older numpy
-            mask = Image.fromarray( mask )
+            mask = Image.fromarray(mask)
             h    = smallImg.histogram(mask)
             #smallImg.show()
             #dispImg = Image.new('RGBA', smallImg.size)
@@ -1565,8 +1620,8 @@ class _JpegFile(_UnknownFile):
             if (len(h) == 256*4):
                 pywikibot.output(u"4-ch. image, try to fix (exclude transparency)...")
                 h = h[0:(256*3)]
-            hist.append( (h, coverage, (center, bbox)) )
-        
+            hist.append((h, coverage, (center, bbox)))
+
         return hist
 
     # http://www.scipy.org/SciPyPackages/Ndimage
@@ -1586,30 +1641,30 @@ class _JpegFile(_UnknownFile):
         for j, (h, coverage, (center, bbox)) in enumerate(hist):
             # split into red, green, blue
             r = h[0:256]
-            g = h[256:256*2]
-            b = h[256*2: 256*3]
-            
+            g = h[256:256 * 2]
+            b = h[256 * 2:256 * 3]
+
             # perform the weighted average of each channel:
             # the *index* 'i' is the channel value, and the *value* 'w' is its weight
             rgb = (
-                    sum( i*w for i, w in enumerate(r) ) / max(1, sum(r)),
-                    sum( i*w for i, w in enumerate(g) ) / max(1, sum(g)),
-                    sum( i*w for i, w in enumerate(b) ) / max(1, sum(b))
-            )
+                sum(i * w for i, w in enumerate(r)) / max(1, sum(r)),
+                sum(i * w for i, w in enumerate(g)) / max(1, sum(g)),
+                sum(i * w for i, w in enumerate(b)) / max(1, sum(b))
+           )
             # color frequency analysis; do not average regions with high fluctations
             #rgb2 = (
-            #        sum( i*i*w for i, w in enumerate(r) ) / max(1, sum(r)),
-            #        sum( i*i*w for i, w in enumerate(g) ) / max(1, sum(g)),
-            #        sum( i*i*w for i, w in enumerate(b) ) / max(1, sum(b))
+            #        sum(i*i*w for i, w in enumerate(r)) / max(1, sum(r)),
+            #        sum(i*i*w for i, w in enumerate(g)) / max(1, sum(g)),
+            #        sum(i*i*w for i, w in enumerate(b)) / max(1, sum(b))
             #)
-            #if ( 500. < np.average( (
+            #if (500. < np.average((
             #       rgb2[0] - rgb[0]**2,
             #       rgb2[1] - rgb[1]**2,
-            #       rgb2[2] - rgb[2]**2, ) ) ):
+            #       rgb2[2] - rgb[2]**2,))):
             #           continue
 
-            mask = np.uint8(pix == j)*255
-            mask = Image.fromarray( mask )
+            mask = np.uint8(pix == j) * 255
+            mask = Image.fromarray(mask)
             #dispImg = Image.new('RGB', im.size)
             #dispImg.paste(rgb, mask=mask)
             #dispImg.show()
@@ -1619,7 +1674,7 @@ class _JpegFile(_UnknownFile):
         pix[:,:,0] = ndimage.gaussian_filter(pix[:,:,0], .5)
         pix[:,:,1] = ndimage.gaussian_filter(pix[:,:,1], .5)
         pix[:,:,2] = ndimage.gaussian_filter(pix[:,:,2], .5)
-        im = Image.fromarray( pix, mode='RGB' )
+        im = Image.fromarray(pix, mode='RGB')
         #im = im.filter(ImageFilter.BLUR)   # or 'SMOOTH'
 
         return im
@@ -1646,7 +1701,7 @@ class _JpegFile(_UnknownFile):
 
         scale = 1.
         try:
-            img    = cv2.imread( self.image_path_JPEG, cv.CV_LOAD_IMAGE_COLOR )
+            img    = cv2.imread(self.image_path_JPEG, cv.CV_LOAD_IMAGE_COLOR)
             if (img == None) or (self.image_size[0] is None):
                 raise IOError
 
@@ -1661,26 +1716,30 @@ class _JpegFile(_UnknownFile):
             return
 
         # similar to face detection
-        smallImg = np.empty( (cv.Round(img.shape[1]/scale), cv.Round(img.shape[0]/scale)), dtype=np.uint8 )
-        gray = cv2.cvtColor( img, cv.CV_BGR2GRAY )
-        smallImg = cv2.resize( gray, smallImg.shape, interpolation=cv2.INTER_LINEAR )
-        smallImg = cv2.equalizeHist( smallImg )
+        smallImg = np.empty((cv.Round(img.shape[1]/scale),
+                             cv.Round(img.shape[0]/scale)), dtype=np.uint8)
+        gray = cv2.cvtColor(img, cv.CV_BGR2GRAY)
+        smallImg = cv2.resize(gray, smallImg.shape,
+                              interpolation=cv2.INTER_LINEAR)
+        smallImg = cv2.equalizeHist(smallImg)
 
-        objects = list(cascade.detectMultiScale( smallImg,
+        objects = list(cascade.detectMultiScale(smallImg,
             1.1, 5, 0
             #|cv.CV_HAAR_FIND_BIGGEST_OBJECT
             #|cv.CV_HAAR_DO_ROUGH_SEARCH
             |cv.CV_HAAR_SCALE_IMAGE,
-            (30, 30) ))
+            (30, 30)))
 
         result = []
         for i, r in enumerate(objects):
             data = { 'Position': tuple(np.int_(np.array(r)*scale)) }
-            data['Coverage'] = float(data['Position'][2]*data['Position'][3])/(self.image_size[0]*self.image_size[1])
-            result.append( data )
+            data['Coverage'] = float(data['Position'][2] *
+                                     data['Position'][3]) / (
+                                         self.image_size[0] *
+                                         self.image_size[1])
+            result.append(data)
 
         # generic detection ...
-
         self._features[info_desc] = result
         return
 
@@ -1690,7 +1749,7 @@ class _JpegFile(_UnknownFile):
         # http://blog.globalstomp.com/2011/09/decoding-qr-code-code-128-code-39.html
         # http://zbar.sourceforge.net/
         # http://pypi.python.org/pypi/zbar
-        
+
         # DataMatrix
         from pydmtx import DataMatrix   # linux distro package (fedora) / TS (debian)
 
@@ -1717,7 +1776,8 @@ class _JpegFile(_UnknownFile):
             pywikibot.warning(u'unknown file type [_recognize_OpticalCodes]')
             return
 
-        smallImg = img.resize( (int(img.size[0]/scale), int(img.size[1]/scale)) )
+        smallImg = img.resize((int(img.size[0] / scale),
+                               int(img.size[1] / scale)))
         img = smallImg
 
         enable_recovery()   # enable recovery from hard crash
@@ -1731,14 +1791,15 @@ class _JpegFile(_UnknownFile):
             data, bbox = dm_read.stats(i+1)
             bbox = np.array(bbox)
             x, y = bbox[:,0], bbox[:,1]
-            pos  = (np.min(x), np.min(y), np.max(x)-np.min(x), np.max(y)-np.min(y))
-            result.append({ 'ID':       (i+1),
+            pos  = (np.min(x), np.min(y), np.max(x)-np.min(x),
+                    np.max(y)-np.min(y))
+            result.append({'ID':       (i+1),
                             #'Data':     dm_read.message(i+1),
-                            'Data':     data,
-                            'Position': pos,
-                            'Type':     u'DataMatrix',
-                            'Quality':  10, })
-        
+                           'Data':     data,
+                           'Position': pos,
+                           'Type':     u'DataMatrix',
+                           'Quality':  10})
+
         self._features['OpticalCodes'] = result
 
         # supports many popular symbologies
@@ -1746,18 +1807,18 @@ class _JpegFile(_UnknownFile):
             import zbar             # TS (debian)
         except:
             import _zbar as zbar    # other distros (fedora)
-        
+
         try:
             img = Image.open(self.image_path_JPEG).convert('L')
             width, height = img.size
         except IOError:
             pywikibot.warning(u'unknown file type [_recognize_OpticalCodes]')
             return
-        
+
         scanner = zbar.ImageScanner()
         scanner.parse_config('enable')
         zbar_img = zbar.Image(width, height, 'Y800', img.tostring())
-        
+
         # scan the image for barcodes
         # http://zbar.sourceforge.net/api/zbar_8h.html
         scanner.scan(zbar_img)
@@ -1766,14 +1827,14 @@ class _JpegFile(_UnknownFile):
             i += 1
             p = np.array(symbol.location)   # list of points within code region/area
             p = (min(p[:,0]), min(p[:,1]), (max(p[:,0])-min(p[:,0])), (max(p[:,1])-min(p[:,1])))
-            result.append({ #'components': symbol.components,
-                            'ID':         (i+1),
+            result.append({#'components': symbol.components,
+                           'ID':         (i+1),
                             #'Count':      symbol.count,         # 'ID'?
-                            'Data':       symbol.data or u'-',
-                            'Position':   p,                    # (left, top, width, height)
-                            'Quality':    symbol.quality,       # usable for 'Confidence'
-                            'Type':       symbol.type, })
-        
+                           'Data':       symbol.data or u'-',
+                           'Position':   p,                    # (left, top, width, height)
+                           'Quality':    symbol.quality,       # usable for 'Confidence'
+                           'Type':       symbol.type})
+
         # further detection ?
 
         self._features['OpticalCodes'] = result
@@ -1788,10 +1849,10 @@ class _JpegFile(_UnknownFile):
         scale = 1.
         try:
             #im = cv.LoadImage(self.image_path_JPEG, cv.CV_LOAD_IMAGE_COLOR)
-            im = cv2.imread( self.image_path_JPEG, cv2.CV_LOAD_IMAGE_GRAYSCALE )
-            #im = cv2.imread( 'Mutilated_checkerboard_3_1.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE )
-            #im = cv2.imread( 'Jogo_de_Damas_-_Acatabul.JPG', cv2.CV_LOAD_IMAGE_GRAYSCALE )
-            chessboard_dim = ( 7, 7 )
+            im = cv2.imread(self.image_path_JPEG, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+            #im = cv2.imread('Mutilated_checkerboard_3_1.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+            #im = cv2.imread('Jogo_de_Damas_-_Acatabul.JPG', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+            chessboard_dim = (7, 7)
             if im == None:
                 raise IOError
 
@@ -1805,21 +1866,21 @@ class _JpegFile(_UnknownFile):
             pywikibot.warning(u'unknown file type [_detect_Chessboard]')
             return
 
-        smallImg = np.empty( (cv.Round(im.shape[1]/scale), cv.Round(im.shape[0]/scale)), dtype=np.uint8 )
-        #gray = cv2.cvtColor( im, cv.CV_BGR2GRAY )
-        smallImg = cv2.resize( im, smallImg.shape, interpolation=cv2.INTER_LINEAR )
-        #smallImg = cv2.equalizeHist( smallImg )
+        smallImg = np.empty((cv.Round(im.shape[1]/scale), cv.Round(im.shape[0]/scale)), dtype=np.uint8)
+        #gray = cv2.cvtColor(im, cv.CV_BGR2GRAY)
+        smallImg = cv2.resize(im, smallImg.shape, interpolation=cv2.INTER_LINEAR)
+        #smallImg = cv2.equalizeHist(smallImg)
         im = smallImg
 
         found_all = False
         corners   = None
         try:
-            #found_all, corners = cv.FindChessboardCorners( im, chessboard_dim )
-            found_all, corners = cv2.findChessboardCorners( im, chessboard_dim )
+            #found_all, corners = cv.FindChessboardCorners(im, chessboard_dim)
+            found_all, corners = cv2.findChessboardCorners(im, chessboard_dim)
         except cv2.error:
             pywikibot.exception(tb=True)
 
-        #cv2.drawChessboardCorners( im, chessboard_dim, corners, found_all )
+        #cv2.drawChessboardCorners(im, chessboard_dim, corners, found_all)
         ##cv2.imshow("win", im)
         ##cv2.waitKey()
 
@@ -1870,14 +1931,14 @@ class _JpegFile(_UnknownFile):
 #                #if theta > 0.3125: continue
 #                a = math.cos(theta)
 #                b = math.sin(theta)
-#                x0 = a * rho 
+#                x0 = a * rho
 #                y0 = b * rho
 #                pt1 = (cv.Round(x0 + 1000*(-b)), cv.Round(y0 + 1000*(a)))
 #                pt2 = (cv.Round(x0 - 1000*(-b)), cv.Round(y0 - 1000*(a)))
 #                cv2.line(color_dst, pt1, pt2, cv.RGB(255, 0, 0), 3, 8)
 #        else:
 #            #lines = cv.HoughLines2(dst, storage, cv.CV_HOUGH_PROBABILISTIC, 1, pi / 180, 50, 50, 10)
-#            lines = cv2.HoughLinesP(dst, 1, math.pi / 180, 100) 
+#            lines = cv2.HoughLinesP(dst, 1, math.pi / 180, 100)
 #
 #            for line in lines[0]:
 #                print line
@@ -1889,21 +1950,21 @@ class _JpegFile(_UnknownFile):
             # pose detection
             # http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
             # http://stackoverflow.com/questions/10022568/opencv-2-3-camera-calibration
-            d = shelve.open( os.path.join(scriptdir, 'externals/opencv/camera_virtual_default') )
+            d = shelve.open(os.path.join(scriptdir, 'externals/opencv/camera_virtual_default'))
             if ('retval' not in d):
                 # http://commons.wikimedia.org/wiki/File:Mutilated_checkerboard_3.jpg
                 pywikibot.output(u"Doing (virtual) camera calibration onto reference image 'File:Mutilated_checkerboard_3.jpg'")
-                im3 = cv2.imread( 'Mutilated_checkerboard_3.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE )
-                im3 = cv2.resize( im3, (cv.Round(im3.shape[1]/scale), cv.Round(im3.shape[0]/scale)), interpolation=cv2.INTER_LINEAR )
+                im3 = cv2.imread('Mutilated_checkerboard_3.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+                im3 = cv2.resize(im3, (cv.Round(im3.shape[1]/scale), cv.Round(im3.shape[0]/scale)), interpolation=cv2.INTER_LINEAR)
                 # Compute the the three dimensional world-coordinates
                 tmp = []
                 for h in range(chessboard_dim[0]):
                     for w in range(chessboard_dim[1]):
-                        tmp.append( (float(h), float(w), 0.0) )
+                        tmp.append((float(h), float(w), 0.0))
                 objectPoints = np.array(tmp)
                 # Compute matrices
-                _found_all, _corners = cv2.findChessboardCorners( im3, chessboard_dim, flags=cv.CV_CALIB_CB_ADAPTIVE_THRESH | cv.CV_CALIB_CB_FILTER_QUADS )
-                #cv2.drawChessboardCorners( im3, chessboard_dim, _corners, _found_all )
+                _found_all, _corners = cv2.findChessboardCorners(im3, chessboard_dim, flags=cv.CV_CALIB_CB_ADAPTIVE_THRESH | cv.CV_CALIB_CB_FILTER_QUADS)
+                #cv2.drawChessboardCorners(im3, chessboard_dim, _corners, _found_all)
                 retval, cameraMatrix, distCoeffs, rvecs, tvecs = cv2.calibrateCamera([objectPoints.astype('float32')], [_corners.astype('float32')], im3.shape, np.eye(3), np.zeros((5, 1)))
                 fovx, fovy, focalLength, principalPoint, aspectRatio = cv2.calibrationMatrixValues(cameraMatrix, im3.shape, 1.0, 1.0)
                 d['objectPoints']   = [objectPoints.astype('float32')]  # shape: (49, 3)    in a list of 1 item
@@ -1943,15 +2004,15 @@ class _JpegFile(_UnknownFile):
             #for k in range(3):          # row
             #    for j in range(5):      # column
             #        rmat = cv2.Rodrigues(2*3.14/5.*j*np.array(np.eye(3)[:,k]))[0]
-            #        mat, perp = self._util_getD2coords_proj( np.dot(rmat, np.eye(3)), cameraMatrix, None, None, distCoeffs=distCoeffs, sign=-1 )
+            #        mat, perp = self._util_getD2coords_proj(np.dot(rmat, np.eye(3)), cameraMatrix, None, None, distCoeffs=distCoeffs, sign=-1)
             #        self._util_drawAxes(mat, 50+100*j, k*100+50, im)
             ## debug: rotated axis-cross
-            #mat, perp = self._util_getD2coords_proj( np.eye(3), cameraMatrix, rvec, tvec, distCoeffs=distCoeffs )
+            #mat, perp = self._util_getD2coords_proj(np.eye(3), cameraMatrix, rvec, tvec, distCoeffs=distCoeffs)
             #self._util_drawAxes(mat, 50, 350, im)
             ## debug: self-calculated rotated axis-cross - gives strange/wrong results
             #mat = np.dot((cameraMatrix), np.dot(cv2.Rodrigues(rvec)[0], np.eye(3)))
-            ##mat, perp = self._util_getD2coords_proj( mat, np.eye(3), None, None, distCoeffs=distCoeffs, sign=-1 )
-            #mat, perp = self._util_getD2coords_proj( mat, np.eye(3), None, None, distCoeffs=np.zeros((5,1)) )
+            ##mat, perp = self._util_getD2coords_proj(mat, np.eye(3), None, None, distCoeffs=distCoeffs, sign=-1)
+            #mat, perp = self._util_getD2coords_proj(mat, np.eye(3), None, None, distCoeffs=np.zeros((5,1)))
             #self._util_drawAxes(mat, 150, 350, im)
             # debug: self-calculated rotated axis-cross - results looks good: OK
             # (and can be calculated in order to give numerical results)
@@ -2028,8 +2089,8 @@ class _JpegFile(_UnknownFile):
                 origin2D[:,i] /= origin2D[2,i]
             mat  = coords2D - origin2D
             # simple'n'fast solution, if just 2D results are needed
-            #mat, jacobian = cv2.projectPoints(np.append(np.zeros((1,3)), 
-            #                                            D3coords, 
+            #mat, jacobian = cv2.projectPoints(np.append(np.zeros((1,3)),
+            #                                            D3coords,
             #                                            axis=0),
             #                                  rvec, tvec, cm, np.zeros((5,1)))
             #mat = mat[:,0,:]
@@ -2046,10 +2107,10 @@ class _JpegFile(_UnknownFile):
 
     def _detect_Faces_EXIF(self):
         res = self._util_get_DataTags_EXIF()
-        
+
         # http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=3156.0
         # http://u88.n24.queensu.ca/pub/facetest.pl
-        # ( all scaling stuff ignored (!) and some strongly simplified (!) )
+        # (all scaling stuff ignored (!) and some strongly simplified (!))
         # Example: 'File:Annagrah-2 041.JPG' (canon)
         if 'Make' in res:
             make = res['Make'].lower()
@@ -2069,8 +2130,9 @@ class _JpegFile(_UnknownFile):
         else:
             (width, height) = self.image_size
         wasRotated = (height > width)
-        
-        if   True in [item in make for item in ['sony', 'nikon', 'panasonic', 'casio', 'ricoh']]:
+
+        if True in [item in make for item in
+                    ['sony', 'nikon', 'panasonic', 'casio', 'ricoh']]:
             # UNTESTED: ['sony', 'nikon', 'casio', 'ricoh']
             #   TESTED: ['panasonic']
             if set(['FacesDetected', 'Face1Position']).issubset(found):
@@ -2088,15 +2150,17 @@ class _JpegFile(_UnknownFile):
                 if 'FaceDetectFrameSize' in res:
                     (width, height) = map(int, res['FaceDetectFrameSize'].split(' '))
                     (sx, sy) = (1./width, 1./height)
-                while (('Face%iPosition'%i) in res) and (i <= int(res['FacesDetected'])):
+                while (('Face%iPosition' % i) in res) and (i <= int(res['FacesDetected'])):
                     buf = map(int, res['Face%iPosition'%i].split(' '))
-                    (x1, y1) = ((buf[0]-buf[2]/2)*sx, (buf[1]-buf[3]/2)*sy)    # 'panasonic'
-                    (x2, y2) = (x1+buf[2]*sx, y1+buf[3]*sy)                    #
+                    (x1, y1) = ((buf[0] - buf[2]/2) * sx,
+                                (buf[1] - buf[3]/2) * sy)  # 'panasonic'
+                    (x2, y2) = (x1 + buf[2]*sx, y1 + buf[3]*sy)  #
                     #(x1, y1) = (buf[1]*sx, buf[0]*sy)
                     #(x2, y2) = (x1+buf[3]*sx, y1+buf[2]*sy)
-                    data.append({ 'Position': (x1, y1, x2, y2) })
+                    data.append({'Position': (x1, y1, x2, y2)})
                     if ('RecognizedFace%iName'%i) in res:
-                        pywikibot.output(str((res['RecognizedFace%iName'%i], res['RecognizedFace%iAge'%i])))
+                        pywikibot.output(str((res['RecognizedFace%iName' % i],
+                                              res['RecognizedFace%iAge' % i])))
                     i += 1
         elif 'fujifilm' in make:
             # UNTESTED: 'fujifilm'
@@ -2104,10 +2168,14 @@ class _JpegFile(_UnknownFile):
                 buf = map(int, res['FacePositions'].split(' '))
                 (sx, sy) = (1./width, 1./height)
                 for i in range(int(res['FacesDetected'])):
-                    data.append({ 'Position': [buf[i*4]*sx,   buf[i*4+1]*sy, 
-                                               buf[i*4+2]*sx, buf[i*4+3]*sy] })
+                    data.append({'Position': [buf[i*4] * sx,
+                                              buf[i*4 + 1] * sy,
+                                              buf[i*4 + 2] * sx,
+                                              buf[i*4 + 3] * sy]})
                     if ('Face%iName'%i) in res:
-                        pywikibot.output(str((res['Face%iName'%i], res['Face%iCategory'%i], res['Face%iBirthday'%i])))
+                        pywikibot.output(str((res['Face%iName' % i],
+                                              res['Face%iCategory' % i],
+                                              res['Face%iBirthday' % i])))
         elif 'olympus' in make:
             # UNTESTED: 'olympus'
             if set(['FacesDetected', 'FaceDetectArea']).issubset(found):
@@ -2115,34 +2183,37 @@ class _JpegFile(_UnknownFile):
                 if buf[0] or buf[1]:
                     buf = map(int, res['FaceDetectArea'].split(' '))
                     for i in range(int(res['MaxFaces'])):
-                        data.append({ 'Position': [buf[i*4], buf[i*4+1], buf[i*4+2], buf[i*4+3]] })
+                        data.append({'Position': [buf[i * 4], buf[i*4 + 1],
+                                                  buf[i*4 + 2], buf[i*4 + 3]]})
         elif True in [item in make for item in ['pentax', 'sanyo']]:
             # UNTESTED: ['pentax', 'sanyo']
             if set(['FacesDetected']).issubset(found):
                 i = 1
                 (sx, sy) = (1./width, 1./height)
                 while ('Face%iPosition'%i) in res:
-                    buf = map(int, res['Face%iPosition'%i].split(' ') + \
-                                   res['Face%iSize'%i].split(' '))
-                    (x1, y1) = ((buf[0] - buf[2]/2.)*sx, (buf[1] - buf[3]/2.)*sy)
-                    (x2, y2) = (x1+buf[2]*sx, y1+buf[3]*sy)
-                    data.append({ 'Position': (x1, y1, x2, y2) })
+                    buf = map(int, res['Face%iPosition' % i].split(' ') + \
+                                   res['Face%iSize' % i].split(' '))
+                    (x1, y1) = ((buf[0] - buf[2]/2.) * sx,
+                                (buf[1] - buf[3]/2.) * sy)
+                    (x2, y2) = (x1 + buf[2]*sx, y1 + buf[3]*sy)
+                    data.append({'Position': (x1, y1, x2, y2)})
                     i += 1
                 if 'FacePosition' in res:
-                    buf = map(int, res['FacePosition'].split(' ') + ['100', '100']) # how big is the face?
-                    (x1, y1) = (buf[0]*sx, buf[1]*sy)
-                    (x2, y2) = (buf[2]*sx, buf[3]*sy)
-                    data.append({ 'Position': (x1, y1, x2, y2) })
+                    buf = map(int,
+                              res['FacePosition'].split(' ') + ['100', '100']) # how big is the face?
+                    (x1, y1) = (buf[0] * sx, buf[1] * sy)
+                    (x2, y2) = (buf[2] * sx, buf[3] * sy)
+                    data.append({'Position': (x1, y1, x2, y2)})
         elif 'canon' in make:
-            if   set(['FacesDetected', 'FaceDetectFrameSize']).issubset(found) \
+            if set(['FacesDetected', 'FaceDetectFrameSize']).issubset(found) \
                  and (int(res['FacesDetected'])):
                 # TESTED: older models store face detect information
                 (width, height) = map(int, res['FaceDetectFrameSize'].split(' '))   # default: (320,240)
-                (sx, sy) = (1./width, 1./height)
+                (sx, sy) = (1. / width, 1. / height)
                 fw = res['FaceWidth'] or 35
                 i = 1
                 while ('Face%iPosition'%i) in res:
-                    buf = map(int, res['Face%iPosition'%i].split(' '))
+                    buf = map(int, res['Face%iPosition' % i].split(' '))
                     (x1, y1) = ((buf[0] + width/2. - fw)*sx, (buf[1] + height/2. - fw)*sy)
                     (x2, y2) = (x1 + fw*2*sx, y1 + fw*2*sy)
                     data.append({ 'Position': (x1, y1, x2, y2) })
@@ -2164,11 +2235,11 @@ class _JpegFile(_UnknownFile):
                     else:
                         pywikibot.output(u'No AF area size')
                     # conversion to positive coordinates
-                    buf_x = [ int(x) + width/2. for x in buf_x ]
-                    buf_y = [ int(y) + height/2. for y in buf_y ]
+                    buf_x = [int(x) + width/2. for x in buf_x]
+                    buf_y = [int(y) + height/2. for y in buf_y]
                     # EOS models have Y flipped
                     if ('Model' in res) and ('EOS' in res['Model']):
-                        buf_y = [ height - y for y in buf_y ]
+                        buf_y = [height - y for y in buf_y]
                     (sx, sy) = (1./width, 1./height)
                     for i in range(int(res['ValidAFPoints'])):
                         (x1, y1) = ((buf_x[i]-buf_w[i]/2)*sx, (buf_y[i]-buf_h[i]/2)*sy)
@@ -2181,7 +2252,7 @@ class _JpegFile(_UnknownFile):
             if make and (True in (available+unknown)):
                 pywikibot.warning(u"skipped '%s' since not supported (yet) [_detect_Faces_EXIF]" % make)
                 pywikibot.warning(u"FacesDetected: %s - ValidAFPoints: %s" % tuple(available))
-        
+
         # finally, rotate face coordinates if image was rotated
         if wasRotated:
             rot = 270
@@ -2200,11 +2271,11 @@ class _JpegFile(_UnknownFile):
                     data[i]['Rotation'] += 360 if data[i]['Rotation'] < 0 else 0
 
             # rescale relative sizes to real pixel values
-            p = (p[0]*self.image_size[0] + 0.5, p[1]*self.image_size[1] + 0.5, 
+            p = (p[0]*self.image_size[0] + 0.5, p[1]*self.image_size[1] + 0.5,
                  p[2]*self.image_size[0] + 0.5, p[3]*self.image_size[1] + 0.5)
             # change from (x1, y1, x2, y2) to (x, y, w, h)
             #data[i]['Position'] = (p[0], p[1], p[0]-p[2], p[3]-p[1])
-            data[i]['Position'] = (min(p[0],p[2]), min(p[1],p[3]), 
+            data[i]['Position'] = (min(p[0],p[2]), min(p[1],p[3]),
                                    abs(p[0]-p[2]), abs(p[3]-p[1]))
 
             data[i] = { 'Position': tuple(map(int, data[i]['Position'])),
@@ -2226,11 +2297,11 @@ class _JpegFile(_UnknownFile):
         #a = []
         #for k in res.keys():
         #    if 'history' in k.lower():
-        #        a.append( k )
+        #        a.append(k)
         #for item in sorted(a):
         #    print item
         # http://tilloy.net/dev/pyexiv2/api.html#pyexiv2.xmp.XmpTag
-        #print [getattr(res['Xmp.xmpMM.History'], item) for item in ['key', 'type', 'name', 'title', 'description', 'raw_value', 'value', ]]
+        #print [getattr(res['Xmp.xmpMM.History'], item) for item in ['key', 'type', 'name', 'title', 'description', 'raw_value', 'value',]]
         result = []
         i = 1
         while (('Xmp.xmpMM.History[%i]' % i) in res):
@@ -2246,16 +2317,16 @@ class _JpegFile(_UnknownFile):
                 if ('Xmp.xmpMM.History[%i]/stEvt:changed'%i) in res:
                     data['Info']  = res['Xmp.xmpMM.History[%i]/stEvt:changed'%i].value
                 #print res['Xmp.xmpMM.History[%i]/stEvt:instanceID'%i].value
-                result.append( data )
+                result.append(data)
             elif ('Xmp.xmpMM.History[%i]/stEvt:parameters'%i) in res:
                 data['Action']    = res['Xmp.xmpMM.History[%i]/stEvt:action'%i].value
                 data['Info']      = res['Xmp.xmpMM.History[%i]/stEvt:parameters'%i].value
                 #data['Action']    = data['Info'].split(' ')[0]
-                result.append( data )
+                result.append(data)
             else:
                 pass
             i += 1
-        
+
         self._features['History'] = result
         return
 
@@ -2298,22 +2369,22 @@ class _JpegFile(_UnknownFile):
                 #print check, np.average(check), np.std(check)
                 if (np.average(check) >= 0.9) and (np.std(check) <= 0.1):
                 #if (np.average(check) >= 0.85) and (np.std(check) <= 0.1):
-                    drop.append( i1 )
+                    drop.append(i1)
                 # remove all sub-rect/-regions (all regions fully contained in other)
                 if sub:
-                    #drop.append( [i1, i2][check[0:2].index(1.0)] )
+                    #drop.append([i1, i2][check[0:2].index(1.0)])
                     if   (ar1 >= thsr) and (i2 not in drop):
-                        drop.append( i1 )
+                        drop.append(i1)
                     elif (ar2 >= thsr) and (i1 not in drop):
-                        drop.append( i2 )
+                        drop.append(i2)
                 # from '_detect_Faces()'
                 if overlap:
                     if (r2[0] <= c1[0] <= (r2[0] + r2[2])) and \
                        (r2[1] <= c1[1] <= (r2[1] + r2[3])) and (i2 not in drop):
-                        drop.append( i1 )
+                        drop.append(i1)
                 if close:
                     if (check[0] >= 0.985) and (i2 not in drop):     # at least (!)
-                        drop.append( i1 )
+                        drop.append(i1)
 
                 i2 += 1
 
@@ -2390,9 +2461,9 @@ class _SvgFile(_JpegFile):
             ctx = cairo.Context(img)
             svg.render_cairo(ctx)
             #img.write_to_png("svg.png")
-            #Image.frombuffer("RGBA",( img.get_width(),img.get_height() ),
+            #Image.frombuffer("RGBA",(img.get_width(),img.get_height()),
             #             img.get_data(),"raw","RGBA",0,1).save(self.image_path_JPEG, "JPEG")
-            png = Image.frombuffer("RGBA",( img.get_width(),img.get_height() ),
+            png = Image.frombuffer("RGBA",(img.get_width(),img.get_height()),
                                img.get_data(),"raw","RGBA",0,1)
             background = Image.new("RGB", png.size, (255, 255, 255))
             background.paste(png, mask=png.split()[3]) # 3 is the alpha channel
@@ -2414,7 +2485,7 @@ class _SvgFile(_JpegFile):
 
         # similar to PDF page count OR use BeautifulSoup
         svgcountpages = re.compile("<page>")
-        pc = len(svgcountpages.findall( file(self.image_path,"r").read() ))
+        pc = len(svgcountpages.findall(file(self.image_path,"r").read()))
 
         #svg = rsvg.Handle(self.image_path)
 
@@ -2477,7 +2548,7 @@ class _PdfFile(_JpegFile):
         # http://code.activestate.com/recipes/496837-count-pdf-pages/
         #rxcountpages = re.compile(r"$\s*/Type\s*/Page[/\s]", re.MULTILINE|re.DOTALL)
         rxcountpages = re.compile(r"/Type\s*/Page([^s]|$)", re.MULTILINE|re.DOTALL)    # PDF v. 1.3,1.4,1.5,1.6
-        pc = len(rxcountpages.findall( file(self.image_path,"rb").read() ))
+        pc = len(rxcountpages.findall(file(self.image_path,"rb").read()))
 
         result =      { 'Format':     u'PDF',
                         'Mode':       u'-',
@@ -2514,35 +2585,35 @@ class _PdfFile(_JpegFile):
             shutil.rmtree(os.path.join(path, "temp"))
         if os.system("ocropus-nlbin %s -o %s" % (self.image_path_JPEG, os.path.join(path, "temp"))):
             raise ImportError("ocropus not found!")
-        
+
         # page level segmentation
         if os.system("ocropus-gpageseg --minscale 6.0 '%s'" % os.path.join(path, "temp/????.bin.png")):
             # detection error
             return
-        
+
         # raw text line recognition
         if os.system("ocropus-lattices --writebestpath '%s'" % os.path.join(path, "temp/????/??????.bin.png")):
             # detection error
             return
-        
+
         # language model application
         # (optional - improve the raw results by applying a pretrained model)
         os.environ['OCROPUS_DATA'] = os.path.join(path, "models/")
         if os.system("ocropus-ngraphs '%s'" % os.path.join(path, "temp/????/??????.lattice")):
             # detection error
             return
-        
+
         # create hOCR output
         if os.system("ocropus-hocr '%s' -o %s" % (os.path.join(path, "temp/????.bin.png"), os.path.join(path, "temp.html"))):
             # detection error
             return
-        
+
         ## 'create HTML for debugging (use "firefox temp/index.html" to view)'
         ## (optional - generate human readable debug output)
         #if os.system("ocropus-visualize-results %s" % os.path.join(path, "temp")):
         #    # detection error
         #    return
-        
+
         # "to see recognition results, type: firefox temp.html"
         # "to see details on the recognition process, type: firefox temp/index.html"
         tmpfile = open(os.path.join(path, "temp.html"), 'r')
@@ -2556,7 +2627,7 @@ class _PdfFile(_JpegFile):
 
         #print data
         pywikibot.output(data)
- 
+
     def _detect_EmbeddedText(self):
         # may be also: http://www.reportlab.com/software/opensource/rl-toolkit/
 
@@ -2568,34 +2639,34 @@ class _PdfFile(_JpegFile):
         # https://launchpad.net/poppler-python/
         # http://stackoverflow.com/questions/2732178/extracting-text-from-pdf-with-poppler-c
         # http://stackoverflow.com/questions/25665/python-module-for-converting-pdf-to-text
-        #proc = Popen("pdftotext -layout %s %s" % (self.image_path, self.image_path+'.txt'), 
-        proc = Popen("pdftotext %s %s" % (self.image_path, self.image_path+'.txt'), 
+        #proc = Popen("pdftotext -layout %s %s" % (self.image_path, self.image_path+'.txt'),
+        proc = Popen("pdftotext %s %s" % (self.image_path, self.image_path+'.txt'),
                      shell=True, stderr=PIPE)#.stderr.readlines()
         proc.wait()
         if proc.returncode:
             raise ImportError("pdftotext not found!")
         data = open(self.image_path+'.txt', 'r').readlines()
-        os.remove( self.image_path+'.txt' )
+        os.remove(self.image_path+'.txt')
 
 #        self._content_text = data
         (s1, l1) = (len(u''.join(data)), len(data))
 
         tmp_path = os.path.join(os.environ.get('TMP', '/tmp'), 'DrTrigonBot/')
-        os.mkdir( tmp_path )
+        os.mkdir(tmp_path)
 # switch this part off since 'pdfimages' (on toolserver) is too old; TS-1449
-#        proc = Popen("pdfimages -p %s %s/" % (self.image_path, tmp_path), 
-        proc = Popen("pdfimages %s %s/" % (self.image_path, tmp_path), 
+#        proc = Popen("pdfimages -p %s %s/" % (self.image_path, tmp_path),
+        proc = Popen("pdfimages %s %s/" % (self.image_path, tmp_path),
                      shell=True, stderr=PIPE)#.stderr.readlines()
         proc.wait()
         if proc.returncode:
             raise ImportError("pdfimages not found!")
-        images = os.listdir( tmp_path )
+        images = os.listdir(tmp_path)
 #        pages  = set()
         for f in images:
-#            pages.add( int(f.split('-')[1]) )
-            os.remove( os.path.join(tmp_path, f) )
-        os.rmdir( tmp_path )
-        
+#            pages.add(int(f.split('-')[1]))
+            os.remove(os.path.join(tmp_path, f))
+        os.rmdir(tmp_path)
+
         ## pdfminer (tools/pdf2txt.py)
         ## http://denis.papathanasiou.org/?p=343 (for layout and images)
         #debug = 0
@@ -2720,8 +2791,8 @@ class _OggFile(_JpegFile):
 
         # (similar as in '_util_get_DataTags_EXIF')
 # switch this part off since 'ffprobe' (on toolserver) is too old; TS-1449
-#        data = Popen("ffprobe -v quiet -print_format json -show_format -show_streams %s" % self.image_path, 
-        proc = Popen("ffprobe -v quiet -show_format -show_streams %s" % self.image_path,#.replace('%', '%%'), 
+#        data = Popen("ffprobe -v quiet -print_format json -show_format -show_streams %s" % self.image_path,
+        proc = Popen("ffprobe -v quiet -show_format -show_streams %s" % self.image_path,#.replace('%', '%%'),
                      shell=True, stdout=PIPE)#.stdout.read()
         proc.wait()
         if proc.returncode == 127:
@@ -2737,20 +2808,20 @@ class _OggFile(_JpegFile):
                     if key not in res:
                         res[key] = []
                 else:
-                    res[key].append( cur )
+                    res[key].append(cur)
             else:
                 val = item.split('=')
                 cur[val[0].strip()] = val[1].strip()
         if res:
             res = { 'streams': res['STREAM'], 'format': res['FORMAT'][0] }
         self._buffer_FFMPEG = res
-        
+
         return self._buffer_FFMPEG
 
     def _detect_AudioFeatures(self):
         # http://yaafe.sourceforge.net/manual/tools.html
         # http://yaafe.sourceforge.net/manual/quickstart.html - yaafe.py
-        # ( help: yaafe.py -h / features: yaafe.py -l )
+        # (help: yaafe.py -h / features: yaafe.py -l)
         #
         # compile yaafe on fedora:
         # 1.) get and compile 'argtable2' (2-13)
@@ -2991,12 +3062,12 @@ class _MidiFile(_OggFile):
             #print mm.durationToSeconds(part.duration.quarterLength)
             #print sum([item.seconds for item in stream])    # sum over all Note(s)
             #print part.metadata
-            data.append( {'ID':        (i+1), 
-                          'Format':    u'(audio/midi)', 
+            data.append({'ID':        (i + 1),
+                          'Format':    u'(audio/midi)',
                           # note rate / noteduration ...??
                           'Rate':      u'%s/-/-' % d["channels"][i],
                           'Dimension': (None, None),
-                          'Duration':  part.seconds,} )
+                          'Duration':  part.seconds,})
 
         self._features['Streams'] = data
         return
@@ -3055,30 +3126,30 @@ class _MidiFile(_OggFile):
 
         res = {}
 
-        res["channels"] = [ len(t.getChannels()) for t in mf.tracks ]
-        res["parts"]    = [ p for p in s.elements ]
-        res["duration"] = max([ p.seconds for p in s.elements ])
+        res["channels"] = [len(t.getChannels()) for t in mf.tracks]
+        res["parts"]    = [p for p in s.elements]
+        res["duration"] = max([p.seconds for p in s.elements])
         self._buffer_MUSIC21 = res
 
         return self._buffer_MUSIC21
 
 
 # http://commons.wikimedia.org/wiki/File_formats
-_FILETYPES = {                        '*': _UnknownFile,
-              (      'image',     'jpeg'): _JpegFile,
-              (      'image',      'png'): _PngFile,
-              (      'image',      'gif'): _GifFile,
-              (      'image',     'tiff'): _TiffFile,
-              (      'image',    'x-xcf'): _XcfFile,
-              (      'image',  'svg+xml'): _SvgFile,    # unify/merge them?
+_FILETYPES = {'*': _UnknownFile,
+              (     'image',     'jpeg'): _JpegFile,
+              (     'image',      'png'): _PngFile,
+              (     'image',      'gif'): _GifFile,
+              (     'image',     'tiff'): _TiffFile,
+              (     'image',    'x-xcf'): _XcfFile,
+              (     'image',  'svg+xml'): _SvgFile,    # unify/merge them?
               ('application',      'xml'): _SvgFile,    #
               ('application',      'pdf'): _PdfFile,
 # djvu: python-djvulibre or python-djvu for djvu support
 # http://pypi.python.org/pypi/python-djvulibre/0.3.9
-#              (      'image', 'vnd.djvu'): DjvuFile,
-              (      'audio',     'midi'): _MidiFile,
+#              (     'image', 'vnd.djvu'): DjvuFile,
+              (     'audio',     'midi'): _MidiFile,
               ('application',      'ogg'): _OggFile,}
-#              (          '?',        '?'): _WebMFile,}
+#              (         '?',        '?'): _WebMFile,}
 
 def GenericFile(file_name):
     # 'magic' (libmagic)
@@ -3104,7 +3175,7 @@ def GenericFile(file_name):
 class CatImages_Default(object):
     #ignore = []
     ignore = ['color']
-    
+
     _thrhld_group_size = 4
     #_thrshld_guesses = 0.1
     _thrshld_default = 0.75
@@ -3164,8 +3235,8 @@ class CatImages_Default(object):
             #cb = (0.02 * (50. - data['Delta_E']))**(1./2)   # 20.0 -> ~0.75
             ##cb = (0.02 * (50. - data['Delta_E']))**(1./3)   # 25.0 -> ~0.75
             #cc = (1. - (data['Delta_R']/max_dim))**(1.)     # 0.25 -> ~0.75
-            #c  = ( 3*ca + cb ) / 4
-            #c  = ( cc + 6*ca + 2*cb ) / 9
+            #c  = (3*ca + cb) / 4
+            #c  = (cc + 6*ca + 2*cb) / 9
             c  = ca
             self._info['ColorRegions'][i]['Confidence'] = c
 
@@ -3207,7 +3278,6 @@ class CatImages_Default(object):
     def _cat_people_People(self):
         #relevance = bool(self._info_filter['People'])
         relevance = self._cat_people_Groups()[1]
-
         return (u'Unidentified people', relevance)
 
     # Category:Unidentified people
@@ -3215,13 +3285,11 @@ class CatImages_Default(object):
     def _cat_face_People(self):
         relevance = bool(self._info_filter['Faces'])
         #relevance = bool(self._info_filter['People']) or relevance
-
         return (u'Unidentified people', relevance)
 
     # Category:Groups
     def _cat_people_Groups(self):
         result = self._info_filter['People']
-
         relevance = (len(result) >= self._thrhld_group_size) and \
                     (not self._cat_coloraverage_Graphics()[1])
 
@@ -3236,22 +3304,19 @@ class CatImages_Default(object):
         #else:
         #    relevance = 1 - 1./(len(result)-1)
         relevance = (len(result) >= self._thrhld_group_size)
-
         return (u'Groups', relevance)
 
     # Category:Faces
     def _cat_face_Faces(self):
         result = self._info_filter['Faces']
-
-        #return (u'Faces', ((len(result) == 1) and (result[0]['Coverage'] >= .50)))
-        return (u'Faces', ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
+        return (u'Faces',
+                ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
 
     # Category:Portraits
     def _cat_face_Portraits(self):
         result = self._info_filter['Faces']
-
-        #return (u'Portraits', ((len(result) == 1) and (result[0]['Coverage'] >= .25)))
-        return (u'Portraits', ((len(result) == 1) and (result[0]['Coverage'] >= .20)))
+        return (u'Portraits',
+                ((len(result) == 1) and (result[0]['Coverage'] >= .20)))
 
     # Category:Barcode
     def _cat_code_Barcode(self):
@@ -3301,8 +3366,8 @@ class CatImages_Default(object):
     def _cat_streams_OggSoundFiles(self):
         result = self._info_filter['Streams']
 
-        return (u'Ogg sound files', ((len(result) == 1) and 
-                                     (u'audio/' in result[0]['Format']) and 
+        return (u'Ogg sound files', ((len(result) == 1) and
+                                     (u'audio/' in result[0]['Format']) and
                                      (u'/midi' not in result[0]['Format'])))
 
     # Category:Videos
@@ -3384,7 +3449,7 @@ class CatImages_Default(object):
                 relevance = ((key in result) or ('*' in result)) and \
                             (magic in result.get(key, result.get('*')))
                 if relevance:
-                    cats.add( cat )
+                    cats.add(cat)
 
         return (list(cats), bool(len(cats)))
 
@@ -3460,20 +3525,20 @@ class CatImages_Default(object):
     # Category:Human legs
     def _guess_legs_HumanLegs(self):
         result = self._info_filter['Legs']
- 
-        return (u'Human legs', ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
+        return (u'Human legs',
+                ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
 
     # Category:Human torsos
     def _guess_torsos_HumanTorsos(self):
         result = self._info_filter['Torsos']
- 
-        return (u'Human torsos', ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
+        return (u'Human torsos',
+                ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
 
     # Category:Automobiles
     def _guess_automobiles_Automobiles(self):
         result = self._info_filter['Automobiles']
- 
-        return (u'Automobiles', ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
+        return (u'Automobiles',
+                ((len(result) == 1) and (result[0]['Coverage'] >= .40)))
 
     ## Category:Hands
     #def _guess_hands_Hands(self):
@@ -3481,15 +3546,15 @@ class CatImages_Default(object):
     #
     #    return (u'Hands', ((len(result) == 1) and (result[0]['Coverage'] >= .50)))
 
-    # Category:Black     (  0,   0,   0)
-    # Category:Blue‎      (  0,   0, 255)
+    # Category:Black     ( 0,   0,   0)
+    # Category:Blue‎      ( 0,   0, 255)
     # Category:Brown     (165,  42,  42)
-    # Category:Green     (  0, 255,   0)
+    # Category:Green     ( 0, 255,   0)
     # Category:Orange    (255, 165,   0)
     # Category:Pink‎      (255, 192, 203)
     # Category:Purple    (160,  32, 240)
     # Category:Red‎       (255,   0,   0)
-    # Category:Turquoise ( 64, 224, 208)
+    # Category:Turquoise (64, 224, 208)
     # Category:White‎     (255, 255, 255)
     # Category:Yellow    (255, 255,   0)
     # http://www.farb-tabelle.de/en/table-of-color.htm
@@ -3532,7 +3597,7 @@ class CatImages_SVM(CatImages_Default):
         for key in self._info:
             for i in range(len(self._info[key])):
                 self._info[key][i]['Confidence'] = 1.0
-    
+
     # (all trained categories)
     # http://scipy-lectures.github.com/advanced/scikit-learn/index.html
     # http://mlpy.sourceforge.net/docs/3.5/index.html
@@ -3545,15 +3610,15 @@ class CatImages_SVM(CatImages_Default):
         features = []
         for key in sorted(self._info):
             #print key, len(self._info[key]), self._info[key]
-            features.append( len(self._info[key]) )
+            features.append(len(self._info[key]))
         features = np.array(features)
 
         linear_svm = mlpy.LibSvm().load_model('cache/test.csf')
-        yp  = linear_svm.pred(features)
-        cat = self.trained_cat[int(yp)-1]
+        yp = linear_svm.pred(features)
+        cat = self.trained_cat[int(yp) - 1]
         #print linear_svm.labels()
         # confidence of match?
- 
+
         return (cat, True)
 
 
@@ -3568,18 +3633,20 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
     def load_licenses(self):
         #pywikibot.output(u'\n\t...Listing the procedures available...\n')
         pywikibot.output(u'\n\t...Listing the procedures used...\n')
-        
+
         self._funcs = {'filter': [], 'cat': [], 'addcat': [], 'guess': []}
 
         for item in dir(self):
             s = item.split('_')
-            if (len(s) < 3) or (s[1] not in self._funcs) or (s[2] in self.ignore):
+            if (len(s) < 3) or (s[1] not in self._funcs) or (s[2] in
+                                                             self.ignore):
                 continue
-            pywikibot.output( item )
-            self._funcs[s[1]].append( item )
+            pywikibot.output(item)
+            self._funcs[s[1]].append(item)
 
         self.tmpl_available_spec = tmpl_available_spec
-        gen = pagegenerators.PrefixingPageGenerator(prefix = u'Template:FileContentsByBot/')
+        gen = pagegenerators.PrefixingPageGenerator(
+            prefix=u'Template:FileContentsByBot/')
         buf = []
         for item in gen:
             item = item.title()
@@ -3588,11 +3655,13 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             item = os.path.split(item)[1]
             if (item[0].lower() == item[0]):    # e.g. 'generic'
                 continue
-            buf.append( item )
+            buf.append(item)
         if buf:
             self.tmpl_available_spec = buf
-            pywikibot.output( u'\n\t...Following specialized templates found, check them since they are used now...\n' )
-            pywikibot.output( u'tmpl_available_spec = [ %s ]\n' % u", ".join(buf) )
+            pywikibot.output(u'\n\t...Following specialized templates found, '
+                             u'check them since they are used now...\n')
+            pywikibot.output(u'tmpl_available_spec = [%s]\n'
+                             % u", ".join(buf))
 
         return []
 
@@ -3600,10 +3669,12 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         #print self.image_path
         pywikibot.output(u'Processing media %s ...' % self.image.title(asLink=True))
 
-        image_filename  = os.path.split(self.image.fileUrl())[-1]
-        self.image_path = urllib2.quote(os.path.join(scriptdir, ('cache/' + image_filename[-128:])))
+        image_filename = os.path.split(self.image.fileUrl())[-1]
+        self.image_path = urllib2.quote(os.path.join(scriptdir,
+                                                     ('cache/' +
+                                                      image_filename[-128:])))
 
-        self._wikidata = self.image._latestInfo # all info wikimedia got from content (mime, sha1, ...)
+        self._wikidata = self.image._latestInfo  # all info wikimedia got from content (mime, sha1, ...)
         #print self._wikidata
         #print self._wikidata['mime']
         #print self._wikidata['sha1']
@@ -3613,15 +3684,15 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
 
         if not os.path.exists(self.image_path):
             pywikibot.get_throttle()
-            f_url, data = self.site.getUrl(self.image.fileUrl(), no_hostname=True, 
-                                           back_response=True)
+            f_url, data = self.site.getUrl(self.image.fileUrl(),
+                                           no_hostname=True, back_response=True)
             # needed patch for 'getUrl' applied upstream in r10441
             # (allows to re-read from back_response)
             data = f_url.read()
             del f_url   # free some memory (no need to keep a copy...)
 
             f = open(self.image_path, 'wb')
-            f.write( data )
+            f.write(data)
             f.close()
 
     # LOOK ALSO AT: checkimages.CatImagesBot.checkStep
@@ -3629,14 +3700,15 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
     def checkStep(self):
         self.thrshld = self._thrshld_default
 
-        self._info         = {}     # used for LOG/DEBUG OUTPUT ONLY
-        self._info_filter  = {}     # used for CATEGORIZATION
+        self._info = {}         # used for LOG/DEBUG OUTPUT ONLY
+        self._info_filter = {}  # used for CATEGORIZATION
         self._result_check = []
-        self._result_add   = []
+        self._result_add = []
         self._result_guess = []
 
         # flush internal buffers
-        for attr in ['_buffer_EXIF', '_buffer_FFMPEG', '_buffer_Geometry']:#, '_content_text']:
+        for attr in ['_buffer_EXIF', '_buffer_FFMPEG',
+                     '_buffer_Geometry']:  # , '_content_text']:
             if hasattr(self, attr):
                 delattr(self, attr)
 
@@ -3655,17 +3727,17 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         #                       the ones that get reported
         self._info_filter = {}
         for item in self._funcs['filter']:
-            self._info_filter.update( getattr(self, item)() )
+            self._info_filter.update(getattr(self, item)())
 
         # categorization: use explicit searches for classification (rel = ?)
         for item in self._funcs['cat']:
             (cats, rel) = getattr(self, item)()
             #print cat, result, len(result)
             if not isinstance(cats, list):      # because of 'Histroy' and '_cat_meta_and_history_general'
-                cats = [cats]                   #  which return multiple results...
+                cats = [cats]                   # which return multiple results...
             if rel:
                 for cat in cats:
-                    self._result_check.append( cat )
+                    self._result_check.append(cat)
         self._result_check = list(set(self._result_check))
 
         # categorization: conditional (only if the ones before are present)
@@ -3674,7 +3746,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             (cat, rel) = getattr(self, item)()
             #print cat, result, len(result)
             if rel:
-                self._result_add.append( cat )
+                self._result_add.append(cat)
         self._result_add = list(set(self._result_add))
 
         # categorization: use guesses for unreliable classification (rel = 0.1)
@@ -3684,7 +3756,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             (cat, rel) = getattr(self, item)()
             #print cat, result, len(result)
             if rel:
-                self._result_guess.append( cat )
+                self._result_guess.append(cat)
 
         return self._result_check
 
@@ -3705,37 +3777,47 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
                 break
         if pos > 1:
             # cosmetic changes: format the page well to have '\n\n' after the template
-            diff = content[:(pos-2)].count(u'{{') - content[:(pos-2)].count(u'}}')
-            while (content[:pos].count(u'{{') - content[:pos].count(u'}}')) != diff:
+            diff = (content[:(pos - 2)].count(u'{{') -
+                    content[:(pos - 2)].count(u'}}'))
+            while (content[:pos].count(u'{{') -
+                   content[:pos].count(u'}}')) != diff:
                 pos = content.find(u'}}', pos) + 2
-            if content[pos:(pos+2)] != (u"\n"*2):
-                content = content[:pos] + (u"\n"*2) + content[pos:].lstrip()
+            if content[pos:(pos+2)] != (u"\n" * 2):
+                content = content[:pos] + (u"\n" * 2) + content[pos:].lstrip()
         else:
             pywikibot.warning(u'Page layout issue; Information template could '
                               u'not be found and thus the data not appended!')
             return False
 
         # append template and fill it with data
-        content = self._append_to_template(content, temp, tmpl_FileContentsByBot)
+        content = self._append_to_template(content, temp,
+                                           tmpl_FileContentsByBot)
         for i, key in enumerate(self._info_filter):
             item = self._info_filter[key]
 
             info = self._make_infoblock(key, item)
             if info:
-                content = self._append_to_template(content, u"FileContentsByBot", info)
+                content = self._append_to_template(content,
+                                                   u"FileContentsByBot", info)
 
         # append categories
         tags = set([])
-        for i, cat in enumerate(list(set(self._result_check + self._result_add))):
-            tags.add( u"[[:Category:%s]]" % cat )
-            content = pywikibot.replaceCategoryLinks(content, [cat], site=self.site, addOnly=True)
+        for i, cat in enumerate(list(set(self._result_check +
+                                         self._result_add))):
+            tags.add(u"[[:Category:%s]]" % cat)
+            content = pywikibot.replaceCategoryLinks(content, [cat],
+                                                     site=self.site,
+                                                     addOnly=True)
 
         # cleanup double categories, remove obsolete ones and add templates
-        content = pywikibot.replaceCategoryLinks( content, 
-                list(set(pywikibot.getCategoryLinks(content, site=self.site))),
-                site=self.site )
+        content = pywikibot.replaceCategoryLinks(
+            content,
+            list(set(pywikibot.getCategoryLinks(content, site=self.site))),
+            site=self.site)
         content = self._remove_category_or_template(content, u"Uncategorized")  # template
-        content = self._add_template(content, u"Check categories|year={{subst:#time:Y}}|month={{subst:#time:F}}|day={{subst:#time:j}}|category=[[Category:Categorized by DrTrigonBot]]", top=True)
+        content = self._add_template(content,
+                                     u"Check categories|year={{subst:#time:Y}}|month={{subst:#time:F}}|day={{subst:#time:j}}|category=[[Category:Categorized by DrTrigonBot]]",
+                                     top=True)
 
         # add category guesses
         for i, cat in enumerate(self._result_guess):
@@ -3746,14 +3828,14 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         pywikibot.output(content)
         pywikibot.output(u"--- " * 20)
         pywikibot.put_throttle()
-        self.image.put( content, comment="bot automatic categorization; adding %s" % u", ".join(tags),
-                                 botflag=False )
+        self.image.put(content, comment="bot automatic categorization; adding %s" % u", ".join(tags),
+                                 botflag=False)
 
 # TODO: (work-a-round if https://bugzilla.wikimedia.org/show_bug.cgi?id=6421 not solved)
 #        if hasattr(self, '_content_text'):
 #            textpage = pywikibot.Page(self.site, os.path.join(self.image.title(), u'Contents/Text'))
-#            textpage.put( self._content_text, comment="bot adding content from %s" % textpage.title(asLink=True),
-#                                              botflag=False )
+#            textpage.put(self._content_text, comment="bot adding content from %s" % textpage.title(asLink=True),
+#                                              botflag=False)
 
         return True
 
@@ -3762,43 +3844,46 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         ignore = ['Properties', 'Metadata', 'ColorAverage', 'ColorRegions', 'Geometry']
         #if not self._existInformation(self._info):  # information available?
         # information available? AND/OR category available?
-        if not (self._existInformation(self._info, ignore = ignore) or self._result_check):
+        if not (self._existInformation(self._info, ignore=ignore) or
+                self._result_check):
             return u""
 
-        ret  = []
-        ret.append( u"" )
-        ret.append( u"== [[:%s]] ==" % self.image.title() )
-        ret.append( u'{|' )
-        ret.append( u'|<div style="position:relative;">' )
-        ret.append( u"[[%s|200px]]" % self.image.title() )
-        ret.append( self._make_markerblock(self._info[u'Faces'], 200.,
-                                           structure=['Position', 'Eyes', 'Mouth', 'Nose']) )
-        ret.append( self._make_markerblock(self._info[u'People'], 200.,
-                                           line='dashed') )
-        ret.append( u"</div>" )
-        ret.append( u'|<div style="position:relative;">' )
-        ret.append( u"[[%s|200px]]" % self.image.title() )
-        ret.append( self._make_markerblock(self._info[u'ColorRegions'], 200.) )
-        ret.append( self._make_markerblock(self._info[u'OpticalCodes'], 200.,
-                                           line='dashed') )
-        ret.append( u"</div>" )
-        ret.append( u'|<div style="position:relative;">' )
-        ret.append( u"[[%s|200px]]" % self.image.title() )
-        ret.append( self._make_markerblock(self._info[u'Ears'], 200.) )
-        ret.append( self._make_markerblock(self._info[u'Eyes'], 200.) )
-        ret.append( self._make_markerblock(self._info[u'Legs'], 200.,
-                                           line='dashed') )
-        ret.append( self._make_markerblock(self._info[u'Torsos'], 200.,
-                                           line='dashed') )
-        ret.append( self._make_markerblock(self._info[u'Automobiles'], 200.,
-                                           line='dashed') )
-        #ret.append( self._make_markerblock(self._info[u'Hands'], 200.,
-        #                                   line='dashed') )
-        ret.append( u"</div>" )
-        ret.append( u'|}' )
+        ret = []
+        ret.append(u"")
+        ret.append(u"== [[:%s]] ==" % self.image.title())
+        ret.append(u'{|')
+        ret.append(u'|<div style="position:relative;">')
+        ret.append(u"[[%s|200px]]" % self.image.title())
+        ret.append(self._make_markerblock(self._info[u'Faces'], 200.,
+                                           structure=['Position', 'Eyes', 'Mouth', 'Nose']))
+        ret.append(self._make_markerblock(self._info[u'People'], 200.,
+                                           line='dashed'))
+        ret.append(u"</div>")
+        ret.append(u'|<div style="position:relative;">')
+        ret.append(u"[[%s|200px]]" % self.image.title())
+        ret.append(self._make_markerblock(self._info[u'ColorRegions'], 200.))
+        ret.append(self._make_markerblock(self._info[u'OpticalCodes'], 200.,
+                                           line='dashed'))
+        ret.append(u"</div>")
+        ret.append(u'|<div style="position:relative;">')
+        ret.append(u"[[%s|200px]]" % self.image.title())
+        ret.append(self._make_markerblock(self._info[u'Ears'], 200.))
+        ret.append(self._make_markerblock(self._info[u'Eyes'], 200.))
+        ret.append(self._make_markerblock(self._info[u'Legs'], 200.,
+                                           line='dashed'))
+        ret.append(self._make_markerblock(self._info[u'Torsos'], 200.,
+                                           line='dashed'))
+        ret.append(self._make_markerblock(self._info[u'Automobiles'], 200.,
+                                           line='dashed'))
+        #ret.append(self._make_markerblock(self._info[u'Hands'], 200.,
+        #                                   line='dashed'))
+        ret.append(u"</div>")
+        ret.append(u'|}')
 
-        color = {True: "rgb(0,255,0)", False: "rgb(255,0,0)"}[bool(self._result_check + self._result_guess)]
-        ret.append( u"<div style='background:%s'>'''automatic categorization''': %s</div>" % (color, u", ".join(list(set(self._result_check + self._result_add)))) )
+        color = {True: "rgb(0,255,0)",
+                 False: "rgb(255,0,0)"}[bool(self._result_check +
+                                             self._result_guess)]
+        ret.append(u"<div style='background:%s'>'''automatic categorization''': %s</div>" % (color, u", ".join(list(set(self._result_check + self._result_add)))))
 
         buf = []
         for i, key in enumerate(self._info):
@@ -3806,19 +3891,19 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
 
             info = self._make_infoblock(key, item, [])
             if info:
-                buf.append( info )
-        ret.append( tmpl_FileContentsByBot[3:] + u"\n" + u"\n".join( buf ) + u"\n}}" )
+                buf.append(info)
+        ret.append(tmpl_FileContentsByBot[3:] + u"\n" + u"\n".join(buf) + u"\n}}")
 
-        return u"\n".join( ret )
+        return u"\n".join(ret)
 
     def clean_cache(self):
         if os.path.exists(self.image_path):
-            os.remove( self.image_path )
+            os.remove(self.image_path)
         #if os.path.exists(self.image_path_JPEG):
-        #    os.remove( self.image_path_JPEG )
+        #    os.remove(self.image_path_JPEG)
         ##image_path_new = self.image_path_JPEG.replace(u"cache/", u"cache/0_DETECTED_")
         ##if os.path.exists(image_path_new):
-        ##    os.remove( image_path_new )
+        ##    os.remove(image_path_new)
 
     # LOOK ALSO AT: checkimages.CatImagesBot.report
     def report(self):
@@ -3842,7 +3927,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         if not res:
             return u''
 
-        if (tmpl_available == None):
+        if tmpl_available is None:
             tmpl_available = self.tmpl_available_spec
 
         generic = (cat not in tmpl_available)
@@ -3851,26 +3936,27 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             return u''
 
         result = []
-        #result.append( u'{{(!}}style="background:%s;"' % {True: 'green', False: 'red'}[report] )
+        #result.append(u'{{(!}}style="background:%s;"' % {True: 'green', False: 'red'}[report])
         if generic:
-            result.append( u"{{FileContentsByBot/generic|name=%s|" % cat )
-            buf = dict([ (key, []) for key in titles ])
+            result.append(u"{{FileContentsByBot/generic|name=%s|" % cat)
+            buf = dict([(key, []) for key in titles])
             for item in res:
                 for key in titles:
-                    buf[key].append( self._output_format(item[key]) )
+                    buf[key].append(self._output_format(item[key]))
             for key in titles:
-                result.append( u"  {{FileContentsByBot/generic|name=%s|value=%s}}" % (key, u"; ".join(buf[key])) )
+                result.append(u"  {{FileContentsByBot/generic|name=%s|value=%s}}" % (key, u"; ".join(buf[key])))
         else:
-            result.append( u"{{FileContentsByBot/%s|" % cat )
+            result.append(u"{{FileContentsByBot/%s|" % cat)
             for item in res:
-                result.append( u"  {{FileContentsByBot/%s" % cat )
+                result.append(u"  {{FileContentsByBot/%s" % cat)
                 for key in titles:
                     if item[key]:   # hide/omit (work-a-round for empty 'Eyes')
-                        result.append( self._output_format_flatten(key, item[key]) )
-                result.append( u"  }}" )
-        result.append( u"}}" )
+                        result.append(self._output_format_flatten(key,
+                                                                  item[key]))
+                result.append(u"  }}")
+        result.append(u"}}")
 
-        return u"\n".join( result )
+        return u"\n".join(result)
 
     def _output_format(self, value):
         if (type(value) == type(float())):
@@ -3885,47 +3971,52 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         if (type(value) == type(tuple())) or (type(value) == type(list())):
             buf = []
             for i, t in enumerate(value):
-                buf.append( self._output_format_flatten(key + (u"-%02i" % i), t) )
-            return u"\n".join( buf )
+                buf.append(self._output_format_flatten(key + (u"-%02i" % i), t))
+            return u"\n".join(buf)
         else:
             # end of recursion
             return u"  | %s = %s" % (key, self._output_format(value))
 
-    def _make_markerblock(self, res, size, structure=['Position'], line='solid'):
+    def _make_markerblock(self, res, size, structure=['Position'],
+                          line='solid'):
         # same as in '_detect_Faces'
-        colors = [ (0,0,255),
-            (0,128,255),
-            (0,255,255),
-            (0,255,0),
-            (255,128,0),
-            (255,255,0),
-            (255,0,0),
-            (255,0,255) ]
+        colors = [
+            (0, 0, 255),
+            (0, 128, 255),
+            (0, 255, 255),
+            (0, 255, 0),
+            (255, 128, 0),
+            (255, 255, 0),
+            (255, 0, 0),
+            (255, 0, 255)
+        ]
         result = []
         for i, r in enumerate(res):
             if ('RGB' in r):
-                color = list(np.array((255,255,255))-np.array(r['RGBref']))
+                color = list(np.array((255, 255, 255)) - np.array(r['RGBref']))
             else:
-                color = list(colors[i%8])
+                color = list(colors[i % 8])
             color.reverse()
             color = u"%02x%02x%02x" % tuple(color)
-            
-            #scale = r['size'][0]/size
-            scale = self.image_size[0]/size
-            f     = list(np.array(r[structure[0]])/scale)
-            
-            result.append( u'<div class="%s-marker" style="position:absolute; left:%ipx; top:%ipx; width:%ipx; height:%ipx; border:2px %s #%s;"></div>' % tuple([structure[0].lower()] + f + [line, color]) )
 
-            for ei in range(len(structure)-1):
-                data = r[structure[ei+1]]
-                if data and (not hasattr(data[0], '__iter__')):    # Mouth and Nose are not lists
-                    data = [ r[structure[ei+1]] ]
+            scale = self.image_size[0] / size
+            f = list(np.array(r[structure[0]]) / scale)
+
+            result.append(u'<div class="%s-marker" style="position:absolute; left:%ipx; top:%ipx; width:%ipx; height:%ipx; border:2px %s #%s;"></div>'
+                          % tuple([structure[0].lower()] + f + [line, color]))
+
+            for ei in range(len(structure) - 1):
+                data = r[structure[ei + 1]]
+                if data and (not hasattr(data[0], '__iter__')):  # Mouth and Nose are not lists
+                    data = [r[structure[ei + 1]]]
                 for e in data:
-                    e = list(np.array(e)/scale)
-    
-                    result.append( u'<div class="%s-marker" style="position:absolute; left:%ipx; top:%ipx; width:%ipx; height:%ipx; border:2px solid #%s;"></div>' % tuple([structure[ei+1].lower()] + e + [color]) )
+                    e = list(np.array(e) / scale)
 
-        return u"\n".join( result )
+                    result.append(u'<div class="%s-marker" style="position:absolute; left:%ipx; top:%ipx; width:%ipx; height:%ipx; border:2px solid #%s;"></div>'
+                                  % tuple([
+                                      structure[ei + 1].lower()] + e + [color]))
+
+        return u"\n".join(result)
 
     # place into 'textlib' (or else e.g. 'catlib'/'templib'...)
     def _remove_category_or_template(self, text, name):
@@ -3941,16 +4032,16 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
                 buf = [text, name]
             else:
                 buf = [text, (u"{{%s}}" % name)]
-        return u"\n".join( buf )
+        return u"\n".join(buf)
 
     # place into 'textlib' (or else e.g. 'catlib'/'templib'...)
     def _append_to_template(self, text, name, append):
         # mask/search template to append to
-        pattern  = re.compile(u"(\{\{%s.*?\n)(\s*\}\}\n{2})" % name, flags=re.S)
+        pattern = re.compile(u"(\{\{%s.*?\n)(\s*\}\}\n{2})" % name, flags=re.S)
         template = pattern.search(text).groups()
 
         # append to template
-        template = u"".join( [template[0], append, u"\n", template[1]] )
+        template = u"".join([template[0], append, u"\n", template[1]])
 
         # apply changes
         text = pattern.sub(template, text)
@@ -3966,13 +4057,14 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
                 self._info.update(result)
             self.image_size = gf.image_size
 
-    def _existInformation(self, info, ignore = ['Properties', 'Metadata', 'ColorAverage']):
+    def _existInformation(self, info, ignore=['Properties', 'Metadata',
+                                              'ColorAverage']):
         result = []
         for item in info:
             if item in ignore:
                 continue
             if info[item]:
-                result.append( item )
+                result.append(item)
         return result
 
     def _filter_Properties(self):
@@ -3995,7 +4087,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             for item in self._info['Faces']:
                 # >>> drop if below thrshld <<<
                 if (item['Confidence'] >= self.thrshld):
-                    buf.append( item )
+                    buf.append(item)
             result = buf
         return {'Faces': result}
 
@@ -4006,7 +4098,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             for item in self._info['People']:
                 # >>> drop if below thrshld <<<
                 if (item['Confidence'] >= self.thrshld):
-                    buf.append( item )
+                    buf.append(item)
             result = buf
         return {'People': result}
 
@@ -4019,7 +4111,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
             #    result[item['Color']] = item
             # >>> drop if below thrshld <<<
             if (item['Confidence'] >= self.thrshld):
-                result.append( item )
+                result.append(item)
         #return {'ColorRegions': [result[item] for item in result]}
         return {'ColorRegions': result}
 
@@ -4035,7 +4127,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         for item in self._info['OpticalCodes']:
             # >>> drop if below thrshld <<<
             if (item['Confidence'] >= self.thrshld):
-                result.append( item )
+                result.append(item)
         return {'OpticalCodes': result}
 
     def _filter_Chessboard(self):
@@ -4053,7 +4145,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         for item in self._info['Legs']:
             # >>> drop if below thrshld <<<
             if (item['Confidence'] >= self.thrshld):
-                result.append( item )
+                result.append(item)
         return {'Legs': result}
 
     def _filter_Torsos(self):
@@ -4061,7 +4153,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         for item in self._info['Torsos']:
             # >>> drop if below thrshld <<<
             if (item['Confidence'] >= self.thrshld):
-                result.append( item )
+                result.append(item)
         return {'Torsos': result}
 
     def _filter_Ears(self):
@@ -4069,7 +4161,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         for item in self._info['Ears']:
             # >>> drop if below thrshld <<<
             if (item['Confidence'] >= self.thrshld):
-                result.append( item )
+                result.append(item)
         return {'Ears': result}
 
     def _filter_Eyes(self):
@@ -4077,7 +4169,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         for item in self._info['Eyes']:
             # >>> drop if below thrshld <<<
             if (item['Confidence'] >= self.thrshld):
-                result.append( item )
+                result.append(item)
         return {'Eyes': result}
 
     def _filter_Automobiles(self):
@@ -4085,7 +4177,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         for item in self._info['Automobiles']:
             # >>> drop if below thrshld <<<
             if (item['Confidence'] >= self.thrshld):
-                result.append( item )
+                result.append(item)
         return {'Automobiles': result}
 
     def _filter_Streams(self):
@@ -4108,7 +4200,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
     #    for item in self._info['Geometry']:
     #        # >>> drop if below thrshld <<<
     #        if (item['Confidence'] >= self.thrshld):
-    #            result.append( item )
+    #            result.append(item)
     #    return {'Geometry': result}
 
     #def _filter_Hands(self):
@@ -4116,15 +4208,15 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
     #    for item in self._info['Hands']:
     #        # >>> drop if below thrshld <<<
     #        if (item['Confidence'] >= self.thrshld):
-    #            result.append( item )
+    #            result.append(item)
     #    return {'Hands': result}
 
 #    def _filter_Classify(self):
 #        from operator import itemgetter
 #        result = sorted(self._info['Classify'][0].items(), key=itemgetter(1))
 #        result.reverse()
-#        pywikibot.output(u' Best: %s' % result[:3] )
-#        pywikibot.output(u'Worst: %s' % result[-3:] )
+#        pywikibot.output(u' Best: %s' % result[:3])
+#        pywikibot.output(u'Worst: %s' % result[-3:])
 #
 #        # >>> dummy: drop all (not reliable yet since untrained) <<<
 #        return {'Classify': []}
@@ -4134,9 +4226,9 @@ def main():
     """ Main function """
     global useGuesses
     # Command line configurable parameters
-    limit = 150 # How many images to check?
+    limit = 150  # How many images to check?
 #    untagged = False # Use the untagged generator
-    sendemailActive = False # Use the send-email
+    sendemailActive = False  # Use the send-email
     train = False
     generator = None
 
@@ -4150,8 +4242,9 @@ def main():
     #sys.argv += ['-noguesses']
 
     # try to resume last run and continue
-    if os.path.exists( os.path.join(scriptdir, 'cache/catimages_start') ):
-        shutil.copy2(os.path.join(scriptdir, 'cache/catimages_start'), os.path.join(scriptdir, 'cache/catimages_start.bak'))
+    if os.path.exists(os.path.join(scriptdir, 'cache/catimages_start')):
+        shutil.copy2(os.path.join(scriptdir, 'cache/catimages_start'),
+                     os.path.join(scriptdir, 'cache/catimages_start.bak'))
         posfile = open(os.path.join(scriptdir, 'cache/catimages_start'), "r")
         firstPageTitle = posfile.read().decode('utf-8')
         posfile.close()
@@ -4162,7 +4255,8 @@ def main():
     for arg in pywikibot.handleArgs():
         if arg.startswith('-limit'):
             if len(arg) == 7:
-                limit = int(pywikibot.input(u'How many files do you want to check?'))
+                limit = int(pywikibot.input(
+                    u'How many files do you want to check?'))
             else:
                 limit = int(arg[7:])
 #        elif arg == '-sendemail':
@@ -4179,8 +4273,10 @@ def main():
                 catName = u'Media_needing_categories'
             elif len(arg) > 4:
                 catName = str(arg[5:])
-            catSelected = catlib.Category(pywikibot.getSite(), 'Category:%s' % catName)
-            generator = pagegenerators.CategorizedPageGenerator(catSelected, recurse = True)
+            catSelected = catlib.Category(pywikibot.getSite(),
+                                          'Category:%s' % catName)
+            generator = pagegenerators.CategorizedPageGenerator(catSelected,
+                                                                recurse=True)
 #        elif arg.startswith('-untagged'):
 #            untagged = True
 #            if len(arg) == 9:
@@ -4194,7 +4290,7 @@ def main():
                 pageName = unicode(arg[8:])
             if 'File:' not in pageName:
                 pageName = 'File:%s' % pageName
-            generator = [ pywikibot.Page(pywikibot.getSite(), pageName) ]
+            generator = [pywikibot.Page(pywikibot.getSite(), pageName)]
             firstPageTitle = None
         elif arg.startswith('-train'):
             train = True
@@ -4204,7 +4300,7 @@ def main():
     if not generator:
         pywikibot.output(u'no generator defined... EXIT.')
         sys.exit()
-            
+
     # Define the site.
     site = pywikibot.getSite()
 
@@ -4214,12 +4310,13 @@ def main():
 
     # A little block-statement to ensure that the bot will not start with en-parameters
     if site.lang not in project_inserted:
-        pywikibot.output(u"Your project is not supported by this script. You have to edit the script and add it!")
+        pywikibot.output(u"Your project is not supported by this script. You "
+                         u"have to edit the script and add it!")
         return
 
     # Defing the Main Class.
-    Bot = CatImagesBot(site, sendemailActive = sendemailActive,
-                       duplicatesReport = False, logFullError = False)
+    Bot = CatImagesBot(site, sendemailActive=sendemailActive,
+                       duplicatesReport=False, logFullError=False)
 #    # Untagged is True? Let's take that generator
 #    if untagged == True:
 #        generator =  Bot.untaggedGenerator(projectUntagged, limit)
@@ -4237,35 +4334,39 @@ def main():
     for image in generator:
         if firstPageTitle:
             if (image.title() == firstPageTitle):
-                pywikibot.output( u"found last page '%s' ..." % image.title() )
+                pywikibot.output(u"found last page '%s' ..." % image.title())
                 firstPageTitle = None
                 continue
             else:
-                #pywikibot.output( u"skipping page '%s' ..." % image.title() )
+                #pywikibot.output(u"skipping page '%s' ..." % image.title())
                 continue
 
         # recover from hard crash in the run before, thus skip one more page
-        if os.path.exists( os.path.join(scriptdir, 'cache/catimages_recovery') ):
-            pywikibot.output( u"trying to recover from hard crash, skipping page '%s' ..." % image.title() )
+        if os.path.exists(os.path.join(scriptdir, 'cache/catimages_recovery')):
+            pywikibot.output(
+                u"trying to recover from hard crash, skipping page '%s' ..."
+                % image.title())
             disable_recovery()
 
             # in case the next one has a hard-crash too...
-            posfile = open(os.path.join(scriptdir, 'cache/catimages_start'), "w")
-            posfile.write( image.title().encode('utf-8') )
+            posfile = open(os.path.join(scriptdir, 'cache/catimages_start'),
+                           "w")
+            posfile.write(image.title().encode('utf-8'))
             posfile.close()
 
             continue
 
         #comment = None # useless, also this, let it here for further developments
         try:
-            imageName = image.title().split(image_namespace)[1] # Deleting the namespace (useless here)
-        except IndexError:# Namespace image not found, that's not an image! Let's skip...
+            imageName = image.title().split(image_namespace)[1]  # Deleting the namespace (useless here)
+        except IndexError:  # Namespace image not found, that's not an image! Let's skip...
             try:
                 imageName = image.title().split(image_old_namespace)[1]
             except IndexError:
-                pywikibot.output(u"%s is not a file, skipping..." % image.title())
+                pywikibot.output(u"%s is not a file, skipping..."
+                                 % image.title())
                 continue
-        Bot.setParameters(imageName) # Setting the image for the main class
+        Bot.setParameters(imageName)  # Setting the image for the main class
         try:
             Bot.downloadImage()
         except IOError, err:
@@ -4275,23 +4376,24 @@ def main():
         except:
             # skip on any unexpected error, but report it
             pywikibot.exception(tb=True)
-            pywikibot.error(u"was not able to process page %s !!!\n" %\
-                            image.title(asLink=True))
+            pywikibot.error(u"was not able to process page %s !!!\n"
+                            % image.title(asLink=True))
             continue
         resultCheck = Bot.checkStep()
         tagged = False
         try:
             (tagged, ret) = Bot.report()
             if ret:
-                outresult.append( ret )
+                outresult.append(ret)
         except AttributeError:
             pywikibot.exception(tb=True)
             pywikibot.error(u"was not able to process page %s !!!\n" %\
                             image.title(asLink=True))
         limit += -1
         if not tagged:
-            posfile = open(os.path.join(scriptdir, 'cache/catimages_start'), "w")
-            posfile.write( image.title().encode('utf-8') )
+            posfile = open(os.path.join(scriptdir, 'cache/catimages_start'),
+                           "w")
+            posfile.write(image.title().encode('utf-8'))
             posfile.close()
         if limit <= 0:
             break
@@ -4299,8 +4401,8 @@ def main():
             continue
 
     if outresult:
-        outpage = pywikibot.Page(site, u"User:DrTrigon/User:DrTrigonBot/logging")
-        #outresult = [ outpage.get() ] + outresult   # append to page
+        outpage = pywikibot.Page(site,
+                                 u"User:DrTrigon/User:DrTrigonBot/logging")
         outresult = u"\n".join(outresult)
         pywikibot.output(u"Size of log page data: %s byte(s)" % len(outresult))
         # work-a-round: write pages mutliple times if content is too large in order to circumvent
@@ -4308,20 +4410,21 @@ def main():
         # (why is that...?!?? FIX THIS in the framework core e.g. 'postForm'!)
         tmp = outresult
         while tmp:
-            i = np.array([m.start() for m in re.finditer(u"\n\n==", tmp)]
-                       + [len(tmp)])
-            #pos = i[ np.where((i - 2048*1024) <= 0)[0][-1] ] # $wgMaxArticleSize
-            pos = i[ np.where((i - 500*1024) <= 0)[0][-1] ]
-            pywikibot.output(u"Size of bunch to write: %s byte(s)" % len(tmp[:pos]))
-            outpage.put( tmp[:pos], comment="bot writing log for last run" )
+            i = np.array([m.start() for m in re.finditer(u"\n\n==", tmp)] +
+                         [len(tmp)])
+            pos = i[np.where((i - 500 * 1024) <= 0)[0][-1]]
+            pywikibot.output(u"Size of bunch to write: %s byte(s)"
+                             % len(tmp[:pos]))
+            outpage.put(tmp[:pos], comment="bot writing log for last run")
             tmp = tmp[pos:]
         if pywikibot.simulate:
             #print u"--- " * 20
             #print u"--- " * 20
             #print outresult
             posfile = open(os.path.join(scriptdir, 'cache/catimages.log'), "a")
-            posfile.write( outresult )
+            posfile.write(outresult)
             posfile.close()
+
 
 # http://scipy-lectures.github.com/advanced/scikit-learn/index.html
 # http://mlpy.sourceforge.net/docs/3.5/index.html
@@ -4334,19 +4437,21 @@ def trainbot(generator, Bot, image_old_namespace, image_namespace):
     # gather training dataset from wiki commons categories
     trainset = []
     for i, catName in enumerate(Bot.trained_cat):
-        catSelected = catlib.Category(pywikibot.getSite(), 'Category:%s' % catName)
+        catSelected = catlib.Category(pywikibot.getSite(),
+                                      'Category:%s' % catName)
         generator = pagegenerators.CategorizedPageGenerator(catSelected)
 
         for image in generator:
             try:
-                imageName = image.title().split(image_namespace)[1] # Deleting the namespace (useless here)
-            except IndexError:# Namespace image not found, that's not an image! Let's skip...
+                imageName = image.title().split(image_namespace)[1]  # Deleting the namespace (useless here)
+            except IndexError:  # Namespace image not found, that's not an image! Let's skip...
                 try:
                     imageName = image.title().split(image_old_namespace)[1]
                 except IndexError:
-                    pywikibot.output(u"%s is not a file, skipping..." % image.title())
+                    pywikibot.output(u"%s is not a file, skipping..."
+                                     % image.title())
                     continue
-            Bot.setParameters(imageName) # Setting the image for the main class
+            Bot.setParameters(imageName)  # Setting the image for the main class
             try:
                 Bot.downloadImage()
             except IOError, err:
@@ -4356,46 +4461,46 @@ def trainbot(generator, Bot, image_old_namespace, image_namespace):
             except Exception, err:
                 # skip on any unexpected error, but report it
                 pywikibot.error(u"%s" % err)
-                pywikibot.error(u"was not able to process page %s !!!\n" %\
-                                image.title(asLink=True))
+                pywikibot.error(u"was not able to process page %s !!!\n"
+                                % image.title(asLink=True))
                 continue
 
             # gather all features (information) related to current image
             Bot._info = {}
             Bot.gatherFeatures()
-    
+
             # create classifier feature set
             # !!!currently number of detected features is used only -> lots of room for improvements!!!
             # choose a good and meaningful featureset from extracted (better than actual one)
             features = []
             for key in sorted(Bot._info):
                 #print key, len(self._info[key]), self._info[key]
-                features.append( len(Bot._info[key]) )
-            features.append( i+1 )      # category id (returned by predictor later)
+                features.append(len(Bot._info[key]))
+            features.append(i + 1)  # category id (returned by predictor later)
             #print features
-            trainset.append( features )
+            trainset.append(features)
 
     trainset = np.array(trainset)
     cols = trainset.shape[1]
 
     # http://mlpy.sourceforge.net/docs/3.5/tutorial.html
-    import matplotlib.pyplot as plt # required for plotting
+    import matplotlib.pyplot as plt  # required for plotting
 
     ##iris = np.loadtxt('iris.csv', delimiter=',')
     ##x, y = iris[:, :4], iris[:, 4].astype(np.int) # x: (observations x attributes) matrix, y: classes (1: setosa, 2: versicolor, 3: virginica)
     #trainset = np.loadtxt('cache/test.csv', delimiter=' ')
     #cols = trainset.shape[1]
     #print trainset
-    x, y = trainset[:, :(cols-1)], trainset[:, (cols-1)].astype(np.int) # x: (observations x attributes) matrix, y: classes (1: setosa, 2: versicolor, 3: virginica)
+    x, y = trainset[:, :(cols - 1)], trainset[:, (cols - 1)].astype(np.int)  # x: (observations x attributes) matrix, y: classes (1: setosa, 2: versicolor, 3: virginica)
     pywikibot.output(x.shape)
     pywikibot.output(y.shape)
-    
+
     # Dimensionality reduction by Principal Component Analysis (PCA)
-    pca = mlpy.PCA() # new PCA instance
-    pca.learn(x) # learn from data
-    z = pca.transform(x, k=2) # embed x into the k=2 dimensional subspace
+    pca = mlpy.PCA()  # new PCA instance
+    pca.learn(x)  # learn from data
+    z = pca.transform(x, k=2)  # embed x into the k=2 dimensional subspace
     pywikibot.output(z.shape)
-    
+
     plt.set_cmap(plt.cm.Paired)
     fig1 = plt.figure(1)
     title = plt.title("PCA on dataset")
@@ -4403,20 +4508,22 @@ def trainbot(generator, Bot, image_old_namespace, image_namespace):
     labx = plt.xlabel("First component")
     laby = plt.ylabel("Second component")
     plt.show()
-    
+
     # Learning by Kernel Support Vector Machines (SVMs) on principal components
-    linear_svm = mlpy.LibSvm(kernel_type='linear') # new linear SVM instance
-    linear_svm.learn(z, y) # learn from principal components
-    
-    # !!! train also BoW (bag-of-words) in '_detectclassify_ObjectAll' resp. 'opencv.BoWclassify.main' !!!
-    
-    xmin, xmax = z[:,0].min()-0.1, z[:,0].max()+0.1
-    ymin, ymax = z[:,1].min()-0.1, z[:,1].max()+0.1
-    xx, yy = np.meshgrid(np.arange(xmin, xmax, 0.01), np.arange(ymin, ymax, 0.01))
+    linear_svm = mlpy.LibSvm(kernel_type='linear')  # new linear SVM instance
+    linear_svm.learn(z, y)  # learn from principal components
+
+    # !!! train also BoW (bag-of-words) in '_detectclassify_ObjectAll' resp.
+    # 'opencv.BoWclassify.main' !!!
+
+    xmin, xmax = z[:, 0].min() - 0.1, z[:, 0].max() + 0.1
+    ymin, ymax = z[:, 1].min() - 0.1, z[:, 1].max() + 0.1
+    xx, yy = np.meshgrid(np.arange(xmin, xmax, 0.01),
+                         np.arange(ymin, ymax, 0.01))
     zgrid = np.c_[xx.ravel(), yy.ravel()]
 
     yp = linear_svm.pred(zgrid)
-    
+
     plt.set_cmap(plt.cm.Paired)
     fig2 = plt.figure(2)
     title = plt.title("SVM (linear kernel) on principal components")
@@ -4427,7 +4534,7 @@ def trainbot(generator, Bot, image_old_namespace, image_namespace):
     limx = plt.xlim(xmin, xmax)
     limy = plt.ylim(ymin, ymax)
     plt.show()
-    
+
     linear_svm.save_model('cache/test.csf')
     pywikibot.output(u'Linear SVM model stored to %s.' % 'cache/test.csf')
 
@@ -4439,20 +4546,25 @@ def enable_recovery():
     recoveryfile.write('')
     recoveryfile.close()
 
+
 def disable_recovery():
-    if os.path.exists( os.path.join(scriptdir, 'cache/catimages_recovery') ):
-        os.remove( os.path.join(scriptdir, 'cache/catimages_recovery') )
+    if os.path.exists(os.path.join(scriptdir, 'cache/catimages_recovery')):
+        os.remove(os.path.join(scriptdir, 'cache/catimages_recovery'))
 
 
 # Main loop will take all the (name of the) images and then i'll check them.
 if __name__ == "__main__":
-    old = datetime.datetime.strptime(str(datetime.datetime.utcnow()).split('.')[0], "%Y-%m-%d %H:%M:%S") #timezones are UTC
+    old = datetime.datetime.strptime(
+        str(datetime.datetime.utcnow()).split('.')[0],
+        "%Y-%m-%d %H:%M:%S")  # timezones are UTC
     if sys.exc_info()[0]:   # re-raise ImportError
         raise               #
     try:
         main()
     finally:
-        final = datetime.datetime.strptime(str(datetime.datetime.utcnow()).split('.')[0], "%Y-%m-%d %H:%M:%S") #timezones are UTC
+        final = datetime.datetime.strptime(
+            str(datetime.datetime.utcnow()).split('.')[0],
+            "%Y-%m-%d %H:%M:%S")  # timezones are UTC
         delta = final - old
         secs_of_diff = delta.seconds
         pywikibot.output("Execution time: %s" % secs_of_diff)
