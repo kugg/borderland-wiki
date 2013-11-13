@@ -6545,18 +6545,14 @@ class Site(object):
 
     def _userIndex(self, sysop=False):
         """Returns the internal index of the user."""
-        if sysop:
-            return 1
-        else:
-            return 0
+        return 1 if sysop else 0
 
     def username(self, sysop=False):
         return self._userName[self._userIndex(sysop=sysop)]
 
     def sitename(self):
         """Return string representing this Site's name and code."""
-
-        return self.family.name+':'+self.code
+        return '%s:%s' % (self.family.name, self.code)
 
     def __repr__(self):
         return '%s:%s' % (self.family.name, self.code)
@@ -7029,7 +7025,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 raise
             except urllib2.HTTPError, e:
                 if e.code in [401, 404]:
-                    debug(u"Got HTTP/%i %s: \n %r" % (e.code, e.message, e.read()))
+                    debug(u"Got HTTP/%i %s: \n %r"
+                          % (e.code, e.message, e.read()))
                     raise PageNotFound(u'Page %s could not be retrieved. Check '
                                        u'your family file ?' % url)
                 # just check for HTTP Status 500 (Internal Server Error)?
@@ -8350,7 +8347,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 fileext = None
                 title = m.group('title')
                 if extension:
-                    fileext = title[len(title)-3:]
+                    fileext = title[len(title) - 3:]
                 if title not in seen and fileext == extension:
                     ## Check whether the media is used in a Proofread page
                     # code disabled because it slows this method down, and
@@ -8635,7 +8632,6 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             url += '&namespace=%s' % namespace
         parser_text = self.getUrl(url)
         while True:
-            # <li><a href="/wiki/Pagina_principale" title="Pagina principale">Pagina principale</a>‎ <small>(6.522 byte)</small> ‎(protetta)</li>
             m = re.findall(
                 r'<li><a href=".*?" title=".*?">(.*?)</a>.*?<small>\((.*?)\)'
                 r'</small>.*?\((.*?)\)</li>', parser_text)
@@ -9613,7 +9609,7 @@ def showHelp(moduleName=None):
     # the parameter moduleName is deprecated and should be left out.
     moduleName = moduleName or calledModuleName()
     try:
-        moduleName = moduleName[moduleName.rindex("\\")+1:]
+        moduleName = moduleName[moduleName.rindex("\\") + 1:]
     except ValueError:
         # There was no \ in the module name, so presumably no problem
         pass
@@ -9695,8 +9691,8 @@ simulate = False
 # TEST for bug #3081100
 unicode_error = __import__('unicodedata').normalize(
     'NFC',
+    u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917') != \
     u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917'
-    ) != u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917'
 if unicode_error:
     print u'unicode test: triggers problem #3081100'
 
@@ -9859,6 +9855,7 @@ def init_handlers(strm=None):  # , logname=None, header=False):
        CRITICAL - fatal error messages
     Accordingly, do ''not'' use print statements in bot code; instead,
     use pywikibot.output function.
+
     """
     # currently only the logger is initialized here
     # the handlers are initialized in setLogfileStatus
@@ -9878,24 +9875,22 @@ def init_handlers(strm=None):  # , logname=None, header=False):
 
         nh = NullHandler()
         logger.addHandler(nh)
-        logger.setLevel(DEBUG+1)
+        logger.setLevel(DEBUG + 1)
 
         if hasattr(logger, 'captureWarnings'):
             logger.captureWarnings(True)  # introduced in Python >= 2.7
 
         logger = logging.getLogger('pywiki')
         logger.addHandler(nh)
-        logger.setLevel(DEBUG+1)
-
+        logger.setLevel(DEBUG + 1)
         logger.propagate = True
-
-        return
 
 
 def writelogheader():
     """
     Save additional version, system and status info to the logfile in use,
     so that the user can look it up later to track errors or report bugs.
+
     """
     output(u'=== Pywikipediabot framework v1.0 -- Logging header ===')
 
