@@ -19,14 +19,16 @@ Example: "python capitalize_redirects.py -start:B -always"
 '''
 #
 # (C) Yrithinnd
-# (C) Pywikipedia bot team, 2007-2010
+# (C) Pywikipedia bot team, 2007-2013
 #
 # Class licensed under terms of the MIT license
 #
 __version__ = '$Id$'
 #
 
-import time, sys, re
+import time
+import sys
+import re
 import wikipedia as pywikibot
 from pywikibot import i18n
 import pagegenerators
@@ -34,6 +36,7 @@ import pagegenerators
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
 }
+
 
 class CapitalizeBot:
     def __init__(self, generator, acceptall, titlecase):
@@ -45,7 +48,8 @@ class CapitalizeBot:
 
     def run(self):
         for page in self.generator:
-            if self.done: break
+            if self.done:
+                break
             if page.exists():
                 self.treat(page)
 
@@ -68,23 +72,25 @@ class CapitalizeBot:
             pywikibot.output(u'[[%s]] doesn\'t exist' % page_cap.title())
             if not self.acceptall:
                 choice = pywikibot.inputChoice(
-                        u'Do you want to create a redirect?',
-                        ['Yes', 'No', 'All', 'Quit'], ['y', 'N', 'a', 'q'], 'N')
+                    u'Do you want to create a redirect?',
+                    ['Yes', 'No', 'All', 'Quit'], ['y', 'N', 'a', 'q'], 'N')
                 if choice == 'a':
                     self.acceptall = True
                 elif choice == 'q':
                     self.done = True
             if self.acceptall or choice == 'y':
-                comment = i18n.twtranslate(self.site,
-                                           'capitalize_redirects-create-redirect',
-                                           {'to': page_t})
+                comment = i18n.twtranslate(
+                    self.site,
+                    'capitalize_redirects-create-redirect',
+                    {'to': page_t})
                 try:
                     page_cap.put(u"#%s %s" % (self.site.redirect(),
                                               page.title(asLink=True,
                                                          textlink=True)),
-                                              comment)
+                                 comment)
                 except:
                     pywikibot.output(u"An error occurred, skipping...")
+
 
 def main():
     genFactory = pagegenerators.GeneratorFactory()
