@@ -23,17 +23,19 @@ TODO:
 """
 #
 # (C) Bináris, 2012
-# (C) Pywikipedia bot team, 2012
+# (C) Pywikipedia bot team, 2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 
-import datetime, re
+import datetime
+imporet re
 import wikipedia as pywikibot
 import query
 
 site = pywikibot.getSite()
+
 
 #Some functions for datetime conversion
 def iso(t):
@@ -41,9 +43,11 @@ def iso(t):
     s = t.isoformat()
     return s[:s.find('.')] + 'Z'
 
+
 def uniso(timestamp):
     """Removes T and Z from an ISO 8601-formatted text for readability."""
     return timestamp.replace('T', ' ').replace('Z', '')
+
 
 def dt(timestamp):
     """Converts a MediaWiki timestamp to a Python-compatible datetime object"""
@@ -51,14 +55,15 @@ def dt(timestamp):
     #Be sure to exclude "infity" before calling this!
     l = timestamp.split('T')
     try:
-        d = l[0].split('-') #The date
-        t = l[1][:-1].split(':') #The time
+        d = l[0].split('-')  # The date
+        t = l[1][:-1].split(':')  # The time
         d = [int(x) for x in d]
         t = [int(x) for x in t]
         return datetime.datetime(d[0], d[1], d[2], t[0], t[1], t[2])
     except IndexError:
         print 'Erroneous timestamp:', timestamp
-        return datetime.datetime(1,1,1,1,1,1) #This may be handled as error
+        return datetime.datetime(1, 1, 1, 1, 1, 1)  # May be handled as error
+
 
 def duration(x):
     """
@@ -67,9 +72,9 @@ def duration(x):
     """
     return (dt(x['expiry']) - dt(x['timestamp'])).days
 
-#API may change. This is a general dictionary with all possible keys that
-#may be returned in case of KeyError. If you get this as result, please
-#report a bug with all possible circumstances.
+# API may change. This is a general dictionary with all possible keys that
+# may be returned in case of KeyError. If you get this as result, please
+# report a bug with all possible circumstances.
 errordic = {
     'id': -1,
     'userid': -1,
@@ -82,6 +87,7 @@ errordic = {
     'timestamp': '0000-00-00T00:00:00Z',
     'expiry': '0000-00-00T00:00:00Z',
 }
+
 
 class Blocks(object):
     """
@@ -212,12 +218,12 @@ class Blocks(object):
     #################################################
     def __init__(self, site=site, top='new', limit=5000):
         self.site = site
-        self.bkdir = ['older', 'newer'][top=='old'] #a bit strange
+        self.bkdir = ['older', 'newer'][top == 'old']  # a bit strange
         # bkdir: Direction to list in.
-        #older: List newest blocks first (default).
-        #Note: bkstart has to be later than bkend.
-        #newer: List oldest blocks first. Note: bkstart has to be before bkend.
-        self.bklimit = limit #Allowed maximum for bots=5000
+        # older: List newest blocks first (default).
+        # Note: bkstart has to be later than bkend.
+        # newer: List oldest blocks first. Note: bkstart has to be before bkend.
+        self.bklimit = limit  # Allowed maximum for bots=5000
         self.empty()
 
     def empty(self):
@@ -230,7 +236,7 @@ class Blocks(object):
             'bklimit':  self.bklimit,
             'bkdir':    self.bkdir,
             'bkprop':
-                'id|user|userid|by|byid|timestamp|expiry|reason|range|flags',
+            'id|user|userid|by|byid|timestamp|expiry|reason|range|flags',
         }
 
     def query(self):
@@ -255,7 +261,7 @@ class Blocks(object):
         IP string, either standalone or range.
         """
         l1 = IP.split('/')
-        l2 = l1[0].split('.') #IP part without range
+        l2 = l1[0].split('.')  # IP part without range
         newlist = [('0' + s)[-3:] for s in l2]
         s = '.'.join(newlist)
         if len(l1) > 1:
@@ -276,8 +282,8 @@ class Blocks(object):
         self.params['bkend'] = \
             iso(datetime.datetime.utcnow() - datetime.timedelta(1))
         return filter(lambda x: 'user' not in x, self.query())
-        #Autoblocks back to previous day 00:00:00 UTC appear in the list even
-        #if they are no more in effect, but we don't query them.
+        # Autoblocks back to previous day 00:00:00 UTC appear in the list even
+        # if they are no more in effect, but we don't query them.
 
     def notautoblocks(self):
         """Returns direct (not automatic) blocks. Required by other methods."""
@@ -294,7 +300,7 @@ class Blocks(object):
         self.empty()
         try:
             return filter(lambda x: x['rangestart'] == x['rangeend'],
-                            self.anonblocks())
+                          self.anonblocks())
         except KeyError:
             return [errordic]
 
@@ -303,7 +309,7 @@ class Blocks(object):
         self.empty()
         try:
             return filter(lambda x: x['rangestart'] != x['rangeend'],
-                            self.anonblocks())
+                          self.anonblocks())
         except KeyError:
             return [errordic]
 
@@ -315,7 +321,7 @@ class Blocks(object):
     def byadmin(self, admin):
         """Returns blocks raised by given admin"""
         self.empty()
-        return filter(lambda x: x['by']==admin, self.query())
+        return filter(lambda x: x['by'] == admin, self.query())
 
     def user(self, user):
         """Returns blocks of the given user or single IP"""
@@ -331,8 +337,8 @@ class Blocks(object):
     def userregex(self, regex):
         """Returns blocks of the given user or single IP (regex)"""
         self.empty()
-        return filter(
-                lambda x: re.search(regex, x['user']), self.notautoblocks())
+        return filter(lambda x: re.search(regex, x['user']),
+                      self.notautoblocks())
 
     def IP(self, IP):
         """Returns blocks of the given single IP or range (max. /16)"""
@@ -353,13 +359,12 @@ class Blocks(object):
     def reasonregex(self, regex):
         """Returns blocks raised with the given reason (regex)"""
         self.empty()
-        return filter(
-                lambda x: re.search(regex, x['reason']), self.allblocks())
+        return filter(lambda x: re.search(regex, x['reason']), self.allblocks())
 
     #################################################
     #        Lists of blocked users/IPs             #
     #################################################
-    #These methods return ordered list of Unicode strings
+    # These methods return ordered list of Unicode strings
     def blockedusernames_chrono(self):
         return [b['user'] for b in self.reguserblocks()]
 
@@ -413,13 +418,13 @@ class Blocks(object):
         """Returns finite blocks shorter than day"""
         return sorted(
             filter(lambda x: duration(x) < days, self.finiteblocks()),
-            key = duration)
+            key=duration)
 
     def longerthan(self, days):
         """Returns finite blocks longer than or equal to day"""
         return sorted(
             filter(lambda x: duration(x) >= days, self.finiteblocks()),
-            key = duration)
+            key=duration)
 
     def between(self, days1, days2):
         """
@@ -427,8 +432,9 @@ class Blocks(object):
         [day1,day2]
         """
         return sorted(
-          filter(lambda x: days1 <= duration(x) <= days2, self.finiteblocks()),
-          key = duration)
+            filter(lambda x: days1 <= duration(x) <= days2,
+                   self.finiteblocks()),
+            key=duration)
 
     #################################################
     #              Auxiliary methods                #
@@ -438,7 +444,7 @@ class Blocks(object):
         Simple displayer for a block dictionary. Use with pywikibot.output
         or e-mail it or insert into a wikipage with <pre>.
         """
-        w = 21 #width for justification
+        w = 21  # width for justification
         flags = ['automatic', 'anononly', 'nocreate', 'autoblock', 'noemail',
                  'allowusertalk', 'hidden']
         s = 'Data for block #%s' % block['id']
@@ -452,10 +458,10 @@ class Blocks(object):
         if 'rangestart' in block and 'rangeend' in block and \
                 block['rangestart'] != block['rangeend']:
             s += '\nRange block:'.ljust(w) + u'%s–%s' %  \
-                (block['rangestart'],block['rangeend'])
+                (block['rangestart'], block['rangeend'])
         s += '\nAdmin:'.ljust(w) + '%s (#%s)' % (block['by'], block['byid'])
         s += '\nBeginning in UTC:'.ljust(w) + uniso(block['timestamp'])
-        s += ('\nExpiry%s:' \
+        s += ('\nExpiry%s:'
               % ['', ' in UTC'][block['expiry'][0].isdigit()]).ljust(w)
         s += uniso(block['expiry'])
         s += '\nFlags:'.ljust(w)
@@ -471,7 +477,7 @@ class Blocks(object):
         return '\n'.join([self.display(b) for b in blocklist])
 
 if __name__ == '__main__':
-    pywikibot.handleArgs() #for help
+    pywikibot.handleArgs()  # for help
     pywikibot.output(
-            'This is a library for querying special pages through API.')
+        'This is a library for querying special pages through API.')
     pywikibot.output('Use this module through import or with -help.')
