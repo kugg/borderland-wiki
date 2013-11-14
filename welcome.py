@@ -586,8 +586,7 @@ class WelcomeBot(object):
                                      % username)
                 else:
                     # Adding the log.
-                    rep_text += pywikibot.translate(self.site, report_text)
-                    % username
+                    rep_text += pywikibot.translate(self.site, report_text) % username
                     if self.site.lang == 'it':
                         rep_text = "%s%s}}" % (rep_text, self.bname[username])
 
