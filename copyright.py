@@ -11,7 +11,8 @@ no longer issuing new SOAP API keys).
 Yahoo! search requires pYsearch module from http://pysearch.sourceforge.net
 and a Yahoo AppID from http://developer.yahoo.com.
 
-Windows Live Search requires to get an AppID from http://search.msn.com/developer
+Windows Live Search requires to get an AppID from
+http://search.msn.com/developer
 and to download/install the SOAPpy module from http://pywebsvcs.sf.net or using
 SVN with the following command:
 
@@ -77,16 +78,26 @@ You can include also the text to examine directly on the command line:
 """
 
 #
-# (C) Francesco Cosoleto, 2006
+# (c) Francesco Cosoleto, 2006
+# (c) Pywikibot team 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
+#
 
-import re, codecs, os, time, urllib, urllib2, httplib
+import re
+import codecs
+import os
+import time
+import urllib
+import urllib2
+import httplib
+
 import wikipedia as pywikibot
-import pagegenerators, config
+import pagegenerators
+import config
 
-__version__='$Id$'
 
 # Search keywords added to all the queries.
 no_result_with_those_words = '-Wikipedia'
@@ -126,7 +137,7 @@ output_file = pywikibot.config.datafilepath(appdir, "output.txt")
 
 pages_for_exclusion_database = [
     ('it', 'Wikipedia:Sospette violazioni di copyright/Lista di esclusione',
-           'exclusion_list.txt'),
+     'exclusion_list.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Abc', 'Abc.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Def', 'Def.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Ghi', 'Ghi.txt'),
@@ -135,12 +146,9 @@ pages_for_exclusion_database = [
     ('en', 'Wikipedia:Mirrors_and_forks/Pqr', 'Pqr.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Stu', 'Stu.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Vwxyz', 'Vwxyz.txt'),
-    ('es', 'Wikipedia:Espejos de Wikipedia/Espejos_que_cumplen_la_GFDL_y_CC-BY-SA', 'Espejos.txt'),
-    #('de', 'Wikipedia:Weiternutzung', 'Weiternutzung.txt'),
+    ('es', 'Wikipedia:Espejos de Wikipedia/Espejos_que_cumplen_la_GFDL_y_CC-BY-SA',
+     'Espejos.txt'),
     ('it', 'Wikipedia:Cloni', 'Cloni.txt'),
-    #('pl', 'Wikipedia:Mirrory_i_forki_polskiej_Wikipedii', 'Mirrory_i_forki_polskiej_Wikipedii.txt'),
-    #('pt', 'Wikipedia:Clones_da_Wikipédia', 'Clones_da_Wikipédia.txt'),
-    #('sv', 'Wikipedia:Spegelsidor', 'Spegelsidor.txt'),
 ]
 
 reports_cat = {
@@ -273,19 +281,23 @@ if enable_color:
     error_color = '\03{%s}' % error_color
     default_color = '\03{default}'
 else:
-    warn_color = '' ; error_color = '' ; default_color = ''
+    warn_color = error_color = default_color = ''
 
-def _output(text, prefix = None, color = ''):
+
+def _output(text, prefix=None, color=''):
     if prefix:
         pywikibot.output('%s%s: %s%s' % (color, prefix, default_color, text))
     else:
         pywikibot.output('%s%s' % (color, text))
 
-def warn(text, prefix = None):
-    _output(text, prefix = prefix, color = warn_color)
 
-def error(text ,prefix = None):
-    _output(text, prefix = prefix, color = error_color)
+def warn(text, prefix=None):
+    _output(text, prefix=prefix, color=warn_color)
+
+
+def error(text, prefix=None):
+    _output(text, prefix=prefix, color=error_color)
+
 
 def skip_section(text):
     sect_titles = '|'.join(sections_to_skip[pywikibot.getSite().lang])
@@ -297,16 +309,18 @@ def skip_section(text):
         text = newtext
     return text
 
+
 def cut_section(text, sectC):
     sectendC = re.compile('(?m)^==[^=]')
     start = sectC.search(text)
     if start:
         end = sectendC.search(text, start.end())
         if end:
-            return text[:start.start()]+text[end.start():]
+            return text[:start.start()] + text[end.start():]
         else:
             return text[:start.start()]
     return text
+
 
 class URLExclusion:
     def __init__(self):
@@ -320,7 +334,7 @@ class URLExclusion:
             page = pywikibot.Page(pywikibot.getSite(i[0]), i[1])
             yield page, path
 
-    def download(self, force_update = False):
+    def download(self, force_update=False):
         for page, path in self.pages_list():
             download = force_update
             try:
@@ -356,26 +370,27 @@ class URLExclusion:
                     f.close()
 
     def update(self):
-        self.download(force_update = True)
+        self.download(force_update=True)
         self.scan()
 
-    def check(self, url, verbose = False):
+    def check(self, url, verbose=False):
         for entry in self.URLlist:
-           if entry in url:
-               if verbose > 1:
-                   warn('URL Excluded: %s\nReason: %s' % (url, entry))
-               elif verbose:
-                   warn('URL Excluded: %s' % url)
-               return True
+            if entry in url:
+                if verbose > 1:
+                    warn('URL Excluded: %s\nReason: %s' % (url, entry))
+                elif verbose:
+                    warn('URL Excluded: %s' % url)
+                return True
         return False
 
     def scan(self):
-        prelist = [] ; result_list = []
+        prelist = []
+        result_list = []
         self.download()
 
         for page, path in self.pages_list():
             if 'exclusion_list.txt' in path:
-                result_list += re.sub("</?pre>","",
+                result_list += re.sub("</?pre>", "",
                                       read_file(path,
                                                 cut_comment=True,
                                                 cut_newlines=True)
@@ -383,11 +398,14 @@ class URLExclusion:
             else:
                 data = read_file(path)
                 # wikipedia:en:Wikipedia:Mirrors and forks
-                prelist += re.findall("(?i)url\s*=\s*<nowiki>(?:http://)?(.*)</nowiki>", data)
-                prelist += re.findall("(?i)\*\s*Site:\s*\[?(?:http://)?(.*)\]?", data)
+                prelist += re.findall("(?i)url\s*=\s*<nowiki>(?:http://)?(.*)</nowiki>",
+                                      data)
+                prelist += re.findall("(?i)\*\s*Site:\s*\[?(?:http://)?(.*)\]?",
+                                      data)
                 # wikipedia:it:Wikipedia:Cloni
                 if 'it/Cloni.txt' in path:
-                    prelist += re.findall('(?mi)^==(?!=)\s*\[?\s*(?:<nowiki>)?\s*(?:http://)?(.*?)(?:</nowiki>)?\s*\]?\s*==', data)
+                    prelist += re.findall('(?mi)^==(?!=)\s*\[?\s*(?:<nowiki>)?\s*(?:http://)?(.*?)(?:</nowiki>)?\s*\]?\s*==',
+                                          data)
         list1 = []
         for entry in prelist:
             list1 += entry.split(", ")
@@ -408,9 +426,8 @@ class URLExclusion:
                     result_list.append(entry)
 
         result_list += read_file(
-                            pywikibot.config.datafilepath(appdir, 'exclusion_list.txt'),
-                            cut_comment = True, cut_newlines = True
-                       ).splitlines()
+            pywikibot.config.datafilepath(appdir, 'exclusion_list.txt'),
+            cut_comment=True, cut_newlines=True).splitlines()
 
         for item in result_list:
             cleaned = item.strip()
@@ -424,28 +441,26 @@ class URLExclusion:
                 print "** " + entry
 
     def dump(self):
-        f = open(pywikibot.config.datafilepath(appdir, 'exclusion_list.dump'), 'w')
+        f = open(pywikibot.config.datafilepath(appdir, 'exclusion_list.dump'),
+                 'w')
         f.write('\n'.join(self.URLlist))
         f.close()
         print "Exclusion list dump saved."
 
 
-def read_file(filename, cut_comment = False, cut_newlines = False):
+def read_file(filename, cut_comment=False, cut_newlines=False):
     text = u""
-
     f = codecs.open(filename, 'r', 'utf-8')
     text = f.read()
     f.close()
-
     if cut_comment:
         text = re.sub(" ?#.*", "", text)
-
     if cut_newlines:
         text = re.sub("(?m)^\r?\n", "", text)
-
     return text
 
-def write_log(text, filename = output_file):
+
+def write_log(text, filename=output_file):
     f = codecs.open(filename, 'a', 'utf-8')
     f.write(text)
     f.close()
@@ -454,16 +469,13 @@ def write_log(text, filename = output_file):
 # Ignore text that contents comma separated list, only numbers,
 # punctuation...
 
+
 def economize_query(text):
     # Comma separated list
     c = text.count(', ')
     if c > 4:
         l = len(text)
         r = 100 * float(c) / l
-
-        #if r >= 4 and r < 7:
-        #    write_log("%d/%d/%d: %s\n" % (l,c,r,text), "copyright/skip_%s.txt" % ("%0.1f" % r))
-
         if r >= comma_ratio:
             return True
 
@@ -477,9 +489,10 @@ def economize_query(text):
 # and regex used in check_in_source() to reject pages with
 # 'Wikipedia'.
 
+
 def join_family_data(reString, namespace):
     for s in pywikibot.Family().namespaces[namespace].itervalues():
-        if type (s) == list:
+        if type(s) == list:
             for e in s:
                 reString += '|' + e
         else:
@@ -490,14 +503,17 @@ reImageC = re.compile('\[\[' + join_family_data('Image', 6) + ':.*?\]\]', re.I)
 reWikipediaC = re.compile('(' + '|'.join(wikipedia_names.values()) + ')', re.I)
 reSectionNamesC = re.compile('(' + '|'.join(editsection_names.values()) + ')')
 
-def remove_wikicode(text, re_dotall = False, remove_quote = exclude_quote, debug = False):
+
+def remove_wikicode(text, re_dotall=False, remove_quote=exclude_quote,
+                    debug=False):
     if not text:
         return ""
 
     if debug:
-        write_log(text+'\n', "copyright/wikicode.txt")
+        write_log(text + '\n', "copyright/wikicode.txt")
 
-    text = re.sub('(?i)</?(p|u|i|b|em|div|span|font|small|big|code|tt).*?>', '', text)
+    text = re.sub('(?i)</?(p|u|i|b|em|div|span|font|small|big|code|tt).*?>',
+                  '', text)
     text = re.sub('(?i)<(/\s*)?br(\s*/)?>', '', text)
     text = re.sub('<!--.*?-->', '', text)
 
@@ -517,11 +533,11 @@ def remove_wikicode(text, re_dotall = False, remove_quote = exclude_quote, debug
     text = re.sub("(?i){{(unicode|polytonic)\|(.*?)}}", "\\1", text)
 
     if re_dotall:
-       flags = "(?xsim)"
-       # exclude wikitable
-       text = re.sub('(?s){\|.*?^\|}', '', text)
+        flags = "(?xsim)"
+        # exclude wikitable
+        text = re.sub('(?s){\|.*?^\|}', '', text)
     else:
-       flags = "(?xim)"
+        flags = "(?xim)"
 
     text = re.sub("""
     %s
@@ -564,7 +580,8 @@ def remove_wikicode(text, re_dotall = False, remove_quote = exclude_quote, debug
 
             try:
                 xmldata = s.parse().toxml()
-                if '<wikipage><p><i>' in xmldata and '</i></p></wikipage>' in xmldata:
+                if '<wikipage><p><i>' in xmldata and \
+                   '</i></p></wikipage>' in xmldata:
                     if xmldata.count('<i>') == 1:
                         text = text[:m.start()] + text[m.end():]
             except:
@@ -580,19 +597,21 @@ def remove_wikicode(text, re_dotall = False, remove_quote = exclude_quote, debug
     text = re.sub("(?m)(^[ \t]+|[ \t]+\r?$)", "", text)
 
     if debug:
-        write_log(text+'\n', "copyright/wikicode_removed.txt")
+        write_log(text + '\n', "copyright/wikicode_removed.txt")
 
     return text
 
+
 def n_index(text, n, sep):
     pos = 0
-    while n>0:
+    while n > 0:
         try:
             pos = text.index(sep, pos + 1)
             n -= 1
         except ValueError:
             return 0
     return pos
+
 
 def mysplit(text, dim, sep):
     if not sep in text:
@@ -602,13 +621,14 @@ def mysplit(text, dim, sep):
     while t:
         if sep in t:
             n = n_index(t, dim, sep)
-            if n>0:
+            if n > 0:
                 l.append(t[:n])
-                t = t[n+1:]
+                t = t[n + 1:]
                 continue
         l.append(t)
         break
     return l
+
 
 class SearchEngine:
 
@@ -620,7 +640,7 @@ class SearchEngine:
     def __del__(self):
         self.print_stats()
 
-    def query(self, lines = [], max_query_len = 1300, wikicode = True):
+    def query(self, lines=[], max_query_len=1300, wikicode=True):
         # Google max_query_len = 1480?
         # - '-Wikipedia ""' = 1467
 
@@ -637,12 +657,13 @@ class SearchEngine:
                 if len(search_words) > min_query_string_len:
                     if config.copyright_economize_query:
                         if economize_query(search_words):
-                            warn(search_words, prefix = 'Text excluded')
+                            warn(search_words, prefix='Text excluded')
                             consecutive = False
                             continue
                     n_query += 1
                     #pywikibot.output(search_words)
-                    if config.copyright_max_query_for_page and n_query > config.copyright_max_query_for_page:
+                    if config.copyright_max_query_for_page and \
+                       n_query > config.copyright_max_query_for_page:
                         warn(u"Max query limit for page reached")
                         return output
                     if config.copyright_skip_query > n_query:
@@ -651,15 +672,19 @@ class SearchEngine:
                         search_words = search_words[:max_query_len]
                         consecutive = False
                         if " " in search_words:
-                             search_words = search_words[:search_words.rindex(" ")]
+                            search_words = search_words[
+                                :search_words.rindex(" ")]
 
                     results = self.get_results(search_words)
-
-                    group_url = '' ; cmp_group_url = ''
+                    group_url = ''
+                    cmp_group_url = ''
 
                     for url, engine, comment in results:
                         if comment:
-                            group_url += '\n*%s - %s (%s)' % (engine, url, "; ".join(comment))
+                            group_url += '\n*%s - %s (%s)' % (engine,
+                                                              url,
+                                                              "; ".join(comment)
+                                                              )
                         else:
                             group_url += '\n*%s - %s' % (engine, url)
                         cmp_group_url += '\n*%s - %s' % (engine, url)
@@ -683,19 +708,20 @@ class SearchEngine:
                     else:
                         consecutive = False
                 else:
-                   consecutive = False
-
+                    consecutive = False
         return output
 
-    def add_in_urllist(self, url, add_item, engine, cache_url = None):
-        if (engine == 'google' and config.copyright_check_in_source_google) or \
-        (engine == 'yahoo' and config.copyright_check_in_source_yahoo) or \
-        (engine == 'msn' and config.copyright_check_in_source_msn):
-            check_in_source = True
-        else:
-            check_in_source = False
+    def add_in_urllist(self, url, add_item, engine, cache_url=None):
 
-        if check_in_source or config.copyright_show_date or config.copyright_show_length:
+        check_in_source = (engine == 'google' and
+                           config.copyright_check_in_source_google or
+                           engine == 'yahoo' and
+                           config.copyright_check_in_source_yahoo or
+                           engine == 'msn' and
+                           config.copyright_check_in_source_msn)
+
+        if check_in_source or config.copyright_show_date or \
+           config.copyright_show_length:
             s = None
             cache = False
 
@@ -719,10 +745,10 @@ class SearchEngine:
                     date = s.lastmodified()
                     if date:
                         if date[:3] != time.localtime()[:3]:
-                            comment.append("%s/%s/%s" % (date[2], date[1], date[0]))
+                            comment.append("%s/%s/%s"
+                                           % (date[2], date[1], date[0]))
 
                 unit = 'bytes'
-
                 if config.copyright_show_length:
                     length = s.length()
                     if length > 1024:
@@ -735,14 +761,13 @@ class SearchEngine:
                             unit = 'MB'
                     if length > 0:
                         comment.append("%d %s" % (length, unit))
-
             if cache:
                 if cache_url:
                     if engine == 'google':
-                        comment.append('[http://www.google.com/search?sourceid=navclient&q=cache:%s Google cache]' % urllib.quote(short_url(add_item)))
+                        comment.append(
+                            '[http://www.google.com/search?sourceid=navclient&q=cache:%s Google cache]'
+                            % urllib.quote(short_url(add_item)))
                     elif engine == 'yahoo':
-                        #cache = False
-                        #comment.append('[%s Yahoo cache]' % re.sub('&appid=[^&]*', '', urllib2.unquote(cache_url)))
                         comment.append("''Yahoo cache''")
                     elif engine == 'msn':
                         comment.append('[%s Live cache]'
@@ -750,7 +775,6 @@ class SearchEngine:
                 else:
                     comment.append('[http://web.archive.org/*/%s archive.org]'
                                    % short_url(add_item))
-
         for i in range(len(url)):
             if add_item in url[i]:
                 if engine not in url[i][1]:
@@ -761,7 +785,7 @@ class SearchEngine:
         url.append((add_item, engine, comment))
         return
 
-    def soap(self, engine, query, url, numresults = 10):
+    def soap(self, engine, query, url, numresults=10):
         print "  %s query..." % engine.capitalize()
         search_request_retry = config.copyright_connection_tries
         query_success = False
@@ -771,18 +795,21 @@ class SearchEngine:
                 if engine == 'google':
                     import google
                     google.LICENSE_KEY = config.google_key
-                    data = google.doGoogleSearch('%s "%s"' % (no_result_with_those_words, query))
+                    data = google.doGoogleSearch('%s "%s"'
+                                                 % (no_result_with_those_words,
+                                                    query))
                     for entry in data.results:
-                       self.add_in_urllist(url, entry.URL, 'google', entry.cachedSize)
-
+                        self.add_in_urllist(url, entry.URL, 'google',
+                                            entry.cachedSize)
                     self.num_google_queries += 1
 
                 elif engine == 'yahoo':
                     import yahoo.search.web
-                    data = yahoo.search.web.WebSearch(config.yahoo_appid, query='"%s" %s' % (
+                    data = yahoo.search.web.WebSearch(config.yahoo_appid,
+                                                      query='"%s" %s' % (
                                                       query.encode('utf_8'),
                                                       no_result_with_those_words
-                                                     ), results = numresults)
+                                                      ), results=numresults)
                     for entry in data.parse_results():
                         cacheurl = None
                         if entry.Cache:
@@ -796,18 +823,26 @@ class SearchEngine:
                     from SOAPpy import WSDL
 
                     try:
-                        server = WSDL.Proxy('http://soap.search.msn.com/webservices.asmx?wsdl')
+                        server = WSDL.Proxy(
+                            'http://soap.search.msn.com/webservices.asmx?wsdl')
                     except Exception, err:
                         error("Live Search Error: %s" % err)
                         raise
 
-                    params = {'AppID': config.msn_appid, 'Query': '%s "%s"' % (no_result_with_those_words, query),
-                             'CultureInfo': region_code, 'SafeSearch': 'Off', 'Requests': {
-                             'SourceRequest':{'Source': 'Web', 'Offset': 0, 'Count': 10, 'ResultFields': 'All',}}}
+                    params = {'AppID': config.msn_appid,
+                              'Query': '%s "%s"' % (no_result_with_those_words,
+                                                    query),
+                              'CultureInfo': region_code,
+                              'SafeSearch': 'Off',
+                              'Requests': {
+                                  'SourceRequest': {'Source': 'Web',
+                                                    'Offset': 0,
+                                                    'Count': 10,
+                                                    'ResultFields': 'All',
+                                                    }}}
 
                     results = ''
-
-                    server_results = server.Search(Request = params)
+                    server_results = server.Search(Request=params)
                     if server_results.Responses[0].Results:
                         results = server_results.Responses[0].Results[0]
                     if results:
@@ -817,22 +852,23 @@ class SearchEngine:
                                 cacheurl = None
                                 if hasattr(entry, 'CacheUrl'):
                                     cacheurl = entry.CacheUrl
-                                self.add_in_urllist(url, entry.Url, 'msn', cacheurl)
+                                self.add_in_urllist(url, entry.Url, 'msn',
+                                                    cacheurl)
                         else:
                             cacheurl = None
                             if hasattr(results, 'CacheUrl'):
                                 cacheurl = results.CacheUrl
-                            self.add_in_urllist(url, results.Url, 'msn', cacheurl)
-
+                            self.add_in_urllist(url, results.Url, 'msn',
+                                                cacheurl)
                     self.num_msn_queries += 1
-
                 search_request_retry = 0
                 query_success = True
             except KeyboardInterrupt:
                 raise
             except Exception, err:
                 # Something is going wrong...
-                if 'Daily limit' in str(err) or 'Insufficient quota for key' in str(err):
+                if 'Daily limit' in str(err) or \
+                   'Insufficient quota for key' in str(err):
                     exceeded_in_queries('google')
                 elif 'limit exceeded' in str(err):
                     exceeded_in_queries('yahoo')
@@ -847,20 +883,20 @@ class SearchEngine:
         if not query_success:
             error('No response for: %s' % query, "Error (%s)" % engine)
 
-    def get_results(self, query, numresults = 10):
+    def get_results(self, query, numresults=10):
         result_list = list()
         query = re.sub("[()\"<>]", "", query)
         # pywikibot.output(query)
         if config.copyright_google:
             self.soap('google', query, result_list)
         if config.copyright_yahoo:
-            self.soap('yahoo', query, result_list, numresults = numresults)
+            self.soap('yahoo', query, result_list, numresults=numresults)
         if config.copyright_msn:
             self.soap('msn', query, result_list)
 
         offset = 0
         for i in range(len(result_list)):
-            if self.URLexcl.check(result_list[i + offset][0], verbose = True):
+            if self.URLexcl.check(result_list[i + offset][0], verbose=True):
                 result_list.pop(i + offset)
                 offset += -1
         return result_list
@@ -878,8 +914,10 @@ class SearchEngine:
 source_seen = set()
 positive_source_seen = set()
 
+
 class NoWebPage(Exception):
     """Web page does not exist (404)"""
+
 
 class URL_exclusion(Exception):
     """URL in exclusion list"""
@@ -899,9 +937,9 @@ class WebPage(object):
         self._url = url
 
         try:
-            self._urldata = urllib2.urlopen(urllib2.Request(self._url, None, { 'User-Agent': pywikibot.useragent }))
-        #except httplib.BadStatusLine, line:
-        #    print 'URL: %s\nBad status line: %s' % (url, line)
+            self._urldata = urllib2.urlopen(
+                urllib2.Request(self._url, None,
+                                {'User-Agent': pywikibot.useragent}))
         except urllib2.HTTPError, err:
             error("HTTP error: %d / %s (%s)" % (err.code, err.msg, url))
             if err.code >= 400:
@@ -919,22 +957,17 @@ class WebPage(object):
         self._content_type = self._urldata.info().getheader('Content-Type')
 
     def length(self):
-         if hasattr(self, '_length'):
-             if self._length:
-                 return int(self._length)
-         if hasattr(self, '_contents'):
-             return len(self._contents)
-
-         # print "No length for " + self._url
-
-         return None
+        if hasattr(self, '_length'):
+            if self._length:
+                return int(self._length)
+        if hasattr(self, '_contents'):
+            return len(self._contents)
 
     def lastmodified(self):
-         if hasattr(self, '_lastmodified'):
-             return self._lastmodified
-         return None
+        if hasattr(self, '_lastmodified'):
+            return self._lastmodified
 
-    def get(self, force = False):
+    def get(self, force=False):
         # Exclude URL with listed file extension.
         if self._url[-4:] in [".pdf", ".doc", ".ppt"]:
             raise URL_exclusion
@@ -942,10 +975,9 @@ class WebPage(object):
         # Make sure we did try to get the contents once
         if not hasattr(self, '_contents'):
             self._contents = self._urldata.read()
-
         return self._contents
 
-    def check_regexp(self, reC, text, filename = None):
+    def check_regexp(self, reC, text, filename=None):
         m = reC.search(text)
         if m:
             global positive_source_seen
@@ -965,10 +997,8 @@ class WebPage(object):
 
         if not hasattr(self, '_urldata'):
             return False
-
         if self._url in positive_source_seen:
             return True
-
         if self._url in source_seen:
             return False
 
@@ -985,16 +1015,21 @@ class WebPage(object):
                 text = text.decode("utf-8", 'replace')
             else:
                 # <META> declaration with "http-equiv" set to "Content-Type" in HTML document.
-                if 'text/html' in self._content_type and (re.search("(?is)<meta\s.*?charset\s*=\s*[\"\']*\s*UTF-8.*?>", text) or re.search("(?is)<\?.*?encoding\s*=\s*[\"\']*\s*UTF-8.*?\?>", text)):
+                if 'text/html' in self._content_type and (
+                        re.search("(?is)<meta\s.*?charset\s*=\s*[\"\']*\s*UTF-8.*?>",
+                                  text) or
+                        re.search("(?is)<\?.*?encoding\s*=\s*[\"\']*\s*UTF-8.*?\?>",
+                                  text)):
                     text = text.decode("utf-8", 'replace')
 
             if config.copyright_check_in_source_section_names:
-                if self.check_regexp(reSectionNamesC, text, "copyright/sites_with_'[edit]'.txt"):
+                if self.check_regexp(reSectionNamesC, text,
+                                     "copyright/sites_with_'[edit]'.txt"):
                     return True
 
-            if self.check_regexp(reWikipediaC, text, "copyright/sites_with_'wikipedia'.txt"):
+            if self.check_regexp(reWikipediaC, text,
+                                 "copyright/sites_with_'wikipedia'.txt"):
                 return True
-
         source_seen.add(self._url)
         return False
 
@@ -1007,14 +1042,19 @@ def exceeded_in_queries(engine):
         exec('config.copyright_' + engine + ' = False')
     # Sleeping
     if config.copyright_exceeded_in_queries == 2:
-        error("Got a queries exceeded error from %s. Sleeping for %d hours..." % (engine.capitalize(), config.copyright_exceeded_in_queries_sleep_hours))
-        time.sleep(config.copyright_exceeded_in_queries_sleep_hours * 60 * 60)
+        error("Got a queries exceeded error from %s. Sleeping for %d hours..."
+              % (engine.capitalize(),
+                 config.copyright_exceeded_in_queries_sleep_hours))
+        time.sleep(config.copyright_exceeded_in_queries_sleep_hours * 3600)
     # Stop execution
     if config.copyright_exceeded_in_queries == 3:
         raise 'Got a queries exceeded error.'
 
+
 def get_by_id(title, id):
-    return pywikibot.getSite().getUrl("/w/index.php?title=%s&oldid=%s&action=raw" % (title, id))
+    return pywikibot.getSite().getUrl(
+        "/w/index.php?title=%s&oldid=%s&action=raw" % (title, id))
+
 
 def checks_by_ids(ids):
     for title, id in ids:
@@ -1025,9 +1065,9 @@ def checks_by_ids(ids):
             if output:
                 write_log(
                     "=== [[" + title + "]] ===\n{{botbox|%s|prev|%s|%s|00}}"
-                        % (title.replace(" ", "_").replace("\"", "%22"),
-                           id, "author")
-                        + output,
+                    % (title.replace(" ", "_").replace("\"", "%22"),
+                       id, "author")
+                    + output,
                     pywikibot.config.datafilepath(appdir, "ID_output.txt"))
 
 
@@ -1047,7 +1087,7 @@ class CheckRobot:
                 newpage = page.getRedirectTarget()
                 pywikibot.output(u'Page %s redirects to \'%s\''
                                  % (page.title(asLink=True), newpage.title()))
-                bot = CheckRobot(iter([newpage,]))
+                bot = CheckRobot(iter([newpage]))
                 bot.run()
                 continue
             except pywikibot.SectionError:
@@ -1067,40 +1107,46 @@ class CheckRobot:
                 text = skip_section(original_text)
 
                 if remove_wikicode_dotall:
-                    text = remove_wikicode(text, re_dotall = True)
+                    text = remove_wikicode(text, re_dotall=True)
 
-                output = self.SearchEngine.query(lines = text.splitlines(), wikicode = not remove_wikicode_dotall)
+                output = self.SearchEngine.query(
+                    lines=text.splitlines(),
+                    wikicode=not remove_wikicode_dotall)
                 if output:
-                   write_log('=== [[' + page.title() + ']] ===' + output + '\n',
-                             filename = output_file)
+                    write_log('=== [[%s]] ===%s\n' % (page.title(), output),
+                              filename=output_file)
 
 
 def short_url(url):
-    return url[url.index('://')+3:]
+    return url[url.index('://') + 3:]
+
 
 def put(page, text, comment):
     while True:
         try:
-            page.put(text, comment = comment)
+            page.put(text, comment=comment)
             break
         except pywikibot.SpamfilterError, url:
-            warn(url, prefix = "Spam filter")
+            warn(url, prefix="Spam filter")
             text = re.sub(url[0], '<blacklist>' + short_url(url[0]), text)
         except pywikibot.EditConflict:
             warn("Edit conflict")
             raise pywikibot.EditConflict
 
+
 def check_config(var, license_id, license_name):
     if var:
         if not license_id:
-            warn(u"You don't have set a " + license_name + ", search engine is disabled.",
-                 prefix = "WARNING")
+            warn(u"You don't have set a %s, search engine is disabled."
+                 % license_name, prefix="WARNING")
             return False
     return var
+
 
 def setSavepath(path):
     global output_file
     output_file = path
+
 
 def main():
     gen = None
@@ -1153,10 +1199,11 @@ def main():
                 number_of_words = int(arg[8:])
         elif arg.startswith('-text'):
             if len(arg) >= 6:
-              text = arg[6:]
+                text = arg[6:]
         elif arg.startswith('-page'):
             if len(arg) == 5:
-                PageTitles.append(pywikibot.input(u'Which page do you want to change?'))
+                PageTitles.append(pywikibot.input(
+                    u'Which page do you want to change?'))
             else:
                 PageTitles.append(arg[6:])
         elif arg.startswith('-namespace:'):
@@ -1169,23 +1216,29 @@ def main():
         elif arg == '-repeat':
             repeat = True
         elif arg.startswith('-new'):
-            if len(arg) >=5:
-              number = int(arg[5:])
-            gen = pagegenerators.NewpagesPageGenerator(number = number, repeat = repeat)
-            # Preload generator work better if 'pageNumber' is not major than 'number',
-            # this avoid unnecessary delay.
+            if len(arg) >= 5:
+                number = int(arg[5:])
+            gen = pagegenerators.NewpagesPageGenerator(number=number,
+                                                       repeat=repeat)
+            # Preload generator work better if 'pageNumber' is not major than
+            # 'number', this avoid unnecessary delay.
             if number < pageNumber:
                 pageNumber = number
         else:
             genFactory.handleArg(arg)
 
     if PageTitles:
-        pages = [pywikibot.Page(pywikibot.getSite(), PageTitle) for PageTitle in PageTitles]
+        pages = [pywikibot.Page(pywikibot.getSite(),
+                                PageTitle) for PageTitle in PageTitles]
         gen = iter(pages)
 
-    config.copyright_yahoo = check_config(config.copyright_yahoo, config.yahoo_appid, "Yahoo AppID")
-    config.copyright_google = check_config(config.copyright_google, config.google_key, "Google Web API license key")
-    config.copyright_msn = check_config(config.copyright_msn, config.msn_appid, "Live Search AppID")
+    config.copyright_yahoo = check_config(config.copyright_yahoo,
+                                          config.yahoo_appid, "Yahoo AppID")
+    config.copyright_google = check_config(config.copyright_google,
+                                           config.google_key,
+                                           "Google Web API license key")
+    config.copyright_msn = check_config(config.copyright_msn,
+                                        config.msn_appid, "Live Search AppID")
 
     if ids:
         checks_by_ids(ids)
@@ -1197,21 +1250,24 @@ def main():
         pywikibot.output(__doc__, 'utf-8')
 
     if text:
-        output = SearchEngine().query(lines = text.splitlines())
+        output = SearchEngine().query(lines=text.splitlines())
         if output:
             pywikibot.output(output)
 
     if not gen:
         return
-    if namespaces != []:
-        gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
-    preloadingGen = pagegenerators.PreloadingGenerator(gen, pageNumber = pageNumber)
+    if namespaces:
+        gen = pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
+    preloadingGen = pagegenerators.PreloadingGenerator(gen,
+                                                       pageNumber=pageNumber)
     bot = CheckRobot(preloadingGen)
     bot.run()
 
 if number_of_words > 22 and config.copyright_msn:
-        warn("Live Search requires a lower value for 'number_of_words' variable "
-             "(current value is %d, a good value may be 22)." % (number_of_words), prefix = 'Warning')
+        warn("Live Search requires a lower value for 'number_of_words' "
+             "variable (current value is %d, a good value may be 22)."
+             % (number_of_words), prefix='Warning')
+
 
 if __name__ == "__main__":
     try:
