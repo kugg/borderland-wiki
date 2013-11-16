@@ -27,7 +27,7 @@ def xuniqueCombinations(items, n):
         yield []
     else:
         for i in xrange(len(items)):
-            for cc in xuniqueCombinations(items[i+1:], n-1):
+            for cc in xuniqueCombinations(items[i + 1:], n - 1):
                 yield [items[i]] + cc
 # End of permutation code
 #
