@@ -1,22 +1,30 @@
 # -*- coding: utf-8  -*-
 """
 """
-__version__ = '$Id$'
 
 #
 # (C) Francesco Cosoleto, 2006
+# (c) Pywikibot team 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
+#
 
 import sys
-
-import httplib, socket, re, time
-import wikipedia as pywikibot
-import config, catlib, pagegenerators, query
-
+import httplib
+import socket
+import re
+import time
 from urllib import urlencode
+
+import wikipedia as pywikibot
+import config
+import catlib
+import pagegenerators
+import query
 from copyright import mysplit, put, reports_cat, join_family_data
+
 
 summary_msg = {
     'ar': u'إزالة',
@@ -28,13 +36,16 @@ summary_msg = {
     'uk': u'Видалення',
 }
 
-headC = re.compile("(?m)^=== (?:<strike>)?(?:<s>)?(?:<del>)?\[\[(?::)?(.*?)\]\]")
+headC = re.compile(
+    "(?m)^=== (?:<strike>)?(?:<s>)?(?:<del>)?\[\[(?::)?(.*?)\]\]")
 separatorC = re.compile('(?m)^== +')
 next_headC = re.compile("(?m)^=+.*?=+")
 
-#
+
 # {{botbox|title|newid|oldid|author|...}}
-rev_templateC = re.compile("(?m)^(?:{{/t\|.*?}}\n?)?{{(?:/box|botbox)\|.*?\|(.*?)\|")
+rev_templateC = re.compile(
+    "(?m)^(?:{{/t\|.*?}}\n?)?{{(?:/box|botbox)\|.*?\|(.*?)\|")
+
 
 def query_api(data):
     predata = {
@@ -44,6 +55,7 @@ def query_api(data):
     predata = query.CombineParams(predata, data)
     return query.GetData(predata)
 
+
 def query_old_api(data):
 
     predata = {
@@ -51,7 +63,8 @@ def query_old_api(data):
         'rvlimit': '1',
     }
     predata = query.CombineParams(predata, data)
-    return query.GetData(predata, useAPI = False)
+    return query.GetData(predata, useAPI=False)
+
 
 def old_page_exist(title):
     for pageobjs in query_results_titles:
@@ -62,15 +75,18 @@ def old_page_exist(title):
     pywikibot.output('* ' + title)
     return False
 
+
 def old_revid_exist(revid):
     for pageobjs in query_results_revids:
         for id in pageobjs['pages']:
             for rv in range(len(pageobjs['pages'][id]['revisions'])):
-                if pageobjs['pages'][id]['revisions'][rv]['revid'] == int(revid):
+                if pageobjs['pages'][id]['revisions'][rv]['revid'] == \
+                   int(revid):
                     # print rv
                     return True
     pywikibot.output('* ' + revid)
     return False
+
 
 def page_exist(title):
     for pageobjs in query_results_titles:
@@ -80,6 +96,7 @@ def page_exist(title):
                     pywikibot.output('* ' + title)
                     return False
     return True
+
 
 def revid_exist(revid):
     for pageobjs in query_results_revids:
@@ -94,7 +111,7 @@ def revid_exist(revid):
 cat = catlib.Category(pywikibot.getSite(),
                       'Category:%s' % pywikibot.translate(pywikibot.getSite(),
                                                           reports_cat))
-gen = pagegenerators.CategorizedPageGenerator(cat, recurse = True)
+gen = pagegenerators.CategorizedPageGenerator(cat, recurse=True)
 
 for page in gen:
     data = page.get()
@@ -123,9 +140,9 @@ for page in gen:
 
     # No more of 50 titles at a time using API
     for s in mysplit(query.ListToParam(titles), 50, "|"):
-        query_results_titles.append(query_api({'titles': s,}))
+        query_results_titles.append(query_api({'titles': s}))
     for s in mysplit(query.ListToParam(revids), 50, "|"):
-        query_results_revids.append(query_api({'revids': s,}))
+        query_results_revids.append(query_api({'revids': s}))
 
     comment_entry = list()
     add_separator = False
@@ -154,7 +171,7 @@ for page in gen:
                 if not revid_exist(revid.group(1)):
                     exist = False
         else:
-           exist = False
+            exist = False
 
         if exist:
             ctitle = re.sub(u'(?i)=== \[\[%s:'
@@ -183,11 +200,11 @@ for page in gen:
         if pywikibot.verbose:
             pywikibot.showDiff(page.get(), output)
 
-        if len(sys.argv)!=1:
+        if len(sys.argv) != 1:
             choice = pywikibot.inputChoice(u'Do you want to clean the page?',
                                            ['Yes', 'No'], ['y', 'n'], 'n')
             if choice == 'n':
-               continue
+                continue
         try:
             put(page, output, add_comment)
         except pywikibot.PageNotSaved:
