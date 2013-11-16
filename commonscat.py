@@ -45,7 +45,7 @@ TODO:
 
 #
 # (C) Multichill, 2008-2009
-# (C) Xqt, 2009-2012
+# (C) Xqt, 2009-2013
 # (C) Pywikipedia bot team, 2008-2012
 #
 # Distributed under the terms of the MIT license.
@@ -53,8 +53,12 @@ TODO:
 __version__ = '$Id$'
 #
 
+import re
+
 import wikipedia as pywikibot
-import config, pagegenerators, add_text, re
+import config
+import pagegenerators
+import add_text
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
@@ -64,86 +68,90 @@ docuReplacements = {
 # No entry needed if it is like _default
 commonscatTemplates = {
     '_default': (u'Commonscat', []),
-    'af' : (u'CommonsKategorie', [u'commonscat']),
-    'an' : (u'Commonscat', [u'Commons cat']),
-    'ar' : (u'تصنيف كومنز', [u'Commonscat', u'تصنيف كومونز',
-                             u'Commons cat', u'CommonsCat']),
-    'arz' : (u'Commons cat', [u'Commoncat']),
-    'az' : (u'CommonsKat', [u'Commonscat']),
-    'bn' : (u'কমন্সক্যাট', [u'Commonscat']),
-    'ca' : (u'Commonscat', [u'Commons cat', u'Commons category']),
-    'crh' : (u'CommonsKat', [u'Commonscat']),
-    'cs' : (u'Commonscat', [u'Commons cat']),
-    'da' : (u'Commonscat', [u'Commons cat', u'Commons category',
-                            u'Commonscat left', u'Commonscat2']),
-    'de' : (u'Commonscat', [u'Commons cat',]),
-    'en' : (u'Commons category', [u'Commoncat', u'Commonscat', u'Commons cat',
-                                  u'Commons+cat', u'Commonscategory',
-                                  u'Commons and category', u'Commonscat-inline',
-                                  u'Commons category-inline', u'Commons2',
-                                  u'Commons category multi',
-                                  u'Cms-catlist-up', u'Catlst commons',
-                                  u'Commonscat show2',
-                                  u'Sister project links']),
-    'es' : (u'Commonscat', [u'Ccat', u'Commons cat', u'Categoría Commons',
-                            u'Commonscat-inline']),
-    'et' : (u'Commonsi kategooria', [u'Commonscat', u'Commonskat', u'Commons cat', u'Commons category']),
-    'eu' : (u'Commonskat', [u'Commonscat']),
-    'fa' : (u'ویکی‌انبار-رده', [u'Commonscat', u'Commons cat', u'انبار رده',
-                               u'Commons category', u'انبار-رده',
-                               u'جعبه پیوند به پروژه‌های خواهر',
-                               u'در پروژه‌های خواهر', u'پروژه‌های خواهر']),
-    'fr' : (u'Commonscat', [u'CommonsCat', u'Commons cat',
-                            u'Commons category']),
-    'frp' : (u'Commonscat', [u'CommonsCat']),
-    'ga' : (u'Catcómhaoin', [u'Commonscat']),
-    'hi' : (u'Commonscat', [u'Commons2', u'Commons cat', u'Commons category']),
-    'hu' : (u'Commonskat', [u'Közvagyonkat']),
-    'hy' : (u'Վիքիպահեստ կատեգորիա', [u'Commonscat', u'Commons cat',
-                                       u'Commons category']),
-    'id' : (u'Commonscat', [u'Commons cat', u'Commons2',
-                            u'CommonsCat', u'Commons category']),
-    'is' : (u'CommonsCat', [u'Commonscat']),
-    'ja' : (u'Commonscat', [u'Commons cat', u'Commons category']),
-    'jv' : (u'Commonscat', [u'Commons cat']),
-    'kaa' : (u'Commons cat', [u'Commonscat']),
-    'kk' : (u'Commonscat', [u'Commons2']),
-    'ko' : (u'Commonscat', [u'Commons cat', u'공용분류']),
-    'la' : (u'CommuniaCat', []),
-    'mk' : (u'Ризница-врска', [u'Commonscat', u'Commons cat', u'CommonsCat',
-                               u'Commons2', u'Commons category']),
-    'ml' : (u'Commonscat', [u'Commons cat', u'Commons2']),
-    'ms' : (u'Kategori Commons', [u'Commonscat', u'Commons category']),
-    'nn' : (u'Commonscat', [u'Commons cat']),
-    'os' : (u'Commonscat', [u'Commons cat']),
-    'pt' : (u'Commonscat', [u'Commons cat']),
-    'ro' : (u'Commonscat', [u'Commons cat']),
-    'ru' : (u'Commonscat', [u'Викисклад-кат', u'Commons category']),
-    'simple' : (u'Commonscat' ,[u'Commons cat',  u'Commons cat multi',
-                                u'Commons category', u'Commons category multi',
-                                u'CommonsCompact', u'Commons-inline']),
-    'sh' : (u'Commonscat', [u'Commons cat']),
-    'sl' : (u'Kategorija v Zbirki', [u'Commonscat', u'Kategorija v zbirki',
-                                     u'Commons cat', u'Katzbirke']),
-    'sv' : (u'Commonscat', [u'Commonscat-rad', u'Commonskat', u'Commons cat',
-                            u'Commonscatbox', u'Commonscat-box']),
-    'sw' : (u'Commonscat', [u'Commons2', u'Commons cat']),
-    'te' : (u'Commonscat', [u'Commons cat']),
-    'tr' : (u'Commons kategori', [u'CommonsKat', u'Commonscat',
-                                  u'Commons cat']),
-    'uk' : (u'Commonscat', [u'Commons cat', u'Category', u'Commonscat-inline']),
-    'vi' : (u'Commonscat', [u'Commons2', u'Commons cat', u'Commons category',
-                            u'Commons+cat']),
-    'zh' : (u'Commonscat', [u'Commons cat', u'Commons category']),
-    'zh-classical' : (u'共享類', [u'Commonscat']),
-    'zh-yue' : (u'同享類', [u'Commonscat', u'共享類 ', u'Commons cat',
-                           u'Commons category']),
+    'af': (u'CommonsKategorie', [u'commonscat']),
+    'an': (u'Commonscat', [u'Commons cat']),
+    'ar': (u'تصنيف كومنز',
+           [u'Commonscat', u'تصنيف كومونز', u'Commons cat', u'CommonsCat']),
+    'arz': (u'Commons cat', [u'Commoncat']),
+    'az': (u'CommonsKat', [u'Commonscat']),
+    'bn': (u'কমন্সক্যাট', [u'Commonscat']),
+    'ca': (u'Commonscat', [u'Commons cat', u'Commons category']),
+    'crh': (u'CommonsKat', [u'Commonscat']),
+    'cs': (u'Commonscat', [u'Commons cat']),
+    'da': (u'Commonscat',
+           [u'Commons cat', u'Commons category', u'Commonscat left',
+            u'Commonscat2']),
+    'de': (u'Commonscat', [u'Commons cat']),
+    'en': (u'Commons category',
+           [u'Commoncat', u'Commonscat', u'Commons cat', u'Commons+cat',
+            u'Commonscategory', u'Commons and category', u'Commonscat-inline',
+            u'Commons category-inline', u'Commons2', u'Commons category multi',
+            u'Cms-catlist-up', u'Catlst commons', u'Commonscat show2',
+            u'Sister project links']),
+    'es': (u'Commonscat',
+           [u'Ccat', u'Commons cat', u'Categoría Commons',
+            u'Commonscat-inline']),
+    'et': (u'Commonsi kategooria',
+           [u'Commonscat', u'Commonskat', u'Commons cat', u'Commons category']),
+    'eu': (u'Commonskat', [u'Commonscat']),
+    'fa': (u'ویکی‌انبار-رده',
+           [u'Commonscat', u'Commons cat', u'انبار رده', u'Commons category',
+            u'انبار-رده', u'جعبه پیوند به پروژه‌های خواهر',
+            u'در پروژه‌های خواهر', u'پروژه‌های خواهر']),
+    'fr': (u'Commonscat', [u'CommonsCat', u'Commons cat', u'Commons category']),
+    'frp': (u'Commonscat', [u'CommonsCat']),
+    'ga': (u'Catcómhaoin', [u'Commonscat']),
+    'hi': (u'Commonscat', [u'Commons2', u'Commons cat', u'Commons category']),
+    'hu': (u'Commonskat', [u'Közvagyonkat']),
+    'hy': (u'Վիքիպահեստ կատեգորիա',
+           [u'Commonscat', u'Commons cat', u'Commons category']),
+    'id': (u'Commonscat',
+           [u'Commons cat', u'Commons2', u'CommonsCat', u'Commons category']),
+    'is': (u'CommonsCat', [u'Commonscat']),
+    'ja': (u'Commonscat', [u'Commons cat', u'Commons category']),
+    'jv': (u'Commonscat', [u'Commons cat']),
+    'kaa': (u'Commons cat', [u'Commonscat']),
+    'kk': (u'Commonscat', [u'Commons2']),
+    'ko': (u'Commonscat', [u'Commons cat', u'공용분류']),
+    'la': (u'CommuniaCat', []),
+    'mk': (u'Ризница-врска',
+           [u'Commonscat', u'Commons cat', u'CommonsCat', u'Commons2',
+            u'Commons category']),
+    'ml': (u'Commonscat', [u'Commons cat', u'Commons2']),
+    'ms': (u'Kategori Commons', [u'Commonscat', u'Commons category']),
+    'nn': (u'Commonscat', [u'Commons cat']),
+    'os': (u'Commonscat', [u'Commons cat']),
+    'pt': (u'Commonscat', [u'Commons cat']),
+    'ro': (u'Commonscat', [u'Commons cat']),
+    'ru': (u'Commonscat', [u'Викисклад-кат', u'Commons category']),
+    'simple': (u'Commonscat',
+               [u'Commons cat',  u'Commons cat multi', u'Commons category',
+                u'Commons category multi', u'CommonsCompact',
+                u'Commons-inline']),
+    'sh': (u'Commonscat', [u'Commons cat']),
+    'sl': (u'Kategorija v Zbirki',
+           [u'Commonscat', u'Kategorija v zbirki', u'Commons cat',
+            u'Katzbirke']),
+    'sv': (u'Commonscat',
+           [u'Commonscat-rad', u'Commonskat', u'Commons cat', u'Commonscatbox',
+            u'Commonscat-box']),
+    'sw': (u'Commonscat', [u'Commons2', u'Commons cat']),
+    'te': (u'Commonscat', [u'Commons cat']),
+    'tr': (u'Commons kategori',
+           [u'CommonsKat', u'Commonscat', u'Commons cat']),
+    'uk': (u'Commonscat', [u'Commons cat', u'Category', u'Commonscat-inline']),
+    'vi': (u'Commonscat',
+           [u'Commons2', u'Commons cat', u'Commons category', u'Commons+cat']),
+    'zh': (u'Commonscat', [u'Commons cat', u'Commons category']),
+    'zh-classical': (u'共享類', [u'Commonscat']),
+    'zh-yue': (u'同享類',
+               [u'Commonscat', u'共享類 ', u'Commons cat', u'Commons category']),
 }
 
 ignoreTemplates = {
     'af': [u'commons'],
     'ar': [u'تحويلة تصنيف', u'كومنز', u'كومونز', u'Commons'],
-    'be-x-old' : [u'Commons', u'Commons category'],
+    'be-x-old': [u'Commons', u'Commons category'],
     'cs': [u'Commons', u'Sestřičky', u'Sisterlinks'],
     'da': [u'Commons', u'Commons left', u'Commons2', u'Commonsbilleder',
            u'Commonskat', u'Commonscat2', u'GalleriCommons', u'Søsterlinks'],
@@ -169,9 +177,9 @@ ignoreTemplates = {
            (u'Projektoj', 'commonscat=')],
     'es': [u'Commons', u'IprCommonscat'],
     'eu': [u'Commons'],
-    'fa': [u'Commons', u'ویکی‌انبار',
-           u'Category redirect',u'رده بهتر',
-           u'جعبه پیوند به پروژه‌های خواهر',u'در پروژه‌های خواهر',u'پروژه‌های خواهر'],
+    'fa': [u'Commons', u'ویکی‌انبار', u'Category redirect', u'رده بهتر',
+           u'جعبه پیوند به پروژه‌های خواهر', u'در پروژه‌های خواهر',
+           u'پروژه‌های خواهر'],
     'fi': [u'Commonscat-rivi', u'Commons-rivi', u'Commons'],
     'fr': [u'Commons', u'Commons-inline', (u'Autres projets', 'commons=')],
     'fy': [u'Commons', u'CommonsLyts'],
@@ -186,7 +194,8 @@ ignoreTemplates = {
     'om': [u'Commons'],
     'pt': [u'Correlatos'],
     'simple': [u'Sisterlinks'],
-    'ru': [u'Навигация', u'Навигация для категорий', u'КПР', u'КБР', u'Годы в России', u'commonscat-inline'],
+    'ru': [u'Навигация', u'Навигация для категорий', u'КПР', u'КБР',
+           u'Годы в России', u'commonscat-inline'],
     'tt': [u'Навигация'],
     'zh': [u'Category redirect', u'cr', u'Commons',
            u'Sisterlinks', u'Sisterlinkswp',
@@ -203,7 +212,7 @@ msg_change = {
     'en': u'Bot: Changing commonscat link from [[:Commons:Category:%(oldcat)s|%(oldcat)s]] to [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'fa': u'ربات: تغییر پیوند به انبار از [[:Commons:Category:%(oldcat)s|%(oldcat)s]] به [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'fr': u'Robot: Changé commonscat link de [[:Commons:Category:%(oldcat)s|%(oldcat)s]] à [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'frr':u'Bot: Feranere commonscat link faan [[:Commons:Category:%(oldcat)s|%(oldcat)s]] tu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'frr': u'Bot: Feranere commonscat link faan [[:Commons:Category:%(oldcat)s|%(oldcat)s]] tu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'is': u'Vélmenni: Breyti Commonscat tengli frá [[:Commons:Category:%(oldcat)s|%(oldcat)s]] í [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'pdc': u'Waddefresser: commonscat Gleecher vun [[:Commons:Category:%(oldcat)s|%(oldcat)s]] nooch [[:Commons:Category:%(newcat)s|%(newcat)s]] geennert',
     'ru': u'Бот: Изменение commonscat-ссылки с [[:Commons:Category:%(oldcat)s|%(oldcat)s]] на [[:Commons:Category:%(newcat)s|%(newcat)s]]',
@@ -227,31 +236,26 @@ class CommonscatBot:
             self.treat(page)
 
     def treat(self, page):
-        """
-        Loads the given page, does some changes, and saves it.
-        """
+        """ Loads the given page, does some changes, and saves it. """
         if not page.exists():
-           pywikibot.output(u'Page %s does not exist. Skipping.'
-                            % page.title(asLink=True))
+            pywikibot.output(u'Page %s does not exist. Skipping.'
+                             % page.title(asLink=True))
         elif page.isRedirectPage():
-           pywikibot.output(u'Page %s is a redirect. Skipping.'
-                            % page.title(asLink=True))
+            pywikibot.output(u'Page %s is a redirect. Skipping.'
+                             % page.title(asLink=True))
         elif page.isCategoryRedirect():
-           pywikibot.output(u'Page %s is a category redirect. Skipping.'
-                            % page.title(asLink=True))
+            pywikibot.output(u'Page %s is a category redirect. Skipping.'
+                             % page.title(asLink=True))
         elif page.isDisambig():
-           pywikibot.output(u'Page %s is a disambiguation. Skipping.'
-                            % page.title(asLink=True))
+            pywikibot.output(u'Page %s is a disambiguation. Skipping.'
+                             % page.title(asLink=True))
         else:
             (status, always) = self.addCommonscat(page)
         return
 
     def load(self, page):
-        """
-        Loads the given page, does some changes, and saves it.
-        """
+        """ Loads the given page, does some changes, and saves it. """
         try:
-            # Load the page
             text = page.get()
         except pywikibot.NoPage:
             pywikibot.output(u"Page %s does not exist; skipping."
@@ -272,7 +276,7 @@ class CommonscatBot:
                              % page.title())
             # show what was changed
             pywikibot.showDiff(page.get(), text)
-            pywikibot.output(u'Comment: %s' %comment)
+            pywikibot.output(u'Comment: %s' % comment)
             if not self.always:
                 choice = pywikibot.inputChoice(
                     u'Do you want to accept these changes?',
@@ -297,20 +301,20 @@ class CommonscatBot:
                         % (page.title()))
                 except pywikibot.SpamfilterError, error:
                     pywikibot.output(
-u'Cannot change %s because of spam blacklist entry %s'
+                        u'Cannot change %s because of spam blacklist entry %s'
                         % (page.title(), error.url))
                 else:
                     return True
         return False
 
     @classmethod
-    def getCommonscatTemplate (self, lang=None):
-        '''Get the template name in a language. Expects the language code.
+    def getCommonscatTemplate(self, lang=None):
+        """Get the template name in a language. Expects the language code.
         Return as tuple containing the primary template and it's alternatives
 
-        '''
+        """
         if lang in commonscatTemplates:
-            return  commonscatTemplates[lang]
+            return commonscatTemplates[lang]
         else:
             return commonscatTemplates[u'_default']
 
@@ -332,8 +336,8 @@ u'Cannot change %s because of spam blacklist entry %s'
                             return True
         return False
 
-    def updateInterwiki (self, wikipediaPage = None, commonsPage = None):
-        '''Update the interwiki's at commons from a wikipedia page. The bot just
+    def updateInterwiki(self, wikipediaPage=None, commonsPage=None):
+        """Update the interwiki's at commons from a wikipedia page. The bot just
         replaces the interwiki links at the commons page with the interwiki's
         from the wikipedia page. This should probably be more intelligent. We
         could use add all the interwiki's and remove duplicates. Or only remove
@@ -342,70 +346,72 @@ u'Cannot change %s because of spam blacklist entry %s'
         This function is disabled for the moment until i figure out what the
         best way is to update the interwiki's.
 
-        '''
+        """
         interwikis = {}
-        comment= u''
+        comment = u''
         interwikilist = wikipediaPage.interwiki()
         interwikilist.append(wikipediaPage)
 
         for interwikiPage in interwikilist:
-            interwikis[interwikiPage.site()]=interwikiPage
+            interwikis[interwikiPage.site()] = interwikiPage
         oldtext = commonsPage.get()
         # The commonssite object doesnt work with interwiki's
         newtext = pywikibot.replaceLanguageLinks(oldtext, interwikis,
                                                  pywikibot.getSite(u'nl'))
-        comment = u'Updating interwiki\'s from [[' + \
-                  wikipediaPage.site().language()  + \
-                  u':' + wikipediaPage.title() + u']]'
+        comment = u'Updating interwiki\'s from [[%s:%s]]' \
+                  % (wikipediaPage.site.lang, wikipediaPage.title())
 
         if newtext != oldtext:
             #This doesnt seem to work. Newtext has some trailing whitespace
             pywikibot.showDiff(oldtext, newtext)
             commonsPage.put(newtext=newtext, comment=comment)
 
-    def addCommonscat (self, page):
-        '''Take a page. Go to all the interwiki page looking for a commonscat
+    def addCommonscat(self, page):
+        """Take a page. Go to all the interwiki page looking for a commonscat
         template. When all the interwiki's links are checked and a proper
         category is found add it to the page.
 
-        '''
-        pywikibot.output(u'Working on ' + page.title());
-        #Get the right templates for this page
+        """
+        pywikibot.output(u'Working on ' + page.title())
+        # Get the right templates for this page
         primaryCommonscat, commonscatAlternatives = self.getCommonscatTemplate(
             page.site().language())
-        commonscatLink = self.getCommonscatLink (page)
+        commonscatLink = self.getCommonscatLink(page)
         if commonscatLink:
             pywikibot.output(u'Commonscat template is already on %s'
                              % page.title())
-            (currentCommonscatTemplate, currentCommonscatTarget, LinkText, Note) = commonscatLink
-            checkedCommonscatTarget = self.checkCommonscatLink(currentCommonscatTarget)
-            if (currentCommonscatTarget==checkedCommonscatTarget):
-                #The current commonscat link is good
+            (currentCommonscatTemplate,
+             currentCommonscatTarget, LinkText, Note) = commonscatLink
+            checkedCommonscatTarget = self.checkCommonscatLink(
+                currentCommonscatTarget)
+            if (currentCommonscatTarget == checkedCommonscatTarget):
+                # The current commonscat link is good
                 pywikibot.output(u'Commonscat link at %s to Category:%s is ok'
-                                 % (page.title() , currentCommonscatTarget));
+                                 % (page.title(), currentCommonscatTarget))
                 return (True, self.always)
-            elif checkedCommonscatTarget!=u'':
-                #We have a new Commonscat link, replace the old one
+            elif checkedCommonscatTarget != u'':
+                # We have a new Commonscat link, replace the old one
                 self.changeCommonscat(page, currentCommonscatTemplate,
-                                 currentCommonscatTarget, primaryCommonscat,
-                                 checkedCommonscatTarget, LinkText, Note)
+                                      currentCommonscatTarget,
+                                      primaryCommonscat,
+                                      checkedCommonscatTarget, LinkText, Note)
                 return (True, self.always)
             else:
                 #Commonscat link is wrong
                 commonscatLink = self.findCommonscatLink(page)
-                if (commonscatLink!=u''):
-                    self.changeCommonscat (page, currentCommonscatTemplate,
-                                      currentCommonscatTarget, primaryCommonscat,
-                                      commonscatLink)
+                if (commonscatLink != u''):
+                    self.changeCommonscat(page, currentCommonscatTemplate,
+                                          currentCommonscatTarget,
+                                          primaryCommonscat, commonscatLink)
                 #else
                 #Should i remove the commonscat link?
 
         elif self.skipPage(page):
             pywikibot.output("Found a template in the skip list. Skipping %s"
-                             % page.title());
+                             % page.title())
         else:
             commonscatLink = self.findCommonscatLink(page)
-            if (commonscatLink!=u''):
+            if (commonscatLink != u''):
                 if commonscatLink == page.title():
                     textToAdd = u'{{%s}}' % primaryCommonscat
                 else:
@@ -416,20 +422,19 @@ u'Cannot change %s because of spam blacklist entry %s'
                                                                    self.summary,
                                                                    None, None,
                                                                    self.always)
-                return (True, self.always);
+                return (True, self.always)
+        return (True, self.always)
 
-        return (True, self.always);
-
-    def changeCommonscat (self, page=None, oldtemplate=u'', oldcat=u'',
-                          newtemplate=u'', newcat=u'', linktitle=u'',
-                          description=u''):
-        ''' Change the current commonscat template and target. '''
+    def changeCommonscat(self, page=None, oldtemplate=u'', oldcat=u'',
+                         newtemplate=u'', newcat=u'', linktitle=u'',
+                         description=u''):
+        """ Change the current commonscat template and target. """
         if oldcat == '3=S' or linktitle == '3=S':
-            return #additional param on de-wiki, TODO: to be handled
+            return  # additional param on de-wiki, TODO: to be handled
         if not linktitle and (page.title().lower() in oldcat.lower() or
                               oldcat.lower() in page.title().lower()):
             linktitle = oldcat
-        if linktitle and newcat <> page.title(withNamespace=False):
+        if linktitle and newcat != page.title(withNamespace=False):
             newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
                              % oldtemplate,
                              u'{{%s|%s|%s}}' % (newtemplate, newcat, linktitle),
@@ -439,30 +444,33 @@ u'Cannot change %s because of spam blacklist entry %s'
                              % oldtemplate,
                              u'{{%s}}' % newtemplate,
                              page.get())
-        elif oldcat.strip() != newcat: #strip trailing white space
+        elif oldcat.strip() != newcat:  # strip trailing white space
             newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
-                             %oldtemplate,
+                             % oldtemplate,
                              u'{{%s|%s}}' % (newtemplate, newcat),
                              page.get())
-        else: # nothing left to do
+        else:  # nothing left to do
             return
         if self.summary:
             comment = self.summary
         else:
-            comment = pywikibot.translate(page.site(), msg_change) \
-                      % {'oldcat':oldcat, 'newcat':newcat}
+            comment = pywikibot.translate(page.site(),
+                                          msg_change) % {'oldcat': oldcat,
+                                                         'newcat': newcat}
         self.save(newtext, page, comment)
 
-    def findCommonscatLink (self, page=None):
+    def findCommonscatLink(self, page=None):
         for ipage in page.interwiki():
             try:
                 if(ipage.exists() and not ipage.isRedirectPage()
                    and not ipage.isDisambig()):
-                    commonscatLink = self.getCommonscatLink (ipage)
+                    commonscatLink = self.getCommonscatLink(ipage)
                     if commonscatLink:
-                        (currentTemplate, possibleCommonscat, linkText, Note) = commonscatLink
-                        checkedCommonscat = self.checkCommonscatLink(possibleCommonscat)
-                        if (checkedCommonscat!= u''):
+                        (currentTemplate,
+                         possibleCommonscat, linkText, Note) = commonscatLink
+                        checkedCommonscat = self.checkCommonscatLink(
+                            possibleCommonscat)
+                        if (checkedCommonscat != u''):
                             pywikibot.output(
                                 u"Found link for %s at [[%s:%s]] to %s."
                                 % (page.title(), ipage.site().language(),
@@ -473,21 +481,20 @@ u'Cannot change %s because of spam blacklist entry %s'
                 return u''
         return u''
 
-
-    def getCommonscatLink (self, wikipediaPage=None):
+    def getCommonscatLink(self, wikipediaPage=None):
         '''
         Go through the page and return a tuple of (<templatename>, <target>)
         '''
         primaryCommonscat, commonscatAlternatives = self.getCommonscatTemplate(
             wikipediaPage.site().language())
         commonscatTemplate = u''
-        commonscatTarget   = u''
+        commonscatTarget = u''
         commonscatLinktext = u''
-        commonscatNote     = u''
-        #See if commonscat is present
+        commonscatNote = u''
+        # See if commonscat is present
 
         for template in wikipediaPage.templatesWithParams():
-            if template[0]==primaryCommonscat \
+            if template[0] == primaryCommonscat \
                or template[0] in commonscatAlternatives:
                 commonscatTemplate = template[0]
                 if (len(template[1]) > 0):
@@ -502,14 +509,14 @@ u'Cannot change %s because of spam blacklist entry %s'
                         commonscatLinktext, commonscatNote)
         return None
 
-    def checkCommonscatLink (self, name = ""):
-        '''
-        This function will retun the name of a valid commons category
+    def checkCommonscatLink(self, name=""):
+        """ This function will return the name of a valid commons category
         If the page is a redirect this function tries to follow it.
         If the page doesnt exists the function will return an empty string
-        '''
+
+        """
         if pywikibot.verbose:
-            pywikibot.output("getCommonscat: " + name )
+            pywikibot.output("getCommonscat: " + name)
         try:
             commonsSite = self.site.image_repository()
             #This can throw a pywikibot.BadTitle
@@ -531,13 +538,15 @@ u'Cannot change %s because of spam blacklist entry %s'
                             return self.checkCommonscatLink(m.group('newcat2'))
                     else:
                         pywikibot.output(
-                            u'getCommonscat: Deleted by %s. Couldn\'t find move target in \" %s \"'
+                            u'getCommonscat: Deleted by %s. Couldn\'t find '
+                            u'move target in "%s"'
                             % (loguser, logcomment))
                         return u''
                 except StopIteration:
                     if pywikibot.verbose:
                         pywikibot.output(
-                            u"getCommonscat: The category doesnt exist and nothing found in the deletion log.")
+                            u"getCommonscat: The category doesnt exist and "
+                            u"nothing found in the deletion log.")
                     return u''
             elif commonsPage.isRedirectPage():
                 if pywikibot.verbose:
@@ -550,8 +559,8 @@ u'Cannot change %s because of spam blacklist entry %s'
                     pywikibot.output(
                         u"getCommonscat: The category is a category redirect")
                 for template in commonsPage.templatesWithParams():
-                    if ((template[0]=="Category redirect")
-                        and (len(template[1]) > 0)):
+                    if (template[0] == "Category redirect" and
+                            len(template[1]) > 0):
                         return self.checkCommonscatLink(template[1][0])
             elif commonsPage.isDisambig():
                 if pywikibot.verbose:
@@ -561,17 +570,21 @@ u'Cannot change %s because of spam blacklist entry %s'
             else:
                 return commonsPage.title(withNamespace=False)
         except pywikibot.BadTitle:
-            #Funky title so not correct
+            # Funky title so not correct
             return u''
         except pywikibot.PageNotFound:
             return u''
 
+
 def main():
-    '''
-    Parse the command line arguments and get a pagegenerator to work on.
+    """ Parse the command line arguments and get a pagegenerator to work on.
     Iterate through all the pages.
-    '''
-    summary = None; generator = None; checkcurrent = False; always = False
+    """
+
+    summary = None
+    generator = None
+    checkcurrent = False
+    always = False
     ns = []
     ns.append(14)
     # Load a lot of default generators
@@ -586,8 +599,8 @@ def main():
         elif arg.startswith('-checkcurrent'):
             checkcurrent = True
             primaryCommonscat, commonscatAlternatives = \
-                               CommonscatBot.getCommonscatTemplate(
-                                   pywikibot.getSite().language())
+                CommonscatBot.getCommonscatTemplate(
+                    pywikibot.getSite().language())
             generator = pagegenerators.NamespaceFilterPageGenerator(
                 pagegenerators.ReferringPageGenerator(
                     pywikibot.Page(pywikibot.getSite(),
@@ -602,8 +615,8 @@ def main():
     if not generator:
         generator = genFactory.getCombinedGenerator()
     if not generator:
-        raise add_text.NoEnoughData(
-u'You have to specify the generator you want to use for the script!')
+        raise add_text.NoEnoughData(u'You have to specify the generator you '
+                                    u'want to use for the script!')
 
     pregenerator = pagegenerators.PreloadingGenerator(generator)
     bot = CommonscatBot(pregenerator, always, summary)
