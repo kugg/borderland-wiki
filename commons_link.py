@@ -27,42 +27,43 @@ and option can be one of these:
 """
 #
 # (C) Leonardo Gregianin, 2006
-# (C) Pywikipedia team, 2007-2011
+# (C) Pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
 
-__version__='$Id$'
+__version__ = '$Id$'
 
 import re
 import wikipedia as pywikibot
-import pagegenerators, catlib
+import pagegenerators
+import catlib
 
 comment1 = {
-    'ar':u'روبوت: تضمين قالب كومنز',
-    'cs':u'Robot přidal šablonu commons',
-    'en':u'Robot: Include commons template',
-    'fa':u'ربات: افزودن الگوی ویکی‌انبار',
-    'he':u'בוט: מוסיף תבנית Commons',
-    'ja':u'ロボットによる: テンプレcommons追加',
-    'nl':u'Bot: sjabloon commons toegevoegd',
-    'zh':u'機器人: 增加commons模板',
+    'ar': u'روبوت: تضمين قالب كومنز',
+    'cs': u'Robot přidal šablonu commons',
+    'en': u'Robot: Include commons template',
+    'fa': u'ربات: افزودن الگوی ویکی‌انبار',
+    'he': u'בוט: מוסיף תבנית Commons',
+    'ja': u'ロボットによる: テンプレcommons追加',
+    'nl': u'Bot: sjabloon commons toegevoegd',
+    'zh': u'機器人: 增加commons模板',
 }
 
 comment2 = {
-    'ar':u'روبوت: تضمين قالب تصنيف كومنز',
-    'cs':u'Robot přidal šablonu commonscat',
-    'en':u'Robot: Include commonscat template',
-    'fa':u'ربات: افزودن الگوی رده‌بندی ویکی‌انبار',
-    'he':u'בוט: מוסיף תבנית Commonscat',
-    'ja':u'ロボットによる: テンプレcommonscat追加',
-    'nl':u'Bot: sjabloon commonscat toegevoegd',
-    'zh':u'機器人: 增加commonscat模板',
+    'ar': u'روبوت: تضمين قالب تصنيف كومنز',
+    'cs': u'Robot přidal šablonu commonscat',
+    'en': u'Robot: Include commonscat template',
+    'fa': u'ربات: افزودن الگوی رده‌بندی ویکی‌انبار',
+    'he': u'בוט: מוסיף תבנית Commonscat',
+    'ja': u'ロボットによる: テンプレcommonscat追加',
+    'nl': u'Bot: sjabloon commonscat toegevoegd',
+    'zh': u'機器人: 增加commonscat模板',
 }
 
 
 class CommonsLinkBot:
-    def __init__(self, generator, acceptall = False):
+    def __init__(self, generator, acceptall=False):
         self.generator = generator
         self.acceptall = acceptall
 
@@ -79,9 +80,9 @@ class CommonsLinkBot:
                         text = oldText
 
                         # for commons template
-                        findTemplate=re.compile(ur'\{\{[Cc]ommonscat')
+                        findTemplate = re.compile(ur'\{\{[Cc]ommonscat')
                         s = findTemplate.search(text)
-                        findTemplate2=re.compile(ur'\{\{[Ss]isterlinks')
+                        findTemplate2 = re.compile(ur'\{\{[Ss]isterlinks')
                         s2 = findTemplate2.search(text)
                         if s or s2:
                             pywikibot.output(u'** Already done.')
@@ -105,7 +106,8 @@ class CommonsLinkBot:
                                         page.put(text, msg)
                                     except pywikibot.EditConflict:
                                         pywikibot.output(
-                                            u'Skipping %s because of edit conflict'
+                                            u'Skipping %s because of edit '
+                                            u'conflict'
                                             % (page.title()))
 
                 except pywikibot.NoPage:
@@ -129,15 +131,15 @@ class CommonsLinkBot:
                 try:
                     getcommonscat = commonsCategory.get(get_redirect=True)
                     commonsCategoryTitle = commonsCategory.title()
-                    categoryname = commonsCategoryTitle.split('Category:',1)[1]
+                    categoryname = commonsCategoryTitle.split('Category:', 1)[1]
                     if page.title() == categoryname:
                         oldText = page.get()
                         text = oldText
 
                         # for commonscat template
-                        findTemplate=re.compile(ur'\{\{[Cc]ommons')
+                        findTemplate = re.compile(ur'\{\{[Cc]ommons')
                         s = findTemplate.search(text)
-                        findTemplate2=re.compile(ur'\{\{[Ss]isterlinks')
+                        findTemplate2 = re.compile(ur'\{\{[Ss]isterlinks')
                         s2 = findTemplate2.search(text)
                         if s or s2:
                             pywikibot.output(u'** Already done.')
@@ -161,7 +163,8 @@ class CommonsLinkBot:
                                         page.put(text, msg)
                                     except pywikibot.EditConflict:
                                         pywikibot.output(
-                                            u'Skipping %s because of edit conflict'
+                                            u'Skipping %s because of edit '
+                                            u'conflict'
                                             % (page.title()))
 
                 except pywikibot.NoPage:
@@ -191,7 +194,7 @@ if __name__ == "__main__":
                 gen = pagegenerators.AllpagesPageGenerator(
                     start.title(withNamespace=False),
                     namespace=start.namespace(),
-                    includeredirects = False)
+                    includeredirects=False)
             elif arg.startswith('-cat:'):
                 cat = catlib.Category(pywikibot.getSite(),
                                       'Category:%s' % arg[5:])
