@@ -547,7 +547,7 @@ class Category(pywikibot.Page):
                     talkpage.put(u"==Authors==\n%s-~~~~" % authors,
                                  u"Bot:Listifying authors")
                 else:
-                    talkpage.put(talktext+u"\n==Authors==\n%s-~~~~" % authors,
+                    talkpage.put(talktext + u"\n==Authors==\n%s-~~~~" % authors,
                                  u"Bot:Listifying authors")
             targetCat.put(self.get(), creationSummary)
             return True
@@ -587,7 +587,7 @@ def remove_cfd_templates(cfdTemplates, pageText):
             re.IGNORECASE | re.MULTILINE | re.DOTALL)
         pageText = matchcomment.sub('', pageText)
         pos = 0
-        while (pageText[pos:pos+1] == "\n"):
+        while (pageText[pos:pos + 1] == "\n"):
             pos = pos + 1
         pageText = pageText[pos:]
     return pageText
