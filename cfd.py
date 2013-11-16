@@ -21,25 +21,34 @@ import category
 cfdPage = 'Wikipedia:Categories for discussion/Working'
 
 # A list of templates that are used on category pages as part of the CFD
-# process that contain information such as the link to the per-day discussion page.
+# process that contain information such as the link to the per-day discussion
+# page.
 cfdTemplates = ['Cfd full', 'Cfr full']
 
 # Regular expression declarations
-# See the en-wiki CFD working page at [[Wikipedia:Categories for discussion/Working]]
-# to see how these work in context.  To get this bot working on other wikis you will
-# need to adjust these regular expressions at the very least.
+# See the en-wiki CFD working page at
+# [[Wikipedia:Categories for discussion/Working]]
+# to see how these work in context.  To get this bot working on other wikis you
+# will need to adjust these regular expressions at the very least.
 nobots = re.compile(r"NO\s*BOTS", re.IGNORECASE)
 example = re.compile(r"\[\[\:Category\:(.)\1\1\1\1\]\]", re.IGNORECASE)
 speedymode = re.compile(r"^===*\s*Speedy Moves\s*===*\s*$", re.IGNORECASE)
-movemode = re.compile(r"^===*\s*Move\/Merge then delete\s*===*\s*$", re.IGNORECASE)
+movemode = re.compile(r"^===*\s*Move\/Merge then delete\s*===*\s*$",
+                      re.IGNORECASE)
 emptymode = re.compile(r"^===*\s*Empty then delete\s*===*\s*$", re.IGNORECASE)
 deletemode = re.compile(r"^===*\s*Ready for deletion\s*===*\s*$", re.IGNORECASE)
-maintenance = re.compile(r"^===*\s*Old by month categories with entries\s*===*\s*$", re.IGNORECASE)
-dateheader = re.compile(r"(\[\[Wikipedia\:Categories[_ ]for[_ ](?:discussion|deletion)\/Log\/([^\]]*?)\]\])",
-                        re.IGNORECASE)
-movecat = re.compile(r"\[\[\:Category\:([^\]]*?)\]\][^\]]*?\[\[\:Category\:([^\]]*?)\]\]", re.IGNORECASE)
+maintenance = re.compile(
+    r"^===*\s*Old by month categories with entries\s*===*\s*$", re.IGNORECASE)
+dateheader = re.compile(
+    r"(\[\[Wikipedia\:Categories[_ ]for[_ ](?:discussion|deletion)\/Log\/([^\]]*?)\]\])",
+    re.IGNORECASE)
+movecat = re.compile(
+    r"\[\[\:Category\:([^\]]*?)\]\][^\]]*?\[\[\:Category\:([^\]]*?)\]\]",
+    re.IGNORECASE)
 deletecat = re.compile(r"\[\[\:Category\:([^\]]*?)\]\]", re.IGNORECASE)
-findday = re.compile(r"\[\[(Wikipedia\:Categories for (?:discussion|deletion)\/Log\/\d{4} \w+ \d+)#", re.IGNORECASE)
+findday = re.compile(
+    r"\[\[(Wikipedia\:Categories for (?:discussion|deletion)\/Log\/\d{4} \w+ \d+)#",
+    re.IGNORECASE)
 
 
 class ReCheck:
@@ -86,7 +95,8 @@ def main():
             mode = "Delete"
             day = "None"
         elif maintenance.search(line):
-            # It's probably best not to try to handle these in an automated fashion.
+            # It's probably best not to try to handle these in an automated
+            # fashion.
             mode = "None"
             day = "None"
         elif m.check(dateheader, line):
@@ -97,9 +107,12 @@ def main():
             dest = m.result.group(2)
             thisDay = findDay(src, day)
             if mode == "Move" and thisDay != "None":
-                summary = "Robot - Moving category " + src + " to [[:Category:" + dest + "]] per [[WP:CFD|CFD]] at " + thisDay + "."
+                summary = ("Robot - Moving category %s to [[:Category:%s]] per "
+                           "[[WP:CFD|CFD]] at %s.") % (src, dest, thisDay)
             elif mode == "Speedy":
-                summary = "Robot - Speedily moving category " + src + " to [[:Category:" + dest + "]] per [[WP:CFDS|CFDS]]."
+                summary = ("Robot - Speedily moving category %s to "
+                           "[[:Category:%s]] per [[WP:CFDS|CFDS]].") % (src,
+                                                                        dest)
             else:
                 continue
             # If the category is redirect, we do NOT want to move articles to
@@ -112,23 +125,33 @@ def main():
                 pywikibot.output(summary, toStdout=True)
                 robot = None
             else:
-                robot = category.CategoryMoveRobot(oldCatTitle=src, newCatTitle=dest, batchMode=True,
-                                                   editSummary=summary, inPlace=True, moveCatPage=True,
-                                                   deleteEmptySourceCat=True, useSummaryForDeletion=True)
+                robot = category.CategoryMoveRobot(oldCatTitle=src,
+                                                   newCatTitle=dest,
+                                                   batchMode=True,
+                                                   editSummary=summary,
+                                                   inPlace=True,
+                                                   moveCatPage=True,
+                                                   deleteEmptySourceCat=True,
+                                                   useSummaryForDeletion=True)
         elif m.check(deletecat, line):
             src = m.result.group(1)
-            # I currently don't see any reason to handle these two cases separately, though
-            # if are guaranteed that the category in the "Delete" case is empty, it might be
-            # easier to call delete.py on it.
+            # I currently don't see any reason to handle these two cases
+            # separately, though if are guaranteed that the category in the
+            # "Delete" case is empty, it might be easier to call delete.py on
+            # it.
             thisDay = findDay(src, day)
             if (mode == "Empty" or mode == "Delete") and thisDay != "None":
-                summary = "Robot - Removing category " + src + " per [[WP:CFD|CFD]] at " + thisDay + "."
+                summary = ("Robot - Removing category %s per [[WP:CFD|CFD]] "
+                           "at %s.") % (src, thisDay)
             else:
                 continue
-            robot = category.CategoryRemoveRobot(catTitle=src, batchMode=True, editSummary=summary,
-                                                 useSummaryForDeletion=True, inPlace=True)
+            robot = category.CategoryRemoveRobot(catTitle=src, batchMode=True,
+                                                 editSummary=summary,
+                                                 useSummaryForDeletion=True,
+                                                 inPlace=True)
         else:
-            # This line does not fit any of our regular expressions, so ignore it.
+            # This line does not fit any of our regular expressions, so ignore
+            # it.
             pass
         if summary != "" and robot is not None:
             pywikibot.output(summary, toStdout=True)
@@ -169,12 +192,14 @@ def findDay(pageTitle, oldDay):
                     elif paramName == 'year':
                         year = paramVal
                 if day and month and year:
-                    return "[[Wikipedia:Categories for discussion/Log/%s %s %s]]" % (year, month, day)
+                    return (
+                        "[[Wikipedia:Categories for discussion/Log/%s %s %s]]"
+                        % (year, month, day))
         return oldDay
+
 
 if __name__ == "__main__":
     try:
         main()
     finally:
         pywikibot.stopme()
-
