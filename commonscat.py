@@ -253,20 +253,6 @@ class CommonscatBot:
             (status, always) = self.addCommonscat(page)
         return
 
-    def load(self, page):
-        """ Loads the given page, does some changes, and saves it. """
-        try:
-            text = page.get()
-        except pywikibot.NoPage:
-            pywikibot.output(u"Page %s does not exist; skipping."
-                             % page.title(asLink=True))
-        except pywikibot.IsRedirectPage:
-            pywikibot.output(u"Page %s is a redirect; skipping."
-                             % page.title(asLink=True))
-        else:
-            return text
-        return None
-
     def save(self, text, page, comment, minorEdit=True, botflag=True):
         # only save if something was changed
         if text != page.get():
