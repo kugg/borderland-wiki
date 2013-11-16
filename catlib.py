@@ -638,8 +638,9 @@ def change_category(article, oldCat, newCat, comment=None, sortKey=None,
                   rearranging them.
 
     """
-    #get list of Category objects the article is in and remove possible duplicates
     cats = []
+
+    # get list of Category objects the article is in and remove duplicates
     for cat in article.categories(get_redirect=True):
         if cat not in cats:
             cats.append(cat)
@@ -664,7 +665,8 @@ def change_category(article, oldCat, newCat, comment=None, sortKey=None,
         newtext = pywikibot.replaceCategoryInPlace(oldtext, oldCat, newCat)
     else:
         if newCat:
-            cats[cats.index(oldCat)] = Category(site, newCat.title(), sortKey=sortKey)
+            cats[cats.index(oldCat)] = Category(site, newCat.title(),
+                                                sortKey=sortKey)
         else:
             cats.pop(cats.index(oldCat))
         oldtext = article.get(get_redirect=True)
@@ -698,13 +700,13 @@ def change_category(article, oldCat, newCat, comment=None, sortKey=None,
 
 def categoryAllElementsAPI(CatName, cmlimit=5000, categories_parsed=[],
                            site=None):
-    # action=query&list=categorymembers&cmlimit=500&cmtitle=Category:License_tags
     """ Category to load all the elements in a category using the APIs.
     Limit: 5000 elements.
 
     """
     pywikibot.output("Loading %s..." % CatName)
 
+    # action=query&list=categorymembers&cmlimit=500&cmtitle=Category:License_tags
     params = {
         'action':  'query',
         'list':    'categorymembers',
