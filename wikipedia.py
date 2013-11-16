@@ -8115,7 +8115,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
     def recentchanges(self, number=100, rcstart=None, rcend=None, rcshow=None,
                       rcdir='older', rctype='edit|new', namespace=None,
                       includeredirects=True, repeat=False, user=None,
-                      returndict=False):
+                      returndict=False, nobots=False):
         """
         Yield recent changes as Page objects
         uses API call:
@@ -8174,9 +8174,11 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                        'loginfo',
                        'sizes'],  # , 'flags', 'redirect', 'patrolled'],
             'rcnamespace': namespace,
-            'rclimit': int(number),
         }
-
+        if nobots:
+            params['rclimit'] = str(number) + "!bot"
+        else:
+            params['rclimit'] = int(number)
         if user:
             params['rcuser'] = user
         if rcstart:
