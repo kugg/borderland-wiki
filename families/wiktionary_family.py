@@ -130,7 +130,7 @@ class Family(family.WikimediaFamily):
             'kl': u'Wiktionary',
             'km': u'Wiktionary',
             'kn': u'Wiktionary',
-            'ko': [u'위키낱말사전', u'Wiktionary'],
+            'ko': [u'위키낱말사전', u'Wiktionary', u'낱'],
             'ks': u'Wiktionary',
             'ku': [u'Wîkîferheng', u'Wiktionary'],
             'kw': u'Wiktionary',
