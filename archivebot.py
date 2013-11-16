@@ -166,7 +166,7 @@ def str2size(str):
 def int2month(num):
     """Returns the locale's full name of month 'num' (1-12)."""
     if hasattr(locale, 'nl_langinfo'):
-        return locale.nl_langinfo(locale.MON_1+num-1).decode('utf-8')
+        return locale.nl_langinfo(locale.MON_1 + num - 1).decode('utf-8')
     Months = ['january', 'february', 'march', 'april', 'may_long', 'june',
               'july', 'august', 'september', 'october', 'november', 'december']
     return Site.mediawiki_message(Months[num - 1])
@@ -446,7 +446,7 @@ class PageArchiver(object):
 
     def key_ok(self):
         s = new_hash()
-        s.update(self.salt+'\n')
+        s.update(self.salt + '\n')
         s.update(self.Page.title().encode('utf8') + '\n')
         return self.get('key') == s.hexdigest()
 
@@ -531,7 +531,7 @@ class PageArchiver(object):
             return
         if whys:
             pywikibot.output(u'Archiving %d thread(s).' % self.archivedThreads)
-            #Save the archives first (so that bugs don't cause a loss of data)
+            # Save the archives first (so that bugs don't cause a loss of data)
             for a in sorted(self.archives.keys()):
                 self.commentParams['count'] = self.archives[a].archivedThreads
                 comment = i18n.twntranslate(language,
@@ -540,7 +540,7 @@ class PageArchiver(object):
                 self.archives[a].update(comment)
 
             #Save the page itself
-            rx = re.compile('{{'+self.tpl+'\n.*?\n}}', re.DOTALL)
+            rx = re.compile('{{%s\n.*?\n}}' % self.tpl, re.DOTALL)
             self.Page.header = rx.sub(self.attr2text(), self.Page.header)
             self.commentParams['count'] = self.archivedThreads
             self.commentParams['archives'] = ', '.join(
