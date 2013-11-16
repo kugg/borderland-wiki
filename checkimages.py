@@ -1209,7 +1209,7 @@ class checkImagesBot(object):
                 # Don't report, but continue with the check
                 # (we don't now if this is the first time we check this file
                 # or not)
-                return True 
+                return True
 
         # The talk page includes "_" between the two names, in this way I
         # replace them to " "
