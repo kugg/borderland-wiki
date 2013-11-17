@@ -2891,7 +2891,10 @@ class Page(object):
                 data = datas['query']['pages'].values()[0]
                 if "langlinks" in data:
                     for c in data['langlinks']:
-                        llpage = Page(getSite(c["lang"]), c["*"])
+                        try:
+                            llpage = Page(getSite(c["lang"]), c["*"])
+                        except NoSuchSite:
+                            continue
                         iwlinks.append(llpage)
 
                 if 'query-continue' in datas:
