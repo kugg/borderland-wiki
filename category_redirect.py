@@ -14,19 +14,19 @@ are taken into account.
 """
 
 #
-# (C) Pywikipedia team, 2008-2013
-#
-__version__ = '$Id$'
+# (C) Pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
 #
 
 import cPickle
 import math
 import re
 import sys
-import time
 import traceback
+import time
 from datetime import datetime, timedelta
 import wikipedia as pywikibot
 import pagegenerators
@@ -50,7 +50,7 @@ class CategoryRedirectBot(object):
     def __init__(self):
         self.cooldown = 7  # days
         self.site = pywikibot.getSite()
-        self.catprefix = self.site.namespace(14)+":"
+        self.catprefix = self.site.namespace(14) + ":"
         self.log_text = []
         self.edit_requests = []
         self.log_page = pywikibot.Page(self.site,
@@ -58,6 +58,7 @@ class CategoryRedirectBot(object):
                                        % {'user': self.site.loggedInAs()})
 
         # Localization:
+
         # Category that contains all redirected category pages
         self.cat_redirect_cat = {
             'wikipedia': {
@@ -171,13 +172,12 @@ class CategoryRedirectBot(object):
                             moved += 1
 
                 # pass 2: look for template doc pages
-                for result in self.query_results(list="categorymembers",
-                                                 cmtitle=oldCat.title(),
-                                                 cmprop="title|sortkey",
-                                                 cmnamespace="10",
-                                                 cmlimit="max"):
+                for result in self.query_results(
+                        list="categorymembers", cmtitle=oldCat.title(),
+                        cmprop="title|sortkey", cmnamespace="10",
+                        cmlimit="max"):
                     for item in result['categorymembers']:
-                        doc = pywikibot.Page(self.site, item['title']+"/doc")
+                        doc = pywikibot.Page(self.site, item['title'] + "/doc")
                         try:
                             old_text = doc.get()
                         except pywikibot.Error:
@@ -251,19 +251,19 @@ class CategoryRedirectBot(object):
             if type(result) is list:
                 # query returned no results
                 return
-            assert type(result) is dict, \
-                   "Unexpected result of type '%s' received." % type(result)
+            assert type(result) is dict, (
+                "Unexpected result of type '%s' received." % type(result))
             if "query" not in result:
                 # query returned no results
                 return
             yield result['query']
             if 'query-continue' in result:
-                assert len(result['query-continue'].keys()) == 1, \
-                       "More than one query-continue key returned: %s" \
-                       % result['query-continue'].keys()
+                assert len(result['query-continue'].keys()) == 1, (
+                    "More than one query-continue key returned: %s"
+                    % result['query-continue'].keys())
                 query_type = result['query-continue'].keys()[0]
-                assert (query_type in querydata.keys()
-                        or query_type in querydata.values()), \
+                assert (query_type in querydata.keys() or
+                        query_type in querydata.values()), \
                        "Site returned unknown query-continue type '%s'" \
                        % query_type
                 querydata.update(result['query-continue'][query_type])
@@ -290,7 +290,7 @@ class CategoryRedirectBot(object):
             return log_text
         # sort by keys and keep the first (LOG_SIZE-1) values
         keep = [text for (key, text) in
-                sorted(log_items.items(), reverse=True)[:LOG_SIZE-1]]
+                sorted(log_items.iteritems(), reverse=True)[:LOG_SIZE - 1]]
         log_text = "\n".join("\n".join(line for line in text) for text in keep)
         # get permalink to older logs
         try:
@@ -298,9 +298,9 @@ class CategoryRedirectBot(object):
             # get the id of the newest log being archived
             rotate_revid = history[-1][0]
             # append permalink
-            log_text = log_text + \
-                       "\n\n'''[%s Older logs]'''" \
-                       % self.log_page.permalink(oldid=rotate_revid)
+            log_text = log_text + ("\n\n'''[%s Older logs]'''"
+                                   % self.log_page.permalink(
+                                       oldid=rotate_revid))
         except IndexError:
             # don't die if getVersionHistory fails (again)
             return all_log_text
@@ -318,9 +318,7 @@ class CategoryRedirectBot(object):
         l = time.localtime()
         today = "%04d-%02d-%02d" % l[:3]
         edit_request_page = pywikibot.Page(
-            self.site,
-            u"User:%(user)s/category edit requests"
-            % locals())
+            self.site, u"User:%(user)s/category edit requests" % locals())
         datafile = pywikibot.config.datafilepath("%s-catmovebot-data"
                                                  % self.site.dbName())
         try:
@@ -334,7 +332,7 @@ class CategoryRedirectBot(object):
 
         try:
             template_list = self.site.family.category_redirect_templates[
-                self.site.lang]
+                self.site.code]
         except KeyError:
             pywikibot.output(u"No redirect templates defined for %s"
                              % self.site.sitename())
@@ -403,7 +401,8 @@ class CategoryRedirectBot(object):
             u'format': 'json'
         }
         counts, destmap, catmap = {}, {}, {}
-        catlist, catpages, nonemptypages = [], [], []
+        catlist, nonemptypages = [], []
+        catpages = []
         target = self.cat_redirect_cat[self.site.family.name][self.site.lang]
 
         # get a list of all members of the category-redirect category
@@ -465,7 +464,7 @@ class CategoryRedirectBot(object):
         # delete record entries for non-existent categories
         for cat_name in list(record.keys()):
             if catlib.Category(self.site,
-                               self.catprefix+cat_name) not in catmap:
+                               self.catprefix + cat_name) not in catmap:
                 del record[cat_name]
 
         pywikibot.output(u"")
@@ -487,7 +486,7 @@ class CategoryRedirectBot(object):
                 for d in destmap[dest]:
                     # is catmap[dest] also a redirect?
                     newcat = catlib.Category(self.site,
-                                             self.catprefix+catmap[dest])
+                                             self.catprefix + catmap[dest])
                     while newcat in catlist:
                         if newcat == d or newcat == dest:
                             self.log_text.append(u"* Redirect loop from %s"
@@ -495,7 +494,8 @@ class CategoryRedirectBot(object):
                                                                 textlink=True))
                             break
                         newcat = catlib.Category(self.site,
-                                                 self.catprefix+catmap[newcat])
+                                                 self.catprefix +
+                                                 catmap[newcat])
                     else:
                         self.log_text.append(
                             u"* Fixed double-redirect: %s -> %s -> %s"
@@ -526,7 +526,7 @@ class CategoryRedirectBot(object):
         pywikibot.output(u"Moving pages out of %s redirected categories."
                          % len(cats_to_empty))
 #        thread_limit = int(math.log(len(cats_to_empty), 8) + 1)
-#        threadpool = ThreadList(limit=1)    # disabling multi-threads
+#        threadpool = ThreadList(limit=1)  # disabling multi-threads
 
         for cat in cats_to_empty:
             cat_title = cat.title(withNamespace=False)
@@ -561,10 +561,9 @@ class CategoryRedirectBot(object):
                           + u"\n" + self.get_log_text())
         if self.edit_requests:
             edit_request_page.put(self.edit_request_text
-                                  % {'itemlist':
-                                     u"\n" + u"\n".join(
-                                         (self.edit_request_item % item)
-                                         for item in self.edit_requests)})
+                                  % {'itemlist': u"\n" + u"\n".join(
+                                      (self.edit_request_item % item)
+                                      for item in self.edit_requests)})
 
 
 def main(*args):
