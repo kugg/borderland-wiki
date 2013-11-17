@@ -79,15 +79,43 @@ import urllib
 import webbrowser
 import codecs
 import wikipedia as pywikibot
+import config
 from pywikibot import i18n
 import pagegenerators
-import config
 
-# This is required for the text that is shown when you run this script
-# with the parameter -help.
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp,
 }
+
+
+starsList = [
+    u'bueno',
+    u'bom interwiki',
+    u'cyswllt[ _]erthygl[ _]ddethol', u'dolen[ _]ed',
+    u'destacado', u'destaca[tu]',
+    u'enllaç[ _]ad',
+    u'enllaz[ _]ad',
+    u'leam[ _]vdc',
+    u'legătură[ _]a[bcf]',
+    u'liamm[ _]pub',
+    u'lien[ _]adq',
+    u'lien[ _]ba',
+    u'liên[ _]kết[ _]bài[ _]chất[ _]lượng[ _]tốt',
+    u'liên[ _]kết[ _]chọn[ _]lọc',
+    u'ligam[ _]adq',
+    u'ligoelstara',
+    u'ligoleginda',
+    u'link[ _][afgu]a', u'link[ _]adq', u'link[ _]f[lm]', u'link[ _]km',
+    u'link[ _]sm', u'linkfa',
+    u'na[ _]lotura',
+    u'nasc[ _]ar',
+    u'tengill[ _][úg]g',
+    u'ua',
+    u'yüm yg',
+    u'רא',
+    u'وصلة مقالة جيدة',
+    u'وصلة مقالة مختارة',
+]
 
 
 class NoEnoughData(pywikibot.Error):
@@ -160,34 +188,6 @@ def add_text(page=None, addText=None, summary=None, regexSkip=None,
     # When a page is tagged as "really well written" it has a star in the
     # interwiki links. This is a list of all the templates used (in regex
     # format) to make the stars appear.
-    starsList = [
-        u'bueno',
-        u'bom interwiki',
-        u'cyswllt[ _]erthygl[ _]ddethol', u'dolen[ _]ed',
-        u'destacado', u'destaca[tu]',
-        u'enllaç[ _]ad',
-        u'enllaz[ _]ad',
-        u'leam[ _]vdc',
-        u'legătură[ _]a[bcf]',
-        u'liamm[ _]pub',
-        u'lien[ _]adq',
-        u'lien[ _]ba',
-        u'liên[ _]kết[ _]bài[ _]chất[ _]lượng[ _]tốt',
-        u'liên[ _]kết[ _]chọn[ _]lọc',
-        u'ligam[ _]adq',
-        u'ligoelstara',
-        u'ligoleginda',
-        u'link[ _][afgu]a', u'link[ _]adq', u'link[ _]f[lm]', u'link[ _]km',
-        u'link[ _]sm', u'linkfa',
-        u'na[ _]lotura',
-        u'nasc[ _]ar',
-        u'tengill[ _][úg]g',
-        u'ua',
-        u'yüm yg',
-        u'רא',
-        u'وصلة مقالة جيدة',
-        u'وصلة مقالة مختارة',
-    ]
 
     errorCount = 0
     site = pywikibot.getSite()
@@ -232,7 +232,7 @@ Match was: %s''' % result)
     if not up:
         newtext = text
         # Translating the \\n into binary \n
-        addText = addText.replace('\\n', '\n')
+        addText = addText.replace('\\n', config.line_separator)
         if (reorderEnabled):
             # Getting the categories
             categoriesInside = pywikibot.getCategoryLinks(newtext, site)
@@ -244,7 +244,7 @@ Match was: %s''' % result)
             newtext = pywikibot.removeLanguageLinks(newtext, site)
 
             # Adding the text
-            newtext += u"\n%s" % addText
+            newtext += u"%s%s" % (config.line_separator, addText)
             # Reputting the categories
             newtext = pywikibot.replaceCategoryLinks(newtext,
                                                      categoriesInside, site,
@@ -260,17 +260,17 @@ Match was: %s''' % result)
                     newtext = regex.sub('', newtext)
                     allstars += found
             if allstars != []:
-                newtext = newtext.strip() + '\r\n\r\n'
+                newtext = newtext.strip() + config.line_separator * 2
                 allstars.sort()
                 for element in allstars:
-                    newtext += '%s\r\n' % element.strip()
+                    newtext += '%s%s' % (element.strip(), config.LS)
             # Adding the interwiki
             newtext = pywikibot.replaceLanguageLinks(newtext, interwikiInside,
                                                      site)
         else:
-            newtext += u"\n%s" % addText
+            newtext += u"%s%s" % (config.line_separator, addText)
     else:
-        newtext = addText + '\n' + text
+        newtext = addText + config.line_separator + text
     if putText and text != newtext:
         pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
                          % page.title())
@@ -308,7 +308,7 @@ Match was: %s''' % result)
                     return (False, False, always)
                 except pywikibot.ServerError:
                     errorCount += 1
-                    if errorCount < 5:
+                    if errorCount < config.maxretries:
                         pywikibot.output(u'Server Error! Wait..')
                         time.sleep(5)
                         continue
