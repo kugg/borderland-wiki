@@ -73,7 +73,9 @@ or you need some help regarding this script, you can find us here:
 __version__ = '$Id$'
 #
 
-import re, urllib2, urllib
+import re
+import urllib2
+import urllib
 import webbrowser
 import codecs
 import wikipedia as pywikibot
@@ -118,6 +120,7 @@ def pageText(url):
         return pageText(url)
     return text
 
+
 def untaggedGenerator(untaggedProject, limit=500):
     """ Function to get the pages returned by this tool:
     http://toolserver.org/~daniel/WikiSense/UntaggedImages.php
@@ -143,6 +146,7 @@ def untaggedGenerator(untaggedProject, limit=500):
     else:
         for result in results:
             yield pywikibot.Page(pywikibot.getSite(), result)
+
 
 def add_text(page=None, addText=None, summary=None, regexSkip=None,
              regexSkipUrl=None, always=False, up=False, putText=True,
