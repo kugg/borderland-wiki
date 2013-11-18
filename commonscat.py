@@ -5,7 +5,7 @@ With this tool you can add the template {{commonscat}} to categories.
 The tool works by following the interwiki links. If the template is present on
 another langauge page, the bot will use it.
 
-You could probably use it at articles as well, but this isnt tested.
+You could probably use it at articles as well, but this isn't tested.
 
 This bot uses pagegenerators to get a list of pages. The following options are
 supported:
