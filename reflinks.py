@@ -32,80 +32,76 @@ See [[:en:User:DumZiBoT/refLinks]] for more information on the bot.
                   get pdfinfo)
 """
 # (C) 2008 - Nicolas Dumazet ( en:User:NicDumZ )
-# (C) Pywikipedia bot team, 2008-2011
+# (C) Pywikipedia bot team, 2008-2013
 #
 # Distributed under the terms of the GPL
 #
 __version__ = '$Id$'
 #
 
-import sys, re, urllib2, httplib, socket, codecs, ftplib
-import subprocess, tempfile, os, gzip, StringIO
-import wikipedia as pywikibot
-import externals                            # check for and install needed
+import sys
+import re
+import urllib2
+import httplib
+import socket
+import codecs
+import ftplib
+import subprocess
+import tempfile
+import os
+import gzip
+import StringIO
 from BeautifulSoup import UnicodeDammit
+
+import wikipedia as pywikibot
 import pagegenerators
 import noreferences
+from pywikibot import i18n
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
 }
 
-stopPage = {'fr':u'Utilisateur:DumZiBoT/EditezCettePagePourMeStopper',
-            'da':u'Bruger:DumZiBoT/EditThisPageToStopMe',
-            'de':u'Benutzer:DumZiBoT/EditThisPageToStopMe',
-            'fa':u'کاربر:Amirobot/EditThisPageToStopMe',
-            'it':u'Utente:Marco27Bot/EditThisPageToStopMe',
-            'ko':u'사용자:GrassnBreadRefBot/EditThisPageToStopMe1',
-            'he':u'User:Matanyabot/EditThisPageToStopMe',
-            'hu':'User:Damibot/EditThisPageToStopMe',
-            'en':u'User:DumZiBoT/EditThisPageToStopMe',
-            'pl':u'Wikipedysta:MastiBot/EditThisPageToStopMe',
-            'ru':'User:Rubinbot/EditThisPageToStopMe',
-            'zh':u'User:Sz-iwbot',
+localized_msg = ('fr', )  # localized message at mediawik
+
+# localized message at specific wikipedia site
+# should be moved to mediawiki pywikibot manual
+L10N_msg = {
+    'it': u'Utente:Marco27Bot/refLinks.py',
+    'pl': u'Wikipedysta:MastiBot/refLinks',
 }
 
-msg = { 'fr':u'Bot: Correction des refs. mal formatées, suppression doublons en utilisant des références nommées (cf. [[Utilisateur:DumZiBoT/liensRefs|explications]])',
-        'da':u'Bot: Tilføjer beskrivelse til eksterne links, se [[:en:User:DumZiBoT/refLinks|FAQ]]',
-        'de':u'Bot: Korrektes Referenzformat (siehe [[:en:User:DumZiBoT/refLinks]])',
-        'fa':u'ربات:تصحیح پيوند به بيرون يا عنوان پيوند. [[:en:User:DumZiBoT/refLinks|اطلاعات بیشتر]]',
-        'he':u'בוט:מלביש קישורים חיצוניים. (FAQ : [[:en:User:DumZiBoT/refLinks]])',
-        'hu':u'Robot: Forráshivatkozások kibővítése a hivatkozott oldal címével',
-        'ko':u'봇: url만 있는 주석을 보강, (영문)[[:en:User:DumZiBoT/refLinks]] 참조',
-        'es':u'Formateando las referencias que no tuvieran títulos (FAQ : [[:en:User:DumZiBoT/refLinks]] )',
-        'it':u'Bot: Sistemo note con collegamenti esterni senza titolo ([[Utente:Marco27Bot/refLinks.py|documentazione]])',
-        'en':u'Robot: Converting bare references, using ref names to avoid duplicates, see [[User:DumZiBoT/refLinks|FAQ]]',
-        'ru':u'Робот: добавление заголовков в сноски; исправление двойных сносок',
-        'pl':u'Bot: Dodanie tytułów do linków w przypisach (patrz [[Wikipedysta:MastiBot/refLinks|FAQ]])',
+
+stopPage = {
+    'fr': u'Utilisateur:DumZiBoT/EditezCettePagePourMeStopper',
+    'da': u'Bruger:DumZiBoT/EditThisPageToStopMe',
+    'de': u'Benutzer:DumZiBoT/EditThisPageToStopMe',
+    'fa': u'کاربر:Amirobot/EditThisPageToStopMe',
+    'it': u'Utente:Marco27Bot/EditThisPageToStopMe',
+    'ko': u'사용자:GrassnBreadRefBot/EditThisPageToStopMe1',
+    'he': u'User:Matanyabot/EditThisPageToStopMe',
+    'hu': u'User:Damibot/EditThisPageToStopMe',
+    'en': u'User:DumZiBoT/EditThisPageToStopMe',
+    'pl': u'Wikipedysta:MastiBot/EditThisPageToStopMe',
+    'ru': u'User:Rubinbot/EditThisPageToStopMe',
+    'zh': u'User:Sz-iwbot',
 }
 
-deadLinkTag = {'fr':u'[%s] {{lien mort}}',
-               'da':u'[%s] {{dødt link}}',
-               'de':u'',
-               'fa':u'[%s] {{پیوند مرده}}',
-               'he':u'{{קישור שבור}}',
-               'hu':u'[%s] {{halott link}}',
-               'ko':u'[%s] {{죽은 바깥 고리}}',
-               'es':u'{{enlace roto2|%s}}',
-               'it':u'{{Collegamento interrotto|%s}}',
-               'en':u'[%s] {{dead link}}',
-               'pl':u'[%s] {{Martwy link}}',
-               'ru':u'[%s] {{subst:dead}}',
-               }
+deadLinkTag = {
+    'fr': u'[%s] {{lien mort}}',
+    'da': u'[%s] {{dødt link}}',
+    'de': u'',
+    'fa': u'[%s] {{پیوند مرده}}',
+    'he': u'{{קישור שבור}}',
+    'hu': u'[%s] {{halott link}}',
+    'ko': u'[%s] {{죽은 바깥 고리}}',
+    'es': u'{{enlace roto2|%s}}',
+    'it': u'{{Collegamento interrotto|%s}}',
+    'en': u'[%s] {{dead link}}',
+    'pl': u'[%s] {{Martwy link}}',
+    'ru': u'[%s] {{subst:dead}}',
+}
 
-comment = {'ar':u'عنوان مولد بالبوت',
-           'da':u'Bot genereret titel',
-           'de':u'Automatisch generierter titel',
-           'fr':u'Titre généré automatiquement',
-           'hu':u'Robot generálta cím',
-           'ko':u'봇이 따온 제목',
-           'pl':u'Tytuł wygenerowany przez bota',
-           'es':u'Título generado por un bot',
-           'en':u'Bot generated title',
-           'ru':u'Заголовок добавлен ботом',
-           'fa':u'عنوان تصحیح شده توسط ربات',
-           'it':u'Titolo generato automaticamente',
-           }
 
 soft404 = re.compile(
     ur'\D404(\D|\Z)|error|errdoc|Not.{0,3}Found|sitedown|eventlog',
@@ -156,27 +152,20 @@ globalbadtitles = """
 )
 """
 # Language-specific bad titles
-badtitles = { 'en': '',
-              'fr': '.*(404|page|site).*en +travaux.*',
-              'es': '.*sitio.*no +disponible.*',
-              'it': '((pagina|sito) (non trovata|inesistente)|accedi)',
-              'ru': u'.*(Страница|страница).*(не[ ]*найдена|осутствует).*',
-            }
-
-autogen = { 'en': 'autogenerated',
-            'da': 'autogeneret',
-            'ar': 'مولد تلقائيا',
-            'it': 'autogenerato',
-            'pl': 'autonazwa',
-            'ru': 'autogenerated',
-            }
+badtitles = {
+    'en': '',
+    'fr': '.*(404|page|site).*en +travaux.*',
+    'es': '.*sitio.*no +disponible.*',
+    'it': '((pagina|sito) (non trovata|inesistente)|accedi)',
+    'ru': u'.*(Страница|страница).*(не[ ]*найдена|осутствует).*',
+}
 
 # Regex that match bare references
 linksInRef = re.compile(
     # bracketed URLs
     ur'(?i)<ref(?P<name>[^>]*)>\s*\[?(?P<url>(?:http|https|ftp)://(?:' +
     # unbracketed with()
-    ur'^\[\]\s<>"]+\([^\[\]\s<>"]+[^\[\]\s\.:;\\,<>\?"]+|'+
+    ur'^\[\]\s<>"]+\([^\[\]\s<>"]+[^\[\]\s\.:;\\,<>\?"]+|' +
     # unbracketed without ()
     ur'[^\[\]\s<>"]+[^\[\]\s\)\.:;\\,<>\?"]+|[^\[\]\s<>"]+))[!?,\s]*\]?\s*</ref>')
 
@@ -184,6 +173,7 @@ linksInRef = re.compile(
 # http://www.twoevils.org/files/wikipedia/404-links.txt.gz
 # ( maintained by User:Dispenser )
 listof404pages = '404-links.txt'
+
 
 class XmlDumpPageGenerator:
     """Xml generator that yiels pages containing bare references"""
@@ -211,12 +201,13 @@ class XmlDumpPageGenerator:
                 if entry.title != self.xmlStart:
                     continue
                 self.skipping = False
-            page=pywikibot.Page(self.site, entry.title)
+            page = pywikibot.Page(self.site, entry.title)
             if not self.namespaces == []:
                 if page.namespace() not in self.namespaces:
                     continue
             if linksInRef.search(entry.text):
                 return page
+
 
 class RefLink:
     """Container to handle a single bare reference"""
@@ -225,7 +216,7 @@ class RefLink:
         self.refname = name
         self.link = link
         self.site = pywikibot.getSite()
-        self.linkComment = pywikibot.translate(self.site, comment)
+        self.linkComment = i18n.twtranslate(self.site, 'reflinks-comment')
         self.url = re.sub(u'#.*', '', self.link)
         self.title = None
 
@@ -244,7 +235,7 @@ class RefLink:
         tag = pywikibot.translate(self.site, deadLinkTag) % self.link
         return '<ref%s>%s</ref>' % (self.refname, tag)
 
-    def transform(self, ispdf = False):
+    def transform(self, ispdf=False):
         """Normalize the title"""
         #convert html entities
         if not ispdf:
@@ -270,9 +261,9 @@ class RefLink:
         # TODO : remove HTML when both opening and closing tags are included
 
     def avoid_uppercase(self):
-        """
-        If title has more than 6 characters and has 60% of uppercase
+        """ If title has more than 6 characters and has 60% of uppercase
         characters, capitalize() it
+
         """
         if len(self.title) <= 6:
             return
@@ -285,13 +276,14 @@ class RefLink:
                 nb_letter += 1
             if letter.isdigit():
                 return
-        if float(nb_upper)/(nb_letter+1) > .70:
+        if float(nb_upper) / (nb_letter + 1) > .70:
             self.title = self.title.title()
 
+
 class DuplicateReferences:
-    """
-    When some references are duplicated in an article,
+    """ When some references are duplicated in an article,
     name the first, and remove the content of the others
+
     """
     def __init__(self):
         # Match references
@@ -301,13 +293,14 @@ class DuplicateReferences:
             u'(?i).*name\s*=\s*(?P<quote>"?)\s*(?P<name>.+)\s*(?P=quote).*')
         self.GROUPS = re.compile(
             u'(?i).*group\s*=\s*(?P<quote>"?)\s*(?P<group>.+)\s*(?P=quote).*')
-        self.autogen = pywikibot.translate(pywikibot.getSite(), autogen)
+        self.autogen = i18n.twtranslate(pywikibot.getSite(), 'reflinks-autogen')
 
     def process(self, text):
         # keys are ref groups
         # values are a dict where :
         #   keys are ref content
-        #   values are [name, [list of full ref matches], quoted, need_to_change]
+        #   values are [name, [list of full ref matches],
+        #               quoted, need_to_change]
         foundRefs = {}
         foundRefNames = {}
         # Replace key by [value, quoted]
@@ -337,7 +330,7 @@ class DuplicateReferences:
                     if v[0] != name:
                         namedRepl[name] = [v[0], v[2]]
                 else:
-                    #First name associated with this content
+                    # First name associated with this content
 
                     if name == 'population':
                         pywikibot.output(content)
@@ -359,9 +352,9 @@ class DuplicateReferences:
             id += 1
         for (g, d) in foundRefs.iteritems():
             if g:
-                group = "group=\"%s\" " % group
+                group = u"group=\"%s\" " % group
             else:
-                group = ""
+                group = u""
 
             for (k, v) in d.iteritems():
                 if len(v[1]) == 1 and not v[3]:
@@ -386,7 +379,7 @@ class DuplicateReferences:
                     end = end.replace(ref, unnamed)
                 text = header + end
 
-        for (k,v) in namedRepl.iteritems():
+        for (k, v) in namedRepl.iteritems():
             # TODO : Support ref groups
             name = v[0]
             if v[1]:
@@ -396,19 +389,35 @@ class DuplicateReferences:
                 u'<ref name=%s />' % name, text)
         return text
 
+
 class ReferencesRobot:
+
     def __init__(self, generator, acceptall=False, limit=None, ignorepdf=False):
         """
         - generator : Page generator
         - acceptall : boolean, is -always on ?
         - limit : int, stop after n modified pages
         - ignorepdf : boolean
+
         """
         self.generator = generator
         self.acceptall = acceptall
         self.limit = limit
         self.ignorepdf = ignorepdf
         self.site = pywikibot.getSite()
+        # Check
+        manual = 'mw:Manual:Pywikibot/refLinks'
+        if self.site.family.name == 'wikipedia':
+            manual = L10N_msg(self.site.code, manual)
+        else:
+            code = None
+            for alt in [self.site.code] + i18n._altlang(self.site.code):
+                if alt in localized_msg:
+                    code = alt
+                    break
+            if code:
+                manual += '/%s' % code
+        self.msg = i18n.twtranslate(self.site, 'reflinks-msg', locals())
         self.stopPage = pywikibot.Page(self.site,
                                        pywikibot.translate(self.site, stopPage))
 
@@ -419,14 +428,12 @@ class ReferencesRobot:
             bad = globalbadtitles
         self.titleBlackList = re.compile(bad, re.I | re.S | re.X)
         self.norefbot = noreferences.NoReferencesBot(None)
-
         self.deduplicator = DuplicateReferences()
-
-        try :
+        try:
             self.stopPageRevId = self.stopPage.latestRevision()
-        except pywikibot.NoPage :
+        except pywikibot.NoPage:
             pywikibot.output(u'The stop page %s does not exist'
-                                % self.stopPage.title(asLink=True))
+                             % self.stopPage.title(asLink=True))
             raise
 
         # Regex to grasp content-type meta HTML tag in HTML source
@@ -444,8 +451,8 @@ class ReferencesRobot:
             ur'application/(?:xhtml\+xml|xml)|text/(?:ht|x)ml')
 
     def put_page(self, page, new):
-        """
-        Prints diffs between orginal and new (text), puts new text for page
+        """ Prints diffs between orginal and new (text), puts new text for page
+
         """
         pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
                          % page.title())
@@ -458,10 +465,10 @@ class ReferencesRobot:
             if choice == 'a':
                 self.acceptall = True
             if choice == 'y':
-                page.put_async(new)
+                page.put_async(new, self.msg)
         if self.acceptall:
             try:
-                page.put(new)
+                page.put(new, self.msg)
             except pywikibot.EditConflict:
                 pywikibot.output(u'Skipping %s because of edit conflict'
                                   % (page.title(),))
@@ -480,22 +487,22 @@ class ReferencesRobot:
     def httpError(self, err_num, link, pagetitleaslink):
         """Log HTTP Error"""
         pywikibot.output(u'HTTP error (%s) for %s on %s'
-                          % (err_num, link, pagetitleaslink),
-                         toStdout = True)
+                         % (err_num, link, pagetitleaslink), toStdout=True)
 
     def getPDFTitle(self, ref, f):
-        """
-        Use pdfinfo to retrieve title from a PDF.
+        """ Use pdfinfo to retrieve title from a PDF.
         Unix-only, I'm afraid.
+
         """
-        pywikibot.output( u'PDF file.' )
+        pywikibot.output(u'PDF file.')
         fd, infile = tempfile.mkstemp()
         urlobj = os.fdopen(fd, 'r+w')
         urlobj.write(f.read())
         try:
-            pdfinfo_out = subprocess.Popen([r"pdfinfo","/dev/stdin"],
+            pdfinfo_out = subprocess.Popen([r"pdfinfo", "/dev/stdin"],
                                            stdin=urlobj, stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE, shell=False).communicate()[0]
+                                           stderr=subprocess.PIPE,
+                                           shell=False).communicate()[0]
             for aline in pdfinfo_out.splitlines():
                 if aline.lower().startswith('title'):
                     ref.title = aline.split(None)[1:]
@@ -507,7 +514,7 @@ class ReferencesRobot:
             pywikibot.output(u'pdfinfo value error.')
         except OSError:
             pywikibot.output(u'pdfinfo OS error.')
-        except:    # Ignore errors
+        except:  # Ignore errors
             pywikibot.output(u'PDF processing error.')
             pass
         finally:
@@ -515,15 +522,14 @@ class ReferencesRobot:
             os.unlink(infile)
 
     def run(self):
-        """
-        Runs the Bot
-        """
-        pywikibot.setAction(pywikibot.translate(self.site, msg))
+        """ Runs the Bot """
         try:
             deadLinks = codecs.open(listof404pages, 'r', 'latin_1').read()
         except IOError:
             pywikibot.output(
-                'You need to download http://www.twoevils.org/files/wikipedia/404-links.txt.gz and to ungzip it in the same directory')
+                'You need to download '
+                'http://www.twoevils.org/files/wikipedia/404-links.txt.gz '
+                'and to ungzip it in the same directory')
             raise
         socket.setdefaulttimeout(30)
         editedpages = 0
@@ -543,8 +549,10 @@ class ReferencesRobot:
                                  % page.title(asLink=True))
                 continue
 
-            for match in linksInRef.finditer(pywikibot.removeDisabledParts(page.get())):
-            #for each link to change
+            # for each link to change
+            for match in linksInRef.finditer(
+                    pywikibot.removeDisabledParts(page.get())):
+
                 link = match.group(u'url')
                 #debugging purpose
                 #print link
@@ -559,7 +567,7 @@ class ReferencesRobot:
                     try:
                         f = urllib2.urlopen(ref.url.decode("utf8"))
                     except UnicodeError:
-                        ref.url = urllib2.quote(ref.url.encode("utf8"),"://")
+                        ref.url = urllib2.quote(ref.url.encode("utf8"), "://")
                         f = urllib2.urlopen(ref.url)
                     #Try to get Content-Type from server
                     headers = f.info()
@@ -571,18 +579,18 @@ class ReferencesRobot:
                             self.getPDFTitle(ref, f)
                         else:
                             pywikibot.output(
-                                u'\03{lightyellow}WARNING\03{default} : media : %s '
-                                % ref.link)
+                                u'\03{lightyellow}WARNING\03{default} : '
+                                u'media : %s ' % ref.link)
                         if ref.title:
                             if not re.match(
-                                '(?i) *microsoft (word|excel|visio)',
-                                ref.title):
+                                    u'(?i) *microsoft (word|excel|visio)',
+                                    ref.title):
                                 ref.transform(ispdf=True)
                                 repl = ref.refTitle()
                             else:
                                 pywikibot.output(
-                                    '\03{lightyellow}WARNING\03{default} : PDF title blacklisted : %s '
-                                    % ref.title)
+                                    u'\03{lightyellow}WARNING\03{default} : '
+                                    u'PDF title blacklisted : %s ' % ref.title)
                                 repl = ref.refLink()
                         else:
                             repl = ref.refLink()
@@ -595,14 +603,14 @@ class ReferencesRobot:
                         if soft404.search(redir) and \
                            not soft404.search(ref.link):
                             pywikibot.output(
-                                u'\03{lightyellow}WARNING\03{default} : Redirect 404 : %s '
-                                % ref.link)
+                                u'\03{lightyellow}WARNING\03{default} : '
+                                u'Redirect 404 : %s ' % ref.link)
                             continue
                         if dirIndex.match(redir) and \
                            not dirIndex.match(ref.link):
                             pywikibot.output(
-                                u'\03{lightyellow}WARNING\03{default} : Redirect to root : %s '
-                                % ref.link)
+                                u'\03{lightyellow}WARNING\03{default} : '
+                                u'Redirect to root : %s ' % ref.link)
                             continue
 
                     # uncompress if necessary
@@ -619,7 +627,7 @@ class ReferencesRobot:
                     socket.setdefaulttimeout(None)
 
                 except UnicodeError:
-                    #example : http://www.adminet.com/jo/20010615¦/ECOC0100037D.html
+                    # example : http://www.adminet.com/jo/20010615¦/ECOC0100037D.html
                     # in [[fr:Cyanure]]
                     pywikibot.output(
                         u'\03{lightred}Bad link\03{default} : %s in %s'
@@ -629,7 +637,7 @@ class ReferencesRobot:
                     pywikibot.output(u'HTTP error (%s) for %s on %s'
                                      % (e.code, ref.url,
                                         page.title(asLink=True)),
-                                    toStdout = True)
+                                     toStdout=True)
                     # 410 Gone, indicates that the resource has been purposely
                     # removed
                     if e.code == 410 or \
@@ -641,13 +649,12 @@ class ReferencesRobot:
                         socket.error,
                         IOError,
                         httplib.error), e:
-                #except (urllib2.URLError, socket.timeout, ftplib.error, httplib.error, socket.error), e:
                     pywikibot.output(u'Can\'t retrieve page %s : %s'
                                      % (ref.url, e))
                     continue
                 except ValueError:
-                    #Known bug of httplib, google for :
-                    #"httplib raises ValueError reading chunked content"
+                    # Known bug of httplib, google for :
+                    # "httplib raises ValueError reading chunked content"
                     continue
                 finally:
                     if f:
@@ -685,7 +692,7 @@ class ReferencesRobot:
                         enc.append(tmp)
                 else:
                     pywikibot.output(u'No charset found for %s' % ref.link)
-                    #continue            # do not process pages without charset
+##                    continue  # do not process pages without charset
                 if not contentType:
                     pywikibot.output(u'No content-type found for %s' % ref.link)
                     continue
@@ -713,10 +720,7 @@ class ReferencesRobot:
                 elif u'.zh' in ref.link:
                     enc.append("gbk")
 
-                #print(enc)
-                u = UnicodeDammit(linkedpagetext, overrideEncodings = enc)
-                #print(u.triedEncodings)
-
+                u = UnicodeDammit(linkedpagetext, overrideEncodings=enc)
 
                 if not u.unicode:
                     #Some page have utf-8 AND windows-1252 characters,
@@ -726,7 +730,6 @@ class ReferencesRobot:
                     pywikibot.output('%s : Hybrid encoding...' % ref.link)
                     continue
 
-
                 # Retrieves the first non empty string inside <title> tags
                 for m in self.TITLE.finditer(u.unicode):
                     t = m.group()
@@ -734,7 +737,7 @@ class ReferencesRobot:
                         ref.title = t
                         ref.transform()
                         if ref.title:
-                            break;
+                            break
 
                 if not ref.title:
                     repl = ref.refLink()
@@ -759,9 +762,9 @@ class ReferencesRobot:
                 if self.titleBlackList.match(ref.title):
                     repl = ref.refLink()
                     new_text = new_text.replace(match.group(), repl)
-                    pywikibot.output(
-                        u'\03{lightred}WARNING\03{default} %s : Blacklisted title (%s)'
-                        % (ref.link, ref.title))
+                    pywikibot.output(u'\03{lightred}WARNING\03{default} %s : '
+                                     u'Blacklisted title (%s)'
+                                     % (ref.link, ref.title))
                     continue
 
                 # Truncate long titles. 175 is arbitrary
@@ -800,6 +803,7 @@ class ReferencesRobot:
                         % self.stopPage)
                     return
 
+
 def main():
     genFactory = pagegenerators.GeneratorFactory()
 
@@ -821,7 +825,7 @@ def main():
         elif arg == '-always':
             always = True
         elif arg == '-ignorepdf':
-            ignorepdf= True
+            ignorepdf = True
         elif arg.startswith('-limit:'):
             limit = int(arg[7:])
         elif arg.startswith('-xmlstart'):
@@ -851,7 +855,7 @@ def main():
         # syntax error, show help text from the top of this file
         pywikibot.showHelp('reflinks')
         return
-    generator = pagegenerators.PreloadingGenerator(generator, pageNumber = 50)
+    generator = pagegenerators.PreloadingGenerator(generator, pageNumber=50)
     generator = pagegenerators.RedirectFilterPageGenerator(generator)
     bot = ReferencesRobot(generator, always, limit, ignorepdf)
     bot.run()
