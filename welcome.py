@@ -268,7 +268,7 @@ netext = {
         'zh': u'{{subst:welcome}} %s',
     },
     'wiktionary': {
-        'bn': u'{{subst:User:Wikitanvir/welcome|firma=%s}}',
+        'bn': u'{{subst:স্বাগতম|%s}}',
         'fa': u'{{جا:خوشامد|%s}}',
         'it': u'{{subst:Utente:Filnik/Benve|firma=%s}}',
     },
