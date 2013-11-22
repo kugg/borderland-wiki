@@ -51,8 +51,8 @@ import tempfile
 import os
 import gzip
 import StringIO
+import externals
 from BeautifulSoup import UnicodeDammit
-
 import wikipedia as pywikibot
 import pagegenerators
 import noreferences
@@ -62,14 +62,10 @@ docuReplacements = {
     '&params;': pagegenerators.parameterHelp
 }
 
-localized_msg = ('fr', )  # localized message at mediawik
+localized_msg = ('fr', 'it', 'pl')  # localized message at mediawiki
 
 # localized message at specific wikipedia site
 # should be moved to mediawiki pywikibot manual
-L10N_msg = {
-    'it': u'Utente:Marco27Bot/refLinks.py',
-    'pl': u'Wikipedysta:MastiBot/refLinks',
-}
 
 
 stopPage = {
@@ -407,16 +403,13 @@ class ReferencesRobot:
         self.site = pywikibot.getSite()
         # Check
         manual = 'mw:Manual:Pywikibot/refLinks'
-        if self.site.family.name == 'wikipedia':
-            manual = L10N_msg(self.site.code, manual)
-        else:
-            code = None
-            for alt in [self.site.code] + i18n._altlang(self.site.code):
-                if alt in localized_msg:
-                    code = alt
-                    break
-            if code:
-                manual += '/%s' % code
+        code = None
+        for alt in [self.site.code] + i18n._altlang(self.site.code):
+            if alt in localized_msg:
+                code = alt
+                break
+        if code:
+            manual += '/%s' % code
         self.msg = i18n.twtranslate(self.site, 'reflinks-msg', locals())
         self.stopPage = pywikibot.Page(self.site,
                                        pywikibot.translate(self.site, stopPage))
