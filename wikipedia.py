@@ -4655,7 +4655,7 @@ class DataPage(Page):
 
     def editclaim(self, WDproperty, value, data_type=None, raw_value=False,
                   refs=None, comment=None, token=None, sysop=False,
-                  botflag=True):
+                  botflag=True, override=True):
         if isinstance(WDproperty, int):
             propertyID = WDproperty
         elif isinstance(WDproperty, basestring):
@@ -4710,7 +4710,7 @@ class DataPage(Page):
         for claim in claims:
             if claim['m'][1] == propertyID:
                 theclaim = claim
-        if theclaim:
+        if theclaim and override:
             params = {
                 'action': 'wbsetclaimvalue',
                 'claim': theclaim['g'],
