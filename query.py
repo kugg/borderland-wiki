@@ -100,7 +100,8 @@ def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
     postAC = [
         'edit', 'login', 'purge', 'rollback', 'delete', 'undelete', 'protect',
         'parse', 'block', 'unblock', 'move', 'emailuser', 'import',
-        'userrights', 'upload', 'patrol', 'wbcreateclaim', 'wbeditentity', 'wbremoveclaims'
+        'userrights', 'upload', 'patrol', 'wbcreateclaim', 'wbeditentity',
+        'wbremoveclaims'
     ]
     if site.versionnumber() >= 18:
         postAC.append('watch')
@@ -177,7 +178,7 @@ def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
             lastError = error
             if retryCount >= 0:
                 pywikibot.output(u"Retrying in %i minutes..." % retry_idle_time)
-                time.sleep(retry_idle_time*60)
+                time.sleep(retry_idle_time * 60)
                 # Next time wait longer, but not longer than half an hour
                 retry_idle_time *= 2
                 if retry_idle_time > 30:
