@@ -9,9 +9,18 @@ __version__ = '$Id$'
 # Distributed under the terms of the MIT license.
 #
 
-import sys, re, codecs, os, time, shutil
+import sys
+import re
+import codecs
+import os
+import time
+import shutil
+
 import wikipedia as pywikibot
-import config, date
+import config
+import date
+import catlib
+import pagegenerators
 
 from copyright import put, join_family_data, appdir, reports_cat
 
@@ -40,10 +49,10 @@ msg_table = {
 }
 
 template_cat = {
-  '_default': [u'This template is used by copyright.py, a script part of [[:m:Using the python wikipediabot|PyWikipediaBot]].',
-               u''],
-  'it': [u'Questo template è usato dallo script copyright.py del [[:m:Using the python wikipediabot|PyWikipediaBot]].',
-         u'Template usati da bot'],
+    '_default': [u'This template is used by copyright.py, a script part of [[:m:Using the python wikipediabot|PyWikipediaBot]].',
+                 u''],
+    'it': [u'Questo template è usato dallo script copyright.py del [[:m:Using the python wikipediabot|PyWikipediaBot]].',
+           u'Template usati da bot'],
 }
 
 stat_msg = {
@@ -62,41 +71,38 @@ stat_msg = {
 
 separatorC = re.compile('(?m)^== +')
 
-def get_wiki_save_page(stat_page = False):
+
+def get_wiki_save_page(stat_page=False):
 
     site = pywikibot.getSite()
-
     wiki_save_path = {
-        '_default': u'User:%s/Report' % config.usernames[site.family.name][site.lang],
-        'es': u'Usuario:%s/Reporte' % config.usernames[site.family.name][site.lang],
+        '_default': u'User:%s/Report' % config.usernames[
+            site.family.name][site.lang],
+        'es': u'Usuario:%s/Reporte' % config.usernames[
+            site.family.name][site.lang],
         'it': u'Utente:RevertBot/Report'
     }
 
     save_path = pywikibot.translate(site, wiki_save_path)
-
     if stat_page:
         return pywikibot.Page(site,
                               '%s/%s' % (save_path,
-                                         pywikibot.translate(site, stat_msg)[0]))
-
+                                         pywikibot.translate(site,
+                                                             stat_msg)[0]))
     if append_date_to_wiki_save_path:
         t = time.localtime()
         day = ''
         if append_day_to_wiki_save_path:
             day = '_' + str(t[2])
-
-        save_path += day + '_' + date.monthName(site.language(), t[1]) + '_' + str(t[0])
-
+        save_path += '%s_%s_%s' % (day, date.monthName(site.language(), t[1]),
+                                   str(t[0]))
     return pywikibot.Page(site, save_path)
 
-def set_template(name = None):
 
+def set_template(name=None):
     site = pywikibot.getSite()
-
     tcat = pywikibot.translate(site, template_cat)
-
     url = "%s://%s%s" % (site.protocol(), site.hostname(), site.path())
-
     botdate = u"""
 <div style="text-align:right">{{{1}}}</div><noinclude>%s\n[[%s:%s]]</noinclude>
 """ % (tcat[0], site.namespace(14), tcat[1])
@@ -108,25 +114,24 @@ def set_template(name = None):
     if name == 'botdate':
         p = pywikibot.Page(site, 'Template:botdate')
         if not p.exists():
-            p.put(botdate, comment = 'Init.')
-
+            p.put(botdate, comment='Init.')
     if name == 'botbox':
         p = pywikibot.Page(site, 'Template:botbox')
         if not p.exists():
-            p.put(botbox, comment = 'Init.')
+            p.put(botbox, comment='Init.')
+
 
 def stat_sum(engine, text):
     return len(re.findall('(?im)^\*.*?' + engine + '.*?- ', text))
 
-def get_stats():
-    import catlib, pagegenerators
 
+def get_stats():
     msg = pywikibot.translate(pywikibot.getSite(), stat_msg)
     cat = catlib.Category(pywikibot.getSite(),
                           'Category:%s'
                           % pywikibot.translate(pywikibot.getSite(),
                                                 reports_cat))
-    gen = pagegenerators.CategorizedPageGenerator(cat, recurse = True)
+    gen = pagegenerators.CategorizedPageGenerator(cat, recurse=True)
     output = u"""{| {{prettytable|width=|align=|text-align=left}}
 ! %s
 ! %s
@@ -135,8 +140,8 @@ def get_stats():
 ! %s
 ! %s
 |-
-""" % ( msg[1], msg[2], msg[3], 'Google', 'Yahoo', 'Live Search' )
-    gnt = 0 ; ynt = 0 ; mnt = 0 ; ent = 0 ; sn = 0 ; snt = 0
+""" % (msg[1], msg[2], msg[3], 'Google', 'Yahoo', 'Live Search')
+    gnt, ynt, mnt, ent, sn, snt = 0, 0, 0, 0, 0, 0
     for page in gen:
         data = page.get()
         gn = stat_sum('google', data)
@@ -144,7 +149,11 @@ def get_stats():
         mn = stat_sum('(msn|live)', data)
         en = len(re.findall('=== \[\[', data))
         sn = len(data)
-        gnt += gn ; ynt += yn ; mnt += mn ; ent += en ; snt += sn
+        gnt += gn
+        ynt += yn
+        mnt += mn
+        ent += en
+        snt += sn
         if en > 0:
             output += u"|%s||%s||%s KB||%s||%s||%s\n|-\n" \
                       % (page.title(asLink=True), en, sn / 1024, gn, yn, mn)
@@ -154,13 +163,18 @@ def get_stats():
 |-
 |colspan="6" align=right style="background-color:#eeeeee;"|<small>''%s: %s''</small>
 |}
-""" % (msg[4], ent, snt / 1024, gnt, ynt, mnt, msg[5], time.strftime("%d " + "%s" % (date.monthName(pywikibot.getSite().language(), time.localtime()[1])) + " %Y"))
+""" % (msg[4], ent, snt / 1024, gnt, ynt, mnt, msg[5],
+       time.strftime("%d " + "%s"
+                     % (date.monthName(pywikibot.getSite().language(),
+                                       time.localtime()[1])) + " %Y"))
     return output
 
+
 def put_stats():
-    page = get_wiki_save_page(stat_page = True)
-    page.put(get_stats(), comment = pywikibot.translate(pywikibot.getSite(),
-                                                        stat_msg)[0])
+    page = get_wiki_save_page(stat_page=True)
+    page.put(get_stats(), comment=pywikibot.translate(pywikibot.getSite(),
+                                                      stat_msg)[0])
+
 
 def output_files_gen():
     for f in os.listdir(appdir):
@@ -175,6 +189,7 @@ def output_files_gen():
             section = section_name_and_summary[0]
             summary = section_name_and_summary[1]
             yield os.path.join(appdir, f), section, summary
+
 
 def read_output_file(filename):
     if os.path.isfile(filename + '_pending'):
@@ -192,7 +207,8 @@ def read_output_file(filename):
     f.close()
     return data
 
-def run(send_stats = False):
+
+def run(send_stats=False):
     page = get_wiki_save_page()
     try:
         wikitext = page.get()
@@ -212,12 +228,15 @@ def run(send_stats = False):
             continue
         if append_date_to_entries:
             dt = time.strftime('%d-%m-%Y %H:%M', time.localtime())
-            output_data = re.sub("(?m)^(=== \[\[.*?\]\] ===\n)", r"\1{{botdate|%s}}\n" % dt, output_data)
+            output_data = re.sub("(?m)^(=== \[\[.*?\]\] ===\n)",
+                                 r"\1{{botdate|%s}}\n" % dt, output_data)
         m = re.search('(?m)^==\s*%s\s*==' % section, wikitext)
         if m:
             m_end = re.search(separatorC, wikitext[m.end():])
             if m_end:
-                wikitext = wikitext[:m_end.start() + m.end()] + output_data + wikitext[m_end.start() + m.end():]
+                wikitext = wikitext[
+                    :m_end.start() + m.end()] + output_data + wikitext[
+                        m_end.start() + m.end():]
             else:
                 wikitext += '\n' + output_data
         else:
@@ -231,19 +250,23 @@ def run(send_stats = False):
 
         # if a page in 'Image' or 'Category' namespace is checked then fix
         # title section by adding ':' in order to avoid wiki code effects.
-        wikitext = re.sub(u'(?i)=== \[\[%s:' % join_family_data('Image', 6), ur'=== [[:\1:', wikitext)
-        wikitext = re.sub(u'(?i)=== \[\[%s:' % join_family_data('Category', 14), ur'=== [[:\1:', wikitext)
+        wikitext = re.sub(u'(?i)=== \[\[%s:' % join_family_data('Image', 6),
+                          ur'=== [[:\1:', wikitext)
+        wikitext = re.sub(u'(?i)=== \[\[%s:' % join_family_data('Category', 14),
+                          ur'=== [[:\1:', wikitext)
 
         # TODO:
         # List of frequent rejected address to improve upload process.
-        wikitext = re.sub('http://(.*?)((forumcommunity|forumfree).net)',r'<blacklist>\1\2', wikitext)
+        wikitext = re.sub('http://(.*?)((forumcommunity|forumfree).net)',
+                          r'<blacklist>\1\2', wikitext)
 
-        if len(final_summary)>=200:
+        if len(final_summary) >= 200:
             final_summary = final_summary[:200]
-            final_summary = final_summary[:final_summary.rindex("[")-3] + "..."
+            final_summary = final_summary[
+                :final_summary.rindex("[") - 3] + "..."
 
         try:
-            put(page, wikitext, comment = final_summary)
+            put(page, wikitext, comment=final_summary)
             for f in output_files:
                 os.remove(f + '_pending')
                 pywikibot.output("\'%s\' deleted." % f)
@@ -251,12 +274,13 @@ def run(send_stats = False):
             raise
 
         if append_date_to_entries:
-            set_template(name =  'botdate')
+            set_template(name='botdate')
         if '{{botbox' in wikitext:
-            set_template(name =  'botbox')
+            set_template(name='botbox')
 
     if send_stats:
         put_stats()
+
 
 def main():
     #
@@ -265,7 +289,8 @@ def main():
     for arg in pywikibot.handleArgs():
         if arg == "-stats":
             send_stats = True
-    run(send_stats = send_stats)
+    run(send_stats=send_stats)
+
 
 if __name__ == "__main__":
     try:
