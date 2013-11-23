@@ -51,9 +51,8 @@ import tempfile
 import os
 import gzip
 import StringIO
-import externals
-from BeautifulSoup import UnicodeDammit
 import wikipedia as pywikibot
+from BeautifulSoup import UnicodeDammit
 import pagegenerators
 import noreferences
 from pywikibot import i18n
@@ -464,16 +463,16 @@ class ReferencesRobot:
                 page.put(new, self.msg)
             except pywikibot.EditConflict:
                 pywikibot.output(u'Skipping %s because of edit conflict'
-                                  % (page.title(),))
+                                 % page.title())
             except pywikibot.SpamfilterError, e:
                 pywikibot.output(
                     u'Cannot change %s because of blacklist entry %s'
                     % (page.title(), e.url))
             except pywikibot.PageNotSaved, error:
-                pywikibot.error(u'putting page: %s' % (error.args,))
+                pywikibot.error(u'putting page: %s' % error.args)
             except pywikibot.LockedPage:
                 pywikibot.output(u'Skipping %s (locked page)'
-                                  % (page.title(),))
+                                 % page.title())
             except pywikibot.ServerError, e:
                 pywikibot.output(u'Server Error : %s' % e)
 
@@ -532,7 +531,7 @@ class ReferencesRobot:
                 new_text = page.get()
                 if not page.canBeEdited():
                     pywikibot.output(u"You can't edit page %s"
-                                      % page.title(asLink=True))
+                                     % page.title(asLink=True))
                     continue
             except pywikibot.NoPage:
                 pywikibot.output(u'Page %s not found' % page.title(asLink=True))
