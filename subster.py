@@ -589,23 +589,28 @@ class SubsterBot(basic.AutoBasicBot):
             if (not claim) or (claim[0]['m'][3] != data[item]):
                 pywikibot.output(u'%s in %s changed to "%s"' %\
                     (element[u'aliases'][0], dataoutpage.title(asLink=True), data[item]))
-                dataoutpage.editclaim(u'p%s' % propid, data[item],
-                                      refs={"p%s" % propid:
-                                          [{"snaktype":  "value",
-                                            "property":  "p%s" % propid,
-                                            "datavalue": {u'type':  u'string', 
-                                                          u'value': datapage.title()}},
-                                           {"snaktype":  "value",
-                                            "property":  "p585",    # point in time
-                                            #"property":  "p578",    # Sandbox-TimeValue
-                                            "datavalue": {u'type':  u'time',
-                                                          u'value': {u'after':         0, 
-                                                                     u'precision':     11, 
-                                                                     u'time':          (u'+0000000%sZ' % pywikibot.Timestamp.now().isoformat().split('.')[0]), 
-                                                                     u'timezone':      0, 
-                                                                     u'calendarmodel': u'http://www.wikidata.org/entity/Q1985727', 
-                                                                     u'before':        0}}},]},
-                                      comment=summary)
+                ### BUG 57480: references cannot be set correctly anymore
+                ### ('try ... except' has to be considered just a work-a-round)
+                try:
+                    dataoutpage.editclaim(u'p%s' % propid, data[item],
+                                          refs={"p%s" % propid:
+                                              [{"snaktype":  "value",
+                                                "property":  "p%s" % propid,
+                                                "datavalue": {u'type':  u'string', 
+                                                              u'value': datapage.title()}},
+                                               {"snaktype":  "value",
+                                                "property":  "p585",    # point in time
+                                                #"property":  "p578",    # Sandbox-TimeValue
+                                                "datavalue": {u'type':  u'time',
+                                                              u'value': {u'after':         0, 
+                                                                         u'precision':     11, 
+                                                                         u'time':          (u'+0000000%sZ' % pywikibot.Timestamp.now().isoformat().split('.')[0]), 
+                                                                         u'timezone':      0, 
+                                                                         u'calendarmodel': u'http://www.wikidata.org/entity/Q1985727', 
+                                                                         u'before':        0}}},]},
+                                          comment=summary)
+                except RuntimeError:
+                    pywikibot.exception()
         #print data['timestampFIDE'], pywikibot.Timestamp.now().isoformat()
 
     def get_var_regex(self, var, cont='.*?'):
@@ -789,8 +794,11 @@ def main():
     args = pywikibot.handleArgs()
     bot  = SubsterBot()   # for several user's, but what about complete automation (continous running...)
     for arg in args:
-        pywikibot.showHelp()
-        return
+        if '-page' in arg[:5]:
+            bot.pagegen = [pywikibot.Page(bot.site, arg[6:])]
+        else:
+            pywikibot.showHelp()
+            return
     try:
         bot.run()
     except KeyboardInterrupt:
