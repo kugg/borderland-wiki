@@ -71,7 +71,7 @@ class Family(family.WikimediaFamily):
             'af': u'Wiktionary',
             'am': u'Wiktionary',
             'an': u'Wiktionary',
-            'ang': u'Wiktionary',
+            'ang': [u'Wikiwordbōc', u'Wiktionary'],
             'ar': [u'ويكاموس', u'Wiktionary'],
             'ast': [u'Uiccionariu', u'Wiktionary'],
             'ay': u'Wiktionary',
@@ -222,7 +222,7 @@ class Family(family.WikimediaFamily):
             'af': u'Wiktionarybespreking',
             'am': u'Wiktionary ውይይት',
             'an': u'Descusión Wiktionary',
-            'ang': u'Wiktionary talk',
+            'ang': [u'Wikiwordbōcmōtung', u'Wikiwordbocmotung'],
             'ar': u'نقاش ويكاموس',
             'ast': [u'Uiccionariu alderique', u'Uiccionariu discusión'],
             'ay': u'Wiktionary discusión',
@@ -385,6 +385,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[100] = {
+            'ang': u'Ætēaca',
             'bg': u'Словоформи',
             'bn': u'উইকিসরাস',
             'br': u'Stagadenn',
@@ -422,6 +423,7 @@ class Family(family.WikimediaFamily):
             'zh': u'附录',
         }
         self.namespaces[101] = {
+            'ang': u'Ætēacmōtung',
             'bg': u'Словоформи беседа',
             'bn': u'উইকিসরাস আলোচনা',
             'br': u'Kaozeadenn Stagadenn',
