@@ -2642,7 +2642,9 @@ class _PdfFile(_JpegFile):
         #proc = Popen("pdftotext -layout %s %s" % (self.image_path, self.image_path+'.txt'),
         proc = Popen("pdftotext %s %s" % (self.image_path, self.image_path+'.txt'),
                      shell=True, stderr=PIPE)#.stderr.readlines()
+        enable_recovery()   # enable recovery from hard crash
         proc.wait()
+        disable_recovery()  # disable since everything worked out fine
         if proc.returncode:
             raise ImportError("pdftotext not found!")
         data = open(self.image_path+'.txt', 'r').readlines()
