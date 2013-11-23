@@ -33,6 +33,7 @@ This script understands the following command-line arguments:
 # (C) Siebrand Mazeland, 2007
 # (C) xqt, 2009-2013
 # (C) Dr. Trigon, 2011-2012
+# (C) Pywikibot team, 2007-2012
 #
 # DrTrigonBot: http://de.wikipedia.org/wiki/Benutzer:DrTrigonBot
 # Clean User Sandbox Robot (clean_user_sandbox.py)
@@ -49,10 +50,10 @@ from pywikibot import i18n
 
 content = {
     'commons': u'{{Sandbox}}\n<!-- Please edit only below this line. -->',
-    'als':u'{{subst:/Vorlage}}',
+    'als': u'{{subst:/Vorlage}}',
     'ar': u'{{عنوان الملعب}}\n<!-- مرحبا! خذ راحتك في تجربة مهارتك في التنسيق والتحرير أسفل هذا السطر. هذه الصفحة لتجارب التعديل ، سيتم تفريغ هذه الصفحة كل 12 ساعة. -->',
     'az': u'<!--- LÜTFƏN, BU SƏTRƏ TOXUNMAYIN --->\n{{Qaralama dəftəri}}\n<!-- AŞAĞIDAKI XƏTTİN ALTINDAN YAZA BİLƏRSİNİZ --->',
-    'bar':u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
+    'bar': u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
     'cs': u'{{subst:/uhrabat}}',
     'da': u'{{subst:Sandkasse tekst}}',
     'de': u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
@@ -64,9 +65,9 @@ content = {
     'it': u'{{sandbox}}<!-- Scrivi SOTTO questa riga senza cancellarla. Grazie. -->',
     'ja': u'{{subst:サンドボックス}}',
     'ko': u'{{연습장 안내문}}',
-    'ksh':u'{{subst:/Schablon}}',
-    'mzn':u'{{ویکی‌پدیا:چنگ‌مویی صفحه/پیغوم}}\n<!-- سلام!اگه خواننی شه دچی‌ین مهارتون وسه تمرین هاکنین بتوننی اینتا صفحه جا ایستفاده هاکنین، اته لطف هاکنین اینتا پیغوم ره شه بقیه رفقون وسه بیلین. اینتا صفحه هرچند ساعت ربوت جا پاک بونه.-->',
-    'nds':u'{{subst:/Vörlaag}}',
+    'ksh': u'{{subst:/Schablon}}',
+    'mzn': u'{{ویکی‌پدیا:چنگ‌مویی صفحه/پیغوم}}\n<!-- سلام!اگه خواننی شه دچی‌ین مهارتون وسه تمرین هاکنین بتوننی اینتا صفحه جا ایستفاده هاکنین، اته لطف هاکنین اینتا پیغوم ره شه بقیه رفقون وسه بیلین. اینتا صفحه هرچند ساعت ربوت جا پاک بونه.-->',
+    'nds': u'{{subst:/Vörlaag}}',
     'nl': u'{{subst:Wikipedia:Zandbak/schoon zand}}',
     'nn': u'{{sandkasse}}\n<!-- Ver snill og IKKJE FJERN DENNE LINA OG LINA OVER ({{sandkasse}}) Nedanføre kan du derimot ha det artig og prøve deg fram! Lykke til! :-)  -->',
     'no': u'{{Sandkasse}}\n<!-- VENNLIGST EKSPERIMENTER NEDENFOR DENNE SKJULTE TEKSTLINJEN! SANDKASSEMALEN {{Sandkasse}} SKAL IKKE FJERNES! -->}}',
@@ -80,14 +81,14 @@ content = {
     'th': u'{{กระบะทราย}}\n<!-- กรุณาอย่าแก้ไขบรรทัดนี้ ขอบคุณครับ/ค่ะ -- Please leave this line as they are. Thank you! -->',
     'tr': u'{{/Bu satırı değiştirmeden bırakın}}',
     'zh': u'{{subst:User:Sz-iwbot/sandbox}}\r\n',
-    }
+}
 
 sandboxTitle = {
     'commons': u'Project:Sandbox',
-    'als':u'Project:Sandchaschte',
+    'als': u'Project:Sandchaschte',
     'ar': u'Project:ملعب',
     'az': u'Vikipediya:Qaralama dəftəri',
-    'bar':u'Project:Spuiwiesn',
+    'bar': u'Project:Spuiwiesn',
     'cs': u'Project:Pískoviště',
     'da': u'Project:Sandkassen',
     'de': u'Project:Spielwiese',
@@ -100,9 +101,9 @@ sandboxTitle = {
     'it': u'Project:Pagina delle prove',
     'ja': u'Project:サンドボックス',
     'ko': u'Project:연습장',
-    'ksh':u'Project:Shpillplaz',
-    'mzn':u'Project:چنگ‌مویی صفحه',
-    'nds':u'Project:Speelwisch',
+    'ksh': u'Project:Shpillplaz',
+    'mzn': u'Project:چنگ‌مویی صفحه',
+    'nds': u'Project:Speelwisch',
     'nl': u'Project:Zandbak',
     'no': u'Project:Sandkasse',
     'pl': u'Project:Brudnopis',
@@ -115,22 +116,24 @@ sandboxTitle = {
     'th': u'Project:ทดลองเขียน',
     'tr': u'Vikipedi:Deneme tahtası',
     'zh': u'Project:沙盒',
-    }
+}
 
 user_content = {
     'de': u'{{Benutzer:DrTrigonBot/Spielwiese}}',
-    }
+}
 
 user_sandboxTemplate = {
     'de': u'User:DrTrigonBot/Spielwiese',
-    }
+}
 
-class SandboxBot:
+
+class SandboxBot(object):
+
     def __init__(self, hours, no_repeat, delay, user):
         self.hours = hours
         self.no_repeat = no_repeat
-        if delay == None:
-            self.delay = min(15, max(5, int(self.hours *60)))
+        if delay is None:
+            self.delay = min(15, max(5, int(self.hours * 60)))
         else:
             self.delay = max(5, delay)
         self.user = user
@@ -139,13 +142,15 @@ class SandboxBot:
             localSandboxTitle = pywikibot.translate(self.site,
                                                     user_sandboxTemplate,
                                                     fallback=False)
-            localSandbox      = pywikibot.Page(self.site, localSandboxTitle)
+            localSandbox = pywikibot.Page(self.site, localSandboxTitle)
             content.update(user_content)
-            sandboxTitle[self.site.lang] = [item.title() \
-              for item in localSandbox.getReferences(onlyTemplateInclusion=True)]
+            sandboxTitle[self.site.lang] = [item.title() for item in
+                                            localSandbox.getReferences(
+                                                onlyTemplateInclusion=True)]
             if self.site.lang not in user_sandboxTemplate:
-                sandboxTitle[self.site.lang] = []
-                pywikibot.output(u'Not properly set-up to run in user namespace!')
+                sandboxTitle[self.site.code] = []
+                pywikibot.output(
+                    u'Not properly set-up to run in user namespace!')
 
     def run(self):
 
@@ -160,7 +165,7 @@ class SandboxBot:
             t2 = (((int(time2[0:4]) * 12 + int(time2[4:6])) * 30 +
                    int(time2[6:8])) * 24 + int(time2[8:10])) * 60 + \
                    int(time2[10:12])
-            return abs(t2-t1)
+            return abs(t2 - t1)
 
         while True:
             wait = False
@@ -170,10 +175,11 @@ class SandboxBot:
             if type(localSandboxTitle) is list:
                 titles = localSandboxTitle
             else:
-                titles = [localSandboxTitle,]
+                titles = [localSandboxTitle]
             for title in titles:
                 sandboxPage = pywikibot.Page(self.site, title)
-                pywikibot.output(u'Preparing to process sandbox page %s' % sandboxPage.title(asLink=True))
+                pywikibot.output(u'Preparing to process sandbox page %s'
+                                 % sandboxPage.title(asLink=True))
                 try:
                     text = sandboxPage.get()
                     translatedContent = pywikibot.translate(self.site, content,
@@ -183,50 +189,73 @@ class SandboxBot:
                     subst = 'subst:' in translatedContent
                     pos = text.find(translatedContent.strip())
                     if text.strip() == translatedContent.strip():
-                        pywikibot.output(u'The sandbox is still clean, no change necessary.')
-                    elif subst and sandboxPage.userName() == self.site.loggedInAs():
-                        pywikibot.output(u'The sandbox might be clean, no change necessary.')
-                    elif pos <> 0 and not subst:
+                        pywikibot.output(
+                            u'The sandbox is still clean, no change necessary.')
+                    elif subst and \
+                         sandboxPage.userName() == self.site.loggedInAs():
+                        pywikibot.output(
+                            u'The sandbox might be clean, no change necessary.')
+                    elif pos != 0 and not subst:
                         if self.user:
                             endpos = pos + len(translatedContent.strip())
                             if (pos < 0) or (endpos == len(text)):
-                                pywikibot.output(u'The user sandbox is still clean, no change necessary.')
+                                pywikibot.output(u'The user sandbox is still '
+                                                 u'clean, no change necessary.')
                             else:
                                 sandboxPage.put(text[:endpos], translatedMsg)
-                                pywikibot.output(u'Standard content was changed, user sandbox cleaned.')
+                                pywikibot.showDiff(text, text[:endpos])
+                                pywikibot.output(
+                                    u'Standard content was changed, user '
+                                    u'sandbox cleaned.')
                         else:
                             sandboxPage.put(translatedContent, translatedMsg)
-                            pywikibot.output(u'Standard content was changed, sandbox cleaned.')
+                            pywikibot.showDiff(text, translatedContent)
+                            pywikibot.output(u'Standard content was changed, '
+                                             u'sandbox cleaned.')
                     else:
-                        diff = minutesDiff(sandboxPage.editTime(), time.strftime("%Y%m%d%H%M%S", time.gmtime()))
+                        diff = minutesDiff(sandboxPage.editTime(),
+                                           time.strftime("%Y%m%d%H%M%S",
+                                                         time.gmtime()))
                         if pywikibot.verbose:
-                            pywikibot.output(unicode((sandboxPage.editTime(), time.strftime("%Y%m%d%H%M%S", time.gmtime()))))
-                        #Is the last edit more than 5 minutes ago?
+                            pywikibot.output(
+                                unicode((sandboxPage.editTime(),
+                                         time.strftime("%Y%m%d%H%M%S",
+                                                       time.gmtime()))))
+                        # Is the last edit more than 'delay' minutes ago?
                         if diff >= self.delay:
                             sandboxPage.put(translatedContent, translatedMsg)
-                        else: #wait for the rest
-                            pywikibot.output(u'Sleeping for %d minutes.' % (self.delay-diff))
-                            time.sleep((self.delay-diff)*60)
+                            pywikibot.showDiff(text, translatedContent)
+                            pywikibot.output(u'Standard content was changed, '
+                                             u'sandbox cleaned.')
+                        else:  # wait for the rest
+                            pywikibot.output(u'Sleeping for %d minutes.'
+                                             % (self.delay - diff))
+                            time.sleep((self.delay - diff) * 60)
                             wait = True
                 except pywikibot.EditConflict:
-                    pywikibot.output(u'*** Loading again because of edit conflict.\n')
+                    pywikibot.output(
+                        u'*** Loading again because of edit conflict.\n')
                 except pywikibot.NoPage:
-                    pywikibot.output(u'*** The sandbox is not existent, skipping.')
+                    pywikibot.output(
+                        u'*** The sandbox is not existent, skipping.')
                     continue
             if self.no_repeat:
                 pywikibot.output(u'\nDone.')
                 return
             elif not wait:
                 if self.hours < 1.0:
-                    pywikibot.output('\nSleeping %s minutes, now %s' % ((self.hours*60), now) )
+                    pywikibot.output('\nSleeping %s minutes, now %s'
+                                     % ((self.hours * 60), now))
                 else:
-                    pywikibot.output('\nSleeping %s hours, now %s' % (self.hours, now) )
+                    pywikibot.output('\nSleeping %s hours, now %s'
+                                     % (self.hours, now))
                 time.sleep(self.hours * 60 * 60)
+
 
 def main():
     hours = 1
     delay = None
-    user  = False
+    user = False
     no_repeat = True
     for arg in pywikibot.handleArgs():
         if arg.startswith('-hours:'):
@@ -235,7 +264,7 @@ def main():
         elif arg.startswith('-delay:'):
             delay = int(arg[7:])
         elif arg == '-user':
-            user  = True
+            user = True
         else:
             pywikibot.showHelp('clean_sandbox')
             return
