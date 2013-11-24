@@ -4411,15 +4411,21 @@ def main():
         # "HTTPError: 504 Gateway Time-out" leading finally to "MaxTriesExceededError"
         # (why is that...?!?? FIX THIS in the framework core e.g. 'postForm'!)
         tmp = outresult
-        while tmp:
-            i = np.array([m.start() for m in re.finditer(u"\n\n==", tmp)] +
-                         [len(tmp)])
-            pos = i[np.where((i - 500 * 1024) <= 0)[0][-1]]
-            pywikibot.output(u"Size of bunch to write: %s byte(s)"
-                             % len(tmp[:pos]))
-            outpage.put(tmp[:pos], comment="bot writing log for last run")
-            tmp = tmp[pos:]
-        if pywikibot.simulate:
+        ### BUG 57495: "MaxTriesExceededError" in catimages.py during debug info/log output
+        ### ('try ... except' has to be considered just a work-a-round)
+        try:
+            while tmp:
+                i = np.array([m.start() for m in re.finditer(u"\n\n==", tmp)] +
+                             [len(tmp)])
+                pos = i[np.where((i - 500 * 1024) <= 0)[0][-1]]
+                pywikibot.output(u"Size of bunch to write: %s byte(s)"
+                                 % len(tmp[:pos]))
+                outpage.put(tmp[:pos], comment="bot writing log for last run")
+                tmp = tmp[pos:]
+        except pywikibot.MaxTriesExceededError:
+            pywikibot.exception()
+            pywikibot.output(u"Problem writing debug info to wiki, using file instead.")
+        if pywikibot.simulate or tmp:
             #print u"--- " * 20
             #print u"--- " * 20
             #print outresult
