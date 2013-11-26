@@ -4419,6 +4419,13 @@ class DataPage(Page):
         items = self.get()
         return int(self.title()[1:])
 
+    def setSitelink(self, page, summary=""):
+        """Set a Sitelink for a Datapage. 
+        page - the site to link to 
+        summary - edit summary"""
+        sitename = page.site().dbName().replace("_p","")
+        return self.setitem(summary=summary, items={'type': 'sitelink', 'site': sitename, 'title': page.title()})
+
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
                 captcha=None, botflag=True, maxTries=-1, items={}):
@@ -4457,7 +4464,10 @@ class DataPage(Page):
             params['value'] = items['value']
             params['language'] = items['language']
         elif items['type'] == u'sitelink':
-            params['linksite'] = items['site'] + u'wiki'
+            if "wiki" in items['site']:
+                params['linksite'] = items['site']
+            else:
+                params['linksite'] = items['site'] + u'wiki'
             params['linktitle'] = items['title']
         elif items['type'] == u'label':
             raise NotImplementedError(
