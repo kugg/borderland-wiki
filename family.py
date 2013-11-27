@@ -497,7 +497,7 @@ class Family(object):
                 'zh-yue': [u'Special', u'特別', u'特殊'],
             },
             0: {
-                '_default': None,
+                '_default': '',
             },
             1: {
                 '_default': u'Talk',
