@@ -163,7 +163,7 @@ Configuration parameters:
   url = %(url)s
   name = %(name)s
 
-Please do not commit this to the SVN repository!
+Please do not commit this to the Git repository!
 \"\"\"
 
 import family
