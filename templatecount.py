@@ -86,7 +86,7 @@ class TemplateCountRobot:
         gen = TemplateCountRobot.template_dict_generator(templates, namespaces)
         templateDict = {}
         for template, transcludingArray in gen:
-            templateDict[template] = transcludingArray;
+            templateDict[template] = transcludingArray
         return templateDict
 
     @staticmethod
@@ -125,7 +125,7 @@ def main():
         else:
             argsList.append(arg)
 
-    if operation == None:
+    if not operation:
         pywikibot.showHelp('templatecount')
     else:
         robot = TemplateCountRobot()
