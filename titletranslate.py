@@ -13,12 +13,15 @@ import re
 import wikipedia as pywikibot
 import date
 
+
 def _join_to_(result, join):
     for x in join:
         if x not in result:
             result.append(x)
 
-def translate(page, hints=None, auto=True, removebrackets=False, site=None, family=None):
+
+def translate(page, hints=None, auto=True, removebrackets=False, site=None,
+              family=None):
     """
     Goes through all entries in 'hints'. Returns a list of pages.
 
@@ -50,7 +53,7 @@ def translate(page, hints=None, auto=True, removebrackets=False, site=None, fami
                 # be a page in language xy with the same title as the page
                 # we're currently working on ...
                 if page is None:
-                   continue
+                    continue
                 ns = page.namespace()
                 if ns:
                     newname = u'%s:%s' % (family.namespace('_default', ns),
@@ -60,35 +63,40 @@ def translate(page, hints=None, auto=True, removebrackets=False, site=None, fami
                     newname = page.title()
                 # ... unless we do want brackets
                 if removebrackets:
-                    newname = re.sub(re.compile(ur"\W*?\(.*?\)\W*?", re.UNICODE), u" ", newname)
+                    newname = re.sub(re.compile(ur"\W*?\(.*?\)\W*?",
+                                                re.UNICODE), u" ", newname)
             codesplit = codes.split(',')
             codes = []
             for code in codesplit:
                 try:
                     number = int(code)
-                    _join_to_(codes, family.languages_by_size[:number] )
+                    _join_to_(codes, family.languages_by_size[:number])
                 except ValueError:
                     if code == 'all':
-                        _join_to_(codes, family.languages_by_size )
+                        _join_to_(codes, family.languages_by_size)
                     elif code in family.language_groups:
-                        _join_to_(codes, family.language_groups[code] )
+                        _join_to_(codes, family.language_groups[code])
                     elif code:
-                        _join_to_(codes, [ code ] )
+                        _join_to_(codes, [code])
             for newcode in codes:
                 x = None
                 if newcode in family.langs.keys():
                     if page is None or \
                        (newcode != sitelang and
-                        pywikibot.getSite().family.name
-                        not in family.interwiki_forwarded_from):
-                        x = pywikibot.Page(pywikibot.getSite(fam=family, code=newcode), newname)
+                            pywikibot.getSite().family.name
+                            not in family.interwiki_forwarded_from):
+                        x = pywikibot.Page(pywikibot.getSite(fam=family,
+                                                             code=newcode),
+                                           newname)
                 elif newcode in family.interwiki_forwarded_from:
-                    x = pywikibot.Page(pywikibot.getSite(fam=newcode, code=newcode), newname)
+                    x = pywikibot.Page(pywikibot.getSite(fam=newcode,
+                                                         code=newcode), newname)
                 else:
                     if pywikibot.verbose:
-                        pywikibot.output(u"Ignoring the unknown language code %s" % newcode)
+                        pywikibot.output(
+                            u"Ignoring the unknown language code %s" % newcode)
                 if x:
-                    _join_to_(result, [ x ] )
+                    _join_to_(result, [x])
 
     # Autotranslate dates into all other languages, the rest will come from
     # existing interwiki links.
@@ -111,23 +119,25 @@ def translate(page, hints=None, auto=True, removebrackets=False, site=None, fami
                            entryLang in date.maxyearBC and \
                            value > date.maxyearBC[entryLang]:
                             pass
-                        elif dictName == 'yearsAD' and \
-                             entryLang in date.maxyearAD and \
-                             value > date.maxyearAD[entryLang]:
+                        elif (dictName == 'yearsAD' and
+                              entryLang in date.maxyearAD and
+                              value > date.maxyearAD[entryLang]):
                             pass
             else:
                             newname = entry(value)
                             x = pywikibot.Page(
                                 pywikibot.getSite(code=entryLang,
                                                   fam=family), newname)
-                            _join_to_(result, [ x ] )
+                            _join_to_(result, [x])
     return result
 
 bcDateErrors = [u'[[ko:%d년]]']
 
-def appendFormatedDates( result, dictName, value ):
+
+def appendFormatedDates(result, dictName, value):
     for code, func in date.formats[dictName].iteritems():
-        result.append( u'[[%s:%s]]' % (code,func(value)) )
+        result.append(u'[[%s:%s]]' % (code, func(value)))
+
 
 def getPoisonedLinks(pl):
     """Returns a list of known corrupted links that should be removed if seen
@@ -137,11 +147,11 @@ def getPoisonedLinks(pl):
     pywikibot.output(u'getting poisoned links for %s' % pl.title())
     dictName, value = date.getAutoFormat(pl.site.language(), pl.title())
     if dictName is not None:
-        pywikibot.output( u'date found in %s' % dictName )
+        pywikibot.output(u'date found in %s' % dictName)
         # errors in year BC
         if dictName in date.bcFormats:
             for fmt in bcDateErrors:
-                result.append( fmt % value )
+                result.append(fmt % value)
         # i guess this is like friday the 13th for the years
         if value == 398 and dictName == 'yearsBC':
             appendFormatedDates(result, dictName, 399)
