@@ -1,9 +1,20 @@
+# -*- coding: utf-8  -*-
+#
+# (C) Pywikipedia bot team, 2006-2013
+#
+# Distributed under the terms of the MIT license.
+#
 __version__ = '$Id$'
-import os, sys
+#
+
+import os
+import sys
+
 
 def create_user_config_file(base_dir):
     import generate_user_files
     generate_user_files.create_user_config(base_dir)
+
 
 def get_base_dir():
     """Return the directory in which user-specific information is stored.
@@ -25,7 +36,6 @@ def get_base_dir():
     for arg in sys.argv[1:]:
         if arg.startswith("-dir:"):
             base_dir = arg[5:]
-            # sys.argv.remove(arg) // keep, so as to yield identical results, since this routine is called multiple times.
             break
     else:
         if "PYWIKIBOT_DIR" in os.environ:
@@ -36,7 +46,7 @@ def get_base_dir():
             else:
                 try:
                     base_dir = os.path.split(
-                                sys.modules['wikipediatools'].__file__)[0]
+                        sys.modules['wikipediatools'].__file__)[0]
                 except KeyError:
                     print sys.modules
                     base_dir = '.'
