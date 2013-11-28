@@ -48,17 +48,21 @@ Please check every article you change.
 """
 #
 # (C) 2003 Thomas R. Koll, <tomk32@tomk32.de>
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Pywikibot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 
-import re, sys, time
+import re
+import sys
+import time
+
 import wikipedia as pywikibot
 from pywikibot import i18n
-import config, pagegenerators
+import config
+import pagegenerators
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -82,22 +86,23 @@ class TableXmlDumpPageGenerator:
             if tableTagR.search(entry.text):
                 yield pywikibot.Page(pywikibot.getSite(), entry.title)
 
+
 class Table2WikiRobot:
-    def __init__(self, generator, quietMode = False):
+    def __init__(self, generator, quietMode=False):
         self.generator = generator
         self.quietMode = quietMode
 
     def convertTable(self, table):
-        '''
-        Converts an HTML table to wiki syntax. If the table already is a wiki
-        table or contains a nested wiki table, tries to beautify it.
+        """ Converts an HTML table to wiki syntax. If the table already is a
+        wiki table or contains a nested wiki table, tries to beautify it.
         Returns the converted table, the number of warnings that occured and
         a list containing these warnings.
 
-        Hint: if you give an entire page text as a parameter instead of a table only,
-        this function will convert all HTML tables and will also try to beautify all
-        wiki tables already contained in the text.
-        '''
+        Hint: if you give an entire page text as a parameter instead of a table
+        only, this function will convert all HTML tables and will also try to
+        beautify all wiki tables already contained in the text.
+
+        """
         warnings = 0
         # this array will contain strings that will be shown in case of possible
         # errors, before the user is asked if he wants to accept the changes.
@@ -112,7 +117,6 @@ class Table2WikiRobot:
 
         ##################
         # every open-tag gets a new line.
-
 
         ##################
         # Note that we added the ## characters in markActiveTables().
@@ -140,7 +144,7 @@ class Table2WikiRobot:
             r"\r\n|+\g<attr> | \g<caption>", newTable)
         # caption without attributes
         newTable = re.sub("(?i)<caption>(?P<caption>[\w\W]*?)<\/caption>",
-                         r"\r\n|+ \g<caption>", newTable)
+                          r"\r\n|+ \g<caption>", newTable)
 
         ##################
         # <th> often people don't write them within <tr>, be warned!
@@ -151,13 +155,13 @@ class Table2WikiRobot:
 
         # <th> without attributes
         newTable = re.sub("(?i)[\r\n]+<th>(?P<header>[\w\W]*?)<\/th>",
-                         r"\r\n! \g<header>\r\n", newTable)
+                          r"\r\n! \g<header>\r\n", newTable)
 
         # fail save. sometimes people forget </th>
         # <th> without attributes, without closing </th>
         newTable, n = re.subn("(?i)[\r\n]+<th>(?P<header>[\w\W]*?)[\r\n]+",
-                             r"\r\n! \g<header>\r\n", newTable)
-        if n>0:
+                              r"\r\n! \g<header>\r\n", newTable)
+        if n > 0:
             warning_messages.append(
                 u'WARNING: found <th> without </th>. (%d occurences)\n' % n)
             warnings += n
@@ -166,11 +170,10 @@ class Table2WikiRobot:
         newTable, n = re.subn(
             "(?i)[\r\n]+<th(?P<attr> [^>]*?)>(?P<header>[\w\W]*?)[\r\n]+",
             r"\n!\g<attr> | \g<header>\r\n", newTable)
-        if n>0:
+        if n > 0:
             warning_messages.append(
                 u'WARNING: found <th ...> without </th>. (%d occurences\n)' % n)
             warnings += n
-
 
         ##################
         # <tr> with attributes
@@ -197,7 +200,7 @@ class Table2WikiRobot:
         # TODO: some more docu please
         newTable, n = re.subn("(?i)[\r\n]+<td>(?P<cell>[^\r\n]*?)<td>",
                               r"\r\n| \g<cell>\r\n", newTable)
-        if n>0:
+        if n > 0:
             warning_messages.append(
                 u'<td> used where </td> was expected. (%d occurences)\n' % n)
             warnings += n
@@ -207,33 +210,33 @@ class Table2WikiRobot:
         #                             "\r\n| \\2\r\n", newTable)
         #        newTable, n = re.subn("[\r\n]+<(td|TD)([^>]*?)>([^<]*?)<(td|TD)><\/(tr|TR)>",
         #                             "\r\n|\\2| \\3\r\n", newTable)
-        # if n>0:
+        # if n > 0:
         #     warning_messages.append(u'WARNING: found <td><td></tr>, but no </td>. (%d occurences)\n' % n)
         #     warnings += n
 
         # what is this for?
         newTable, n = re.subn("[\r\n]+<(td|TD)([^>]+?)>([^\r\n]*?)<\/(td|TD)>",
-                             r"\r\n|\2 | \3\r\n", newTable)
-        if n>0:
+                              r"\r\n|\2 | \3\r\n", newTable)
+        if n > 0:
             warning_messages.append(
-                u'WARNING: (sorry, bot code unreadable (1). I don\'t know why this warning is given.) (%d occurences)\n' % n)
+                u"WARNING: (sorry, bot code unreadable (1). I don't know why "
+                u"this warning is given.) (%d occurences)\n" % n)
 
         # fail save. sometimes people forget </td>
         # <td> without arguments, with missing </td>
         newTable, n = re.subn("(?i)<td>(?P<cell>[^<]*?)[\r\n]+",
-                             r"\r\n| \g<cell>\r\n", newTable)
-        if n>0:
-            warning_messages.append(
-                u'NOTE: Found <td> without </td>. This shouldn\'t cause problems.\n')
+                              r"\r\n| \g<cell>\r\n", newTable)
+        if n > 0:
+            warning_messages.append(u"NOTE: Found <td> without </td>. This "
+                                    u"shouldn't cause problems.\n")
 
         # <td> with attributes, with missing </td>
         newTable, n = re.subn(
             "(?i)[\r\n]*<td(?P<attr> [^>]*?)>(?P<cell>[\w\W]*?)[\r\n]+",
             r"\r\n|\g<attr> | \g<cell>\r\n", newTable)
         if n > 0:
-            warning_messages.append(
-                u'NOTE: Found <td> without </td>. This shouldn\'t cause problems.\n')
-
+            warning_messages.append(u"NOTE: Found <td> without </td>. This "
+                                    u"shouldn't cause problems.\n")
 
         ##################
         # Garbage collecting ;-)
@@ -252,12 +255,11 @@ class Table2WikiRobot:
         #                             "\\1|-----\r\n\\2", newTable)
         #        warnings = warnings + n
 
-
         ##################
         # most <th> come with '''title'''. Senseless in my eyes cuz
         # <th> should be bold anyways.
         newTable = re.sub("[\r\n]+\!([^'\n\r]*)'''([^'\r\n]*)'''",
-                         r"\r\n!\1\2", newTable)
+                          r"\r\n!\1\2", newTable)
 
         ##################
         # kills indention within tables. Be warned, it might seldom bring
@@ -275,11 +277,10 @@ class Table2WikiRobot:
         # newTable = re.sub("[\r\n]+\|[\t ]+?[\r\n]+", "\r\n| ", newTable)
         # kills trailing spaces and tabs
         newTable = re.sub("\r\n(.*)[\t\ ]+[\r\n]+",
-                         r"\r\n\1\r\n", newTable)
+                          r"\r\n\1\r\n", newTable)
         # kill extra new-lines
         newTable = re.sub("[\r\n]{4,}(\!|\|)",
-                         r"\r\n\1", newTable);
-
+                          r"\r\n\1", newTable)
 
         ##################
         # shortening if <table> had no arguments/parameters
@@ -300,7 +301,8 @@ class Table2WikiRobot:
             # pairs where the value already has correct quotation marks, and
             # finally the key of the attribute we want to fix here.
             # group 2 is the value of the attribute we want to fix here.
-            # We recognize it by searching for a string of non-whitespace characters
+            # We recognize it by searching for a string of non-whitespace
+            # characters
             # - [^\s]+? - which is not embraced by quotation marks - [^"]
             newTable, num = re.subn(
                 r'([\r\n]+(?:\|-|\{\|)[^\r\n\|]+) *= *([^"\s>]+)',
@@ -308,9 +310,9 @@ class Table2WikiRobot:
 
         num = 1
         while num != 0:
-            # The same for header and cell tags ( ! or | ), but for these tags the
-            # attribute part is finished by a | character. We don't want to change
-            # cell contents which accidentially contain an equal sign.
+            # The same for header and cell tags ( ! or | ), but for these tags
+            # the attribute part is finished by a | character. We don't want to
+            # change cell contents which accidentially contain an equal sign.
             # Group 1 and 2 are anologously to the previous regular expression,
             # group 3 are the remaining attribute key - value pairs.
             newTable, num = re.subn(
@@ -328,16 +330,17 @@ class Table2WikiRobot:
         ####
         # add a new line if first is * or #
         newTable = re.sub("[\r\n]+\| ([*#]{1})",
-                         r"\r\n|\r\n\1", newTable)
+                          r"\r\n|\r\n\1", newTable)
 
         ##################
         # strip <center> from <th>
         newTable = re.sub("([\r\n]+\![^\r\n]+?)<center>([\w\W]+?)<\/center>",
-                         r"\1 \2", newTable)
+                          r"\1 \2", newTable)
         # strip align="center" from <th> because the .css does it
-        # if there are no other attributes than align, we don't need that | either
+        # if there are no other attributes than align, we don't need
+        # that | either
         newTable = re.sub("([\r\n]+\! +)align\=\"center\" +\|",
-                         r"\1", newTable)
+                          r"\1", newTable)
         # if there are other attributes, simply strip the align="center"
         newTable = re.sub(
             "([\r\n]+\![^\r\n\|]+?)align\=\"center\"([^\n\r\|]+?\|)",
@@ -409,7 +412,7 @@ class Table2WikiRobot:
                     print "More opening than closing table tags. Skipping."
                     return None, 0, 0
                 # if another table tag is opened before one is closed
-                elif nextStarting and  nextStarting.start() < nextEnding.start():
+                elif nextStarting and nextStarting.start() < nextEnding.start():
                     offset += nextStarting.end()
                     text = text[nextStarting.end():]
                     depth += 1
@@ -439,7 +442,8 @@ class Table2WikiRobot:
                 break
             pywikibot.output(">> Table %i <<" % (convertedTables + 1))
             # convert the current table
-            newTable, warningsThisTable, warnMsgsThisTable = self.convertTable(table)
+            newTable, warningsThisTable, warnMsgsThisTable = self.convertTable(
+                table)
             # show the changes for this table
             if not self.quietMode:
                 pywikibot.showDiff(table.replace('##table##', 'table'),
@@ -452,7 +456,6 @@ class Table2WikiRobot:
             convertedTables += 1
 
         pywikibot.output(warningMessages)
-
         return text, convertedTables, warningSum
 
     def treat(self, page):
@@ -489,7 +492,8 @@ class Table2WikiRobot:
                 if config.table2wikiSkipWarnings:
                     doUpload = True
                 else:
-                    print "There were %i replacement(s) that might lead to bad output." % warningSum
+                    print("There were %i replacement(s) that might lead to bad "
+                          "output.") % warningSum
                     doUpload = (pywikibot.input(
                         u'Do you want to change the page anyway? [y|N]') == "y")
             if doUpload:
@@ -507,8 +511,9 @@ class Table2WikiRobot:
         for page in self.generator:
             self.treat(page)
 
+
 def main():
-    quietMode = False # use -quiet to get less output
+    quietMode = False  # use -quiet to get less output
     # if the -file argument is used, page titles are stored in this array.
     # otherwise it will only contain one page.
     articles = []
