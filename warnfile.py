@@ -13,51 +13,60 @@ Example:
 """
 #
 # (C) Rob W.W. Hooft, 2003
-# (C) Pywikipedia bot team, 2003-2012
+# (C) Pywikibot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
-import sys, os, re
+import sys
+import os
+import re
+
 import wikipedia as pywikibot
 import interwiki
 
 
 class WarnfileReader:
+
     def __init__(self, filename):
         self.filename = filename
 
     def getHints(self):
         print "Parsing warnfile..."
-        R=re.compile(
+        R = re.compile(
             r'WARNING: (?P<family>.+?): \[\[(?P<locallang>.+?):(?P<localtitle>.+?)\]\](?P<warningtype>.+?)\[\[(?P<targetlang>.+?):(?P<targettitle>.+?)\]\]')
         import codecs
         f = codecs.open(self.filename, 'r', 'utf-8')
-        hints={}
-        removeHints={}
-        mysite=pywikibot.getSite()
+        hints = {}
+        removeHints = {}
+        mysite = pywikibot.getSite()
         for line in f.readlines():
-            m=R.search(line)
+            m = R.search(line)
             if m:
-                #print "DBG>",line
+##                print "DBG>",line
                 if m.group('locallang') == mysite.lang and \
                    m.group('family') == mysite.family.name:
-                    #pywikibot.output(u' '.join([m.group('locallang'), m.group('localtitle'), m.group('warningtype'), m.group('targetsite'), m.group('targettitle')]))
-                    #print m.group(3)
+##                    pywikibot.output(u' '.join([m.group('locallang'),
+##                                                m.group('localtitle'),
+##                                                m.group('warningtype'),
+##                                                m.group('targetsite'),
+##                                                m.group('targettitle')]))
+##                    print m.group(3)
                     page = pywikibot.Page(mysite, m.group('localtitle'))
-                    removing = (m.group('warningtype') == ' links to incorrect ')
+                    removing = (m.group('warningtype') ==
+                                ' links to incorrect ')
                     try:
                         targetSite = mysite.getSite(code=m.group('targetlang'))
                         targetPage = pywikibot.Page(targetSite,
                                                     m.group('targettitle'))
                         if removing:
                             if page not in removeHints:
-                                removeHints[page]=[]
+                                removeHints[page] = []
                             removeHints[page].append(targetPage)
                         else:
                             if page not in hints:
-                                hints[page]=[]
+                                hints[page] = []
                             hints[page].append(targetPage)
                     except pywikibot.Error:
                         print "DBG> Failed to add", line
@@ -71,11 +80,11 @@ class WarnfileRobot:
 
     def run(self):
         hints, removeHints = self.warnfileReader.getHints()
-        k=hints.keys()
+        k = hints.keys()
         k.sort()
         print "Fixing... %i pages" % len(k)
         for page in k:
-            old={}
+            old = {}
             try:
                 for page2 in page.interwiki():
                     old[page2.site()] = page2
@@ -87,7 +96,7 @@ class WarnfileRobot:
                 pywikibot.output(u"Page %s not found; skipping"
                                  % page.title(asLink=True))
                 continue
-            new={}
+            new = {}
             new.update(old)
             if page in hints:
                 for page2 in hints[page]:
@@ -100,9 +109,9 @@ class WarnfileRobot:
                         del new[site]
                     except KeyError:
                         pass
-            mods, mcomment, adding, removing, modifying = interwiki.compareLanguages(old,
-                                                                           new,
-                                                                           insite=page.site())
+            (mods, mcomment, adding, removing,
+             modifying) = interwiki.compareLanguages(old, new,
+                                                     insite=page.site())
             if mods:
                 pywikibot.output(page.title(asLink=True) + mods)
                 oldtext = page.get()
@@ -110,7 +119,8 @@ class WarnfileRobot:
 
                 pywikibot.showDiff(oldtext, newtext)
                 try:
-                    #TODO: special warnfile comment needed like in previous releases?
+                    # TODO: special warnfile comment needed like in previous
+                    # releases?
                     status, reason, data = page.put(newtext,
                                                     comment=mcomment)
                 except pywikibot.LockedPage:
@@ -135,8 +145,8 @@ def main():
 
     if not filename:
         mysite = pywikibot.getSite()
-        filename = pywikibot.config.datafilepath('logs',
-                       'warning-%s-%s.log' % (mysite.family.name, mysite.lang))
+        filename = pywikibot.config.datafilepath(
+            'logs', 'warning-%s-%s.log' % (mysite.family.name, mysite.lang))
     reader = WarnfileReader(filename)
     bot = WarnfileRobot(reader)
     bot.run()
@@ -146,4 +156,3 @@ if __name__ == "__main__":
         main()
     finally:
         pywikibot.stopme()
-
