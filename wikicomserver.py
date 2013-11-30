@@ -14,7 +14,8 @@ Calling this class from Visual Basic:
     res = page.put("new text 1", "testing bot")
 """
 #
-# (C) Yuri Astrakhan, 2006
+# (c) Yuri Astrakhan, 2006
+# (c) pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -30,7 +31,8 @@ __version__ = '$Id$'
 pywikipediaDir = "c:\\Projects\\Personal\\wiki\\pywikipedia"
 
 
-import sys, os
+import sys
+import os
 from win32com.server.util import wrap, unwrap
 import win32com.client
 
@@ -48,6 +50,7 @@ currDir = os.getcwdu()
 os.chdir(pywikipediaDir)
 import wikipedia
 
+
 class Wiki:
     _reg_clsid_ = "{AEA5AC14-ED3D-42E9-AACF-871ED9D95346}"
     _reg_desc_ = "Mediawiki Wiki"
@@ -61,9 +64,9 @@ class Wiki:
         self.objectVer = __version__
         self.objectName = "Wiki"
         self.argv = sys.argv
-        self.path = os.path.realpath( self.argv[0] )
+        self.path = os.path.realpath(self.argv[0])
 
-    def getSite(self, code = None, fam = None, user = None):
+    def getSite(self, code=None, fam=None, user=None):
         os.chdir(pywikipediaDir)
         site = wikipedia.getSite(code, fam, user)
         site.objectVer = wikipedia.__version__
@@ -113,6 +116,7 @@ class Wiki:
         os.chdir(currDir)
         print "ChDir to original ", currDir
 
+
 class WikiPage(wikipedia.Page):
     _reg_clsid_ = "{318CC152-D2A9-4C11-BA01-78B9B91DBDDE}"
     _reg_desc_ = "Mediawiki Wiki Page"
@@ -137,7 +141,7 @@ class WikiPage(wikipedia.Page):
         self.objectVer = __version__
         self.objectName = "WikiPage"
 
-if __name__=='__main__':
+if __name__ == '__main__':
     import win32com.server.register
     try:
         win32com.server.register.UseCommandLine(Wiki)
