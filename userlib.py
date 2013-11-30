@@ -20,26 +20,33 @@ class AutoblockUser(pywikibot.Error):
     The class AutoblockUserError is an exception that is raised whenever
     an action is requested on a virtual autoblock user that's not available
     for him (i.e. roughly everything except unblock).
+
     """
     pass
 
 
-class UserActionRefuse(pywikibot.Error): pass
+class UserActionRefuse(pywikibot.Error):
+    pass
 
 
-class BlockError(UserActionRefuse): pass
+class BlockError(UserActionRefuse):
+    pass
 
 
-class AlreadyBlocked(BlockError): pass
+class AlreadyBlocked(BlockError):
+    pass
 
 
-class UnblockError(UserActionRefuse): pass
+class UnblockError(UserActionRefuse):
+    pass
 
 
-class BlockIDError(UnblockError): pass
+class BlockIDError(UnblockError):
+    pass
 
 
-class AlreadyUnblocked(UnblockError): pass
+class AlreadyUnblocked(UnblockError):
+    pass
 
 
 class InvalidUser(pywikibot.InvalidTitle):
@@ -313,7 +320,7 @@ class User(object):
             'action': 'query',
             'list': 'usercontribs',
             'ucuser': self.name(),
-            'ucprop': ['ids', 'title', 'timestamp', 'comment'],  # 'size','flags'],
+            'ucprop': ['ids', 'title', 'timestamp', 'comment'],  # 'size', 'flags'],
             'uclimit': limit,
             'ucdir': 'older',
         }
@@ -345,7 +352,6 @@ class User(object):
                 params.update(result['query-continue']['usercontribs'])
             else:
                 break
-        return
 
     def uploadedImages(self, number=10):
         """ Yield tuples describing files uploaded by this user.
@@ -365,9 +371,8 @@ class User(object):
 
         for item in self.site().logpages(number, mode='upload',
                                          user=self.username, dump=True):
-            yield pywikibot.ImagePage(self.site(), item['title']), \
-                  item['timestamp'], item['comment'], item['pageid'] > 0
-        return
+            yield (pywikibot.ImagePage(self.site(), item['title']),
+                   item['timestamp'], item['comment'], item['pageid'] > 0)
 
     def _uploadedImagesOld(self, number=10):
         """Yield ImagePages from Special:Log&type=upload"""
@@ -389,7 +394,7 @@ class User(object):
             if m.group('new'):
                 deleted = True
                 if redlink_tail_len:
-                    image = image[0:0-redlink_tail_len]
+                    image = image[0:0 - redlink_tail_len]
 
             date = m.group('date')
             comment = m.group('comment') or ''
@@ -581,7 +586,7 @@ class User(object):
             if self.site().mediawiki_message(
                     'ipb_cant_unblock').replace('$1', blockID) in data:
                 raise AlreadyUnblockedError
-            raise UnblockError, data
+            raise UnblockError(data)
         return True
 
     def getBlockIDOld(self):
