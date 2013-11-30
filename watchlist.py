@@ -16,22 +16,27 @@ Command line options:
              user-config.py
 """
 #
-# (C) Daniel Herding, 2005
-# (C) Pywikipedia bot team, 2005-2012
+# (C) Daniel Herding, 200532
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 
-import wikipedia as pywikibot
-import re, sys, pickle
+import re
+import sys
+import pickle
 import os.path
 import time
+import dircache
+
+import wikipedia as pywikibot
+import config
 
 cache = {}
 
-def get(site = None):
+
+def get(site=None):
     if site is None:
         site = pywikibot.getSite()
     if site in cache:
@@ -39,7 +44,8 @@ def get(site = None):
         watchlist = cache[site]
     else:
         fn = pywikibot.config.datafilepath('watchlists',
-                  'watchlist-%s-%s.dat' % (site.family.name, site.lang))
+                                           'watchlist-%s-%s.dat'
+                                           % (site.family.name, site.lang))
         try:
             # find out how old our saved dump is (in seconds)
             file_age = time.time() - os.path.getmtime(fn)
@@ -58,9 +64,11 @@ def get(site = None):
         cache[site] = watchlist
     return watchlist
 
+
 def isWatched(pageName, site=None):
     watchlist = get(site)
     return pageName in watchlist
+
 
 def refresh(site, sysop=False):
     if not site.has_api() or site.versionnumber() < 10:
@@ -105,6 +113,7 @@ def refresh(site, sysop=False):
     pickle.dump(watchlist, f)
     f.close()
 
+
 def _refreshOld(site, sysop=False):
     # get watchlist special page's URL
     path = site.watchlist_address()
@@ -135,20 +144,19 @@ def _refreshOld(site, sysop=False):
     pickle.dump(watchlist, f)
     f.close()
 
-def refresh_all(new = False, sysop=False):
+
+def refresh_all(new=False, sysop=False):
     if new:
-        import config
         pywikibot.output(
             'Downloading All watchlists for your accounts in user-config.py')
         for family in config.usernames:
-            for lang in config.usernames[ family ]:
+            for lang in config.usernames[family]:
                 refresh(pywikibot.getSite(code=lang, fam=family), sysop=sysop)
         for family in config.sysopnames:
             for lang in config.sysopnames[family]:
                 refresh(pywikibot.getSite(code=lang, fam=family), sysop=sysop)
 
     else:
-        import dircache, time
         filenames = dircache.listdir(
             pywikibot.config.datafilepath('watchlists'))
         watchlist_filenameR = re.compile('watchlist-([a-z\-:]+).dat')
@@ -158,7 +166,8 @@ def refresh_all(new = False, sysop=False):
                 arr = match.group(1).split('-')
                 family = arr[0]
                 lang = '-'.join(arr[1:])
-                refresh(pywikibot.getSite(code = lang, fam = family))
+                refresh(pywikibot.getSite(code=lang, fam=family))
+
 
 def main():
     all = False
@@ -181,11 +190,11 @@ def main():
         watchlist = get(pywikibot.getSite())
         pywikibot.output(u'%i pages in the watchlist.' % len(watchlist))
         for pageName in watchlist:
-            pywikibot.output( pageName, toStdout = True )
+            pywikibot.output(pageName, toStdout=True)
+
 
 if __name__ == "__main__":
     try:
         main()
     finally:
         pywikibot.stopme()
-
