@@ -21,8 +21,13 @@ python unlink.py Foo bar -namespace:0 -namespace:6
 
     Removes links to the page [[Foo bar]] in articles and image descriptions.
 """
-
-__version__='$Id$'
+#
+# (C) Pywikibot team, 2007-2013
+#
+# Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
+#
 
 import re
 import wikipedia as pywikibot
@@ -37,22 +42,32 @@ class UnlinkBot:
         self.pageToUnlink = pageToUnlink
         gen = pagegenerators.ReferringPageGenerator(pageToUnlink)
         if namespaces != []:
-            gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
-        self.generator =  pagegenerators.PreloadingGenerator(gen)
+            gen = pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
+        self.generator = pagegenerators.PreloadingGenerator(gen)
         linktrail = pywikibot.getSite().linktrail()
-        # The regular expression which finds links. Results consist of four groups:
-        # group title is the target page title, that is, everything before | or ].
-        # group section is the page section. It'll include the # to make life easier for us.
-        # group label is the alternative link title, that's everything between | and ].
-        # group linktrail is the link trail, that's letters after ]] which are part of the word.
+        # The regular expression which finds links. Results consist of four
+        # groups:
+        #
+        # group title is the target page title, that is, everything
+        # before | or ].
+        #
+        # group section is the page section.
+        # It'll include the # to make life easier for us.
+        #
+        # group label is the alternative link title, that's everything
+        # between | and ].
+        #
+        # group linktrail is the link trail, that's letters after ]] which are
+        # part of the word.
         # note that the definition of 'letter' varies from language to language.
-        self.linkR = re.compile(r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>' + linktrail + ')')
+        self.linkR = re.compile(r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>%s)'
+                                % linktrail)
         self.always = always
         self.done = False
         self.comment = i18n.twtranslate(pywikibot.getSite(), 'unlink-unlinking',
                                         self.pageToUnlink.title())
 
-    def handleNextLink(self, text, match, context = 100):
+    def handleNextLink(self, text, match, context=100):
         """
         Returns a tuple (text, jumpToBeginning).
         text is the unicode string after the current link has been processed.
@@ -79,9 +94,9 @@ class UnlinkBot:
                 choice = 'a'
             else:
                 pywikibot.output(
-                    text[max(0, match.start() - context) : match.start()] \
-                    + '\03{lightred}' + text[match.start() : match.end()] \
-                    + '\03{default}' + text[match.end() : match.end() + context])
+                    text[max(0, match.start() - context):match.start()]
+                    + '\03{lightred}' + text[match.start():match.end()]
+                    + '\03{default}' + text[match.end():match.end() + context])
                 choice = pywikibot.inputChoice(
                     u'\nWhat shall be done with this link?\n',
                     ['unlink', 'skip', 'edit', 'more context',
@@ -94,7 +109,7 @@ class UnlinkBot:
                     return text, False
                 elif choice == 'e':
                     editor = editarticle.TextEditor()
-                    newText = editor.edit(text, jumpIndex = match.start())
+                    newText = editor.edit(text, jumpIndex=match.start())
                     # if user didn't press Cancel
                     if newText:
                         return newText, True
@@ -123,7 +138,7 @@ class UnlinkBot:
             text = oldText
             curpos = 0
             while curpos < len(text):
-                match = self.linkR.search(text, pos = curpos)
+                match = self.linkR.search(text, pos=curpos)
                 if not match:
                     break
                 # Make sure that next time around we will not find this same
@@ -148,7 +163,8 @@ class UnlinkBot:
 
     def run(self):
         for page in self.generator:
-            if self.done: break
+            if self.done:
+                break
             self.treat(page)
 
 
