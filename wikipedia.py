@@ -561,7 +561,7 @@ class Page(object):
         if not withSection:
             sectionName = self.section(underscore=underscore)
             if sectionName:
-                title = title[:-len(sectionName)-1]
+                title = title[:-len(sectionName) - 1]
         return title
 
     #@deprecated("Page.title(withNamespace=False)")
@@ -601,7 +601,7 @@ class Page(object):
         sectionName = self.section(underscore=underscore)
         title = self.title(underscore=underscore)
         if sectionName:
-            return title[:-len(sectionName)-1]
+            return title[:-len(sectionName) - 1]
         else:
             return title
 
@@ -746,7 +746,7 @@ class Page(object):
         else:
             # Make sure we re-raise an exception we got on an earlier attempt
             if hasattr(self, '_redirarg') and not get_redirect:
-                raise IsRedirectPage, self._redirarg
+                raise IsRedirectPage(self._redirarg)
             elif hasattr(self, '_getexception'):
                 if self._getexception == IsRedirectPage and get_redirect:
                     pass
@@ -919,7 +919,7 @@ class Page(object):
             output(u'Getting page %s' % self.title(asLink=True))
         path = self.site().edit_address(self.urlname())
         if oldid:
-            path += "&oldid="+oldid
+            path += "&oldid=" + oldid
         # Make sure Brion doesn't get angry by waiting if the last time a page
         # was retrieved was not long enough ago.
         if throttle:
@@ -2192,12 +2192,12 @@ class Page(object):
            not calledModuleName() in ('category_redirect', 'cosmetic_changes',
                                       'touch'):
             if config.cosmetic_changes_mylang_only:
-                cc = (self.site.family.name == config.family and
-                      self.site.lang == config.mylang) or \
-                      self.site.family.name in \
-                      config.cosmetic_changes_enable.keys() and \
+                cc = ((self.site.family.name == config.family and
+                       self.site.lang == config.mylang) or
+                      self.site.family.name in
+                      config.cosmetic_changes_enable.keys() and
                       self.site.lang in config.cosmetic_changes_enable[
-                          self.site.family.name]
+                          self.site.family.name])
             else:
                 cc = True
             cc = cc and not (self.site.family.name in
@@ -2421,10 +2421,14 @@ class Page(object):
                     # 'editconflict':"Edit conflict detected",
                     raise EditConflict(u'An edit conflict has occured.')
                 elif errorCode == 'spamdetected':
-                    # 'spamdetected':"Your edit was refused because it contained a spam fragment: ``\$1''",
+                    # 'spamdetected':
+                    # "Your edit was refused because it contained a spam
+                    # fragment: ``\$1''",
                     raise SpamfilterError(data['error']['info'][62:-2])
                 elif errorCode == 'pagedeleted':
-                    # 'pagedeleted':"The page has been deleted since you fetched its timestamp",
+                    # 'pagedeleted':
+                    # "The page has been deleted since you fetched its
+                    # timestamp",
                     # Make sure your system clock is correct if this error
                     # occurs without any reason!
                     # raise EditConflict(u'Someone deleted the page.')
@@ -2453,7 +2457,9 @@ class Page(object):
                         retry_delay = 30
                     continue
                 elif errorCode == 'contenttoobig':
-                    # 'contenttoobig':"The content you supplied exceeds the article size limit of \$1 kilobytes",
+                    # 'contenttoobig':
+                    # "The content you supplied exceeds the article size limit
+                    # of \$1 kilobytes",
                     raise LongPageError(len(params['text']),
                                         int(data['error']['info'][59:-10]))
                 elif errorCode in ['protectedpage', 'customcssjsprotected',
@@ -2609,7 +2615,7 @@ class Page(object):
                                % wait)
                         dblagged = True
                         time.sleep(wait)
-                        wait = min(wait*2, 300)
+                        wait = min(wait * 2, 300)
                         continue
                     # Squid error 503
                     raise ServerError(response.code)
@@ -3401,15 +3407,13 @@ class Page(object):
             now = time.time()
             response, data = self.site().postForm(address, predata)
             data = data.encode(self.site().encoding())
-##        get_throttle.setDelay(time.time() - now)
             output = []
-        # TODO: parse XML using an actual XML parser instead of regex!
+            # TODO: parse XML using an actual XML parser instead of regex!
             r = re.compile(
                 "\<revision\>.*?\<id\>(?P<id>.*?)\<\/id\>.*?\<timestamp\>"
                 "(?P<timestamp>.*?)\<\/timestamp\>.*?\<(?:ip|username)\>"
                 "(?P<user>.*?)\</(?:ip|username)\>.*?\<text.*?\>"
                 "(?P<content>.*?)\<\/text\>", re.DOTALL)
-##            r = re.compile("\<revision\>.*?\<timestamp\>(.*?)\<\/timestamp\>.*?\<(?:ip|username)\>(.*?)\<",re.DOTALL)
             return [(match.group('id'),
                      match.group('timestamp'),
                      unescape(match.group('user')),
@@ -4035,7 +4039,7 @@ class Page(object):
             if self._deletedRevs and self._deletedRevsModified:
                 for ts in self._deletedRevs:
                     if self._deletedRevs[ts][4]:
-                        formdata['ts'+ts] = '1'
+                        formdata['ts' + ts] = '1'
 
             self._deletedRevs = None
             # TODO: Check for errors below (have we succeeded? etc):
@@ -5012,7 +5016,7 @@ class DataPage(Page):
         else:
             raise RuntimeError("unknown type: %s call User:Ladsgroup to fix "
                                "this" % self._contents['entity'][0])
-        self._title = self._title+str(self._contents['entity'][1])
+        self._title += str(self._contents['entity'][1])
         return self._contents
 
     @deprecate_arg("get", None)
@@ -5692,8 +5696,8 @@ class _GetAll(object):
                         flag = u"is set to default ('%s'), but should be '%s'" \
                                % (ns, nshdr)
                     elif dflt == nshdr:
-                        flag = u"is '%s', but should be removed (default value '%s')" \
-                               % (ns, nshdr)
+                        flag = (u"is '%s', but should be removed "
+                                u"(default value '%s')" % (ns, nshdr))
                     else:
                         flag = u"is '%s', but should be '%s'" % (ns, nshdr)
                     warning(u"Outdated family file %s: namespace['%s'][%i] %s"
@@ -5875,8 +5879,8 @@ class _GetAll(object):
                         flag = u"is set to default ('%s'), but should be '%s'" \
                                % (ns, nshdr)
                     elif dflt == nshdr:
-                        flag = u"is '%s', but should be removed (default value '%s')" \
-                               % (ns, nshdr)
+                        flag = (u"is '%s', but should be removed "
+                                u"(default value '%s')" % (ns, nshdr))
                     else:
                         flag = u"is '%s', but should be '%s'" % (ns, nshdr)
                     warning(u"Outdated family file %s: namespace['%s'][%i] %s"
@@ -6035,12 +6039,12 @@ def decodeEsperantoX(text):
                 if len(old) % 2 == 0:
                     # The first two chars represent an Esperanto letter.
                     # Following x's are doubled.
-                    new = esperanto + ''.join([old[2 * i]
-                                               for i in xrange(1, len(old)/2)])
+                    new = esperanto + ''.join([old[2 * i] for i in
+                                               xrange(1, len(old) / 2)])
                 else:
                     # The first character stays latin; only the x's are doubled.
                     new = latin + ''.join([old[2 * i + 1]
-                                           for i in xrange(0, len(old)/2)])
+                                           for i in xrange(0, len(old) / 2)])
                 result += text[pos: match.start() + pos] + new
                 pos += match.start() + len(old)
             else:
@@ -7768,7 +7772,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                         'review', 'stable', 'gblblock', 'renameuser',
                         'globalauth', 'gblrights', 'abusefilter',
                         'articlefeedbackv5', 'newusers'):
-            raise NotImplementedError, mode
+            raise NotImplementedError(mode)
         params = {
             'action': 'query',
             'list':   'logevents',
