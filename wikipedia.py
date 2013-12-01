@@ -821,10 +821,10 @@ class Page(object):
             'rvprop': ['content', 'ids', 'flags', 'timestamp', 'user',
                        'comment', 'size'],
             'rvlimit': 1,
-##            'talkid' valid for release > 1.12
-##            'url', 'readable' valid for release > 1.14
+            # 'talkid' valid for release > 1.12
+            # 'url', 'readable' valid for release > 1.14
             'inprop': ['protection', 'subjectid'],
-##            'intoken': 'edit',
+            # 'intoken': 'edit',
         }
         if oldid:
             params['rvstartid'] = oldid
@@ -2654,7 +2654,7 @@ class Page(object):
                     reasonR = re.compile(
                         re.escape(self.site().mediawiki_message(
                             'spamprotectionmatch')).replace(
-                                '\$1', '(?P<url>[^<]*)'))
+                            '\$1', '(?P<url>[^<]*)'))
                     url = reasonR.search(data).group('url')
                 except:
                     # Some wikis have modified the spamprotectionmatch
@@ -2666,7 +2666,7 @@ class Page(object):
                     # URL. It then searches for a plaintext URL.
                     relevant = data[data.find(
                         '<!-- start content -->') + 22:data.find(
-                            '<!-- end content -->')].strip()
+                        '<!-- end content -->')].strip()
                     # Throw away all the other links etc.
                     relevant = re.sub('<.*?>', '', relevant)
                     relevant = relevant.replace('&#58;', ':')
@@ -2763,11 +2763,13 @@ class Page(object):
                 long_page_errorR = re.compile(
                     # Some wikis (e.g. Lithuanian and Slovak Wikipedia) use
                     # {{plural}} in [[MediaWiki:longpageerror]]
-                    re.sub(r'\\{\\{plural\\:.*?\\}\\}', '.*?', re.escape(
-                        html2unicode(self.site().mediawiki_message(
-                            'longpageerror')))).replace(
-                                "\$1", "(?P<length>[\d,.\s]+)", 1).replace(
-                                    "\$2", "(?P<limit>[\d,.\s]+)", 1),
+                    re.sub(
+                        r'\\{\\{plural\\:.*?\\}\\}', '.*?',
+                        re.escape(
+                            html2unicode(self.site().mediawiki_message(
+                                'longpageerror')))).replace(
+                        "\$1", "(?P<length>[\d,.\s]+)", 1).replace(
+                        "\$2", "(?P<limit>[\d,.\s]+)", 1),
                     re.UNICODE)
 
                 match = long_page_errorR.search(data)
@@ -3528,9 +3530,8 @@ class Page(object):
         if deleteAndMove:
             sysop = self._getActionUser(action='delete', restriction='',
                                         sysop=True)
-            Page(self.site(),
-                 newtitle).delete(self.site().mediawiki_message(
-                     'delete_and_move_reason'), False, False)
+            Page(self.site(), newtitle).delete(self.site().mediawiki_message(
+                'delete_and_move_reason'), False, False)
 
         # Check blocks
         self.site().checkBlocks(sysop=sysop)
@@ -8586,9 +8587,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                         # were found, and "start" will remain and be
                         # double-encoded.
                         # Use the last page as the start of the next page.
-                        start = Page(self,
-                                     allLinks[-1]).title(
-                                         withNamespace=False) + '!'
+                        start = Page(self, allLinks[-1]).title(
+                            withNamespace=False) + '!'
                 else:
                     break
             else:
