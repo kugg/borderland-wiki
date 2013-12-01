@@ -4422,7 +4422,7 @@ def main():
                                  % len(tmp[:pos]))
                 outpage.put(tmp[:pos], comment="bot writing log for last run")
                 tmp = tmp[pos:]
-        except pywikibot.MaxTriesExceededError:
+        except:     # catch MaxTriesExceededError, EditConflict and all other
             pywikibot.exception()
             pywikibot.output(u"Problem writing debug info to wiki, using file instead.")
         if pywikibot.simulate or tmp:
