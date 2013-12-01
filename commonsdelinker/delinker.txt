@@ -49,7 +49,7 @@ CommonsDelinker has a basic plugin framework. More information can be found
 in plugins.txt.
 
 == Requirements ==
-* A recent SVN checkout of the pywikipedia framework
+* A recent Git clone of the pywikipedia framework
 * Python 2.4 or higher
 * A MySQL database and the MySQLdb api for Python, version 1.2.1_p or higher
 ** In the future, probably also sqlite3 will be supported.
@@ -215,9 +215,8 @@ MIT license below:
  OTHER DEALINGS IN THE SOFTWARE.
  
 The most recent version of this documentation can be found in the 
-pywikipedia SVN, on <http://svn.wikimedia.org/svnroot/pywikipedia/
-trunk/pywikipedia/> and browsable on <http://svn.wikimedia.org/viewvc/
-pywikipedia/>. Copies maybe found on meta <http://meta.wikimedia.org/
+pywikipedia Git, <https://git.wikimedia.org/summary/
+pywikibot%2Fcompat.git>. Copies maybe found on meta <http://meta.wikimedia.org/
 wiki/CommonsDelinker/For_operators> and BotWiki <http://botwiki.sno.cc/
 wiki/Python:CommonsDelinker/For_operators>.
   
