@@ -24,12 +24,6 @@ import wikipedia as pywikibot
 import pagegenerators
 import sys
 
-#***** SETTINGS *******#
-#                      #
-#   - EDIT BELOW -     #
-#                      #
-#**********************#
-
 comment = {
     'ar': u'صور للاستبعاد',
     'en': u'images for elimination',
@@ -37,28 +31,23 @@ comment = {
     'he': u'תמונות להסרה',
     'it': u'Bot: segnalo immagine orfana da eliminare',
     'pt': u'Bot: marcação de imagens para eliminação',
-    }
+}
 
 template_to_the_image = {
     'en': u'{{subst:No-use2}}',
     'it': u'{{immagine orfana}}',
     'fa': u'{{تصاویر بدون استفاده}}',
-    }
+}
 template_to_the_user = {
     'en': u'\n\n{{img-sem-uso|%(title)s}}',
     'fa': u'\n\n{{جا:اخطار به کاربر برای تصاویر بدون استفاده|%(title)s}}--~~~~',
     'it': u'\n\n{{Utente:Filbot/Immagine orfana}}',
-    }
+}
 except_text = {
     'en': u'<table id="mw_metadata" class="mw_metadata">',
     'it': u'<table id="mw_metadata" class="mw_metadata">',
-    }
+}
 
-#***** SETTINGS *******#
-#                      #
-#   - EDIT ABOVE -     #
-#                      #
-#**********************#
 
 def appendtext(page, apptext):
     global always
@@ -85,6 +74,7 @@ def appendtext(page, apptext):
                 always = True
         if always or choice == 'y':
             page.put(text, pywikibot.translate(pywikibot.getSite(), comment))
+
 
 def main():
     global always
@@ -116,7 +106,7 @@ def main():
                 pywikibot.output(u"%s done already"
                                  % page.title(asLink=True))
                 continue
-            appendtext(page, u"\n\n"+template_image)
+            appendtext(page, u"\n\n" + template_image)
             uploader = page.getFileVersionHistory().pop()[1]
             usertalkname = u'User Talk:%s' % uploader
             usertalkpage = pywikibot.Page(mysite, usertalkname)
