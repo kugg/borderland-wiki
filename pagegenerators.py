@@ -940,7 +940,10 @@ class GoogleSearchPageGenerator:
         #    yield url
 
     def queryViaAPI(self, query):
-        import json
+        try:
+            import json
+        except ImportError:
+            import simplejson as json
         url = u'http://ajax.googleapis.com/ajax/services/search/web?'
         params = {
             'key': config.google_key,

@@ -25,7 +25,11 @@ import config
 import imagerecat
 import upload
 import externals  # check for and install needed
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 from Tkinter import *
 from PIL import Image, ImageTk  # see: http://www.pythonware.com/products/pil/
 from BeautifulSoup import BeautifulSoup

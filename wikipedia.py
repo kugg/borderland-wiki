@@ -162,7 +162,11 @@ from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, SoupStrainer
 import weakref
 import logging
 import logging.handlers
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 # Splitting the bot into library parts
 from pywikibot.support import *
 import config

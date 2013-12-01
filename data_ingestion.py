@@ -8,7 +8,11 @@ import pywikibot, upload
 import posixpath, urlparse
 import urllib
 import hashlib, base64
-import StringIO, json
+import StringIO
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 class Photo(object):
     '''

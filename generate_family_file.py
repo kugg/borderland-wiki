@@ -50,7 +50,10 @@ import externals                            # check for and install needed
 # parsing response data
 from BeautifulSoup import BeautifulSoup
 
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 class FamilyFileGenerator(object):
     def __init__(self, url=None, name=None, dointerwiki=None):

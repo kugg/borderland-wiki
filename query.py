@@ -29,8 +29,10 @@ import time
 import wikipedia as pywikibot
 import config
 from pywikibot.support import deprecate_arg
-import json
-
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 @deprecate_arg("encodeTitle", None)
 def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
