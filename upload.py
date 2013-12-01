@@ -19,11 +19,11 @@ and for a description.
 """
 #
 # (C) Rob W.W. Hooft, Andre Engels 2003-2004
-# (C) Pywikipedia bot team, 2003-2013
+# (C) Pywikibot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 
 import os
@@ -33,6 +33,7 @@ import mimetypes
 import wikipedia as pywikibot
 import config
 import query
+
 
 def post_multipart(site, address, fields, files, cookies):
     """ Post fields and files to an http host as multipart/form-data.
@@ -46,6 +47,7 @@ def post_multipart(site, address, fields, files, cookies):
     contentType, body = encode_multipart_formdata(fields, files)
     return site.postData(address, body, contentType=contentType,
                          cookies=cookies)
+
 
 def encode_multipart_formdata(fields, files):
     """
@@ -77,6 +79,7 @@ def encode_multipart_formdata(fields, files):
     body = '\r\n'.join(lines)
     content_type = 'multipart/form-data; boundary=%s' % boundary
     return content_type, body
+
 
 def get_content_type(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
@@ -136,8 +139,8 @@ class UploadRobot:
                     file = uo.open(self.url)
 
                     if 'text/html' in file.info().getheader('Content-Type'):
-                        print \
-"Couldn't download the image: the requested URL was not found on this server."
+                        print("Couldn't download the image: the requested URL "
+                              "was not found on this server.")
                         return
 
                     content_len = file.info().getheader('Content-Length')
@@ -170,13 +173,13 @@ class UploadRobot:
                                 dt += 60
                     else:
                         if pywikibot.verbose:
-                            pywikibot.warning(
-u"No check length to retrieved data is possible.")
+                            pywikibot.warning(u"No check length to retrieved "
+                                              u"data is possible.")
             else:
                 # Opening local files with MyURLopener would be possible, but we
                 # don't do it because it only accepts ASCII characters in the
                 # filename.
-                file = open(self.url,"rb")
+                file = open(self.url, "rb")
                 self._contents = file.read()
                 file.close()
 
@@ -255,10 +258,11 @@ u"No check length to retrieved data is possible.")
         If the user chooses not to retry, return null.
 
         """
-        if not self.targetSite.has_api() or self.targetSite.versionnumber() < 16:
+        if not self.targetSite.has_api() or \
+           self.targetSite.versionnumber() < 16:
             return self._uploadImageOld(debug)
 
-        if not hasattr(self,'_contents'):
+        if not hasattr(self, '_contents'):
             self.read_file_content()
 
         filename = self.process_filename()
@@ -289,14 +293,14 @@ u"No check length to retrieved data is possible.")
         if pywikibot.verbose:
             pywikibot.output("%s" % data)
 
-        if 'error' in data: # error occured
+        if 'error' in data:  # error occured
             errCode = data['error']['code']
             pywikibot.output("%s" % data)
         else:
             data = data['upload']
-            if data['result'] == u'Warning': #upload success but return warning.
+            if data['result'] == u'Warning':  # upload success but return warning.
                 pywikibot.output("Got warning message:")
-                for k,v in data['warnings'].iteritems():
+                for k, v in data['warnings'].iteritems():
                     if k == 'duplicate-archive':
                         pywikibot.output(
                             "\tThe file is duplicate a deleted file %s." % v)
@@ -328,10 +332,10 @@ u"No check length to retrieved data is possible.")
             #No any warning, upload and online complete.
             elif data['result'] == u'Success':
                 pywikibot.output(u"Upload successful.")
-                return filename #data['filename']
+                return filename  # data['filename']
 
     def _uploadImageOld(self, debug=False):
-        if not hasattr(self,'_contents'):
+        if not hasattr(self, '_contents'):
             self.read_file_content()
 
         filename = self.process_filename()
@@ -343,24 +347,24 @@ u"No check length to retrieved data is possible.")
             'wpUploadDescription': self.description,
             'wpUploadAffirm': '1',
             'wpUpload': 'upload bestand',
-            'wpEditToken': self.targetSite.getToken(), # Get an edit token so we can do the upload
-            'wpDestFile': filename, # Set the new filename
+            'wpEditToken': self.targetSite.getToken(),  # Get an edit token so we can do the upload
+            'wpDestFile': filename,  # Set the new filename
         }
         # This somehow doesn't work.
         if self.ignoreWarning:
             formdata["wpIgnoreWarning"] = "1"
 
         if self.uploadByUrl:
-            formdata["wpUploadFileURL"]  = self.url
+            formdata["wpUploadFileURL"] = self.url
             formdata["wpSourceType"] = 'Url'
 
         # try to encode the strings to the encoding used by the target site.
-        # if that's not possible (e.g. because there are non-Latin-1 characters and
-        # the home Wikipedia uses Latin-1), convert all non-ASCII characters to
-        # HTML entities.
+        # if that's not possible (e.g. because there are non-Latin-1 characters
+        # and the home Wikipedia uses Latin-1), convert all non-ASCII
+        # characters to HTML entities.
         for key in formdata:
             assert isinstance(key, basestring), \
-                   "ERROR: %s is not a string but %s" % (key, type(key))
+                "ERROR: %s is not a string but %s" % (key, type(key))
             try:
                 formdata[key] = formdata[key].encode(self.targetSite.encoding())
             except (UnicodeEncodeError, UnicodeDecodeError):
@@ -381,7 +385,7 @@ u"No check length to retrieved data is possible.")
                     self.targetSite, self.targetSite.upload_address(),
                     formdata.items(),
                     (('wpUploadFile', encodedFilename, self._contents),),
-                    cookies = self.targetSite.cookies())
+                    cookies=self.targetSite.cookies())
             # There are 2 ways MediaWiki can react on success: either it gives
             # a 200 with a success message, or it gives a 302 (redirection).
             # Do we know how the "success!" HTML page should look like?
@@ -389,7 +393,7 @@ u"No check length to retrieved data is possible.")
             # show an English interface, this detection will fail!
             success_msg = self.targetSite.mediawiki_message('successfulupload')
             if success_msg in returned_html or response.code == 302:
-                 pywikibot.output(u"Upload successful.")
+                pywikibot.output(u"Upload successful.")
             # The following is not a good idea, because the server also gives a
             # 200 when something went wrong.
 ##            if response.code in [200, 302]:
@@ -427,7 +431,8 @@ u"No check length to retrieved data is possible.")
                         return self._uploadImageOld(debug)
                 else:
                     answer = pywikibot.inputChoice(
-u'Upload of %s probably failed. Above you see the HTML page which was returned by MediaWiki. Try again?'
+                        u'Upload of %s probably failed. Above you see the HTML '
+                        u'page which was returned by MediaWiki. Try again?'
                         % filename, ['Yes', 'No'], ['y', 'N'], 'N')
                     if answer == "y":
                         return self._uploadImageOld(debug)
