@@ -430,10 +430,12 @@ class CaseChecker(object):
                                         self.site, self.msgDeleteRedirect)
                                     newText = pywikibot.translate(
                                         self.site,
-                                        self.textDeleteRedirect) % redirTitle
-                                    src.put(newText, editSummary,
-                                            minorEdit=False)
-                                    changed = True
+                                        self.textDeleteRedirect, redirTitle,
+                                        fallback=False)
+                                    if newText:
+                                        src.put(newText, editSummary,
+                                                minorEdit=False)
+                                        changed = True
 
                             elif not dst.exists():
                                 src = self.Page(title)
