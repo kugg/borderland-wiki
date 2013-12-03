@@ -894,7 +894,8 @@ u"Choice out of range. Please select a number between 0 and %i."
                 self.alternatives += links
             else:
                 try:
-                    target = disambPage.getRedirectTarget().title()
+                    disambPage2 = pywikibot.Page(disambPage.site(), disambPage.title())
+                    target = disambPage2.getRedirectTarget().title()
                     self.alternatives.append(target)
                 except pywikibot.NoPage:
                     pywikibot.output(u"The specified page was not found.")
