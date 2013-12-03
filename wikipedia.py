@@ -750,7 +750,7 @@ class Page(object):
         else:
             # Make sure we re-raise an exception we got on an earlier attempt
             if hasattr(self, '_redirarg') and not get_redirect:
-                raise IsRedirectPage(self._redirarg)
+                raise IsRedirectPage, self._redirarg
             elif hasattr(self, '_getexception'):
                 if self._getexception == IsRedirectPage and get_redirect:
                     pass
