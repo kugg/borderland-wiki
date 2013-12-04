@@ -8187,10 +8187,11 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                        'sizes'],  # , 'flags', 'redirect', 'patrolled'],
             'rcnamespace': namespace,
         }
-        if nobots:
-            params['rclimit'] = str(number) + "!bot"
-        else:
-            params['rclimit'] = int(number)
+        params['rclimit'] = int(number)
+        if nobots and not rcshow:
+            rcshow = "!bot"
+        elif nobots and rcshow:
+            rcshow = rcshow + "|!bot"
         if user:
             params['rcuser'] = user
         if rcstart:
