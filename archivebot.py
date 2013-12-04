@@ -266,6 +266,10 @@ class DiscussionThread(object):
         if not TM:
             TM = re.search(r'(\d\d?) (\S+) (\d\d\d\d) (\d\d):(\d\d) \(.*?\)',
                            line)
+# Japanese: 2012年8月4日 (日) 13:01 (UTC)
+        if not TM:
+            TM = re.search(re.compile(u'(\d\d\d\d)年(\d\d?)月(\d\d?)日 \(.*?\) (\d\d):(\d\d) \(.*?\)'),
+                           line)
         if TM:
             # Strip away all diacritics in the Mn ('Mark, non-spacing') category
             # NFD decomposition splits combined characters (e.g. 'ä",
@@ -300,6 +304,8 @@ class DiscussionThread(object):
                 TIME = txt2timestamp(_TM, "%d. %Bta %Y kello %H.%M (%Z)")
             if not TIME:
                 TIME = txt2timestamp(_TM, "%d %B %Y %H:%M (%Z)")
+            if not TIME:
+                TIME = txt2timestamp(_TM, "%Y年%B%d日 (%a) %H:%M (%Z)")
             if not TIME:
                 TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', _TM),
                                      "%H:%M, %d. %b. %Y")
