@@ -9,7 +9,6 @@ Command line options:
 
 -page:       Delete specified page
 -cat:        Delete all pages in the given category.
--nosubcats:  Don't delete pages in the subcategories.
 -links:      Delete all pages linked from a given page.
 -file:       Delete all pages listed in a text file.
 -ref:        Delete all pages referring from a given page.
@@ -25,19 +24,24 @@ Delete everything in the category "To delete" without prompting.
 
     python delete.py -cat:"To delete" -always
 """
-__version__ = '$Id$'
+#
+# (C) Pywikibot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
+#
+
 import wikipedia as pywikibot
 from pywikibot import i18n
-import config, catlib
+import config
+import catlib
 import pagegenerators
 
 class DeletionRobot:
     """ This robot allows deletion of pages en masse. """
 
-    def __init__(self, generator, summary, always = False, undelete=True):
+    def __init__(self, generator, summary, always=False, undelete=True):
         """ Arguments:
         * generator - A page generator.
         * always - Delete without prompting?
@@ -54,24 +58,18 @@ class DeletionRobot:
         for page in self.generator:
             pywikibot.output(u'Processing page %s' % page.title())
             if self.undelete:
-                page.undelete(self.summary, throttle = True)
+                page.undelete(self.summary, throttle=True)
             else:
-                page.delete(self.summary, not self.always, throttle = True)
+                page.delete(self.summary, not self.always, throttle=True)
+
 
 def main():
     genFactory = pagegenerators.GeneratorFactory()
     pageName = ''
-    singlePage = ''
     summary = ''
     always = False
-    doSinglePage = False
-    doCategory = False
-    deleteSubcategories = True
-    doRef = False
-    doLinks = False
     doImages = False
     undelete = False
-    fileName = ''
     generator = None
 
     # read command line parameters
@@ -86,8 +84,6 @@ def main():
                 summary = pywikibot.input(u'Enter a reason for the deletion:')
             else:
                 summary = arg[len('-summary:'):]
-        elif arg.startswith('-nosubcats'):
-            deleteSubcategories = False
         elif arg.startswith('-images'):
             doImages = True
             if len(arg) == len('-images'):
@@ -101,11 +97,14 @@ def main():
             genFactory.handleArg(arg)
         if not summary:
             if arg.startswith('-category'):
-                summary = i18n.twtranslate(mysite, 'delete-from-category',{'page': pageName})
+                summary = i18n.twtranslate(mysite, 'delete-from-category',
+                                           {'page': pageName})
             elif arg.startswith('-links'):
-                summary = i18n.twtranslate(mysite, 'delete-linked-pages', {'page': pageName})
+                summary = i18n.twtranslate(mysite, 'delete-linked-pages',
+                                           {'page': pageName})
             elif arg.startswith('-ref'):
-                summary = i18n.twtranslate(mysite, 'delete-referring-pages', {'page': pageName})
+                summary = i18n.twtranslate(mysite, 'delete-referring-pages',
+                                           {'page': pageName})
             elif arg.startswith('-file'):
                 summary = i18n.twtranslate(mysite, 'delete-from-file')
 
@@ -117,7 +116,7 @@ def main():
         generator = pagegenerators.ImagesPageGenerator(page)
     if not summary:
         summary = pywikibot.input(u'Enter a reason for the %sdeletion:'
-                                    % ['', 'un'][undelete])
+                                  % ['', 'un'][undelete])
     if not generator:
         generator = genFactory.getCombinedGenerator()
     if not generator:
@@ -130,6 +129,8 @@ def main():
         # page generator to actually get the text of those pages.
         bot = DeletionRobot(generator, summary, always, undelete)
         bot.run()
+
+
 if __name__ == "__main__":
     try:
         main()
