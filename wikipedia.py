@@ -189,7 +189,7 @@ INPUT = 25
 
 
 # Format string for the default user agent.
-USER_AGENT_FORMAT = '{script}/r{version[rev]} Pywikipediabot/1.0'
+USER_AGENT_FORMAT = '%(script)s/r%(versionrev)s Pywikipediabot/1.0'
 
 SaxError = xml.sax._exceptions.SAXParseException
 
@@ -5986,9 +5986,9 @@ def setUserAgent(s):
     useragent = s
 
 # Default User-agent
-setUserAgent(USER_AGENT_FORMAT.format(
+setUserAgent(USER_AGENT_FORMAT % dict(
     script=('-'.join(version.get_executing_script())),
-    version=version.getversiondict()
+    versionrev=(version.getversiondict()["rev"])
 ))
 
 
