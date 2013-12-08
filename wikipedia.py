@@ -10329,7 +10329,7 @@ def _flush():
             seconds=(remainingPages * put_throttle.getDelay(True)))
         return (remainingPages, remainingSeconds)
 
-    page_put_queue.put((None, None, None, None, None, None, None))
+    page_put_queue.put((None, ) * 7)
 
     if page_put_queue.qsize() > 1:
         output(u'Waiting for %i pages to be put. Estimated time remaining: %s'
