@@ -562,6 +562,12 @@ class PageArchiver(object):
 
 def main():
     global Site, language
+
+    import sys
+    my_args = []
+    for arg in pywikibot.handleArgs(*sys.argv):
+        my_args.append(arg)
+
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] [LINKPAGE(s)]')
     parser.add_option('-f', '--file', dest='filename',
@@ -584,11 +590,11 @@ def main():
                       help='switch timezone to TIMEZONE', metavar='TIMEZONE')
     parser.add_option('-S', '--simulate', action='store_true', dest='simulate',
                       help='Do not change pages, just simulate')
-    (options, args) = parser.parse_args()
+    (options, args) = parser.parse_args(args=my_args)
 
     if options.locale:
         #Required for english month names
-        locale.setlocale(locale.LC_TIME, options.locale)
+        locale.setlocale(locale.LC_TIME, options.locale.encode('utf8'))
 
     if options.timezone:
         os.environ['TZ'] = options.timezone
