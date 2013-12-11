@@ -515,7 +515,7 @@ class PageArchiver(object):
                     'monthnameshort': int2month_short(TStuple[1]),
                     'week': int(time.strftime('%W', TStuple)),
                 }
-                archive = archive % vars
+                archive = pywikibot.Page(Site, archive % vars).title()
                 if self.feedArchive(archive, t, maxArchSize, vars):
                     archCounter += 1
                     self.set('counter', str(archCounter))
