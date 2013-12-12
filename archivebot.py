@@ -701,13 +701,15 @@ def main():
         force = False
 
     if options.lang:
-        Site = pywikibot.getSite(options.lang)
-        language = Site.language()
+        pywikibot.default_code = options.lang
+
+    Site = pywikibot.getSite()
+    language = Site.language()
 
     if options.simulate:
         pywikibot.simulate = True
 
-    if not args:
+    if not args or len(args) <= 1:
         pywikibot.output(u'NOTE: you must specify a template to run the bot')
         pywikibot.showHelp('archivebot')
         return
@@ -715,7 +717,7 @@ def main():
     #query site for original months name and create convenience look-up dictionaries
     Months.updateMonths(site=Site)
 
-    for a in args:
+    for a in args[1:]:
         pagelist = []
         if not options.filename and not options.pagename:
             #for pg in pywikibot.Page(Site,a).getReferences(follow_redirects=False,onlyTemplateInclusion=True):
