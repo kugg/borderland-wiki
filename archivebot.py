@@ -268,7 +268,7 @@ class DiscussionThread(object):
                            line)
 # Japanese: 2012年8月4日 (日) 13:01 (UTC)
         if not TM:
-            TM = re.search(re.compile(u'(\d\d\d\d)年(\d\d?)月(\d\d?)日 \(.*?\) (\d\d):(\d\d) \(.*?\)'),
+            TM = re.search(re.compile(u'(\d\d\d\d)年(\d\d?)月(\d\d?)日 \(.\) (\d\d):(\d\d) \(.*?\)'),
                            line)
         if TM:
             # Strip away all diacritics in the Mn ('Mark, non-spacing') category
