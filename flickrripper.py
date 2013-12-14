@@ -31,28 +31,37 @@ Todo:
 #
 __version__ = '$Id$'
 
-import sys, urllib, re,  StringIO, hashlib, base64, time
+import sys
+import urllib
+import re
+import StringIO
+import hashlib
+import base64
+import time
 import wikipedia as pywikibot
-import config, query, imagerecat, upload
-
+import config
+import query
+import imagerecat
+import upload
 import flickrapi                  # see: http://stuvel.eu/projects/flickrapi
 import xml.etree.ElementTree
 from Tkinter import *
 from PIL import Image, ImageTk    # see: http://www.pythonware.com/products/pil/
 
 flickr_allowed_license = {
-    0 : False, # All Rights Reserved
-    1 : False, # Creative Commons Attribution-NonCommercial-ShareAlike License
-    2 : False, # Creative Commons Attribution-NonCommercial License
-    3 : False, # Creative Commons Attribution-NonCommercial-NoDerivs License
-    4 : True,  # Creative Commons Attribution License
-    5 : True,  # Creative Commons Attribution-ShareAlike License
-    6 : False, # Creative Commons Attribution-NoDerivs License
-    7 : True,  # No known copyright restrictions
-    8 : True,  # United States Government Work
+    0: False,  # All Rights Reserved
+    1: False,  # Creative Commons Attribution-NonCommercial-ShareAlike License
+    2: False,  # Creative Commons Attribution-NonCommercial License
+    3: False,  # Creative Commons Attribution-NonCommercial-NoDerivs License
+    4: True,   # Creative Commons Attribution License
+    5: True,   # Creative Commons Attribution-ShareAlike License
+    6: False,  # Creative Commons Attribution-NoDerivs License
+    7: True,   # No known copyright restrictions
+    8: True,   # United States Government Work
 }
 
-def getPhoto(flickr = None, photo_id = ''):
+
+def getPhoto(flickr=None, photo_id=''):
     '''
     Get the photo info and the photo sizes so we can use these later on
 
@@ -73,7 +82,8 @@ def getPhoto(flickr = None, photo_id = ''):
             time.sleep(30)
     return (photoInfo, photoSizes)
 
-def isAllowedLicense(photoInfo = None):
+
+def isAllowedLicense(photoInfo=None):
     '''
     Check if the image contains the right license
 
@@ -86,7 +96,8 @@ def isAllowedLicense(photoInfo = None):
     else:
         return False
 
-def getPhotoUrl(photoSizes = None):
+
+def getPhotoUrl(photoSizes=None):
     '''
     Get the url of the jpg file with the highest resolution
     '''
@@ -96,18 +107,19 @@ def getPhotoUrl(photoSizes = None):
         url = size.attrib['source']
     return url
 
-def downloadPhoto(photoUrl = ''):
+
+def downloadPhoto(photoUrl=''):
     '''
     Download the photo and store it in a StrinIO.StringIO object.
 
     TODO: Add exception handling
 
     '''
-    imageFile=urllib.urlopen(photoUrl).read()
+    imageFile = urllib.urlopen(photoUrl).read()
     return StringIO.StringIO(imageFile)
 
-def findDuplicateImages(photo=None,
-                        site=pywikibot.getSite(u'commons', u'commons')):
+
+def findDuplicateImages(photo=None, ite=pywikibot.getSite(u'commons', u'commons')):
     ''' Takes the photo, calculates the SHA1 hash and asks the mediawiki api
     for a list of duplicates.
 
@@ -118,7 +130,8 @@ def findDuplicateImages(photo=None,
     hashObject.update(photo.getvalue())
     return site.getFilesFromAnHash(base64.b16encode(hashObject.digest()))
 
-def getTags(photoInfo = None):
+
+def getTags(photoInfo=None):
     ''' Get all the tags on a photo '''
     result = []
     for tag in photoInfo.find('photo').find('tags').findall('tag'):
@@ -126,18 +139,20 @@ def getTags(photoInfo = None):
 
     return result
 
-def getFlinfoDescription(photo_id = 0):
+
+def getFlinfoDescription(photo_id=0):
     '''
     Get the description from http://wikipedia.ramselehof.de/flinfo.php
 
     TODO: Add exception handling, try a couple of times
     '''
-    parameters = urllib.urlencode({'id' : photo_id, 'raw' : 'on'})
+    parameters = urllib.urlencode({'id': photo_id, 'raw': 'on'})
 
     rawDescription = urllib.urlopen(
         "http://wikipedia.ramselehof.de/flinfo.php?%s" % parameters).read()
 
     return rawDescription.decode('utf-8')
+
 
 def getFilename(photoInfo=None, site=None, project=u'Flickr', photoId=None):
     """ Build a good filename for the upload based on the username and the
@@ -178,6 +193,7 @@ def getFilename(photoInfo=None, site=None, project=u'Flickr', photoId=None):
                 return u'%s - %s - %s (%d).jpg' % (title, project, username, i)
     else:
         return u'%s - %s - %s.jpg' % (title, project, username)
+
 
 def cleanUpTitle(title):
     ''' Clean up the title of a potential mediawiki page. Otherwise the title of
@@ -236,6 +252,7 @@ def buildDescription(flinfoDescription=u'', flickrreview=False, reviewer=u'',
     description = description.replace(u'\r\n', u'\n')
     return description
 
+
 def processPhoto(flickr=None, photo_id=u'', flickrreview=False, reviewer=u'',
                  override=u'', addCategory=u'', removeCategories=False,
                  autonomous=False):
@@ -243,7 +260,7 @@ def processPhoto(flickr=None, photo_id=u'', flickrreview=False, reviewer=u'',
     if photo_id:
         print photo_id
         (photoInfo, photoSizes) = getPhoto(flickr, photo_id)
-    if  isAllowedLicense(photoInfo) or override:
+    if isAllowedLicense(photoInfo) or override:
         #Get the url of the largest photo
         photoUrl = getPhotoUrl(photoSizes)
         #Should download the photo only once
@@ -292,54 +309,45 @@ def processPhoto(flickr=None, photo_id=u'', flickrreview=False, reviewer=u'',
 class Tkdialog:
     ''' The user dialog. '''
     def __init__(self, photoDescription, photo, filename):
-        self.root=Tk()
+        self.root = Tk()
         #"%dx%d%+d%+d" % (width, height, xoffset, yoffset)
-        self.root.geometry("%ix%i+10-10"%(config.tkhorsize, config.tkvertsize))
-
+        self.root.geometry("%ix%i+10-10" % (config.tkhorsize, config.tkvertsize))
         self.root.title(filename)
         self.photoDescription = photoDescription
         self.filename = filename
         self.photo = photo
-        self.skip=False
-        self.exit=False
-
+        self.skip = False
+        self.exit = False
         ## Init of the widgets
         # The image
-        self.image=self.getImage(self.photo, 800, 600)
-        self.imagePanel=Label(self.root, image=self.image)
-
+        self.image = self.getImage(self.photo, 800, 600)
+        self.imagePanel = Label(self.root, image=self.image)
         self.imagePanel.image = self.image
-
         # The filename
-        self.filenameLabel=Label(self.root,text=u"Suggested filename")
-        self.filenameField=Entry(self.root, width=100)
+        self.filenameLabel = Label(self.root, text=u"Suggested filename")
+        self.filenameField = Entry(self.root, width=100)
         self.filenameField.insert(END, filename)
-
         # The description
-        self.descriptionLabel=Label(self.root,text=u"Suggested description")
-        self.descriptionScrollbar=Scrollbar(self.root, orient=VERTICAL)
-        self.descriptionField=Text(self.root)
+        self.descriptionLabel = Label(self.root, text=u"Suggested description")
+        self.descriptionScrollbar = Scrollbar(self.root, orient=VERTICAL)
+        self.descriptionField = Text(self.root)
         self.descriptionField.insert(END, photoDescription)
-        self.descriptionField.config(state=NORMAL, height=12, width=100, padx=0, pady=0, wrap=WORD, yscrollcommand=self.descriptionScrollbar.set)
+        self.descriptionField.config(
+            state=NORMAL, height=12, width=100, padx=0, pady=0, wrap=WORD,
+            yscrollcommand=self.descriptionScrollbar.set)
         self.descriptionScrollbar.config(command=self.descriptionField.yview)
-
         # The buttons
-        self.okButton=Button(self.root, text="OK", command=self.okFile)
-        self.skipButton=Button(self.root, text="Skip", command=self.skipFile)
-
+        self.okButton = Button(self.root, text="OK", command=self.okFile)
+        self.skipButton = Button(self.root, text="Skip", command=self.skipFile)
         ## Start grid
-
         # The image
         self.imagePanel.grid(row=0, column=0, rowspan=11, columnspan=4)
-
         # The buttons
         self.okButton.grid(row=11, column=1, rowspan=2)
         self.skipButton.grid(row=11, column=2, rowspan=2)
-
         # The filename
         self.filenameLabel.grid(row=13, column=0)
         self.filenameField.grid(row=13, column=1, columnspan=3)
-
         # The description
         self.descriptionLabel.grid(row=14, column=0)
         self.descriptionField.grid(row=14, column=1, columnspan=3)
@@ -354,13 +362,13 @@ class Tkdialog:
 
     def okFile(self):
         ''' The user pressed the OK button. '''
-        self.filename=self.filenameField.get()
-        self.photoDescription=self.descriptionField.get(0.0, END)
+        self.filename = self.filenameField.get()
+        self.photoDescription = self.descriptionField.get(0.0, END)
         self.root.destroy()
 
     def skipFile(self):
         ''' The user pressed the Skip button. '''
-        self.skip=True
+        self.skip = True
         self.root.destroy()
 
     def run(self):
@@ -378,9 +386,9 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
     result = []
     retry = False
     if not start_id:
-        found_start_id=True
+        found_start_id = True
     else:
-        found_start_id=False
+        found_start_id = False
 
     # http://www.flickr.com/services/api/flickr.groups.pools.getPhotos.html
     # Get the photos in a group
@@ -397,13 +405,13 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
                 try:
                     for photo in flickr.groups_pools_getPhotos(
                         group_id=group_id, user_id=user_id, tags=tags,
-                        per_page='100', page=i
-                        ).find('photos').getchildren():
+                        per_page='100', page=i)
+                    .find('photos').getchildren():
                         gotPhotos = True
-                        if photo.attrib['id']==start_id:
-                            found_start_id=True
+                        if photo.attrib['id'] == start_id:
+                            found_start_id = True
                         if found_start_id:
-                            if photo.attrib['id']==end_id:
+                            if photo.attrib['id'] == end_id:
                                 pywikibot.output('Found end_id')
                                 return
                             else:
@@ -426,13 +434,13 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
             while not gotPhotos:
                 try:
                     for photo in flickr.photosets_getPhotos(
-                        photoset_id=photoset_id, per_page='100', page=i
-                        ).find('photoset').getchildren():
+                        photoset_id=photoset_id, per_page='100', page=i)
+                    .find('photoset').getchildren():
                         gotPhotos = True
-                        if photo.attrib['id']==start_id:
-                            found_start_id=True
+                        if photo.attrib['id'] == start_id:
+                            found_start_id = True
                         if found_start_id:
-                            if photo.attrib['id']==end_id:
+                            if photo.attrib['id'] == end_id:
                                 pywikibot.output('Found end_id')
                                 return
                             else:
@@ -455,11 +463,11 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
             while not gotPhotos:
                 try:
                     for photo in flickr.people_getPublicPhotos(
-                        user_id=user_id, per_page='100', page=i
-                        ).find('photos').getchildren():
+                        user_id=user_id, per_page='100', page=i)
+                    .find('photos').getchildren():
                         gotPhotos = True
                         if photo.attrib['id'] == start_id:
-                            found_start_id=True
+                            found_start_id = True
                         if found_start_id:
                             if photo.attrib['id'] == end_id:
                                 pywikibot.output('Found end_id')
@@ -474,6 +482,7 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
 
     return
 
+
 def usage():
     '''
     Print usage information
@@ -487,6 +496,7 @@ def usage():
     pywikibot.output(u"-user_id:<user_id>\n")
     pywikibot.output(u"-tags:<tag>\n")
     return
+
 
 def main():
     site = pywikibot.getSite(u'commons', u'commons')
@@ -503,19 +513,17 @@ def main():
     if 'api_secret' in config.flickr and config.flickr['api_secret']:
         flickr = flickrapi.FlickrAPI(config.flickr['api_key'], config.flickr['api_secret'])
         (token, frob) = flickr.get_token_part_one(perms='read')
-        if not token: # The user still hasn't authorised this app yet, get_token_part_one() will have spawn a browser window
+        if not token:  # The user still hasn't authorised this app yet, get_token_part_one() will have spawn a browser window
             pywikibot.input("Press ENTER after you authorized this program")
         flickr.get_token_part_two((token, frob))
     else:
         print 'Accessing public content only'
         flickr = flickrapi.FlickrAPI(config.flickr['api_key'])
-
-
     group_id = u''
     photoset_id = u''
     user_id = u''
-    start_id= u''
-    end_id=u''
+    start_id = u''
+    end_id = u''
     tags = u''
     addCategory = u''
     removeCategories = False
