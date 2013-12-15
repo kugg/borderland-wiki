@@ -20,13 +20,14 @@ will only touch a single page.
 #
 # (C) Pywikipedia team
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 # Distributed under the terms of the MIT license.
 #
 
 import wikipedia as pywikibot
-import pagegenerators, config
+import pagegenerators
+import config
 import sys
 
 docuReplacements = {'&params;': pagegenerators.parameterHelp}
@@ -43,7 +44,7 @@ class TouchBot:
                 # get the page, and save it using the unmodified text.
                 # whether or not getting a redirect throws an exception
                 # depends on the variable self.touch_redirects.
-                text = page.get(get_redirect = self.touch_redirects)
+                text = page.get(get_redirect=self.touch_redirects)
                 page.put(text, "Pywikibot touch script")
             except pywikibot.NoPage:
                 pywikibot.output(u"Page %s does not exist."
