@@ -142,6 +142,7 @@ import pprint
 import socket
 import traceback
 import time
+import datetime
 import threading
 import Queue
 import re
@@ -750,7 +751,7 @@ class Page(object):
         else:
             # Make sure we re-raise an exception we got on an earlier attempt
             if hasattr(self, '_redirarg') and not get_redirect:
-                raise IsRedirectPage, self._redirarg
+                raise IsRedirectPage, self._redirarg  # noqa
             elif hasattr(self, '_getexception'):
                 if self._getexception == IsRedirectPage and get_redirect:
                     pass
@@ -1399,7 +1400,6 @@ class Page(object):
 
         """
         if self._editTime and datetime:
-            import datetime
             return datetime.datetime.strptime(str(self._editTime),
                                               '%Y%m%d%H%M%S')
 
@@ -4429,11 +4429,18 @@ class DataPage(Page):
         return int(self.title()[1:])
 
     def setSitelink(self, page, summary=""):
-        """Set a Sitelink for a Datapage. 
-        page - the site to link to 
-        summary - edit summary"""
-        sitename = page.site().dbName().replace("_p","")
-        return self.setitem(summary=summary, items={'type': 'sitelink', 'site': sitename, 'title': page.title()})
+        """Set a Sitelink for a Datapage.
+        @param page: the site to link to
+        @type page: pywikibot.Page object
+        @param summary: edit summary
+        @type summary: basestring
+
+        """
+        sitename = page.site().dbName().replace("_p", "")
+        return self.setitem(summary=summary,
+                            items={'type': 'sitelink',
+                                   'site': sitename,
+                                   'title': page.title()})
 
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
@@ -10322,7 +10329,6 @@ def _flush():
 
     """
     def remaining():
-        import datetime
         remainingPages = page_put_queue.qsize() - 1
             # -1 because we added a None element to stop the queue
         remainingSeconds = datetime.timedelta(
@@ -10332,8 +10338,12 @@ def _flush():
     page_put_queue.put((None, ) * 7)
 
     if page_put_queue.qsize() > 1:
-        output(u'Waiting for %i pages to be put. Estimated time remaining: %s'
-               % remaining())
+        num, sec = remaining()
+        format_values = dict(num=num, sec=sec)
+        output(u'\03{lightblue}'
+               u'Waiting for %(num)i pages to be put. '
+               u'Estimated time remaining: %(sec)s%'
+               '\03{default}' % format_values)
 
     while(_putthread.isAlive()):
         try:
