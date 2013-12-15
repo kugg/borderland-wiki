@@ -221,7 +221,7 @@ class Family(family.WikimediaFamily):
             'uz': [u'Vikikitob munozarasi', u'Vikikitob talk'],
             'vi': u'Thảo luận Wikibooks',
             'zh': [u'Wikibooks talk', u'Wikibooks討論', u'Wikibooks讨论'],
-            'zh-min-nan': u'Wikibooks talk',
+            'zh-min-nan': u'Wikibooks討論',
         }
 
         self.namespaces[90] = {

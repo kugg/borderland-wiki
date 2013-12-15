@@ -380,7 +380,7 @@ class Family(family.WikimediaFamily):
             'yi': [u'װיקיװערטערבוך רעדן', u'וויקיווערטערבוך רעדן'],
             'za': u'Wiktionary讨论',
             'zh': [u'Wiktionary talk', u'Wiktionary討論', u'Wiktionary讨论'],
-            'zh-min-nan': u'Wiktionary talk',
+            'zh-min-nan': u'Wiktionary討論',
             'zu': u'Wiktionary talk',
         }
 

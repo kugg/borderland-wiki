@@ -42,22 +42,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[2]['ko'] = [u'사용자']
         self.namespaces[3]['ko'] = [u'사용자토론']
-        self.namespaces[-1]['ml'] = [u'പ്രത്യേകം']
-        self.namespaces[1]['ml'] = [u'സംവാദം']
-        self.namespaces[2]['ml'] = [u'ഉപയോക്താവ്']
-        self.namespaces[3]['ml'] = [u'ഉപയോക്താവിന്റെ സംവാദം']
-        self.namespaces[6]['ml'] = [u'പ്രമാണം']
-        self.namespaces[7]['ml'] = [u'പ്രമാണത്തിന്റെ സംവാദം']
-        self.namespaces[8]['ml'] = [u'മീഡിയവിക്കി']
-        self.namespaces[9]['ml'] = [u'മീഡിയവിക്കി സംവാദം']
-        self.namespaces[10]['ml'] = [u'ഫലകം']
-        self.namespaces[11]['ml'] = [u'ഫലകത്തിന്റെ സംവാദം']
-        self.namespaces[12]['ml'] = [u'സഹായം']
-        self.namespaces[13]['ml'] = [u'സഹായത്തിന്റെ സംവാദം']
-        self.namespaces[14]['ml'] = [u'വർഗ്ഗം']
-        self.namespaces[15]['ml'] = [u'വർഗ്ഗത്തിന്റെ സംവാദം']
-        self.namespaces[828]['ml'] = [u'ഘടകം', u'ഘ']
-        self.namespaces[829]['ml'] = [u'ഘടകത്തിന്റെ സംവാദം', u'ഘസം']
         self.namespaces[2]['pl'] = [u'Użytkownik', u'Użytkowniczka']
         self.namespaces[3]['pl'] = [u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
@@ -229,7 +213,7 @@ class Family(family.WikimediaFamily):
             'vo': u'Bespik dö Wikiquote',
             'wo': [u'Wikiquote waxtaan', u'Discussion Wikiquote'],
             'zh': [u'Wikiquote talk', u'Wikiquote討論', u'Wikiquote讨论'],
-            'zh-min-nan': u'Wikiquote talk',
+            'zh-min-nan': u'Wikiquote討論',
         }
 
         self.namespaces[100] = {
