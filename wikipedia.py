@@ -852,7 +852,11 @@ class Page(object):
                 raise BadTitle('BadTitle: %s' % self)
         elif 'revisions' in pageInfo:  # valid Title
             lastRev = pageInfo['revisions'][0]
-            if isinstance(lastRev['*'], basestring):
+            if 'textmissing' in lastRev:
+                # Maybe we could use a new error exception.
+                # Now we just pass and got a server error
+                pass  
+            elif isinstance(lastRev['*'], basestring):
                 textareaFound = True
         # I got page date with 'revisions' in pageInfo but
         # lastRev['*'] = False instead of the content. The Page itself was
