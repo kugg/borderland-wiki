@@ -3800,6 +3800,7 @@ class Family(object):
             'vkol':             'vkol',
             'vlos':             'vlos',
             'voipinfo':         'voipinfo',
+            'voy':              'wikivoyage',
             'w':                'wikipedia',
             'warpedview':       'warpedview',
             'webdevwikinl':     'webdevwikinl',
