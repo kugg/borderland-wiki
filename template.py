@@ -98,12 +98,12 @@ pages:
 #
 # (C) Daniel Herding, 2004
 # (C) Rob W.W. Hooft, 2003-2005
-# (C) xqt, 2009-2011
-# (C) Pywikipedia team, 2004-2010
+# (C) xqt, 2009-2013
+# (C) Pywikibot team, 2004-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 import re
 import sys
@@ -133,7 +133,7 @@ def UserEditFilterGenerator(generator, username, timestamp=None, skip=False):
         found = False
         for ed in editors:
             uts = pywikibot.Timestamp.fromISOformat(ed['timestamp'])
-            if not timestamp or uts>=ts:
+            if not timestamp or uts >= ts:
                 if username == ed['user']:
                     found = True
                     break
@@ -224,7 +224,7 @@ class TemplateRobot:
         # get edit summary message if it's empty
         if not self.editSummary:
             Param = {'list': comma.join(self.templates.keys()),
-                     'num' : len(self.templates)}
+                     'num': len(self.templates)}
             if self.remove:
                 self.editSummary = i18n.twntranslate(
                     site, 'template-removing', Param)
@@ -264,11 +264,11 @@ class TemplateRobot:
             if self.subst and self.remove:
                 replacements.append((templateRegex,
                                      '{{subst:%s\g<parameters>}}' % new))
-                exceptions['inside-tags']=['ref', 'gallery']
+                exceptions['inside-tags'] = ['ref', 'gallery']
             elif self.subst:
                 replacements.append((templateRegex,
                                      '{{subst:%s\g<parameters>}}' % old))
-                exceptions['inside-tags']=['ref', 'gallery']
+                exceptions['inside-tags'] = ['ref', 'gallery']
             elif self.remove:
                 replacements.append((templateRegex, ''))
             else:
