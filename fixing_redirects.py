@@ -176,7 +176,6 @@ def workon(page):
                 target = page2.getMovedTarget()
             except pywikibot.NoPage:
                 continue
-            target = pywikibot.Page(mysite, lastmove['new_title'])
         except (pywikibot.Error, pywikibot.SectionError):
             continue
         # no fix to user namespaces
