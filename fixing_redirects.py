@@ -174,7 +174,7 @@ def workon(page):
         except pywikibot.NoPage:
             try:
                 target = page2.getMovedTarget()
-            except pywikibot.NoPage:
+            except (pywikibot.NoPage, pywikibot.BadTitle):
                 continue
         except (pywikibot.Error, pywikibot.SectionError):
             continue
