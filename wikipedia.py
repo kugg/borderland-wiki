@@ -10428,8 +10428,8 @@ cookieProcessor = urllib2.HTTPCookieProcessor(cj)
 MyURLopener = urllib2.build_opener(U2RedirectHandler)
 
 if config.proxy['host']:
-    proxyHandler = urllib2.ProxyHandler({'http': 'http://%s/'
-                                         % config.proxy['host']})
+    proxyHandler = urllib2.ProxyHandler({'http': 'http://%s/' % config.proxy['host'],
+                                         'https': 'https://%s' % config.proxy['host']})
 
     MyURLopener.add_handler(proxyHandler)
     if config.proxy['auth']:
