@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
 Very simple script to replace a template with another one,
@@ -105,15 +106,14 @@ pages:
 #
 __version__ = '$Id$'
 #
+
 import re
-import sys
-import string
 import wikipedia as pywikibot
 from pywikibot import i18n
-import config
-import catlib
 import pagegenerators as pg
+import xmlreader
 import replace
+import catlib
 
 
 def UserEditFilterGenerator(generator, username, timestamp=None, skip=False):
@@ -159,13 +159,11 @@ class XmlDumpTemplatePageGenerator:
             * xmlfilename   - The dump's path, either absolute or relative
 
         """
-
         self.templates = templates
         self.xmlfilename = xmlfilename
 
     def __iter__(self):
         """Yield page objects until the entire XML dump has been read."""
-        import xmlreader
         mysite = pywikibot.getSite()
         dump = xmlreader.XmlDump(self.xmlfilename)
         # regular expression to find the original template.
@@ -176,11 +174,14 @@ class XmlDumpTemplatePageGenerator:
         for template in self.templates:
             templatePattern = template.title(withNamespace=False)
             if not pywikibot.getSite().nocapitalize:
-                templatePattern = '[' + templatePattern[0].upper() + templatePattern[0].lower() + ']' + templatePattern[1:]
+                templatePattern = '[%s%s]%s' % (templatePattern[0].upper(),
+                                                templatePattern[0].lower(),
+                                                templatePattern[1:])
             templatePattern = re.sub(' ', '[_ ]', templatePattern)
             templatePatterns.append(templatePattern)
-        templateRegex = re.compile(r'\{\{ *([mM][sS][gG]:)?(?:%s) *(?P<parameters>\|[^}]+|) *}}' % '|'.join(templatePatterns))
-
+        templateRegex = re.compile(
+            r'\{\{ *([mM][sS][gG]:)?(?:%s) *(?P<parameters>\|[^}]+|) *}}'
+            % '|'.join(templatePatterns))
         for entry in dump.parse():
             if templateRegex.search(entry.text):
                 page = pywikibot.Page(mysite, entry.title)
@@ -219,7 +220,7 @@ class TemplateRobot:
             self.addedCat = catlib.Category(
                 site, u'%s:%s' % (site.namespace(14), self.addedCat))
 
-        comma = self.summary = site.mediawiki_message('comma-separator')
+        comma = site.mediawiki_message('comma-separator')
 
         # get edit summary message if it's empty
         if not self.editSummary:
@@ -326,7 +327,8 @@ def main(*args):
         else:
             if not genFactory.handleArg(arg):
                 templateNames.append(
-                    pywikibot.Page(pywikibot.getSite(), arg, defaultNamespace=10
+                    pywikibot.Page(pywikibot.getSite(), arg,
+                                   defaultNamespace=10
                                    ).title(withNamespace=False))
 
     if subst ^ remove:
@@ -342,7 +344,6 @@ u'Unless using solely -subst or -remove, you must give an even number of templat
             return
 
     oldTemplates = []
-    ns = pywikibot.getSite().template_namespace()
     for templateName in templates.keys():
         oldTemplate = pywikibot.Page(pywikibot.getSite(), templateName,
                                      defaultNamespace=10)
@@ -361,6 +362,7 @@ u'Unless using solely -subst or -remove, you must give an even number of templat
         gen = pg.DuplicateFilterPageGenerator(gen)
 
     preloadingGen = pg.PreloadingGenerator(gen)
+
     bot = TemplateRobot(preloadingGen, templates, subst, remove, editSummary,
                         acceptAll, addedCat)
     bot.run()
