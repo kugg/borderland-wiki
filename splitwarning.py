@@ -8,7 +8,7 @@ The following parameter is supported:
 """
 #
 # (C) Rob W.W. Hooft, 2003
-# (C) Pywikipedia bot team, 2004-2012
+# (C) Pywikibot team, 2004-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -19,9 +19,10 @@ import wikipedia as pywikibot
 import codecs
 import re
 
+
 def splitwarning(folder):
-    files={}
-    count={}
+    files = {}
+    count = {}
     fn = pywikibot.config.datafilepath("logs", "interwiki.log")
     logFile = codecs.open(fn, 'r', 'utf-8')
     rWarning = re.compile('WARNING: (?P<family>.+?): \[\[(?P<code>.+?):.*')
@@ -42,12 +43,14 @@ def splitwarning(folder):
     for code in files.keys():
         print '* %s (%d)' % (code, count[code])
 
+
 def main(*args):
     folder = 'logs'
     for arg in pywikibot.handleArgs(*args):
         if arg.startswith("-folder"):
             folder = arg[len('-folder:'):]
     splitwarning(folder)
+
 
 if __name__ == "__main__":
     # No need to have me on the stack - I don't contact the wiki
