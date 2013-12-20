@@ -37,6 +37,7 @@ import wikipedia as pywikibot
 import pagegenerators
 import editarticle
 
+
 def main():
     automatic = False
     namespaces = []
@@ -125,4 +126,4 @@ def main():
 try:
     main()
 finally:
-   pywikibot.stopme()
+    pywikibot.stopme()
