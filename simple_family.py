@@ -7,15 +7,17 @@
 # ============================================
 
 # (C) Kim Bruning for Wikiation, sponsored by Kennisnet, 2009
+# (C) Pywikibot team, 2009-2013
 #
 # Distributed under the terms of the MIT license.
 #
 
-import sys #, settings    # No such module settings
-#if settings.pywikipedia_path not in sys.path:
-#    sys.path.append(settings.pywikipedia_path)
+import sys
+import urllib
+import config
+import family
 
-import config, family, urllib
+
 class Family(family.Family):
     """Friendlier version of the pywikipedia family class.
     We can use this in conjunction with none-pywikipedia
@@ -27,16 +29,16 @@ class Family(family.Family):
     """
 
     def __init__(self,
-        name='MY_NAME_FOR_THIS_SERVER',
-        protocol='http',
-        server='www.my_server.com',
-        scriptpath='/my/script/path',
-        version='1.13.2',
-        lang='en',
-        encoding='utf-8',
-        api_supported=False,
-        RversionTab=None    # very rare beast, you probably won't need it.
-        ):
+                 name='MY_NAME_FOR_THIS_SERVER',
+                 protocol='http',
+                 server='www.my_server.com',
+                 scriptpath='/my/script/path',
+                 version='1.13.2',
+                 lang='en',
+                 encoding='utf-8',
+                 api_supported=False,
+                 RversionTab=None  # very rare beast, you probably won't need it.
+                 ):
         """name: arbitrary name. Pick something easy to remember
         protocol: http|https
         server: dns address or ip address
@@ -47,6 +49,7 @@ class Family(family.Family):
         encoding: should (almost) always be utf-8
         api_supported: Does this mediawiki instance support the mediawiki api?
         RversionTab: Magic. See superclass for information.
+
         """
 
         family.Family.__init__(self)
@@ -55,34 +58,31 @@ class Family(family.Family):
         self.langs = {                # REQUIRED
             lang: server,  # Include one line for each wiki in family
         }
-        self._protocol=protocol
-        self._scriptpath=scriptpath
-        self._version=version
-        self._encoding=encoding
+        self._protocol = protocol
+        self._scriptpath = scriptpath
+        self._version = version
+        self._encoding = encoding
         # may as well add these here, so we can have a 1 stop shop
-        self._lang=lang
-        self._server=server
-        self._api_supported=api_supported
-        self._RversionTab=RversionTab
+        self._lang = lang
+        self._server = server
+        self._api_supported = api_supported
+        self._RversionTab = RversionTab
 
     def protocol(self, code):
-        """
-        returns "http" or "https"
-    """
+        """ returns "http" or "https" """
         return self._protocol
 
     def scriptpath(self, code):
-        """returns the prefix used to locate scripts on this wiki.
-        """
+        """ returns the prefix used to locate scripts on this wiki. """
         return self._scriptpath
 
     def apipath(self, code):
-        """returns whether or not this wiki
-        """
+        """returns whether or not this wiki """
         if self._api_supported:
             return '%s/api.php' % self.scriptpath(code)
         else:
-            raise NotImplementedError, "%s wiki family does not support api.php" % self.name
+            raise NotImplementedError(
+                "%s wiki family does not support api.php" % self.name)
 
     # Which version of MediaWiki is used?
     def version(self, code):
