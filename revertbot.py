@@ -33,7 +33,8 @@ class BaseRevertBot(object):
             'uclimit': '500',
             'ucuser': self.site.username(),
         }
-        if ns: predata['ucnamespace'] = ns
+        if ns:
+            predata['ucnamespace'] = ns
         if max < 500 and max != -1:
             predata['uclimit'] = str(max)
 
@@ -103,8 +104,10 @@ class BaseRevertBot(object):
         rev = page['revisions'][1]
 
         comment = u'Reverted to revision %s by %s on %s' % (rev['revid'],
-            rev['user'], rev['timestamp'])
-        if self.comment: comment += ': ' + self.comment
+                                                            rev['user'],
+                                                            rev['timestamp'])
+        if self.comment:
+            comment += ': ' + self.comment
 
         page = pywikibot.Page(self.site, item['title'])
         pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
@@ -125,7 +128,7 @@ class myRevertBot(BaseRevertBot):
     def callback(self, item):
         if 'top' in item:
             page = pywikibot.Page(self.site, item['title'])
-            text=page.get()
+            text = page.get()
             pattern = re.compile(u'\[\[.+?:.+?\..+?\]\]', re.UNICODE)
             return pattern.search(text) >= 0
         return False

@@ -21,7 +21,7 @@ Warning: experimental software, use at your own risk
 # http://hu.wikipedia.org/wiki/User:Kisbes
 # License : GFDL
 #
-# (C) Pywikipedia bot team, 2008, 2010
+# (C) Pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -35,8 +35,10 @@ from Queue import Queue
 import wikipedia as pywikibot
 import interwiki
 
+
 class IWRCBot():
-    def __init__(self, site, safe = True):
+
+    def __init__(self, site, safe=True):
         self.other_ns = re.compile(u'14\[\[07(' + u'|'.join(site.namespaces()) + u')')
         interwiki.globalvar.autonomous = True
         self.site = site
@@ -69,8 +71,11 @@ class IWRCBot():
         # it is a simple atomic append(), no need to acquire a semaphore
         self.queue.put_nowait(page)
 
+
 def main():
-    pywikibot.warning('this script can not be run manually/directly, but automatically by maintainer.py')
+    pywikibot.warning('this script can not be run manually/directly, but '
+                      'automatically by maintainer.py')
+
 
 if __name__ == "__main__":
     main()

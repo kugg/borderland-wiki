@@ -9,7 +9,7 @@ Currently only works on Dutch Wikipedia, I do intend to make it more generally
 usable.
 Permission has been asked to run this on the toolserver.
 """
-# (C) Pywikipedia bot team, 2007-2012
+# (C) Pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -19,7 +19,7 @@ __version__ = '$Id$'
 import cgi
 import cgitb
 import re
-import wikipedia as pywikibot
+import pywikibot
 
 cgitb.enable()
 
@@ -69,17 +69,18 @@ for line in text:
             except AttributeError:
                 user = None
             count += 1
-            lines.append((user,count,line))
+            lines.append((user, count, line))
     elif 'rcoptions' in line:
-        print line.replace(mysite.path() + "?title=Speciaal:RecenteWijzigingen&amp;",
+        print line.replace(mysite.path() +
+                           "?title=Speciaal:RecenteWijzigingen&amp;",
                            "rcsort.py?")
         rcoptions = True
     elif newbies and 'Nieuwste' in line:
-        line =  line.replace(mysite.path() + "?title=Speciaal:Bijdragen&amp;",
-                             "rcsort.py?").replace("target=newbies",
-                                                   "newbies=true")
+        line = line.replace(mysite.path() + "?title=Speciaal:Bijdragen&amp;",
+                            "rcsort.py?").replace("target=newbies",
+                                                  "newbies=true")
         if '</fieldset>' in line:
-            line = line[line.find('</fieldset>')+11:]
+            line = line[line.find('</fieldset>') + 11:]
         print line
         rcoptions = True
 lines.sort()
@@ -88,13 +89,15 @@ last = 0
 for line in lines:
     if line[0] != last:
         print "</ul>"
-        if line[0] == None:
+        if line[0] is None:
             print "<h2>Gebruiker onbekend</h2>"
         else:
-            pywikibot.output(u"<h2>%s</h2>"%line[0],toStdout=True)
+            pywikibot.output(u"<h2>%s</h2>" % line[0], toStdout=True)
         print "<ul>"
         last = line[0]
-    pywikibot.output(line[2].replace('href="/w','href="http://nl.wikipedia.org/w'), toStdout = True)
+    pywikibot.output(line[2].replace('href="/w',
+                                     'href="http://nl.wikipedia.org/w'),
+                     toStdout=True)
     print
 
 print "</ul>"
