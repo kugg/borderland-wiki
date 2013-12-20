@@ -65,15 +65,28 @@ __version__ = '$Id$'
 #
 
 
-import re, sys, os, string, time, copy
-import difflib, traceback
-import StringIO, zipfile, csv
-import mailbox, mimetypes, datetime, email.utils
+import re
+import sys
+import os
+import string
+import time
+import copy
+import difflib
+import traceback
+import StringIO
+import zipfile
+import csv
+import mailbox
+import mimetypes
+import datetime
+import email.utils
 import logging
 import ast
-import shelve, pprint
+import shelve
+import pprint
 
-import pagegenerators, basic
+import pagegenerators
+import basic
 # Splitting the bot into library parts
 import wikipedia as pywikibot
 from pywikibot import i18n
@@ -91,67 +104,71 @@ import crontab
 # TODO: think about what config to move to 'subster-config.css' (per wiki)
 #       e.g. 'VerboseMessage', 'data_VerboseMessage', ...
 bot_config = {
-        # unicode values
-             'BotName':     pywikibot.config.usernames[pywikibot.config.family][pywikibot.config.mylang],
-        'TemplateName':     u'User:DrTrigonBot/Subster',    # or 'template' for 'Flagged Revisions'
-   'data_PropertyId':       u'370',                         # default: Sandbox-String (P370)
+    # unicode values
+    'BotName': pywikibot.config.usernames[pywikibot.config.family][pywikibot.config.mylang],
+    'TemplateName':     u'User:DrTrigonBot/Subster',    # or 'template' for 'Flagged Revisions'
+    'data_PropertyId':  u'370',                         # default: Sandbox-String (P370)
 
-        'ErrorTemplate':    u'<b>SubsterBot Exception in "%s" (%s)</b>\n<pre>%s</pre>',
-        'VerboseMessage':   u'<noinclude>\n----\n%s\n</noinclude>', # DRTRIGON-116, DRTRIGON-132
-   'data_VerboseMessage':   u'<onlyinclude>{{#switch: {{{1|}}}\n'
+    'ErrorTemplate':    u'<b>SubsterBot Exception in "%s" (%s)</b>\n<pre>%s</pre>',
+    'VerboseMessage':   u'<noinclude>\n----\n%s\n</noinclude>',  # DRTRIGON-116, DRTRIGON-132
+    'data_VerboseMessage':  u'<onlyinclude>{{#switch: {{{1|}}}\n'
                             u'|          error = %(error)s\n'
                             u'|error-traceback = %(error-traceback)s\n'
                             u'}}</onlyinclude>',
 
-        # important to use a '.css' page here, since it HAS TO BE protected to
-        # prevent malicious code injection !
-        'ConfCSSpostproc':  u'User:DrTrigon/DrTrigonBot/subster-postproc.css',
-        'ConfCSSconfig':    u'User:DrTrigon/DrTrigonBot/subster-config.css',
+    # important to use a '.css' page here, since it HAS TO BE protected to
+    # prevent malicious code injection !
+    'ConfCSSpostproc':  u'User:DrTrigon/DrTrigonBot/subster-postproc.css',
+    'ConfCSSconfig':    u'User:DrTrigon/DrTrigonBot/subster-config.css',
 
-        'CodeTemplate':     u'\n%s(DATA, *args)\n',
-        'CRONMaxDelay':     1*24*60*60,       # bot runs daily
+    'CodeTemplate':     u'\n%s(DATA, *args)\n',
+    'CRONMaxDelay':     1*24*60*60,       # bot runs daily
 
-        # regex values
-        'var_regex_str':    u'<!--SUBSTER-%(var1)s-->%(cont)s<!--SUBSTER-%(var2)s-->',
+    # regex values
+    'var_regex_str':    u'<!--SUBSTER-%(var1)s-->%(cont)s<!--SUBSTER-%(var2)s-->',
 
-        'mbox_file':        'mail_inbox',    # "drtrigon+subster@toolserver.org"
-        'data_path':        '../data/subster',
+    'mbox_file':        'mail_inbox',    # "drtrigon+subster@toolserver.org"
+    'data_path':        '../data/subster',
 
-        # bot paramater/options
-        'param_default':    {
-            'url':             '',
-            'regex':           '',
-            'value':           '',
-            'count':           '0',
-            #'postproc':        '("","")',
-            'postproc':        '(\'\', \'\')',
-            'beautifulsoup':   'False',         # DRTRIGON-88
-            'expandtemplates': 'False',         # DRTRIGON-93 (with 'wiki://')
-            'simple':          '',              # DRTRIGON-85
-            'zip':             'False',
-            'xlsx':            '',              #
-            'ods':             '',              #
-            # may be 'hours' have to be added too (e.g. for 'ar')
-            'cron':            '',              # DRTRIGON-102
-            'verbose':         'True',          # DRTRIGON-132 (else see logs)
-            #'djvu': ... u"djvused -e 'n' \"%s\"" ... djvutext.py
-            #'pdf': ... u"pdftotext" or python module
-            #'imageocr', 'swfocr', ...
-        },
-
-        # this is a system parameter and should not be changed! (copy.deepcopy)
-        'EditFlags':        {'minorEdit': True, 'botflag': True},
+    # bot paramater/options
+    'param_default': {
+        'url':             '',
+        'regex':           '',
+        'value':           '',
+        'count':           '0',
+        #'postproc':        '("","")',
+        'postproc':        '(\'\', \'\')',
+        'beautifulsoup':   'False',         # DRTRIGON-88
+        'expandtemplates': 'False',         # DRTRIGON-93 (with 'wiki://')
+        'simple':          '',              # DRTRIGON-85
+        'zip':             'False',
+        'xlsx':            '',              #
+        'ods':             '',              #
+        # may be 'hours' have to be added too (e.g. for 'ar')
+        'cron':            '',              # DRTRIGON-102
+        'verbose':         'True',          # DRTRIGON-132 (else see logs)
+        #'djvu': ... u"djvused -e 'n' \"%s\"" ... djvutext.py
+        #'pdf': ... u"pdftotext" or python module
+        #'imageocr', 'swfocr', ...
+    },
+    # this is a system parameter and should not be changed! (copy.deepcopy)
+    'EditFlags':  {'minorEdit': True, 'botflag': True},
 }
 
 
 class SubsterBot(basic.AutoBasicBot):
-    '''
-    Robot which will does substitutions of tags within wiki page content with external or
-    other wiki text data. Like dynamic text updating.
-    '''
+    """
+    Robot which will does substitutions of tags within wiki page content with
+    external or other wiki text data. Like dynamic text updating.
 
-    _var_regex_str = bot_config['var_regex_str']%{'var1':'%(var)s','var2':'%(var)s','cont':'%(cont)s'}
-    _BS_regex_str  = bot_config['var_regex_str']%{'var1':'%(var1)s','var2':'%(var2)sBS:/','cont':'%(cont)s'}
+    """
+
+    _var_regex_str = bot_config['var_regex_str'] % {'var1': '%(var)s',
+                                                    'var2': '%(var)s',
+                                                    'cont': '%(cont)s'}
+    _BS_regex_str = bot_config['var_regex_str'] % {'var1': '%(var1)s',
+                                                   'var2': '%(var2)sBS:/',
+                                                   'cont': '%(cont)s'}
 
     # -template and subst-tag handling taken from MerlBot
     # -this bot could also be runned on any local wiki with an anacron-job
@@ -167,56 +184,74 @@ class SubsterBot(basic.AutoBasicBot):
         os.environ['TZ'] = 'Europe/Amsterdam'
         if hasattr(time, "tzset"):
             time.tzset()
-            pywikibot.output(u'Setting process TimeZone (TZ): %s' % str(time.tzname))    # ('CET', 'CEST')
+            pywikibot.output(u'Setting process TimeZone (TZ): %s'
+                             % str(time.tzname))    # ('CET', 'CEST')
         else:
             # e.g. windows doesn't have that attribute
-            pywikibot.warning(u'This operating system has NO SUPPORT for setting TimeZone by code! Before running this script, please set the TimeZone manually to one approriate for use with the Wikipedia language and region you intend to.')
+            pywikibot.warning(
+                u'This operating system has NO SUPPORT for setting TimeZone by '
+                u'code! Before running this script, please set the TimeZone '
+                u'manually to one approriate for use with the Wikipedia '
+                u'language and region you intend to.')
 
         # init constants
         self._bot_config = bot_config
         # convert e.g. namespaces to corret language
-        self._bot_config['TemplateName'] = pywikibot.Page(self.site, self._bot_config['TemplateName']).title()
-        self._template_regex = re.compile('\{\{' + self._bot_config['TemplateName'] + '(.*?)\}\}', re.S)
+        self._bot_config['TemplateName'] = pywikibot.Page(
+            self.site, self._bot_config['TemplateName']).title()
+        self._template_regex = re.compile(
+            '\{\{' + self._bot_config['TemplateName'] + '(.*?)\}\}', re.S)
         if self.site.is_data_repository():
             self._bot_config['VerboseMessage'] = self._bot_config['data_VerboseMessage']
 
         # init constants
-        self._userListPage        = pywikibot.Page(self.site, self._bot_config['TemplateName'])
-        self._ConfCSSpostprocPage = pywikibot.Page(self.site, self._bot_config['ConfCSSpostproc'])
-        self._ConfCSSconfigPage   = pywikibot.Page(self.site, self._bot_config['ConfCSSconfig'])
-        self.pagegen = pagegenerators.ReferringPageGenerator(self._userListPage, onlyTemplateInclusion=True)
-        self._code   = self._ConfCSSpostprocPage.get()
-        pywikibot.output(u'Imported postproc %s rev %s from %s' %\
-          ((self._ConfCSSpostprocPage.title(asLink=True),) + self._ConfCSSpostprocPage.getVersionHistory(revCount=1)[0][:2]) )
+        self._userListPage = pywikibot.Page(self.site,
+                                            self._bot_config['TemplateName'])
+        self._ConfCSSpostprocPage = pywikibot.Page(
+            self.site, self._bot_config['ConfCSSpostproc'])
+        self._ConfCSSconfigPage = pywikibot.Page(
+            self.site, self._bot_config['ConfCSSconfig'])
+        self.pagegen = pagegenerators.ReferringPageGenerator(
+            self._userListPage, onlyTemplateInclusion=True)
+        self._code = self._ConfCSSpostprocPage.get()
+        pywikibot.output(u'Imported postproc %s rev %s from %s'
+                         % ((self._ConfCSSpostprocPage.title(asLink=True), )
+                            + self._ConfCSSpostprocPage.getVersionHistory(revCount=1)[0][:2]))
         self._flagenable = {}
         if self._ConfCSSconfigPage.exists():
-            exec(self._ConfCSSconfigPage.get())    # with variable: bot_config_wiki
+            exec(self._ConfCSSconfigPage.get())  # with variable: bot_config_wiki
             self._flagenable = bot_config_wiki['flagenable']
-            pywikibot.output(u'Imported config %s rev %s from %s' %\
-              ((self._ConfCSSconfigPage.title(asLink=True),) + self._ConfCSSconfigPage.getVersionHistory(revCount=1)[0][:2]) )
+            pywikibot.output(u'Imported config %s rev %s from %s'
+                             % ((self._ConfCSSconfigPage.title(asLink=True), )
+                                + self._ConfCSSconfigPage.getVersionHistory(revCount=1)[0][:2]))
 
     def run(self, sim=False, msg=None, EditFlags=bot_config['EditFlags']):
-        '''Run SubsterBot().'''
+        """Run SubsterBot()."""
 
-        pywikibot.output(u'\03{lightgreen}* Processing Template Backlink List:\03{default}')
+        pywikibot.output(
+            u'\03{lightgreen}* Processing Template Backlink List:\03{default}')
 
-        if sim:    self.pagegen = ['dummy']
+        if sim:
+            self.pagegen = ['dummy']
 
         for page in self.pagegen:
             # setup source to get data from
             if sim:
                 content = sim['content']
-                params = [ sim ]
+                params = [sim]
             else:
                 pywikibot.output(u'Getting page "%s" via API from %s...'
                                  % (page.title(asLink=True), self.site))
 
                 # get page content and operating mode
                 content = self.load(page)
-                params = self.loadTemplates(page, self._bot_config['TemplateName'],
-                                            default=self._bot_config['param_default'])
+                params = self.loadTemplates(
+                    page,
+                    self._bot_config['TemplateName'],
+                    default=self._bot_config['param_default'])
 
-            if not params: continue
+            if not params:
+                continue
 
             (substed_content, substed_tags) = self.subContent(content, params)
 
@@ -236,11 +271,12 @@ class SubsterBot(basic.AutoBasicBot):
                                                'thirdparty-drtrigonbot-subster-summary-mod')
                     flags = copy.deepcopy(EditFlags)
                     if page.title() in self._flagenable:
-                        flags.update( self._flagenable[page.title()] )
+                        flags.update(self._flagenable[page.title()])
                     pywikibot.output(u'Flags used for writing: %s' % flags)
-                    self.save( page, substed_content,
-                               (head + u' ' + msg) % {'tags':", ".join(substed_tags)},
-                               **flags )
+                    self.save(page, substed_content,
+                              (head + u' ' + msg)
+                              % {'tags': ", ".join(substed_tags)},
+                              **flags)
 
                     # DRTRIGON-130: data repository (wikidata) output to items
                     if self.site.is_data_repository():
@@ -270,8 +306,8 @@ class SubsterBot(basic.AutoBasicBot):
         for item in params:
             # 1st stage: main/general content substitution
             # 1.) - 5.) subst templates
-            metadata = { 'bot-error':           unicode(False),
-                         'bot-error-traceback': u'', }  # DRTRIGON-132
+            metadata = {'bot-error': unicode(False),
+                        'bot-error-traceback': u'', }  # DRTRIGON-132
             try:
                 (substed_content, tags, md) = self.subTemplate(substed_content, item)
                 substed_tags += tags
@@ -289,17 +325,17 @@ class SubsterBot(basic.AutoBasicBot):
                 # (this metadata HAVE TO trigger a change because of error!)
                 metadata['bot-error'] = unicode(True)
                 metadata['bot-error-traceback'] = self._bot_config['ErrorTemplate'] %\
-                                     ( item['value'],
+                                     (item['value'],
                                        pywikibot.Timestamp.now().isoformat(' '),
-                                       result.strip() )
+                                       result.strip())
 
                 # VerboseMode: IFF no 'bot-error-traceback' metadata tag present on
                 # page, append it in order not to loose error info (single exception)
                 value = md_val_tag % (item['value'], 'bot-error-traceback')
                 tags = self.subTag(substed_content, value)[1]
                 if ast.literal_eval(item['verbose']) and (value not in tags):
-                    substed_content += self._bot_config['VerboseMessage'] %\
-                      (self._var_regex_str % {'var': value, 'cont': u''})
+                    substed_content += self._bot_config['VerboseMessage'] % (
+                        self._var_regex_str % {'var': value, 'cont': u''})
 
             # 2nd stage: conditional metadata substitution (DRTRIGON-132)
             # (IFF content changed, exception raised, ...)
@@ -307,7 +343,7 @@ class SubsterBot(basic.AutoBasicBot):
                 value = md_val_tag % (item['value'], data)
                 (substed_content, tags) = self.subTag(substed_content, value, metadata[data], 0)
                 substed_tags += tags
-                #substed_tags.append( u'>error:%s<' % item['value'] )
+                #substed_tags.append(u'>error:%s<' % item['value'])
 
         return (substed_content, substed_tags)
 
@@ -324,8 +360,8 @@ class SubsterBot(basic.AutoBasicBot):
         """
 
         substed_tags = []  # DRTRIGON-73
-        metadata     = {'mw-signature': u'~~~~',
-                        'mw-timestamp': u'~~~~~',}  # DRTRIGON-132
+        metadata = {'mw-signature': u'~~~~',
+                    'mw-timestamp': u'~~~~~', }  # DRTRIGON-132
 
         # 0.2.) check for 'simple' mode and get additional params
         if param['simple']:
@@ -343,7 +379,7 @@ class SubsterBot(basic.AutoBasicBot):
             delay = entry.next(datetime.datetime.now().replace(hour=0,
                                                                minute=0,
                                                                second=0,
-                                                               microsecond=0)- \
+                                                               microsecond=0) - \
                                datetime.timedelta(microseconds=1))
 
             pywikibot.output(u'CRON delay for execution: %.3f (<= %i)'
@@ -362,18 +398,18 @@ class SubsterBot(basic.AutoBasicBot):
         param['zip'] = ast.literal_eval(param['zip'])
         if not secure:
             return (content, substed_tags, metadata)
-        if   (param['url'][:7] == u'wiki://'):
+        if param['url'][:7] == u'wiki://':
             url = param['url'][7:].strip('[]')              # enable wiki-links
             if ast.literal_eval(param['expandtemplates']):  # DRTRIGON-93 (only with 'wiki://')
                 external_buffer = pywikibot.Page(self.site,
                                                  url).get(expandtemplates=True)
             else:
-                external_buffer = self.load( pywikibot.Page(self.site, url) )
+                external_buffer = self.load(pywikibot.Page(self.site, url))
         elif (param['url'][:7] == u'mail://'):              # DRTRIGON-101
             url = param['url'].replace(u'{{@}}', u'@')     # e.g. nlwiki
             mbox = SubsterMailbox(
-              pywikibot.config.datafilepath(self._bot_config['data_path'],
-                                            self._bot_config['mbox_file'], ''))
+                pywikibot.config.datafilepath(self._bot_config['data_path'],
+                                              self._bot_config['mbox_file'], ''))
             external_buffer = mbox.find_data(url)
             mbox.close()
         elif (param['url'][:8] == u'local://'):             # DRTRIGON-131
@@ -392,9 +428,9 @@ class SubsterBot(basic.AutoBasicBot):
             # on page, if the user placed them, else use the conventional mode.
             # http://www.diveintopython.net/http_web_services/etags.html
             f_url, external_buffer = http.request(self.site, param['url'],
-                                                  no_hostname = True,
-                                                  back_response = True)
-            headers = f_url.headers # same like 'f_url.info()'
+                                                  no_hostname=True,
+                                                  back_response=True)
+            headers = f_url.headers  # same like 'f_url.info()'
             #if param['zip']:
             if ('text/' not in headers['content-type']):
                 pywikibot.output(u'Source is of non-text content-type, '
@@ -408,7 +444,7 @@ class SubsterBot(basic.AutoBasicBot):
 
         # some intermediate processing (unzip, xlsx2csv, ...)
         if param['zip']:    # 'application/zip', ...
-            fileno          = 0 if (param['zip'] == True) else (param['zip']-1)
+            fileno = 0 if (param['zip'] is True) else (param['zip'] - 1)
             external_buffer = self.unzip(external_buffer, fileno)
         if param['xlsx']:   # 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             external_buffer = self.xlsx2csv(external_buffer, param['xlsx'])
@@ -434,12 +470,14 @@ class SubsterBot(basic.AutoBasicBot):
                 # DRTRIGON-114: Support for named groups in regexs
                 if regex.groupindex:
                     for item in regex.groupindex:
-                        external_data_dict[u'%s-%s' % (param['value'], item)] = external_data[regex.groupindex[item]-1]
+                        external_data_dict[u'%s-%s'
+                                           % (param['value'],
+                                              item)] = external_data[regex.groupindex[item]-1]
                 elif (len(external_data) == 1):
                     external_data_dict = {param['value']: external_data[0]}
                 else:
                     external_data_dict = {param['value']: str(external_data)}
-            pywikibot.debug( str(external_data_dict) )
+            pywikibot.debug(str(external_data_dict))
 
             param['postproc'] = eval(param['postproc'])
             # should be secured as given below, but needs code changes in wiki too
@@ -448,19 +486,21 @@ class SubsterBot(basic.AutoBasicBot):
                 external_data = external_data_dict[value]
 
                 # 4.) postprocessing
-                func  = param['postproc'][0]    # needed by exec call of self._code
-                DATA  = [ external_data ]       #
-                args  = param['postproc'][1:]   #
-                scope = {}                      # (scope to run in)
-                scope.update( locals() )        # (add DATA, *args, ...)
-                scope.update( globals() )       # (add imports and else)
+                func = param['postproc'][0]  # needed by exec call of self._code
+                DATA = [external_data]
+                args = param['postproc'][1:]
+                scope = {}                   # (scope to run in)
+                scope.update(locals())       # (add DATA, *args, ...)
+                scope.update(globals())      # (add imports and else)
                 if func:
-                    exec(self._code + (self._bot_config['CodeTemplate'] % func), scope, scope)
+                    exec(self._code + (self._bot_config['CodeTemplate'] % func),
+                         scope, scope)
                     external_data = DATA[0]
-                pywikibot.debug( external_data )
+                pywikibot.debug(external_data)
 
                 # 5.) subst content
-                (content, tags) = self.subTag(content, value, external_data, int(param['count']))
+                (content, tags) = self.subTag(content, value, external_data,
+                                              int(param['count']))
                 substed_tags += tags
         else:
             # DRTRIGON-105: Support for multiple BS template configurations
@@ -471,14 +511,17 @@ class SubsterBot(basic.AutoBasicBot):
             # DRTRIGON-88: Enable Beautiful Soup power for Subster
             BS_tags = self.get_BS_regex(value).findall(content)
 
-            pywikibot.output(u'BeautifulSoup tags found by regex: %i' % len(BS_tags))
+            pywikibot.output(u'BeautifulSoup tags found by regex: %i'
+                             % len(BS_tags))
 
             prev_content = content
 
             BS = BeautifulSoup.BeautifulSoup(external_buffer)
             for item in BS_tags:
                 external_data = eval('BS.%s' % item[1])
-                external_data = self._BS_regex_str%{'var1':value+'BS:'+item[1],'var2':value,'cont':external_data}
+                external_data = self._BS_regex_str % {'var1': value + 'BS:' + item[1],
+                                                      'var2': value,
+                                                      'cont': external_data}
                 content = content.replace(item[0], external_data, 1)
 
             if (content != prev_content):
@@ -498,7 +541,9 @@ class SubsterBot(basic.AutoBasicBot):
         # 5.) subst content
         prev_content = content
         var_regex = self.get_var_regex(value)
-        content = var_regex.sub((self._var_regex_str%{'var':value,'cont':external_data}), content, count)
+        content = var_regex.sub((self._var_regex_str
+                                 % {'var': value, 'cont': external_data}),
+                                content, count)
         if (content != prev_content):
             substed_tags.append(value)
 
@@ -514,8 +559,9 @@ class SubsterBot(basic.AutoBasicBot):
 
            Returns nothing, but outputs/prints the diff.
         """
-        diff = difflib.Differ().compare(content.splitlines(1), substed_content.splitlines(1))
-        diff = [ line for line in diff if line[0].strip() ]
+        diff = difflib.Differ().compare(content.splitlines(1),
+                                        substed_content.splitlines(1))
+        diff = [line for line in diff if line[0].strip()]
         pywikibot.output(u'Diff:')
         pywikibot.output(u'--- ' * 15)
         pywikibot.output(u''.join(diff))
@@ -535,11 +581,11 @@ class SubsterBot(basic.AutoBasicBot):
 
            @param substed_content: New/Changed content (including tags).
            @type  substed_content: string
-           
+
            Returns the extracted and converted data.
         """
         # DRTRIGON-130: convert talk page result to wikidata(base)
-        data = u'\n'.join(re.findall('<pre>(.*?)</pre>', substed_content, 
+        data = u'\n'.join(re.findall('<pre>(.*?)</pre>', substed_content,
                                      re.S | re.I))
         data = self.get_var_regex('.*?', '(.*?)').sub('\g<1>', data)
         res = {}
@@ -560,13 +606,15 @@ class SubsterBot(basic.AutoBasicBot):
            @type  data: dict
 
            Returns nothing, but stores the changed content to linked labels.
+
         """
         # DRTRIGON-130: check for changes and then write/change/set values
         datapage = pywikibot.DataPage(self.site, page.title())
-        dataitem = u'%s:%s' % (self._bot_config['BotName'], datapage.title().split(u':')[1])
-        links  = [ {u'aliases': [u'%s:%s' % (dataitem, p.sortkeyprefix)],
-                    u'id': p.toggleTalkPage().title().lower(),}
-                   for p in catlib.Category(self.site, dataitem).articles() ]
+        dataitem = u'%s:%s' % (self._bot_config['BotName'],
+                               datapage.title().split(u':')[1])
+        links = [{u'aliases': [u'%s:%s' % (dataitem, p.sortkeyprefix)],
+                  u'id': p.toggleTalkPage().title().lower()}
+                 for p in catlib.Category(self.site, dataitem).articles()]
         links += datapage.searchentities(dataitem)
 
         for element in links:
@@ -582,33 +630,39 @@ class SubsterBot(basic.AutoBasicBot):
             dataoutpage = pywikibot.DataPage(self.site, element['id'])
 
             # check for changes and then write/change/set values
-            summary = u'Bot: update data because of configuration on %s.' % page.title(asLink=True)
+            summary = (u'Bot: update data because of configuration on %s.'
+                       % page.title(asLink=True))
             buf = dataoutpage.get()
-            claim = [ claim for claim in buf[u'claims'] if (claim['m'][1] == propid) ]
+            claim = [claim for claim in buf[u'claims']
+                     if (claim['m'][1] == propid)]
             # TODO: does this check (if) work with multiple claims per property?
             if (not claim) or (claim[0]['m'][3] != data[item]):
-                pywikibot.output(u'%s in %s changed to "%s"' %\
-                    (element[u'aliases'][0], dataoutpage.title(asLink=True), data[item]))
+                pywikibot.output(u'%s in %s changed to "%s"'
+                                 % (element[u'aliases'][0],
+                                    dataoutpage.title(asLink=True),
+                                    data[item]))
                 ### BUG 57480: references cannot be set correctly anymore
                 ### ('try ... except' has to be considered just a work-a-round)
                 try:
-                    dataoutpage.editclaim(u'p%s' % propid, data[item],
-                                          refs={"p%s" % propid:
-                                              [{"snaktype":  "value",
-                                                "property":  "p%s" % propid,
-                                                "datavalue": {u'type':  u'string', 
-                                                              u'value': datapage.title()}},
-                                               {"snaktype":  "value",
-                                                "property":  "p585",    # point in time
-                                                #"property":  "p578",    # Sandbox-TimeValue
-                                                "datavalue": {u'type':  u'time',
-                                                              u'value': {u'after':         0, 
-                                                                         u'precision':     11, 
-                                                                         u'time':          (u'+0000000%sZ' % pywikibot.Timestamp.now().isoformat().split('.')[0]), 
-                                                                         u'timezone':      0, 
-                                                                         u'calendarmodel': u'http://www.wikidata.org/entity/Q1985727', 
-                                                                         u'before':        0}}},]},
-                                          comment=summary)
+                    dataoutpage.editclaim(
+                        u'p%s' % propid, data[item],
+                        refs={"p%s" % propid:
+                              [{"snaktype":  "value",
+                                "property":  "p%s" % propid,
+                                "datavalue": {u'type':  u'string',
+                                              u'value': datapage.title()}},
+                               {"snaktype":  "value",
+                                "property":  "p585",    # point in time
+                                #"property":  "p578",    # Sandbox-TimeValue
+                                "datavalue": {u'type':  u'time',
+                                              u'value': {u'after': 0,
+                                                         u'precision': 11,
+                                                         u'time': (u'+0000000%sZ'
+                                                                   % pywikibot.Timestamp.now().isoformat().split('.')[0]),
+                                                         u'timezone': 0,
+                                                         u'calendarmodel': u'http://www.wikidata.org/entity/Q1985727',
+                                                         u'before':0}}}, ]},
+                        comment=summary)
                 except RuntimeError:
                     pywikibot.exception()
         #print data['timestampFIDE'], pywikibot.Timestamp.now().isoformat()
@@ -623,7 +677,8 @@ class SubsterBot(basic.AutoBasicBot):
 
            Return the according (and compiled) regex object.
         """
-        return re.compile((self._var_regex_str%{'var':var,'cont':cont}), re.S | re.I)
+        return re.compile(
+            (self._var_regex_str % {'var': var, 'cont': cont}), re.S | re.I)
 
     def get_BS_regex(self, var, cont='(.*?)'):
         """Get regex used/needed to find the BS tags to replace.
@@ -635,31 +690,33 @@ class SubsterBot(basic.AutoBasicBot):
 
            Return the according (and compiled) regex object.
         """
-        return re.compile(u'(' + self._BS_regex_str%{'var1':var+'BS:(.*?)','var2':var,'cont':cont} + u')')
+        return re.compile(
+            u'(' + self._BS_regex_str % {'var1': var + 'BS:(.*?)',
+                                         'var2': var,
+                                         'cont': cont} + u')')
 
     def unzip(self, external_buffer, i):
-        """Convert zip data to plain format.
-        """
+        """ Convert zip data to plain format. """
 
         zip_buffer = zipfile.ZipFile(StringIO.StringIO(external_buffer))
-        data_file  = zip_buffer.namelist()[i]
+        data_file = zip_buffer.namelist()[i]
         external_buffer = zip_buffer.open(data_file).read().decode('latin-1')
 
         return external_buffer
 
     def xlsx2csv(self, external_buffer, sheet):
-        """Convert xlsx (EXCEL) data to csv format.
-        """
+        """ Convert xlsx (EXCEL) data to csv format. """
 
-        wb = openpyxl.reader.excel.load_workbook(StringIO.StringIO(external_buffer), use_iterators = True)
+        wb = openpyxl.reader.excel.load_workbook(
+            StringIO.StringIO(external_buffer), use_iterators=True)
 
-        sheet_ranges = wb.get_sheet_by_name(name = sheet)
+        sheet_ranges = wb.get_sheet_by_name(name=sheet)
 
         output = StringIO.StringIO()
         spamWriter = csv.writer(output)
 
-        for row in sheet_ranges.iter_rows(): # it brings a new method: iter_rows()
-            spamWriter.writerow([ cell.internal_value for cell in row ])
+        for row in sheet_ranges.iter_rows():  # a new method: iter_rows()
+            spamWriter.writerow([cell.internal_value for cell in row])
 
         external_buffer = output.getvalue()
         output.close()
@@ -683,8 +740,8 @@ class SubsterBot(basic.AutoBasicBot):
             if not (sheet.getAttribute('name') == sheet):
                 continue
             for row in sheet.getElementsByType(odf.table.TableRow):
-                spamWriter.writerow([ odf.teletype.extractText(cell).encode('utf-8')
-                                      for cell in row.getElementsByType(odf.table.TableCell) ])
+                spamWriter.writerow([odf.teletype.extractText(cell).encode('utf-8')
+                                      for cell in row.getElementsByType(odf.table.TableCell)])
 
         external_buffer = output.getvalue()
         output.close()
@@ -707,19 +764,19 @@ class SubsterMailbox(mailbox.mbox):
         unique = {}
         remove = []
         for i, message in enumerate(self):
-            sender   = message['from']       # Could possibly be None.
-            timestmp = message['date']       # Could possibly be None.
+            sender = message['from']    # Could possibly be None.
+            timestmp = message['date']  # Could possibly be None.
 
-            timestmp = time.mktime( email.utils.parsedate(timestmp) )
-            timestmp = datetime.datetime.fromtimestamp( timestmp )
+            timestmp = time.mktime(email.utils.parsedate(timestmp))
+            timestmp = datetime.datetime.fromtimestamp(timestmp)
 
             if sender in unique:
                 (j, timestmp_j) = unique[sender]
 
                 if (timestmp >= timestmp_j):
-                    remove.append( j )
+                    remove.append(j)
                 else:
-                    remove.append( i )
+                    remove.append(i)
             else:
                 unique[sender] = (i, timestmp)
 
@@ -734,48 +791,51 @@ class SubsterMailbox(mailbox.mbox):
             pywikibot.output('Removed %i depreciated email data source(s).' % len(remove))
 
     def find_data(self, url):
-        """Find mail according to given 'From' (sender).
-        """
+        """ Find mail according to given 'From' (sender). """
 
         url = (url[:7], ) + tuple(url[7:].split('/'))
         content = []
 
         for i, message in enumerate(self):
-            sender   = message['from']       # Could possibly be None.
-            subject  = message['subject']    # Could possibly be None.
-            timestmp = message['date']       # Could possibly be None.
+            sender = message['from']      # Could possibly be None.
+            subject = message['subject']  # Could possibly be None.
+            timestmp = message['date']    # Could possibly be None.
 
             if sender and url[1] in sender:
                 # data found
                 pywikibot.output('Found email data source:')
-                pywikibot.output('%i / %s / %s / %s' % (i, sender, subject, timestmp))
+                pywikibot.output('%i / %s / %s / %s'
+                                 % (i, sender, subject, timestmp))
 
                 full = (url[2] == 'attachment-full')
-                ind  = 0    # default; ignore attachement index
-                if   (url[2] == 'all'):
-                    content = [ message.as_string(True) ]
+                ind = 0  # default; ignore attachement index
+                if (url[2] == 'all'):
+                    content = [message.as_string(True)]
                 elif (url[2] == 'attachment') or full:
                     if len(url) > 3:
-                        ind = int(url[3])   # combine 'ind' with 'full=True'...?
+                        ind = int(url[3])  # combine 'ind' with 'full=True'...?
                     counter = 1
                     content = []
                     for part in message.walk():
                         # multipart/* are just containers
                         if part.get_content_maintype() == 'multipart':
                             continue
-                        # Applications should really sanitize the given filename so that an
-                        # email message can't be used to overwrite important files
+                        # Applications should really sanitize the given
+                        # filename so that an email message can't be used to
+                        # overwrite important files
                         filename = part.get_filename()
                         if filename or full:
                             if not filename:
-                                ext = mimetypes.guess_extension(part.get_content_type())
+                                ext = mimetypes.guess_extension(
+                                    part.get_content_type())
                                 if not ext:
                                     # Use a generic bag-of-bits extension
                                     ext = '.bin'
                                 filename = 'part-%03d%s' % (counter, ext)
 
-                            content += [ part.get_payload(decode=True) ]
-                            pywikibot.output('Found attachment # %i: "%s"' % (counter, filename))
+                            content += [part.get_payload(decode=True)]
+                            pywikibot.output('Found attachment # %i: "%s"'
+                                             % (counter, filename))
 
                             if counter == ind:
                                 return content[-1]
@@ -784,15 +844,14 @@ class SubsterMailbox(mailbox.mbox):
 
                             if (not full) and (not ind):
                                 break
-
                     break
-
         return string.join(content)
 
 
 def main():
     args = pywikibot.handleArgs()
-    bot  = SubsterBot()   # for several user's, but what about complete automation (continous running...)
+    # for several user's, but what about complete automation (continous running...)
+    bot = SubsterBot()
     for arg in args:
         if '-page' in arg[:5]:
             bot.pagegen = [pywikibot.Page(bot.site, arg[6:])]
@@ -804,9 +863,9 @@ def main():
     except KeyboardInterrupt:
         pywikibot.output('\nQuitting program...')
 
+
 if __name__ == "__main__":
     try:
         main()
     finally:
         pywikibot.stopme()
-
