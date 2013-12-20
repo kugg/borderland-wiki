@@ -6,7 +6,7 @@ This script understands various command-line arguments:
  Task commands:
 
                   Without additional task command this script is used for
-                  featured articles as default. 
+                  featured articles as default.
 
 -good             use this script for good articles.
 
@@ -64,13 +64,14 @@ import sys
 from copy import copy
 import wikipedia as pywikibot
 from pywikibot import i18n
-import catlib, config
 from pagegenerators import PreloadingGenerator
+import catlib
+import config
 
 
 def CAT(site, name, hide):
     name = site.namespace(14) + ':' + name
-    cat=catlib.Category(site, name)
+    cat = catlib.Category(site, name)
     for article in cat.articles(endsort=hide):
         yield article
     if hide:
@@ -679,7 +680,7 @@ def main(*args):
         pywikibot.output('\nQuitting program...')
     finally:
         if not nocache:
-            pickle.dump(cache,file(filename,"wb"))
+            pickle.dump(cache, file(filename, "wb"))
 
 
 if __name__ == "__main__":
