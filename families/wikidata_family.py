@@ -17,6 +17,10 @@ class Family(family.WikimediaFamily):
         }
 
         # Override defaults
+        self.namespaces[0]['test'] = [u'', u'Item']
+        self.namespaces[1]['test'] = [u'Talk', u'Item talk']
+        self.namespaces[0]['wikidata'] = [u'', u'Item']
+        self.namespaces[1]['wikidata'] = [u'Talk', u'Item talk']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
