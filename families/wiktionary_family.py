@@ -87,7 +87,7 @@ class Family(family.WikimediaFamily):
             'af': u'Wiktionary',
             'am': u'Wiktionary',
             'an': u'Wiktionary',
-            'ang': [u'Wikiwordbōc', u'Wiktionary'],
+            'ang': [u'Wikiwordbōc', u'Wikiwordboc', u'Wiktionary'],
             'ar': [u'ويكاموس', u'Wiktionary'],
             'ast': [u'Uiccionariu', u'Wiktionary'],
             'ay': u'Wiktionary',

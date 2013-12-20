@@ -66,7 +66,7 @@ class Family(family.WikimediaFamily):
             'az': [u'VikiMənbə', u'Wikisource'],
             'be': [u'Вікікрыніцы', u'Wikisource', u'ВК'],
             'bg': [u'Уикиизточник', u'Wikisource'],
-            'bn': [u'উইকিসংকলন', u'Wikisource'],
+            'bn': [u'উইকিসংকলন', u'WS', u'Wikisource'],
             'br': [u'Wikimammenn', u'Wikisource'],
             'bs': [u'Wikizvor', u'Wikisource'],
             'ca': [u'Viquitexts', u'Wikisource'],
