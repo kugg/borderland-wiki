@@ -76,25 +76,34 @@ Known issues/FIXMEs (no critical issues known):
 #
 # Another rewrite by:
 # (C) Multichill 2008-2011
-# (C) Pywikipedia bot team, 2007-2011
+# (C) Pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 
 from Tkinter import *
-import os, sys, re, codecs
-import urllib, httplib, urllib2
+import os
+import sys
+import re
+import codecs
+import urllib
+import httplib
+import urllib2
 import webbrowser
-import time, threading
+import time
+import threading
+import socket
 import wikipedia as pywikibot
-import config, socket
-import pagegenerators, add_text
+import config
+import pagegenerators
+import add_text
 from upload import *
 from image import *
 from pywikibot import i18n
-NL=''
+
+NL = ''
 
 nowCommonsTemplate = {
     '_default': u'{{NowCommons|%s}}',
@@ -191,7 +200,7 @@ moveToCommonsTemplate = {
     'en': [u'Commons ok', u'Copy to Wikimedia Commons', u'Move to commons', u'Movetocommons', u'To commons', u'Copy to Wikimedia Commons by BotMultichill'],
     'fi': [u'Commonsiin'],
     'fr': [u'Image pour Commons'],
-    'hsb':[u'Kopěruj do Wikimedia Commons'],
+    'hsb': [u'Kopěruj do Wikimedia Commons'],
     'hu': [u'Commonsba'],
     'is': [u'Færa á Commons'],
     'ms': [u'Hantar ke Wikimedia Commons'],
@@ -204,69 +213,82 @@ moveToCommonsTemplate = {
     'zh': [u'Copy to Wikimedia Commons'],
 }
 
-def pageTextPost(url,parameters):
-    gotInfo = False;
-    while(not gotInfo):
+
+def pageTextPost(url, parameters):
+    gotInfo = False
+    while not gotInfo:
         try:
-            commonsHelperPage = urllib.urlopen("http://tools.wmflabs.org/commonshelper/index.php", parameters)
+            commonsHelperPage = urllib.urlopen(
+                "http://tools.wmflabs.org/commonshelper/index.php", parameters)
             data = commonsHelperPage.read().decode('utf-8')
-            gotInfo = True;
+            gotInfo = True
         except IOError:
             pywikibot.output(u'Got an IOError, let\'s try again')
         except socket.timeout:
             pywikibot.output(u'Got a timeout, let\'s try again')
     return data
 
-class imageTransfer (threading.Thread):
 
-    def __init__ ( self, imagePage, newname, category):
+class imageTransfer(threading.Thread):
+
+    def __init__(self, imagePage, newname, category):
         self.imagePage = imagePage
         self.newname = newname
         self.category = category
-        threading.Thread.__init__ ( self )
+        threading.Thread.__init__(self)
 
     def run(self):
-        tosend={'language':self.imagePage.site().language().encode('utf-8'),
-                'image':self.imagePage.title(withNamespace=False).encode('utf-8'),
-                'newname':self.newname.encode('utf-8'),
-                'project':self.imagePage.site().family.name.encode('utf-8'),
-                'username':'',
-                'commonsense':'1',
-                'remove_categories':'1',
-                'ignorewarnings':'1',
-                'doit':'Uitvoeren'
-                }
+        tosend = {'language': self.imagePage.site().language().encode('utf-8'),
+                  'image': self.imagePage.title(withNamespace=False).encode('utf-8'),
+                  'newname': self.newname.encode('utf-8'),
+                  'project': self.imagePage.site().family.name.encode('utf-8'),
+                  'username': '',
+                  'commonsense': '1',
+                  'remove_categories': '1',
+                  'ignorewarnings': '1',
+                  'doit': 'Uitvoeren'
+                  }
 
-        tosend=urllib.urlencode(tosend)
+        tosend = urllib.urlencode(tosend)
         print tosend
-        CH=pageTextPost('http://tools.wmflabs.org/commonshelper/index.php', tosend)
+        CH = pageTextPost('http://tools.wmflabs.org/commonshelper/index.php',
+                          tosend)
         print 'Got CH desc.'
 
-        tablock=CH.split('<textarea ')[1].split('>')[0]
-        CH=CH.split('<textarea '+tablock+'>')[1].split('</textarea>')[0]
-        CH=CH.replace(u'&times;', u'×')
+        tablock = CH.split('<textarea ')[1].split('>')[0]
+        CH = CH.split('<textarea '+tablock+'>')[1].split('</textarea>')[0]
+        CH = CH.replace(u'&times;', u'×')
         CH = self.fixAuthor(CH)
-        pywikibot.output(CH);
+        pywikibot.output(CH)
 
         # I want every picture to be tagged with the bottemplate so i can check my contributions later.
-        CH=u'\n\n{{BotMoveToCommons|'+ self.imagePage.site().language() + '.' + self.imagePage.site().family.name +'|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}' + CH
+        CH = u'\n\n{{BotMoveToCommons|' + self.imagePage.site().language() + \
+             '.' + self.imagePage.site().family.name + \
+             '|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}' + \
+             CH
 
         if self.category:
             CH = CH.replace(u'{{subst:Unc}} <!-- Remove this line once you have added categories -->', u'')
-            CH = CH + u'[[Category:' + self.category + u']]'
+            CH += u'[[Category:' + self.category + u']]'
 
-        bot = UploadRobot(url=self.imagePage.fileUrl(), description=CH, useFilename=self.newname, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = pywikibot.getSite('commons', 'commons'))
+        bot = UploadRobot(url=self.imagePage.fileUrl(), description=CH,
+                          useFilename=self.newname, keepFilename=True,
+                          verifyDescription=False, ignoreWarning=True,
+                          targetSite=pywikibot.getSite('commons', 'commons'))
         bot.run()
 
         #Should check if the image actually was uploaded
-        if pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'Image:' + self.newname).exists():
-            #Get a fresh copy, force to get the page so we dont run into edit conflicts
-            imtxt=self.imagePage.get(force=True)
+        if pywikibot.Page(pywikibot.getSite('commons', 'commons'),
+                          u'Image:' + self.newname).exists():
+            # Get a fresh copy, force to get the page so we dont run into edit
+            # conflicts
+            imtxt = self.imagePage.get(force=True)
 
             #Remove the move to commons templates
             if self.imagePage.site().language() in moveToCommonsTemplate:
                 for moveTemplate in moveToCommonsTemplate[self.imagePage.site().language()]:
-                    imtxt = re.sub(u'(?i)\{\{' + moveTemplate + u'[^\}]*\}\}', u'', imtxt)
+                    imtxt = re.sub(u'(?i)\{\{' + moveTemplate + u'[^\}]*\}\}',
+                                   u'', imtxt)
 
             #add {{NowCommons}}
             if self.imagePage.site().language() in nowCommonsTemplate:
@@ -279,8 +301,8 @@ class imageTransfer (threading.Thread):
                                            {'localfile': self.imagePage.title(withNamespace=False),
                                             'commonsfile': self.newname})
 
-            pywikibot.showDiff(self.imagePage.get(), imtxt+addTemplate)
-            self.imagePage.put(imtxt + addTemplate, comment = commentText)
+            pywikibot.showDiff(self.imagePage.get(), imtxt + addTemplate)
+            self.imagePage.put(imtxt + addTemplate, comment=commentText)
 
             self.gen = pagegenerators.FileLinksGenerator(self.imagePage)
             self.preloadingGen = pagegenerators.PreloadingGenerator(self.gen)
@@ -301,11 +323,11 @@ class imageTransfer (threading.Thread):
         return
 
     def fixAuthor(self, pageText):
-        '''
-        Fix the author field in the information template.
-        '''
-        informationRegex = re.compile(u'\|Author\=Original uploader was (?P<author>\[\[:\w+:\w+:\w+\|\w+\]\] at \[.+\])')
-        selfRegex = re.compile(u'\{\{self\|author\=(?P<author>\[\[:\w+:\w+:\w+\|\w+\]\] at \[.+\])\|')
+        """ Fix the author field in the information template. """
+        informationRegex = re.compile(
+            u'\|Author\=Original uploader was (?P<author>\[\[:\w+:\w+:\w+\|\w+\]\] at \[.+\])')
+        selfRegex = re.compile(
+            u'\{\{self\|author\=(?P<author>\[\[:\w+:\w+:\w+\|\w+\]\] at \[.+\])\|')
 
         #Find the |Author=Original uploader was ....
         informationMatch = informationRegex.search(pageText)
@@ -315,63 +337,67 @@ class imageTransfer (threading.Thread):
 
         #Check if both are found and are equal
         if (informationMatch and selfMatch):
-            if(informationMatch.group('author')==selfMatch.group('author')):
+            if(informationMatch.group('author') == selfMatch.group('author')):
                 #Replace |Author=Original uploader was ... with |Author= ...
                 pageText = informationRegex.sub(r'|Author=\g<author>', pageText)
-
         return pageText
 
 
 #-label ok skip view
 #textarea
-archivo=pywikibot.config.datafilepath("Uploadbot.localskips.txt")
+archivo = pywikibot.config.datafilepath("Uploadbot.localskips.txt")
 try:
     open(archivo, 'r')
 except IOError:
-    tocreate=open(archivo, 'w')
+    tocreate = open(archivo, 'w')
     tocreate.write("{{NowCommons")
     tocreate.close()
 
+
 def getautoskip():
-    '''
+    """
     Get a list of templates to skip.
-    '''
-    f=codecs.open(archivo, 'r', 'utf-8')
-    txt=f.read()
+    """
+    f = codecs.open(archivo, 'r', 'utf-8')
+    txt = f.read()
     f.close()
-    toreturn=txt.split('{{')[1:]
+    toreturn = txt.split('{{')[1:]
     return toreturn
 
+
 class Tkdialog:
-    def __init__(self, image_title, content, uploader, url, templates, commonsconflict=0):
-        self.root=Tk()
+    def __init__(self, image_title, content, uploader, url, templates,
+                 commonsconflict=0):
+        self.root = Tk()
         #"%dx%d%+d%+d" % (width, height, xoffset, yoffset)
         #Always appear the same size and in the bottom-left corner
         self.root.geometry("600x200+100-100")
-        #self.nP=wikipediaPage
         self.root.title(image_title)
-        self.changename=''
-        self.skip=0
-        self.url=url
-        self.uploader="Unkown"
+        self.changename = ''
+        self.skip = 0
+        self.url = url
+        self.uploader = "Unkown"
         #uploader.decode('utf-8')
-        scrollbar=Scrollbar(self.root, orient=VERTICAL)
-        label=Label(self.root,text=u"Enter new name or leave blank.")
-        imageinfo=Label(self.root, text='Uploaded by '+uploader+'.')
-        textarea=Text(self.root)
+        scrollbar = Scrollbar(self.root, orient=VERTICAL)
+        label = Label(self.root, text=u"Enter new name or leave blank.")
+        imageinfo = Label(self.root, text='Uploaded by %s.' % uploader)
+        textarea = Text(self.root)
         textarea.insert(END, content.encode('utf-8'))
-        textarea.config(state=DISABLED, height=8, width=40, padx=0, pady=0, wrap=WORD, yscrollcommand=scrollbar.set)
+        textarea.config(state=DISABLED, height=8, width=40, padx=0, pady=0,
+                        wrap=WORD, yscrollcommand=scrollbar.set)
         scrollbar.config(command=textarea.yview)
-        self.entry=Entry(self.root)
+        self.entry = Entry(self.root)
 
-        self.templatelist=Listbox(self.root, bg="white", height=5)
+        self.templatelist = Listbox(self.root, bg="white", height=5)
 
         for template in templates:
             self.templatelist.insert(END, template)
-        autoskipButton=Button(self.root, text="Add to AutoSkip", command=self.add2autoskip)
-        browserButton=Button(self.root, text='View in browser', command=self.openInBrowser)
-        skipButton=Button(self.root, text="Skip", command=self.skipFile)
-        okButton=Button(self.root, text="OK", command=self.okFile)
+        autoskipButton = Button(self.root, text="Add to AutoSkip",
+                                command=self.add2autoskip)
+        browserButton = Button(self.root, text='View in browser',
+                               command=self.openInBrowser)
+        skipButton = Button(self.root, text="Skip", command=self.skipFile)
+        okButton = Button(self.root, text="OK", command=self.okFile)
 
         ##Start grid
         label.grid(row=0)
@@ -389,53 +415,48 @@ class Tkdialog:
         imageinfo.grid(row=3, column=1, columnspan=4)
 
     def okFile(self):
-        '''
-        The user pressed the OK button.
-        '''
-        self.changename=self.entry.get()
+        """ The user pressed the OK button. """
+        self.changename = self.entry.get()
         self.root.destroy()
 
     def skipFile(self):
-        '''
-        The user pressed the Skip button.
-        '''
-        self.skip=1
+        """ The user pressed the Skip button. """
+        self.skip = 1
         self.root.destroy()
 
     def openInBrowser(self):
-        '''
-        The user pressed the View in browser button.
-        '''
+        """ The user pressed the View in browser button. """
         webbrowser.open(self.url)
 
     def add2autoskip(self):
-        '''
-        The user pressed the Add to AutoSkip button.
-        '''
-        templateid=int(self.templatelist.curselection()[0])
-        template=self.templatelist.get(templateid)
-        toadd=codecs.open(archivo, 'a', 'utf-8')
+        """ The user pressed the Add to AutoSkip button. """
+        templateid = int(self.templatelist.curselection()[0])
+        template = self.templatelist.get(templateid)
+        toadd = codecs.open(archivo, 'a', 'utf-8')
         toadd.write('{{'+template)
         toadd.close()
         self.skipFile()
 
     def getnewname(self):
-        '''
+        """
         Activate the dialog and return the new name and if the image is skipped.
-        '''
+
+        """
         self.root.mainloop()
         return (self.changename, self.skip)
 
 
 def doiskip(pagetext):
-    '''
+    """
     Skip this image or not.
     Returns True if the image is on the skip list, otherwise False
-    '''
-    saltos=getautoskip()
+
+    """
+    saltos = getautoskip()
     #print saltos
     for salto in saltos:
-        rex=ur'\{\{\s*['+salto[0].upper()+salto[0].lower()+']'+salto[1:]+'(\}\}|\|)'
+        rex = ur'\{\{\s*[' + salto[0].upper() + salto[0].lower() + ']' + \
+              salto[1:] + '(\}\}|\|)'
         #print rex
         if re.search(rex, pagetext):
             return True
@@ -443,9 +464,8 @@ def doiskip(pagetext):
 
 
 def main(args):
-    generator = None;
-    #newname = "";
-    imagepage = None;
+    generator = None
+    imagepage = None
     always = False
     category = u''
     # Load a lot of default generators
@@ -455,19 +475,21 @@ def main(args):
         if arg == '-always':
             always = True
         elif arg.startswith('-cc:'):
-            category = arg [len('-cc:'):]
+            category = arg[len('-cc:'):]
         else:
             genFactory.handleArg(arg)
 
     generator = genFactory.getCombinedGenerator()
     if not generator:
-        raise add_text.NoEnoughData('You have to specify the generator you want to use for the script!')
+        raise add_text.NoEnoughData(
+            'You have to specify the generator you want to use for the script!')
 
     pregenerator = pagegenerators.PreloadingGenerator(generator)
 
     for page in pregenerator:
         skip = False
-        if page.exists() and (page.namespace() == 6) and (not page.isRedirectPage()) :
+        if page.exists() and (page.namespace() == 6) and (
+                not page.isRedirectPage()):
             imagepage = pywikibot.ImagePage(page.site(), page.title())
 
             #First do autoskip.
@@ -480,12 +502,13 @@ def main(args):
                     username = imagepage.getLatestUploader()[0]
                 except NotImplementedError:
                     #No API, using the page file instead
-                    (datetime, username, resolution, size, comment) = imagepage.getFileVersionHistory().pop()
+                    (datetime, username, resolution, size,
+                     comment) = imagepage.getFileVersionHistory().pop()
                 if always:
-                    newname=imagepage.title(withNamespace=False)
-                    CommonsPage=pywikibot.Page(pywikibot.getSite('commons',
-                                                                 'commons'),
-                                               u'File:%s' % newname)
+                    newname = imagepage.title(withNamespace=False)
+                    CommonsPage = pywikibot.Page(pywikibot.getSite('commons',
+                                                                   'commons'),
+                                                 u'File:%s' % newname)
                     if CommonsPage.exists():
                         skip = True
                 else:
@@ -501,16 +524,16 @@ def main(args):
                             break
 
                         # Did we enter a new name?
-                        if len(newname)==0:
+                        if len(newname) == 0:
                             #Take the old name
-                            newname=imagepage.title(withNamespace=False)
+                            newname = imagepage.title(withNamespace=False)
                         else:
                             newname = newname.decode('utf-8')
 
                         # Check if the image already exists
-                        CommonsPage=pywikibot.Page(
-                                       pywikibot.getSite('commons', 'commons'),
-                                       u'File:'+newname)
+                        CommonsPage = pywikibot.Page(
+                            pywikibot.getSite('commons', 'commons'),
+                            u'File:' + newname)
                         if not CommonsPage.exists():
                             break
                         else:
@@ -525,6 +548,7 @@ def main(args):
         if openthread != threading.currentThread():
             openthread.join()
     pywikibot.output(u'All threads are done')
+
 
 if __name__ == "__main__":
     try:
