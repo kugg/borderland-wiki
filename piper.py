@@ -32,7 +32,7 @@ supported.
 
 """
 #
-# (C) Pywikipedia bot team, 2008-2013
+# (C) Pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -42,7 +42,7 @@ __version__ = '$Id$'
 import os
 import pipes
 import tempfile
-import wikipedia as pywikibot
+import pywikibot
 import pagegenerators
 
 # This is required for the text that is shown when you run this script
@@ -125,7 +125,7 @@ class PiperBot:
 
         # Munge!
         for program in self.filters:
-            text = self.pipe(program, text);
+            text = self.pipe(program, text)
 
         # only save if something was changed
         if text != page.get():
@@ -201,6 +201,7 @@ def main():
         bot.run()
     else:
         pywikibot.showHelp()
+
 
 if __name__ == "__main__":
     try:

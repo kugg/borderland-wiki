@@ -40,14 +40,14 @@ Unprotect all pages listed in text file "unprotect.txt" without prompting.
 # Written by http://it.wikisource.org/wiki/Utente:Qualc1
 # Created by modifying delete.py
 #
-# (C) Pywikipedia bot team, 2008-2012
+# (C) Pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import wikipedia as pywikibot
+import pywikibot
 import catlib
 import pagegenerators
 
@@ -102,19 +102,21 @@ msg_protect_images = {
     'zh': u'機器人: 保護頁面 %s 中的所有圖條',
 }
 
+
 class ProtectionRobot:
     """
     This robot allows protection of pages en masse.
     """
 
     def __init__(self, generator, summary, always=False, unprotect=False,
-                edit='sysop', move='sysop', create='sysop'):
+                 edit='sysop', move='sysop', create='sysop'):
         """
         Arguments:
             * generator - A page generator.
             * always - Protect without prompting?
             * edit, move, create - protection level for these operations
             * unprotect - unprotect pages (and ignore edit, move, create params)
+
         """
         self.generator = generator
         self.summary = summary
@@ -135,6 +137,7 @@ class ProtectionRobot:
                          prompt=self.prompt, editcreate=self.edit,
                          move=self.move)
 
+
 # Asks a valid protection level for "operation".
 # Returns the protection level chosen by user.
 def choiceProtectionLevel(operation, default):
@@ -147,6 +150,7 @@ def choiceProtectionLevel(operation, default):
     for level in protectionLevels:
         if level.startswith(choiceChar):
             return level
+
 
 def main():
     global protectionLevels
@@ -173,18 +177,21 @@ def main():
             always = True
         elif arg.startswith('-file'):
             if len(arg) == len('-file'):
-                fileName = pywikibot.input(u'Enter name of file to protect pages from:')
+                fileName = pywikibot.input(
+                    u'Enter name of file to protect pages from:')
             else:
                 fileName = arg[len('-file:'):]
         elif arg.startswith('-summary'):
             if len(arg) == len('-summary'):
-                summary = pywikibot.input(u'Enter a reason for the protection:')
+                summary = pywikibot.input(
+                    u'Enter a reason for the protection:')
             else:
                 summary = arg[len('-summary:'):]
         elif arg.startswith('-cat'):
             doCategory = True
             if len(arg) == len('-cat'):
-                pageName = pywikibot.input(u'Enter the category to protect from:')
+                pageName = pywikibot.input(
+                    u'Enter the category to protect from:')
             else:
                 pageName = arg[len('-cat:'):]
         elif arg.startswith('-nosubcats'):
@@ -241,8 +248,8 @@ def main():
                                           msg_protect_category) % pageName
         ns = mysite.category_namespace()
         categoryPage = catlib.Category(mysite, ns + ':' + pageName)
-        gen = pagegenerators.CategorizedPageGenerator(categoryPage,
-                                                      recurse=protectSubcategories)
+        gen = pagegenerators.CategorizedPageGenerator(
+            categoryPage, recurse=protectSubcategories)
     elif doLinks:
         if not summary:
             summary = pywikibot.translate(mysite,
