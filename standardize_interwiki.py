@@ -9,36 +9,37 @@ Parameters:
 """
 #
 # (C) Rob W.W. Hooft, 2003
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Pywikibot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 
-import os, sys
+import os
+import sys
 import difflib
 import wikipedia as pywikibot
 import config
 
 # The summary that the Bot will use.
 comment = {
-    'ar':u'روبوت: توحيد قياسي للإنترويكي',
-    'cs':u'Standadizace interwiki',
-    'de':u'Bot: Interwikilinks standardisieren',
-    'en':u'Robot: Interwiki standardization',
-    'fa':u'ربات: تصحیح جایگذاری میان‌ویکی‌ها',
-    'fr':u'Robot : Standardisation des interwikis',
-    'he':u'בוט: מסדר את האינטרוויקי',
-    'it':u'Bot: Standardizzo interwiki',
-    'ja':u'ロボットによる: 言語間リンクを標準化',
-    'ml':u'യന്ത്രം: അന്തർവിക്കി ക്രമവൽക്കരണം',
-    'nl':u'Bot: standaardisatie interwikiverwijzingen',
-    'no':u'bot: Språklenkestandardisering',
-    'ksh':u'Bot: Engerwiki Lengks opprüühme',
-    'nds':u'Bot: Links twüschen Wikis standardisseern',
-    'zh':u'機器人: 跨語連結標準化',
-    }
+    'ar': u'روبوت: توحيد قياسي للإنترويكي',
+    'cs': u'Standadizace interwiki',
+    'de': u'Bot: Interwikilinks standardisieren',
+    'en': u'Robot: Interwiki standardization',
+    'fa': u'ربات: تصحیح جایگذاری میان‌ویکی‌ها',
+    'fr': u'Robot : Standardisation des interwikis',
+    'he': u'בוט: מסדר את האינטרוויקי',
+    'it': u'Bot: Standardizzo interwiki',
+    'ja': u'ロボットによる: 言語間リンクを標準化',
+    'ml': u'യന്ത്രം: അന്തർവിക്കി ക്രമവൽക്കരണം',
+    'nl': u'Bot: standaardisatie interwikiverwijzingen',
+    'no': u'bot: Språklenkestandardisering',
+    'ksh': u'Bot: Engerwiki Lengks opprüühme',
+    'nds': u'Bot: Links twüschen Wikis standardisseern',
+    'zh': u'機器人: 跨語連結標準化',
+}
 
 # Some parameters
 options = list()
