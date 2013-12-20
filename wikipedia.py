@@ -856,7 +856,7 @@ class Page(object):
             if 'textmissing' in lastRev:
                 # Maybe we could use a new error exception.
                 # Now we just pass and got a server error
-                pass  
+                pass
             elif isinstance(lastRev['*'], basestring):
                 textareaFound = True
         # I got page date with 'revisions' in pageInfo but
