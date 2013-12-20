@@ -19,6 +19,7 @@ This module allow you to use the API in a simple and easy way.
 """
 #
 # (C) Yuri Astrakhan, 2006
+# (C) Pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -33,6 +34,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
 
 @deprecate_arg("encodeTitle", None)
 def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
