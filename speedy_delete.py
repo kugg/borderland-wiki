@@ -29,8 +29,10 @@ __version__ = '$Id$'
 #
 
 import wikipedia as pywikibot
-import pagegenerators, catlib
+import pagegenerators
+import catlib
 import time
+
 
 class SpeedyRobot:
     """ This robot will load a list of pages from the category of candidates for
@@ -39,8 +41,8 @@ class SpeedyRobot:
 
     """
 
-    csd_cat={
-        'wikipedia':{
+    csd_cat = {
+        'wikipedia': {
             'ab': u'Категория:Candidates for speedy deletion',
             'ak': u'Category:Candidates for speedy deletion',
             'ang': u'Flocc:Candidates for speedy deletion',
@@ -188,13 +190,13 @@ class SpeedyRobot:
             'zh-yue': u'Category:快速刪除候選',
             'zu': u'Category:Candidates for speedy deletion',
         },
-        'wikinews':{
+        'wikinews': {
             'ar': u'تصنيف:صفحات حذف سريع',
             'en': u'Category:Speedy deletion',
             'ja': u'Category:即時削除',
             'zh': u'Category:快速删除候选',
         },
-        'wikisource':{
+        'wikisource': {
             'ar': u'تصنيف:صفحات حذف سريع',
             'id': u'Kategori:Usulan penghapusan',
             'ja': u'Category:即時削除',
@@ -203,7 +205,7 @@ class SpeedyRobot:
             'ro': u'Categorie:Propuneri pentru ştergere',
             'zh': u'Category:快速删除候选',
         },
-        'wikiversity':{
+        'wikiversity': {
             'beta': u'Category:Candidates for speedy deletion',
             'cs': u'Kategorie:Stránky ke smazání',
             'de': u'Kategorie:Wikiversity:Löschen',
@@ -214,7 +216,7 @@ class SpeedyRobot:
             'ja': u'Category:Candidates for speedy deletion',
             'pt': u'Categoria:!Páginas para eliminação rápida',
         },
-        'wikiquote':{
+        'wikiquote': {
             'ar': u'تصنيف:صفحات للحذف السريع',
             'cs': u'Kategorie:Údržba:Stránky ke smazání',
             'en': u'Category:Candidates for speedy deletion',
@@ -224,7 +226,7 @@ class SpeedyRobot:
             'simple': u'Category:Quick deletion requests',
             'zh': u'Category:快速删除候选',
         },
-        'wiktionary':{
+        'wiktionary': {
             'ar': u'تصنيف:صفحات حذف سريع',
             'en': u'Category:Candidates for speedy deletion',
             'fi': u'Luokka:Roskaa',
@@ -234,7 +236,7 @@ class SpeedyRobot:
             'tt': u'Törkem:Candidates for speedy deletion',
             'zh': u'Category:快速删除候选',
         },
-        'wikibooks':{
+        'wikibooks': {
             'ar': u'تصنيف:صفحات حذف سريع',
             'ca': u'Categoria:Elements a eliminar',
             'en': u'Category:Candidates for speedy deletion',
@@ -244,26 +246,26 @@ class SpeedyRobot:
             'pl': u'Kategoria:Ekspresowe kasowanko',
             'zh': u'Category:快速删除候选',
         },
-        'meta':{'meta': u'Category:Deleteme',},
-        'commons':{'commons': u'Category:Candidates for speedy deletion',},
-        'incubator':{'incubator': u'Category:Maintenance:Delete',},
-        'mediawiki':{'mediawiki': u'Category:Candidates for deletion',},
+        'meta': {'meta': u'Category:Deleteme'},
+        'commons': {'commons': u'Category:Candidates for speedy deletion'},
+        'incubator': {'incubator': u'Category:Maintenance:Delete'},
+        'mediawiki': {'mediawiki': u'Category:Candidates for deletion'},
     }
 
     # If the site has several templates for speedy deletion, it might be
     # possible to find out the reason for deletion by the template used.
     # _default will be used if no such semantic template was used.
     deletion_messages = {
-        'wikipedia':{
+        'wikipedia': {
             'ar': {
                 '_default': u'حذف مرشح للحذف السريع حسب [[وProject:حذف سريع|معايير الحذف السريع]]',
-                },
+            },
             'cs': {
                 '_default': u'Bylo označeno k [[Wikipedie:Rychlé smazání|rychlému smazání]]',
-                },
+            },
             'de': {
                 '_default': u'Lösche Artikel mit [[Wikipedia:Schnelllöschantrag|Schnelllöschantrag]]',
-                },
+            },
             'en': {
                 '_default':      u'Deleting candidate for speedy deletion per [[WP:CSD|CSD]]',
                 'db-author':     u'Deleting page per [[WP:CSD|CSD]] G7: Author requests deletion and is its only editor.',
@@ -285,27 +287,27 @@ class SpeedyRobot:
                 'db-disparage':  u'Deleting page per [[WP:CSD|CSD]] T1: Divisive or inflammatory template.',
                 'db-r1':         u'Deleting page per [[WP:CSD|CSD]] R1: Redirect to a deleted or non-existent page.',
                 'db-experiment': u'Deleting page per [[WP:CSD|CSD]] G2: Page was created as an experiment.',
-                },
+            },
             'fa': {
                 '_default': u'حذف مرشَّح للحذف السريع حسب [[ويكيبيديا:حذف سريع|معايير الحذف السريع]]',
-                },
+            },
             'he': {
                 '_default': u'מחיקת מועמד למחיקה מהירה לפי [[ויקיפדיה:מדיניות המחיקה|מדיניות המחיקה]]',
                 u'גם בוויקישיתוף': u'הקובץ זמין כעת בוויקישיתוף.',
-                },
-            'ja':{
+            },
+            'ja': {
                 '_default': u'[[WP:CSD|即時削除の方針]]に基づい削除',
-                },
+            },
             'pt': {
                 '_default': u'Apagando página por [[Wikipedia:Páginas para eliminar|eliminação rápida]]',
-                },
+            },
             'pl': {
                 '_default': u'Usuwanie artykułu zgodnie z zasadami [[Wikipedia:Ekspresowe kasowanko|ekspresowego kasowania]]',
-                },
+            },
             'it': {
                 '_default': u'Rimuovo pagina che rientra nei casi di [[Wikipedia:IMMEDIATA|cancellazione immediata]].',
-                },
-            'zh':{
+            },
+            'zh': {
                 '_default': u'[[WP:CSD]]',
                 'advert': 'ad',
                 'db-blanked': 'auth',
@@ -321,23 +323,23 @@ class SpeedyRobot:
                 'no license': u'[[WP:CSD#I3|CSD I3]]: 沒有版權模板，無法確認版權資訊',
                 'unknown': u'[[WP:CSD#I3|CSD I3]]: 沒有版權模板，無法確認版權資訊',
                 'temppage': u'[[WP:CSD]]: 臨時頁面',
-                'nowcommons':'commons',
-                'roughtranslation':'mactra',
-                },
+                'nowcommons': 'commons',
+                'roughtranslation': 'mactra',
+            },
         },
-        'wikinews':{
-            'en':{
+        'wikinews': {
+            'en': {
                 '_default': u'[[WN:CSD]]',
             },
-            'zh':{
+            'zh': {
                 '_default': u'[[WN:CSD]]',
             },
         },
     }
 
     # Default reason for deleting a talk page.
-    talk_deletion_msg={
-        'wikipedia':{
+    talk_deletion_msg = {
+        'wikipedia': {
             'ar': u'صفحة نقاش يتيمة',
             'cs': u'Osiřelá diskusní stránka',
             'de': u'Verwaiste Diskussionsseite',
@@ -350,7 +352,7 @@ class SpeedyRobot:
             'pt': u'Página de discussão órfã',
             'zh': u'[[WP:CSD#O1|CSD O1 O2 O6]] 沒有在使用的討論頁',
         },
-        'wikinews':{
+        'wikinews': {
             'en': u'Orphaned talk page',
             'zh': u'[[WN:CSD#O1|CSD O1 O2 O6]] 沒有在使用的討論頁',
         }
@@ -373,7 +375,7 @@ class SpeedyRobot:
                 'spam':  u'Spam',
                 'web':   u'Nur ein Weblink',
                 'wg':    u'Wiedergänger (wurde bereits zuvor gelöscht)',
-                },
+            },
             'it': {
                 'test': u'Si tratta di un test',
                 'vandalismo': u'Caso di vandalismo',
@@ -381,8 +383,8 @@ class SpeedyRobot:
                 'redirect': 'Redirect rotto o inutile',
                 'spam': 'Spam',
                 'promo': 'Pagina promozionale',
-                },
-            'ja':{
+            },
+            'ja': {
                 'cont': u'[[WP:CSD]] 全般1 意味不明な内容のページ',
                 'test': u'[[WP:CSD]] 全般2 テスト投稿',
                 'vand': u'[[WP:CSD]] 全般3 荒らしand/orいたずら',
@@ -400,8 +402,8 @@ class SpeedyRobot:
                 'uau': u'[[WP:CSD]] 利用者ページ1 本人希望',
                 'nuu': u'[[WP:CSD]] 利用者ページ2 利用者登録されていない利用者ページ',
                 'ipu': u'[[WP:CSD]] 利用者ページ3 IPユーザの利用者ページ',
-                },
-            'zh':{
+            },
+            'zh': {
                 'empty': u'[[WP:CSD#G1]]: 沒有實際內容或歷史記錄的文章。',
                 'test': u'[[WP:CSD#G2]]: 測試頁',
                 'vand': u'[[WP:CSD#G3]]: 純粹破壞',
@@ -435,7 +437,7 @@ class SpeedyRobot:
                 'anou': u'[[WP:CSD#O3]]: 匿名用戶的用戶討論頁，其中的內容不再有用',
                 'uc': u'[[WP:CSD#O4]]: 空類別',
                 'tmp': u'[[WP:CSD]]: 臨時頁面',
-                },
+            },
         },
     }
 
@@ -443,6 +445,7 @@ class SpeedyRobot:
         """
         Arguments:
             none yet
+
         """
         self.mySite = pywikibot.getSite()
         self.csdCat = catlib.Category(self.mySite,
@@ -469,8 +472,9 @@ class SpeedyRobot:
                 if templateName[0].lower() in reasons:
                     if type(reasons[templateName[0].lower()]) is not unicode:
                         #Make alias to delete_reasons
-                        reason = pywikibot.translate(self.mySite,
-                                                     self.delete_reasons)[reasons[templateName[0].lower()]]
+                        reason = pywikibot.translate(
+                            self.mySite,
+                            self.delete_reasons)[reasons[templateName[0].lower()]]
                     else:
                         reason = reasons[templateName[0].lower()]
                     break
@@ -498,15 +502,18 @@ class SpeedyRobot:
                     pywikibot.output((key + ':').ljust(8) + localReasons[key])
                 pywikibot.output(u'')
                 reason = pywikibot.input(
-                    u'Please enter the reason for deletion, choose a default reason, or press enter for the suggested message:')
+                    u'Please enter the reason for deletion, choose a default '
+                    u'reason,\nor press enter for the suggested message:')
                 if reason.strip() in localReasons:
                     reason = localReasons[reason]
             else:
                 reason = pywikibot.input(
-                    u'Please enter the reason for deletion, or press enter for the suggested message:')
+                    u'Please enter the reason for deletion,\n'
+                    u'or press enter for the suggested message:')
         else:
             reason = pywikibot.input(
-                u'Please enter the reason for deletion, or press enter for the suggested message:')
+                u'Please enter the reason for deletion,\n'
+                u'or press enter for the suggested message:')
 
         if not reason:
             reason = suggestedReason
@@ -526,12 +533,12 @@ class SpeedyRobot:
             count = 0
             for page in self.preloadingGen:
                 try:
-                    pageText = page.get(get_redirect = True).split("\n")
+                    pageText = page.get(get_redirect=True).split("\n")
                     count += 1
                 except pywikibot.NoPage:
-                    pywikibot.output(
-                        u'Page %s does not exist or has already been deleted, skipping.'
-                        % page.title(asLink=True))
+                    pywikibot.output(u'Page %s does not exist or has already '
+                                     u'been deleted, skipping.'
+                                     % page.title(asLink=True))
                     continue
                 # Show the title of the page we're working on.
                 # Highlight the title in purple.
@@ -539,8 +546,8 @@ class SpeedyRobot:
                                  % page.title())
                 pywikibot.output(u'-  -  -  -  -  -  -  -  -  ')
                 if len(pageText) > 75:
-                    pywikibot.output(
-                        'The page detail is too many lines, only output first 50 lines:')
+                    pywikibot.output('The page detail is too many lines, '
+                                     u'only output first 50 lines:')
                     pywikibot.output(u'-  ' * 9)
                     pywikibot.output(u'\n'.join(pageText[:50]))
                 else:
@@ -563,14 +570,15 @@ class SpeedyRobot:
                     pywikibot.output(
                         u'The chosen reason is: \03{lightred}%s\03{default}'
                         % reason)
-                    page.delete(reason, prompt = False)
+                    page.delete(reason, prompt=False)
                 else:
                     pywikibot.output(u'Skipping page %s' % page.title())
                 startFromBeginning = True
             if count == 0:
                 if startFromBeginning:
                     pywikibot.output(
-                        u'There are no pages to delete.\nWaiting for 30 seconds or press Ctrl+C to quit...')
+                        u'There are no pages to delete.\n'
+                        u'Waiting for 30 seconds or press Ctrl+C to quit...')
                     try:
                         time.sleep(30)
                     except KeyboardInterrupt:
@@ -588,10 +596,11 @@ class SpeedyRobot:
         self.preloadingGen = pagegenerators.PreloadingGenerator(generator2,
                                                                 pageNumber=20)
 
+
 def main():
     # read command line parameters
     for arg in pywikibot.handleArgs():
-        pass #No args yet
+        pass  # No args yet
 
     bot = SpeedyRobot()
     bot.run()
