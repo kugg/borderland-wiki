@@ -1,25 +1,28 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
-'''
+"""
 A bot to do some simple over categorization filtering.
 Now it uses the strategy to loop over all images in all the subcategories.
-That might be a very good strategy when the parent category is very full, but later on it will become very inefficient.
+That might be a very good strategy when the parent category is very full, but
+later on it will become very inefficient.
 
-'''
+"""
 #
-# (C) Pywikipedia bot team, 2013
+# (C) Pywikibot team, 2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import sys, pywikibot, catlib, pagegenerators
+import sys
+import pywikibot
+import catlib
+import pagegenerators
+
 
 def filterCategory(page):
-    '''
-    Loop over all subcategories of page and filter them
-    '''
+    """ Loop over all subcategories of page and filter them """
 
     # FIXME: category = catlib.Category(page) doesn't work
     site = page.site()
@@ -29,11 +32,11 @@ def filterCategory(page):
     for subcat in category.subcategories():
         filterSubCategory(subcat, category)
 
+
 def filterSubCategory(subcat, category):
-    '''
-    Filter category from all articles and files in subcat
-    '''
-    articleGen = pagegenerators.PreloadingGenerator(pagegenerators.CategorizedPageGenerator(subcat))
+    """ Filter category from all articles and files in subcat """
+    articleGen = pagegenerators.PreloadingGenerator(
+        pagegenerators.CategorizedPageGenerator(subcat))
 
     for article in articleGen:
         pywikibot.output(u'Working on %s' % (article.title(),))
@@ -43,12 +46,13 @@ def filterSubCategory(subcat, category):
             text = article.get()
             newtext = pywikibot.replaceCategoryLinks(text, articleCategories)
             pywikibot.showDiff(text, newtext)
-            comment = u'Removing [[%s]]: Is already in the subcategory [[%s]]' % (category.title(), subcat.title())
+            comment = (u'Removing [[%s]]: Is already in the subcategory [[%s]]'
+                       % (category.title(), subcat.title()))
             article.put(newtext, comment)
-            
-    
+
+
 def main(args):
-    generator = None;
+    generator = None
     genFactory = pagegenerators.GeneratorFactory()
 
     for arg in pywikibot.handleArgs():
@@ -59,9 +63,9 @@ def main(args):
         return False
 
     for page in generator:
-        if page.exists() and page.namespace()==14:
+        if page.exists() and page.namespace() == 14:
             filterCategory(page)
-    
+
 
 if __name__ == "__main__":
     try:
