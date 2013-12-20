@@ -56,8 +56,8 @@ class SubsterTagModifiedBot(articlenos.ArtNoDisp):
     def __init__(self, *arg):
         articlenos.ArtNoDisp.__init__(self, *arg)
 
-        self.refs  = {}
-        self.time  = 0.
+        self.refs = {}
+        self.time = 0.
         self.queue = deque([])
 
         self.templ = pywikibot.Page(self.site, subster.bot_config['TemplateName'])
@@ -87,9 +87,9 @@ class SubsterTagModifiedBot(articlenos.ArtNoDisp):
             self.do_check(page)
         else:
             if page not in self.queue:
-                self.queue.append( page ) # check later
+                self.queue.append(page)  # check later
         # refresh list and test (queued) old pages against new list
-        (size, age) = ( len(self.queue), (time.time()-self.time) )
+        (size, age) = (len(self.queue), (time.time()-self.time))
         if (size > 1000) or (age > 300):
             pywikibot.output(u'QUEUE: size=%i, age=%f' % (size, age))
             self.do_refresh_References()
@@ -105,10 +105,11 @@ class SubsterTagModifiedBot(articlenos.ArtNoDisp):
             else:
                 p = [p]
             if (source == p[0]):
-                pywikibot.output(u'DIFFLINK: target=%s, source=%s, params=%s' % (target, source, params))
-                text = u'[[%s]] / [[User:%s]] / %s' % ( page,
-                                                        user,
-                                           match.group('summary').decode(self.site.encoding()) )
+                pywikibot.output(u'DIFFLINK: target=%s, source=%s, params=%s'
+                                 % (target, source, params))
+                text = u'[[%s]] / [[User:%s]] / %s' % (
+                    page, user,
+                    match.group('summary').decode(self.site.encoding()))
                 self.do_check(target, params=(text, params['flags']))
 
     def do_refresh_References(self):
@@ -124,28 +125,31 @@ class SubsterTagModifiedBot(articlenos.ArtNoDisp):
         # (simple 'thread' for more sophisticated code use 'threading')
         pywikibot.output(u"CHECK: %s" % page_title)
         try:
-            thread.start_new_thread( main_subster, (self.refs[page_title], params) )
+            thread.start_new_thread(main_subster, (self.refs[page_title], params))
         except:
             pywikibot.warning(u"unable to start thread")
+
 
 # Define a function for the thread
 def main_subster(page, params=None):
     bot = subster.SubsterBot()
-    page.get(force=True)     # refresh page content
-    bot.silent  = True
-    bot.pagegen = [ page ]   # single page, according to pagegenerators.py
+    page.get(force=True)  # refresh page content
+    bot.silent = True
+    bot.pagegen = [page]  # single page, according to pagegenerators.py
     if params:
-        bot.run(msg = params[0], EditFlags = params[1])
+        bot.run(msg=params[0], EditFlags=params[1])
     else:
         bot.run()
     del bot
+
 
 def main():
     args = pywikibot.handleArgs()
     site = pywikibot.getSite()
     site.forceLogin()
     chan = '#' + site.language() + '.' + site.family.name
-    bot = SubsterTagModifiedBot(site, chan, site.loggedInAs(), "irc.wikimedia.org")
+    bot = SubsterTagModifiedBot(site, chan, site.loggedInAs(),
+                                "irc.wikimedia.org")
     for arg in args:
         pywikibot.showHelp()
         return
@@ -153,6 +157,7 @@ def main():
         bot.start()
     except KeyboardInterrupt:
         pywikibot.output('\nQuitting program...')
+
 
 if __name__ == "__main__":
     try:
