@@ -16,7 +16,9 @@ It will also catch all output to stdout and stderr and report those incidents.
 ## @package pwb
 #  @brief   General DrTrigonBot Robot(s) Wrapper (see rewrite/pwb.py too)
 #
-#  @copyright Dr. Trigon, 2008-2013
+#  @copyright
+# (C) Dr. Trigon, 2008-2013
+# (C) Pywikibot team, 2013
 #
 #  @todo      look also at and learn from daemonize.py (@ref daemonize)
 #
@@ -39,7 +41,10 @@ __version__ = '$Id$'
 #
 
 
-import sys, os, traceback, shelve
+import sys
+import os
+import traceback
+import shelve
 
 # wikipedia-bot imports
 import userlib
@@ -53,20 +58,24 @@ from pywikibot import version   # JIRA: DRTRIGON-131
 #  @todo consider solving/doing this with a logging handler like SMTPHandler
 #
 def send_mailnotification(text, subject):
-    username = pywikibot.config.usernames[pywikibot.config.family][pywikibot.config.mylang]
+    username = pywikibot.config.usernames[
+        pywikibot.config.family][pywikibot.config.mylang]
     pos = username.lower().find('bot')
     username = username[:pos] if (pos > 0) else username
 
-    pywikibot.output(u'Sending mail "%s" to "%s" as notification!' % (subject, username))
+    pywikibot.output(u'Sending mail "%s" to "%s" as notification!'
+                     % (subject, username))
     # JIRA: DRTRIGON-87; output even more debug info (tip by: valhallasw@arctus.nl)
     site = pywikibot.getSite()
-    pywikibot.output(u'Bot allowed to send email: %r' % (site.isAllowed('sendemail'),))
+    pywikibot.output(u'Bot allowed to send email: %r'
+                     % (site.isAllowed('sendemail'),))
     pywikibot.output(u'Permissions: %r' % (site._rights,))
     if not site.isAllowed('sendemail'):
-        pywikibot.output(u'Try getting new token: %r' % (site.getToken(getagain=True),))
+        pywikibot.output(u'Try getting new token: %r'
+                         % (site.getToken(getagain=True),))
     usr = userlib.User(site, username)
     try:
-        if usr.sendMail(subject=subject, text=text):    # 'text' should be unicode!
+        if usr.sendMail(subject=subject, text=text):  # 'text' should be unicode!
             return
     except:  # break exception handling recursion
         pywikibot.exception(tb=True)
@@ -78,12 +87,12 @@ def send_mailnotification(text, subject):
         from email.mime.text import MIMEText
         # sender's and recipient's email addresses
         FROM = "%s@toolserver.org" % username.lower()
-        TO   = [FROM]   # must be a list
+        TO = [FROM]  # must be a list
         # Create a text/plain message
         msg = MIMEText(text)
         msg['Subject'] = "!EMERGENCY! " + subject
-        msg['From']    = FROM
-        msg['To']      = ", ".join(TO)
+        msg['From'] = FROM
+        msg['To'] = ", ".join(TO)
         # Send the mail
         server = smtplib.SMTP("localhost")
         server.sendmail(FROM, TO, msg.as_string())
@@ -100,22 +109,26 @@ def send_mailnotification(text, subject):
 #  @see  http://segfault.in/2010/03/python-rrdtool-tutorial/
 #
 class BotLoggerObject:
+
     def __init__(self, layer='stdout'):
         self._layer = layer
+
     def write(self, string):
         for line in string.strip().splitlines():
             pywikibot.critical('[%s] %s' % (self._layer, line))
+
     def close(self):
         pass
+
     def flush(self):
         pass
 
 
 # SGE: exit errorlevel
-ERROR_SGE_ok      = 0    # successful termination, nothing more to do
-ERROR_SGE_stop    = 1    # error, but not for SGE
+ERROR_SGE_ok = 0         # successful termination, nothing more to do
+ERROR_SGE_stop = 1       # error, but not for SGE
 ERROR_SGE_restart = 99   # restart the job
-ERROR_SGE_lock    = 100  # stop in error state (prevents re-starts)
+ERROR_SGE_lock = 100     # stop in error state (prevents re-starts)
 
 exitcode = ERROR_SGE_stop       # action in error case (stop with error)
 #exitcode = ERROR_SGE_restart    # -------- " --------- (restart)
@@ -126,7 +139,7 @@ if len(sys.argv) < 2:
     raise RuntimeError("Not enough arguments defined.")
 else:
     logname = pywikibot.config.datafilepath('logs', '%s.log')
-    logfile = logname % ''.join([os.path.basename(sys.argv[0])]+sys.argv[1:])
+    logfile = logname % ''.join([os.path.basename(sys.argv[0])] + sys.argv[1:])
 
     arg = pywikibot.handleArgs()                            # '-family' and '-lang' have to be known for log-header
     sys.stdout = BotLoggerObject(layer='stdout')            # handle stdout
@@ -140,8 +153,8 @@ else:
     # check: http://de.wikipedia.org/wiki/Hilfe:MediaWiki/Versionen
 
     path = os.path.split(sys.argv[0])[0]
-    cmd  = sys.argv.pop(1)
-    cmd  = cmd.lstrip(u'-')
+    cmd = sys.argv.pop(1)
+    cmd = cmd.lstrip(u'-')
     if u'.py' not in cmd.lower():
         cmd += u'.py'
     sys.argv[0] = os.path.join(path, cmd)
@@ -153,8 +166,8 @@ else:
         d = shelve.open(pywikibot.config.datafilepath('cache', 'state_bots'))
         d['bot_control'] = {'release_rev': str(__release['rev']),
                             'release_ver': __release['hsh'][:7],
-                             'online_ver': version.getversion_onlinerepo()[:7],
-                           }
+                            'online_ver': version.getversion_onlinerepo()[:7],
+                            }
         pywikibot.output(d['bot_control'])
         pywikibot.output(u'=== ' * 14)
         d.close()
@@ -169,7 +182,7 @@ else:
         pywikibot.exception(tb=True)
         error = traceback.format_exc()
         if pywikibot.logger.isEnabledFor(pywikibot.DEBUG):
-            exitcode = ERROR_SGE_ok    # print traceback of re-raised errors by skipping sys.exit()
+            exitcode = ERROR_SGE_ok  # print traceback of re-raised errors by skipping sys.exit()
             raise
         else:
             send_mailnotification(error, u'Bot ERROR')
@@ -182,7 +195,7 @@ else:
         d[name] = {'error':     str(bool(error)),
                    'traceback': str(error.encode('utf-8')),
                    'timestamp': str(pywikibot.Timestamp.now().isoformat(' ')),
-                  }
+                   }
         d.close()
 
         pywikibot.stopme()

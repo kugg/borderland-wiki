@@ -36,10 +36,13 @@ functions will be listed.
 
 #
 # (C) Bináris, 2013
+# (C) Pywikibot team, 2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
+#
+
 '''
 Todo:
 * Using xml and xmlstart
@@ -48,11 +51,12 @@ Todo:
   for the beauty of the program, does not effect anything).
 '''
 
-import codecs, re
-import wikipedia as pywikibot
-from pagegenerators import \
-                    AllpagesPageGenerator as APG, \
-                    RegexFilterPageGenerator as RPG
+import codecs
+import re
+import pywikibot
+from pagegenerators import AllpagesPageGenerator as APG
+from pagegenerators import RegexFilterPageGenerator as RPG
+
 
 def main(*args):
     words = ['expr', 'if', 'ifeq', 'ifexpr', 'iferror', 'switch', 'ifexist',
@@ -81,7 +85,7 @@ def main(*args):
     first = None
     atleast = None
     nosort = False
-    filename = None # The name of the file to save titles
+    filename = None  # The name of the file to save titles
     titlefile = None
     uploadpage = None
     count = 0
@@ -90,7 +94,7 @@ def main(*args):
     for arg in pywikibot.handleArgs(*args):
         if arg == '-start':
             start = pywikibot.input(
-                    u'From which title do you want to continue?')
+                u'From which title do you want to continue?')
         elif arg.startswith('-start:'):
             start = arg[7:]
         elif arg == '-save':
@@ -114,7 +118,6 @@ def main(*args):
         elif arg == '-nosort':
             nosort = True
 
-
     # File operations:
     if filename:
         try:
@@ -136,7 +139,7 @@ def main(*args):
     if atleast:
         try:
             atleast = int(atleast)
-            if atleast < 2: # 1 has no effect, don't waste resources.
+            if atleast < 2:  # 1 has no effect, don't waste resources.
                 atleast = None
         except ValueError:
             atleast = None
@@ -145,7 +148,7 @@ def main(*args):
     site = pywikibot.getSite()
     lang = site.lang
     try:
-        words.extend(addwords[lang]) # Adding translated function names
+        words.extend(addwords[lang])  # Adding translated function names
     except KeyError:
         pass
     try:
@@ -153,10 +156,10 @@ def main(*args):
     except KeyError:
         comment = editcomment['en']
     try:
-        docregex = documentsubpage[lang] # Finding document subpage names
+        docregex = documentsubpage[lang]  # Finding document subpage names
     except KeyError:
         docregex = ur'(?i).*/doc'
-    regex = re.compile(ur'(?i)#('+ur'|'.join(words)+'):')
+    regex = re.compile(ur'(?i)#(' + ur'|'.join(words) + '):')
     gen1 = APG(start=start, namespace=10, includeredirects=False, site=site)
     gen = RPG(gen1, docregex, inverse=True)
 
@@ -168,18 +171,18 @@ def main(*args):
         title = page.title()
         if not count % 50:
             # Don't let the poor user panic in front of a black screen.
-            pywikibot.output('%dth template is beeing processed: %s' %
-                (count, title))
+            pywikibot.output('%dth template is beeing processed: %s'
+                             % (count, title))
         text = page.get()
         functions = regex.findall(text)
         if functions:
-            results.append((title,len(functions)))
+            results.append((title, len(functions)))
         if nosort and first and len(results) == first:
             break
 
     # Combing the results:
     if not nosort:
-        results.sort(key=lambda x:str(5000-x[1])+'.'+x[0])
+        results.sort(key=lambda x: str(5000-x[1]) + '.' + x[0])
     if first:
         results = results[:first]
     if atleast:
@@ -197,6 +200,7 @@ def main(*args):
     if uploadpage:
         page = pywikibot.Page(site, uploadpage)
         page.put(resultlist, comment)
+
 
 if __name__ == "__main__":
     try:
