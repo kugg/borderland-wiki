@@ -1020,6 +1020,12 @@ class Family(family.WikimediaFamily):
             'bar': u'Nochricht Dischkrian',
             'pfl': u'Nochricht Dischbediere',
         }
+        self.namespaces[118] = {
+            'en': u'Draft',
+        }
+        self.namespaces[119] = {
+            'en': u'Draft talk',
+        }
 
         self.namespaces[446] = {
             'cs': u'Education Program',
