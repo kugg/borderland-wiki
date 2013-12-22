@@ -107,7 +107,7 @@ class LoginManager:
                         u"If you have a sysop account for that site, please "
                         u"add such a line to user-config.py:\n\n"
                         u"sysopnames['%(fam)s']['%(code)s'] = 'myUsername'"
-                        % {'fam': self.site.family.name
+                        % {'fam': self.site.family.name,
                            'code': self.site.lang})
             else:
                 try:
@@ -119,7 +119,7 @@ class LoginManager:
                         u"If you have an account for that site, please "
                         u"add such a line to user-config.py:\n\n"
                         u"usernames['%(fam)s']['%(code)s'] = 'myUsername'"
-                        % {'fam': self.site.family.name
+                        % {'fam': self.site.family.name,
                            'code': self.site.lang})
         self.password = password
         self.verbose = verbose
