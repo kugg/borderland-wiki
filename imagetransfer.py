@@ -26,34 +26,37 @@ used on a page reachable via interwiki links.
 """
 #
 # (C) Andre Engels, 2004
-# (C) Pywikipedia bot team, 2004-2012
+# (C) Pywikibot team, 2004-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 
-import re, sys
-import wikipedia as pywikibot
-import upload, config, pagegenerators
+import re
+import sys
+import pywikibot
+import upload
+import config
+import pagegenerators
 
 copy_message = {
-    'ar':u"هذه الصورة تم نقلها من %s. الوصف الأصلي كان:\r\n\r\n%s",
-    'en':u"This image was copied from %s. The original description was:\r\n\r\n%s",
-    'fa':u"تصویر از %s کپی شده‌است.توضیحات اصلی ان این بود::\r\n\r\n%s",
-    'de':u"Dieses Bild wurde von %s kopiert. Die dortige Beschreibung lautete:\r\n\r\n%s",
-    'fr':u"Cette image est copiée de %s. La description originale était:\r\n\r\n%s",
-    'he':u"תמונה זו הועתקה מהאתר %s. תיאור הקובץ המקורי היה:\r\n\r\n%s",
-    'hu':u"Kép másolása innen: %s. Az eredeti leírás:\r\n\r\n%s",
-    'ia':u"Iste imagine esseva copiate de %s. Le description original esseva:\r\n\r\n%s",
-    'it':u"Questa immagine è stata copiata da %s. La descrizione originale era:\r\n\r\n%s",
-    'kk':u"Бұл сурет %s дегеннен көшірілді. Түпнұсқа сипатттамасы былай болды:\r\n\r\n%s",
-    'lt':u"Šis paveikslėlis buvo įkeltas iš %s. Originalus aprašymas buvo:\r\n\r\n%s",
-    'nl':u"Afbeelding gekopieerd vanaf %s. De beschrijving daar was:\r\n\r\n%s",
-    'pl':u"Ten obraz został skopiowany z %s. Oryginalny opis to:\r\n\r\n%s",
-    'pt':u"Esta imagem foi copiada de %s. A descrição original foi:\r\n\r\n%s",
-    'ru':u"Изображение было скопировано с %s. Оригинальное описание содержало:\r\n\r\n%s",
-    'sr':u"Ова слика је копирана са %s. Оригинални опис је:\r\n\r\n%s",
-    'zh':u"本圖像從 %s 複製，原始說明資料：\r\n\r\n%s",
+    'ar': u"هذه الصورة تم نقلها من %s. الوصف الأصلي كان:\r\n\r\n%s",
+    'en': u"This image was copied from %s. The original description was:\r\n\r\n%s",
+    'fa': u"تصویر از %s کپی شده‌است.توضیحات اصلی ان این بود::\r\n\r\n%s",
+    'de': u"Dieses Bild wurde von %s kopiert. Die dortige Beschreibung lautete:\r\n\r\n%s",
+    'fr': u"Cette image est copiée de %s. La description originale était:\r\n\r\n%s",
+    'he': u"תמונה זו הועתקה מהאתר %s. תיאור הקובץ המקורי היה:\r\n\r\n%s",
+    'hu': u"Kép másolása innen: %s. Az eredeti leírás:\r\n\r\n%s",
+    'ia': u"Iste imagine esseva copiate de %s. Le description original esseva:\r\n\r\n%s",
+    'it': u"Questa immagine è stata copiata da %s. La descrizione originale era:\r\n\r\n%s",
+    'kk': u"Бұл сурет %s дегеннен көшірілді. Түпнұсқа сипатттамасы былай болды:\r\n\r\n%s",
+    'lt': u"Šis paveikslėlis buvo įkeltas iš %s. Originalus aprašymas buvo:\r\n\r\n%s",
+    'nl': u"Afbeelding gekopieerd vanaf %s. De beschrijving daar was:\r\n\r\n%s",
+    'pl': u"Ten obraz został skopiowany z %s. Oryginalny opis to:\r\n\r\n%s",
+    'pt': u"Esta imagem foi copiada de %s. A descrição original foi:\r\n\r\n%s",
+    'ru': u"Изображение было скопировано с %s. Оригинальное описание содержало:\r\n\r\n%s",
+    'sr': u"Ова слика је копирана са %s. Оригинални опис је:\r\n\r\n%s",
+    'zh': u"本圖像從 %s 複製，原始說明資料：\r\n\r\n%s",
 }
 
 nowCommonsTemplate = {
@@ -70,20 +73,13 @@ nowCommonsTemplate = {
     'kk': u'{{NowCommons|Image:%s}}',
     'li': u'{{NowCommons|%s}}',
     'lt': u'{{NowCommons|Image:%s}}',
-    'nds-nl' : u'{{NoenCommons|File:%s}}',
+    'nds-nl': u'{{NoenCommons|File:%s}}',
     'nl': u'{{NuCommons|Image:%s}}',
     'pl': u'{{NowCommons|%s}}',
     'pt': u'{{NowCommons|%s}}',
     'sr': u'{{NowCommons|%s}}',
     'zh': u'{{NowCommons|Image:%s}}',
 }
-
-#nowCommonsThis = {
-    #'en': u'{{NowCommonsThis|%s}}',
-    #'it': u'{{NowCommons omonima|%s}}',
-    #'kk': u'{{NowCommonsThis|%s}}',
-    #'pt': u'{{NowCommonsThis|%s}}',
-#}
 
 nowCommonsMessage = {
     'ar': u'الملف الآن متوفر في ويكيميديا كومنز.',
@@ -105,15 +101,6 @@ nowCommonsMessage = {
     'sr': u'Слика је сада доступна и на Викимедија Остави.',
     'zh': u'檔案已存在於維基共享資源。',
 }
-
-#nowCommonsThisMessage = {
-    #'ar': u'الملف الآن متوفر في كومنز بنفس الاسم.',
-    #'en': u'File is now available on Commons with the same name.',
-    #'he': u'הקובץ זמין כעת בוויקישיתוף בשם זהה.',
-    #'it': u'L\'immagine è adesso disponibile su Wikimedia Commons con lo stesso nome.',
-    #'kk': u'Файлды дәл сол атауымен енді Ортаққордан қатынауға болады.',
-    #'pt': u'Esta imagem está agora no Commons com o mesmo nome.',
-#}
 
 # Translations for license templates.
 # Must only be given when they are in fact different.
@@ -165,6 +152,7 @@ licenseTemplates = {
 
 
 class ImageTransferBot:
+
     def __init__(self, generator, targetSite=None, interwiki=False,
                  keep_name=False):
         self.generator = generator
@@ -182,7 +170,7 @@ class ImageTransferBot:
         sourceSite = sourceImagePage.site()
         if debug:
             print "-" * 50
-            print "Found image: %s"% imageTitle
+            print "Found image: %s" % imageTitle
         url = sourceImagePage.fileUrl().encode('utf-8')
         pywikibot.output(u"URL should be: %s" % url)
         # localize the text that should be printed on the image description page
@@ -215,7 +203,7 @@ class ImageTransferBot:
                                      targetSite=self.targetSite,
                                      urlEncoding=sourceSite.encoding(),
                                      keepFilename=self.keep_name,
-                                     verifyDescription = not self.keep_name)
+                                     verifyDescription=not self.keep_name)
             # try to upload
             targetFilename = bot.run()
             if targetFilename and self.targetSite.family.name == 'commons' and \
@@ -272,7 +260,7 @@ class ImageTransferBot:
 
             except pywikibot.NoPage:
                 break
-        print "="*60
+        print "=" * 60
 
     def run(self):
         for page in self.generator:
@@ -284,9 +272,9 @@ class ImageTransferBot:
                 imagePage = pywikibot.ImagePage(page.site(), page.title())
                 imagelist = [imagePage]
             else:
-                imagelist = page.imagelinks(followRedirects = True)
+                imagelist = page.imagelinks(followRedirects=True)
 
-            while len(imagelist)>0:
+            while imagelist:
                 self.showImageList(imagelist)
                 if len(imagelist) == 1:
                     # no need to query the user, only one possibility
@@ -303,7 +291,7 @@ class ImageTransferBot:
                         pywikibot.output(
                             u'The image is already on Wikimedia Commons.')
                     else:
-                        self.transferImage(imagelist[todo], debug = False)
+                        self.transferImage(imagelist[todo], debug=False)
                     # remove the selected image from the list
                     imagelist = imagelist[:todo] + imagelist[todo + 1:]
                 else:
