@@ -38,7 +38,7 @@ import config
 
 
 class Importer(pywikibot.Page):
-    
+
     def __init__(self, site):
         self.importsite = site
         pywikibot.Page.__init__(self, site, 'Special:Import', None, 0)
@@ -46,18 +46,18 @@ class Importer(pywikibot.Page):
     def Import(self, target, project='w', crono='1', namespace='', prompt=True):
         """Import the page from the wiki. Requires administrator status.
         If prompt is True, asks the user if he wants to delete the page.
-        
+
         """
         if project == 'w':
-            site = pywikibot.getSite(fam = 'wikipedia')
+            site = pywikibot.getSite(fam='wikipedia')
         elif project == 'b':
-            site = pywikibot.getSite(fam = 'wikibooks')
+            site = pywikibot.getSite(fam='wikibooks')
         elif project == 'wikt':
-            site = pywikibot.getSite(fam = 'wiktionary')
+            site = pywikibot.getSite(fam='wiktionary')
         elif project == 's':
-            site = pywikibot.getSite(fam = 'wikisource')
+            site = pywikibot.getSite(fam='wikisource')
         elif project == 'q':
-            site = pywikibot.getSite(fam = 'wikiquote')
+            site = pywikibot.getSite(fam='wikiquote')
         else:
             site = pywikibot.getSite()
         # Fixing the crono value...
