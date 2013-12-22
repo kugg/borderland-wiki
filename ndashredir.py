@@ -40,31 +40,35 @@ Known parameters:
 """
 
 #
-# (C) Bináris, 2012
+# (c) Bináris, 2012
+# (c) pywikibot team, 2012-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
+#
 
-import codecs, re
-import wikipedia as pywikibot
+import codecs
+import re
+import pywikibot
 from pagegenerators import RegexFilterPageGenerator as RPG
 from pywikibot import i18n
 
+
 def main(*args):
-    regex = ur'.*[–—]' # Alt 0150 (n dash), alt 0151 (m dash), respectively.
+    regex = ur'.*[–—]'  # Alt 0150 (n dash), alt 0151 (m dash), respectively.
     ns = 0
     start = '!'
-    filename = None # The name of the file to save titles
-    titlefile = None # The file object itself
-    ignorefilename = None # The name of the ignore file
-    ignorelist = [] # A list to ignore titles that redirect to somewhere else
+    filename = None  # The name of the file to save titles
+    titlefile = None  # The file object itself
+    ignorefilename = None  # The name of the ignore file
+    ignorelist = []  # A list to ignore titles that redirect to somewhere else
 
     # Handling parameters:
     for arg in pywikibot.handleArgs(*args):
         if arg == '-start':
             start = pywikibot.input(
-                    u'From which title do you want to continue?')
+                u'From which title do you want to continue?')
         elif arg.startswith('-start:'):
             start = arg[7:]
         elif arg in ['-ns', '-namespace']:
@@ -98,42 +102,42 @@ def main(*args):
             ignorelist = re.findall(ur'\[\[:?(.*?)\]\]', igfile.read())
             igfile.close()
         except IOError:
-            pywikibot.output("%s cannot be opened for reading." % ignorefilename)
+            pywikibot.output("%s cannot be opened for reading."
+                             % ignorefilename)
             return
 
     # Ready to initialize
     site = pywikibot.getSite()
     redirword = site.redirect()
     gen = RPG(site.allpages(
-          start=start, namespace=ns, includeredirects=False), [regex])
+        start=start, namespace=ns, includeredirects=False), [regex])
 
     # Processing:
     for page in gen:
         title = page.title()
         editSummary = i18n.twtranslate(site, 'ndashredir-create',
                                            {'title': title})
-        newtitle = title.replace(u'–','-').replace(u'—','-')
+        newtitle = title.replace(u'–', '-').replace(u'—', '-')
         # n dash -> hyphen, m dash -> hyphen, respectively
         redirpage = pywikibot.Page(site, newtitle)
         if redirpage.exists():
             if redirpage.isRedirectPage() and \
-                        redirpage.getRedirectTarget() == page:
-                pywikibot.output(
-                    u'[[%s]] already redirects to [[%s]], nothing to do with it.'
-                    % (newtitle, title))
+               redirpage.getRedirectTarget() == page:
+                pywikibot.output(u'[[%s]] already redirects to [[%s]], nothing '
+                                 u'to do with it.' % (newtitle, title))
             elif newtitle in ignorelist:
                 pywikibot.output(
                     u'Skipping [[%s]] because it is on your ignore list.'
                     % newtitle)
             else:
                 pywikibot.output(
-                    (u'\03{lightyellow}Skipping [[%s]] because it exists '
-                     u'already with a different content.\03{default}')
+                    u'\03{lightyellow}Skipping [[%s]] because it exists '
+                    u'already with a different content.\03{default}'
                     % newtitle)
                 if titlefile:
-                    s = u'\n#%s does not redirect to %s.' %\
-                    (redirpage.title(asLink=True, textlink=True),
-                    page.title(asLink=True, textlink=True))
+                    s = u'\n#%s does not redirect to %s.' % (
+                        redirpage.title(asLink=True, textlink=True),
+                        page.title(asLink=True, textlink=True))
                     # For the unlikely case if someone wants to run it in
                     # file namespace.
                     titlefile.write(s)
@@ -154,7 +158,8 @@ def main(*args):
         # RegexFilterPageGenerator or throttle.py or anything else and cannot
         # be catched in this loop.)
     if titlefile:
-        titlefile.close() # For  the spirit of programming (it was flushed)
+        titlefile.close()  # For  the spirit of programming (it was flushed)
+
 
 if __name__ == "__main__":
     try:
