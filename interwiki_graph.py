@@ -1,21 +1,27 @@
 """ Module with the graphviz drawing calls """
 #
-# (C) Pywikipedia bot team, 2006-2012
+# (C) Pywikbot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
+#
+
 import threading
+
 pydotfound = True
 try:
     import pydot
 except ImportError:
     pydotfound = False
-import wikipedia as pywikibot
+
+import pywikibot
 import config
+
 
 class GraphImpossible(Exception):
     "Drawing a graph is not possible on your system."
+
 
 class GraphSavingThread(threading.Thread):
     """
@@ -36,15 +42,17 @@ class GraphSavingThread(threading.Thread):
         for format in config.interwiki_graph_formats:
             filename = 'interwiki-graphs/' + getFilename(self.originPage,
                                                          format)
-            if self.graph.write(filename, prog = 'dot', format = format):
+            if self.graph.write(filename, prog='dot', format=format):
                 pywikibot.output(u'Graph saved as %s' % filename)
             else:
                 pywikibot.output(u'Graph could not be saved as %s' % filename)
 
+
 class GraphDrawer:
+
     def __init__(self, subject):
         if not pydotfound:
-            raise GraphImpossible, 'pydot is not installed.'
+            raise GraphImpossible('pydot is not installed.')
         self.graph = None
         self.subject = subject
 
@@ -53,7 +61,7 @@ class GraphDrawer:
                                   page.title())).encode('utf-8')
 
     def addNode(self, page):
-        node = pydot.Node(self.getLabel(page), shape = 'rectangle')
+        node = pydot.Node(self.getLabel(page), shape='rectangle')
         node.set_URL("\"http://%s%s\""
                      % (page.site.hostname(),
                         page.site.get_address(page.urlname())))
@@ -133,18 +141,18 @@ class GraphDrawer:
             self.addNode(page)
         # mark start node by pointing there from a black dot.
         firstLabel = self.getLabel(self.subject.originPage)
-        self.graph.add_node(pydot.Node('start', shape = 'point'))
+        self.graph.add_node(pydot.Node('start', shape='point'))
         self.graph.add_edge(pydot.Edge('start', firstLabel))
         for page, referrers in self.subject.foundIn.iteritems():
             for refPage in referrers:
                 self.addDirectedEdge(page, refPage)
         self.saveGraphFile()
 
-def getFilename(page, extension = None):
+
+def getFilename(page, extension=None):
     filename = '%s-%s-%s' % (page.site.family.name,
                              page.site.language(),
                              page.titleForFilename())
     if extension:
         filename += '.%s' % extension
     return filename
-

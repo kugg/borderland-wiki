@@ -21,12 +21,21 @@ These command line parameters can be used to specify which pages to work on:
 All other parameters will be regarded as a page title; in this case, the bot
 will only touch a single page.
 """
+#
+# (C) Pywikipedia bot team, 2006-2013
+#
+# Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
+#
 
-__version__='$Id$'
-
-import sys, re
-import wikipedia as pywikibot
-import pagegenerators, catlib, weblinkchecker, upload
+import sys
+import re
+import pywikibot
+import pagegenerators
+import catlib
+import weblinkchecker
+import upload
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -49,6 +58,7 @@ msg = {
 # This is still work in progress! #
 ###################################
 
+
 class InlineImagesRobot:
     def __init__(self, generator):
         self.generator = generator
@@ -65,7 +75,7 @@ class InlineImagesRobot:
                                                      withoutBracketed=True):
                     filename = url.split('/')[-1]
                     description = pywikibot.translate(pywikibot.getSite(), msg) % url
-                    bot = upload.UploadRobot(url, description = description)
+                    bot = upload.UploadRobot(url, description=description)
                     # TODO: check duplicates
                     #filename = bot.uploadImage()
                     #if filename:
@@ -80,6 +90,7 @@ class InlineImagesRobot:
                       % page.title(asLink=True)
             except pywikibot.LockedPage:
                 print "Page %s is locked?!" % page.title(asLink=True)
+
 
 def main():
     #page generator
@@ -109,6 +120,7 @@ def main():
         preloadingGen = pagegenerators.PreloadingGenerator(gen)
         bot = InlineImagesRobot(preloadingGen)
         bot.run()
+
 
 if __name__ == "__main__":
     try:
