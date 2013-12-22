@@ -15,15 +15,19 @@ Other options:
 -shown      Choose images shown on the page as well as linked from it
 -justshown  Choose _only_ images shown on the page, not those linked
 """
+#  (C) Pywikibot team, 2004-2013
+#
+#   Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
+#
 
-__version__='$Id$'
-
-import re, sys, os
-import wikipedia as pywikibot
-import externals                            # check for and install needed
+import os
 import urllib
+import pywikibot
 import BeautifulSoup
 import upload
+
 
 def get_imagelinks(url):
     """Given a URL, get all images linked to by the page at that URL."""
@@ -45,35 +49,36 @@ def get_imagelinks(url):
         if link:
             ext = os.path.splitext(link)[1].lower().strip('.')
             if ext in fileformats:
-                 links.append(urllib.basejoin(url, link))
+                links.append(urllib.basejoin(url, link))
     return links
+
 
 def main(give_url, image_url, desc):
     url = give_url
 
     if url == '':
         if image_url:
-            url = pywikibot.input(
-                u"What URL range should I check (use $ for the part that is changeable)")
+            url = pywikibot.input(u"What URL range should I check "
+                                  u"(use $ for the part that is changeable)")
         else:
-            url = pywikibot.input(
-                u"From what URL should I get the images?")
+            url = pywikibot.input(u"From what URL should I get the images?")
 
     if image_url:
-        minimum=1
-        maximum=99
-        answer= pywikibot.input(
+        minimum = 1
+        maximum = 99
+        answer = pywikibot.input(
             u"What is the first number to check (default: 1)")
         if answer:
-            minimum=int(answer)
-        answer= pywikibot.input(
+            minimum = int(answer)
+        answer = pywikibot.input(
             u"What is the last number to check (default: 99)")
         if answer:
-            maximum=int(answer)
+            maximum = int(answer)
 
     if not desc:
         basicdesc = pywikibot.input(
-            u"What text should be added at the end of the description of each image from this url?")
+            u"What text should be added at the end of "
+            u"the description of each image from this url?")
     else:
         basicdesc = desc
 
@@ -81,7 +86,7 @@ def main(give_url, image_url, desc):
         ilinks = []
         i = minimum
         while i <= maximum:
-            ilinks += [url.replace("$",str(i))]
+            ilinks += [url.replace("$", str(i))]
             i += 1
     else:
         ilinks = get_imagelinks(url)
@@ -94,19 +99,23 @@ def main(give_url, image_url, desc):
             desc = pywikibot.input(u"Give the description of this image:")
             categories = []
             while True:
-                cat = pywikibot.input(
-                    u"Specify a category (or press enter to end adding categories)")
-                if not cat.strip(): break
+                cat = pywikibot.input(u"Specify a category (or press enter to "
+                                      u"end adding categories)")
+                if not cat.strip():
+                    break
                 if ":" in cat:
-                    categories.append("[["+cat+"]]")
+                    categories.append(u"[[%s]]" % cat)
                 else:
-                    categories.append("[["+mysite.namespace(14)+":"+cat+"]]")
-            desc = desc + "\r\n\r\n" + basicdesc + "\r\n\r\n" + \
-                   "\r\n".join(categories)
-            uploadBot = upload.UploadRobot(image, description = desc)
+                    categories.append(u"[[%s:%s]]"
+                                      % (mysite.namespace(14), cat))
+            desc += "\r\n\r\n" + basicdesc + "\r\n\r\n" + \
+                    "\r\n".join(categories)
+            uploadBot = upload.UploadRobot(image, description=desc)
             uploadBot.run()
         elif answer == 's':
             break
+
+
 try:
     url = u''
     image_url = False
