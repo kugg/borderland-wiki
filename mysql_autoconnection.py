@@ -5,14 +5,18 @@ A small MySQL wrapper that catches dead MySQL connections, and tries to
 reconnect them.
 """
 #
-# (C) Bryan Tong Minh, 2007
+# (c) Bryan Tong Minh, 2007
+# (c) pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
+#
 
-import MySQLdb, MySQLdb.cursors
+import MySQLdb
+import MySQLdb.cursors
 import time
+
 
 class Connection(object):
     """A wrapper to the MySQLdb database and cursor object.
@@ -20,17 +24,17 @@ class Connection(object):
     into one object.
     """
     RECOVERABLE_ERRORS = (
-        1040, # Too many connections
-        1152, # Aborted connection
-        2002, # Connection error
-        2003, # Can't connect
-        2006, # Server gone
-        2013, # Server lost
-        2014, # Commands out of sync
-        )
+        1040,  # Too many connections
+        1152,  # Aborted connection
+        2002,  # Connection error
+        2003,  # Can't connect
+        2006,  # Server gone
+        2013,  # Server lost
+        2014,  # Commands out of sync
+    )
 
-    def __init__(self, retry_timeout = 60, max_retries = -1,
-        callback = lambda *args: None, *conn_args, **conn_kwargs):
+    def __init__(self, retry_timeout=60, max_retries=-1,
+                 callback=lambda *args: None, *conn_args, **conn_kwargs):
 
         self.retry_timeout = retry_timeout
         self.max_retries = max_retries
@@ -51,6 +55,7 @@ class Connection(object):
             self.callback(self)
         time.sleep(self.current_retry * self.retry_timeout)
         self.current_retry += 1
+
     def __call(self, (object, function_name), *args, **kwargs):
         try:
             return getattr(object, function_name)(*args, **kwargs)
@@ -89,7 +94,7 @@ class Connection(object):
         except:
             pass
 
-    def cursor(self, cursorclass = MySQLdb.cursors.Cursor):
+    def cursor(self, cursorclass=MySQLdb.cursors.Cursor):
         if type(cursorclass) is not type(self.__cursor):
             self.__cursor = self.database.cursor(cursorclass)
         return self
@@ -97,6 +102,7 @@ class Connection(object):
     # Mimic cursor object
     def __iter__(self):
         return self.__cursor.__iter__()
+
     def __getattr__(self, name, *args, **kwargs):
         if hasattr(self.database, name):
             obj = self.database
@@ -109,22 +115,26 @@ class Connection(object):
 
 
 class CallWrapper(object):
+
     def __init__(self, executor, function):
         self.__executor = executor
         self.__function = function
+
     def __call__(self, *args, **kwargs):
-        return self.__executor(self.__function,
-            *args, **kwargs)
+        return self.__executor(self.__function, *args, **kwargs)
+
     def __getattr__(self, name):
         getattr(self.__function, name)
 
-def connect(retry_timeout = 60, max_retries = -1,
-    callback = lambda *args: None, *conn_args, **conn_kwargs):
 
-    return Connection(retry_timeout = retry_timeout,
-        max_retries = max_retries,
-        callback = callback,
-        *conn_args, **conn_kwargs)
+def connect(retry_timeout=60, max_retries=-1,
+            callback=lambda *args: None, *conn_args, **conn_kwargs):
+
+    return Connection(retry_timeout=retry_timeout,
+                      max_retries=max_retries,
+                      callback=callback,
+                      *conn_args, **conn_kwargs)
+
 
 if __name__ == '__main__':
     def callback(conn):
@@ -134,8 +144,8 @@ if __name__ == '__main__':
     username = raw_input('Username: ')
     password = raw_input('Password: ')
 
-    conn = connect(retry_timeout = 5, max_retries = 4, callback = callback,
-        host = host, user = username, passwd = password, charset = 'utf8')
+    conn = connect(retry_timeout=5, max_retries=4, callback=callback,
+                   host=host, user=username, passwd=password, charset='utf8')
     cur = conn.cursor()
     print 'Connected!'
     conn.execute('SELECT 1')
@@ -159,6 +169,3 @@ if __name__ == '__main__':
     print conn.fetchall()
     print 'Query ok!'
     raw_input()
-
-
-

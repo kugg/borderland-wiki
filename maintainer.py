@@ -7,10 +7,14 @@ This script requires the Python IRC library http://python-irclib.sourceforge.net
 
 Warning: experimental software, use at your own risk
 """
-__version__ = '$Id$'
-
 # Author: Balasyum
 # http://hu.wikipedia.org/wiki/User:Balasyum
+# (C) Balasyum, 2008
+# (C) Pywikibot team, 2008-2013
+#
+# Distributed under the terms of the MIT license.
+__version__ = '$Id$'
+#
 
 import random
 import thread
@@ -31,6 +35,7 @@ site.forceLogin()
 
 
 class rcFeeder(SingleServerIRCBot):
+
     def __init__(self, channel, nickname, server, port=6667):
         SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
         self.channel = channel
@@ -48,10 +53,10 @@ class rcFeeder(SingleServerIRCBot):
 
     def on_pubmsg(self, c, e):
         try:
-            msg = unicode(e.arguments()[0],'utf-8')
+            msg = unicode(e.arguments()[0], 'utf-8')
         except UnicodeDecodeError:
             return
-        name = msg[8:msg.find(u'14',9)]
+        name = msg[8:msg.find(u'14', 9)]
         if 'rciw' in self.tasks:
             self.rcbot.addQueue(name)
         if 'censure' in self.tasks:
@@ -95,7 +100,7 @@ class MaintcontBot(SingleServerIRCBot):
         do = cmd.split()
         if do[0] == "accepted":
             print "Joined the network"
-            thread.start_new_thread(self.activator,())
+            thread.start_new_thread(self.activator, ())
         elif do[0] == "tasklist" and len(do) > 1:
             self.feed.tasks = do[1].split('|')
 

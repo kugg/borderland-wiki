@@ -8,10 +8,14 @@ This script requires the Python IRC library http://python-irclib.sourceforge.net
 
 Warning: experimental software, use at your own risk
 """
-__version__ = '$Id$'
-
 # Author: Balasyum
 # http://hu.wikipedia.org/wiki/User:Balasyum
+# (C) Balasyum, 2008
+# (C) Pywikibot team, 2009-2013
+#
+# Distributed under the terms of the MIT license.
+__version__ = '$Id$'
+#
 
 import externals
 externals.check_setup('irclib')
@@ -25,6 +29,7 @@ tasks = 'rciw|censure'
 projtasks = {}
 mainters = []
 activity = {}
+
 
 class MaintcontBot(SingleServerIRCBot):
     def __init__(self, nickname, server, port=6667):
@@ -72,9 +77,9 @@ class MaintcontBot(SingleServerIRCBot):
                 print "mainter name:", mainter[0], "job:", mainter[1]
             print "--------------------"
             print
-            time.sleep(1*60)
+            time.sleep(1 * 60)
 
-    def retasker(self, group, optask = ''):
+    def retasker(self, group, optask=''):
         ingroup = 0
         for mainter in mainters:
             if mainter[1] == group:
@@ -92,9 +97,10 @@ class MaintcontBot(SingleServerIRCBot):
             if mainter[1] != group:
                 continue
             tts = '|'.join(tpc[int(round(i * tpcn)):int(round((i + 1) * tpcn))])
-            if tts != False:
+            if tts:
                 self.connection.privmsg(mainter[0], "tasklist " + tts)
             i += 1
+
 
 def main():
     bot = MaintcontBot("maintcont", "irc.freenode.net")
