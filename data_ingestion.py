@@ -1,69 +1,85 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
-'''
+"""
 A generic bot to do data ingestion (batch uploading) to Commons
 
-'''
-import pywikibot, upload
-import posixpath, urlparse
+"""
+#
+# (C) Pywikibot team, 2011-2013
+#
+# Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
+#
+
+import posixpath
+import urlparse
 import urllib
-import hashlib, base64
+import hashlib
+import base64
 import StringIO
 try:
     import json
 except ImportError:
     import simplejson as json
+import pywikibot
+import upload
+
 
 class Photo(object):
-    '''
+    """
     Represents a Photo (or other file), with metadata, to upload to Commons.
 
     The constructor takes two parameters: URL (string) and metadata (dict with str:str key:value pairs)
     that can be referred to from the title & template generation.
 
-
-    '''
+    """
     def __init__(self, URL, metadata):
         self.URL = URL
         self.metadata = metadata
         self.metadata["_url"] = URL
-        self.metadata["_filename"] = filename = posixpath.split(urlparse.urlparse(URL)[2])[1]
+        self.metadata["_filename"] = filename = posixpath.split(
+            urlparse.urlparse(URL)[2])[1]
         self.metadata["_ext"] = ext = filename.split(".")[-1]
         if ext == filename:
             self.metadata["_ext"] = ext = None
         self.contents = None
 
     def downloadPhoto(self):
-        '''
+        """
         Download the photo and store it in a StringIO.StringIO object.
 
         TODO: Add exception handling
-        '''
+
+        """
         if not self.contents:
-            imageFile=urllib.urlopen(self.URL).read()
+            imageFile = urllib.urlopen(self.URL).read()
             self.contents = StringIO.StringIO(imageFile)
         return self.contents
 
-    def findDuplicateImages(self, site = pywikibot.getSite(u'commons', u'commons')):
-        '''
-        Takes the photo, calculates the SHA1 hash and asks the mediawiki api for a list of duplicates.
+    def findDuplicateImages(self,
+                            site=pywikibot.getSite(u'commons', u'commons')):
+        """
+        Takes the photo, calculates the SHA1 hash and asks the mediawiki api
+        for a list of duplicates.
 
         TODO: Add exception handling, fix site thing
-        '''
+
+        """
         hashObject = hashlib.sha1()
         hashObject.update(self.downloadPhoto().getvalue())
         return site.getFilesFromAnHash(base64.b16encode(hashObject.digest()))
 
     def getTitle(self, fmt):
         """
-        Given a format string with %(name)s entries, returns the string formatted with metadata
+        Given a format string with %(name)s entries, returns the string
+        formatted with metadata
+
         """
         return fmt % self.metadata
 
     def getDescription(self, template, extraparams={}):
-        '''
-        Generate a description for a file
-        '''
+        """ Generate a description for a file """
 
         params = {}
         params.update(self.metadata)
@@ -72,13 +88,15 @@ class Photo(object):
         for key in sorted(params.keys()):
             value = params[key]
             if not key.startswith("_"):
-                description = description + (u'|%s=%s' % (key, self._safeTemplateValue(value))) + "\n"
-        description = description + u'}}'
+                description += (u'|%s=%s'
+                                % (key, self._safeTemplateValue(value))) + "\n"
+        description += u'}}'
 
         return description
 
     def _safeTemplateValue(self, value):
         return value.replace("|", "{{!}}")
+
 
 def CSVReader(fileobj, urlcolumn, *args, **kwargs):
     import csv
@@ -88,30 +106,35 @@ def CSVReader(fileobj, urlcolumn, *args, **kwargs):
         yield Photo(line[urlcolumn], line)
 
 
-def JSONReader(baseurl, start=0, end=100, JSONBase=None, metadataFunction=None, fileurl=u'fileurl'):
-    '''
+def JSONReader(baseurl, start=0, end=100, JSONBase=None, metadataFunction=None,
+               fileurl=u'fileurl'):
+    """
     Loops over a bunch of json page and process them with processJSONPage().
 
     Will yield Photo objects with metadata
-    '''
+
+    """
     if baseurl:
-        for i in range(start , end):
+        for i in range(start, end):
             url = baseurl % (i,)
-            photo = processJSONPage(url, JSONBase=JSONBase, metadataFunction=metadataFunction, fileurl=u'fileurl')
+            photo = processJSONPage(url, JSONBase=JSONBase,
+                                    metadataFunction=metadataFunction,
+                                    fileurl=u'fileurl')
             if photo:
                 yield photo
-                
 
 
-def processJSONPage(url, JSONBase=None, metadataFunction=None, fileurl=u'fileurl'):
-    '''
+def processJSONPage(url, JSONBase=None, metadataFunction=None,
+                    fileurl=u'fileurl'):
+    """
     Process a single JSON page.
     For the JSON page you can rebase it to not get all the crap
     You can apply a custom metadata function to do some modification on the metadata and checking
     By default the field 'fileurl' is expected in the metadata to contain the file. You can change this.
 
     Will a return Photo object with metadata or None if something is wrong
-    '''
+
+    """
     JSONPage = urllib.urlopen(url)
     JSONData = json.load(JSONPage)
     JSONPage.close()
@@ -130,17 +153,20 @@ def processJSONPage(url, JSONBase=None, metadataFunction=None, fileurl=u'fileurl
         if metadataFunction:
             metadata = metadataFunction(metadata)
 
-        # If the metadataFunction didn't return none (something was wrong). Return the photo
+        # If the metadataFunction didn't return none (something was wrong).
+        # Return the photo
         if metadata:
             return Photo(metadata.get(fileurl), metadata)
-
     return False
 
+
 def JSONRebase(JSONData, JSONBase):
-    '''
+    """
     Moves the base of the JSON object to the part you're intrested in.
-    JSONBase is a list to crawl the tree. If one of the steps is not found, return None
-    '''
+    JSONBase is a list to crawl the tree. If one of the steps is not found,
+    return None
+
+    """
     for step in JSONBase:
         if JSONData:
             if type(JSONData) == dict:
@@ -148,21 +174,20 @@ def JSONRebase(JSONData, JSONBase):
             elif type(JSONData) == list:
                 # FIXME: Needs error, length etc checking
                 JSONData = JSONData[step]
-
     return JSONData
 
 
 def JSONTree(metadata, fieldlist, record):
-    '''
+    """
     metadata: Dict with end result
     key: The key we encountered
     record: Record to work on
-    '''
+    """
     if type(record) == list:
         for r in record:
             metadata = JSONTree(metadata, fieldlist, r)
     elif type(record) == dict:
-        for k,v in record.items():
+        for k, v in record.items():
             metadata = JSONTree(metadata, fieldlist + [k], v)
     elif type(record) == unicode:
         key = u'_'.join(fieldlist)
@@ -172,11 +197,13 @@ def JSONTree(metadata, fieldlist, record):
             newkey = key + u'_2'
             if not newkey in metadata:
                 metadata[newkey] = record
-        
     return metadata
 
+
 class DataIngestionBot:
-    def __init__(self, reader, titlefmt, pagefmt, site=pywikibot.getSite(u'commons', u'commons')):
+
+    def __init__(self, reader, titlefmt, pagefmt,
+                 site=pywikibot.getSite(u'commons', u'commons')):
         self.reader = reader
         self.titlefmt = titlefmt
         self.pagefmt = pagefmt
@@ -190,17 +217,16 @@ class DataIngestionBot:
         title = photo.getTitle(self.titlefmt)
         description = photo.getDescription(self.pagefmt)
 
-        bot = upload.UploadRobot(url = photo.URL,
-                                 description = description,
-                                 useFilename = title,
-                                 keepFilename = True,
-                                 verifyDescription = False,
+        bot = upload.UploadRobot(url=photo.URL,
+                                 description=description,
+                                 useFilename=title,
+                                 keepFilename=True,
+                                 verifyDescription=False,
                                  ignoreWarning=True,
-                                 targetSite = self.site)
+                                 targetSite=self.site)
         bot._contents = photo.downloadPhoto().getvalue()
         bot._retrieved = True
         bot.run()
-
         return title
 
     def doSingle(self):
@@ -210,9 +236,12 @@ class DataIngestionBot:
         for photo in self.reader:
             self._doUpload(photo)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     reader = CSVReader(open('tests/data/csv_ingestion.csv'), 'url')
-    bot = DataIngestionBot(reader, "%(name)s - %(set)s.%(_ext)s", ":user:valhallasw/test_template", pywikibot.getSite('test', 'test'))
+    bot = DataIngestionBot(reader, "%(name)s - %(set)s.%(_ext)s",
+                           ":user:valhallasw/test_template",
+                           pywikibot.getSite('test', 'test'))
     bot.run()
 
 """
