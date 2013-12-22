@@ -1,31 +1,37 @@
 # -*- coding: utf-8  -*-
+"""
+Usable example module: Use of pywikipedia as a
+library.
 
-# Usable example module: Use of pywikipedia as a
-# library.
-#
-# Looks up the path to pywikipedia (pywikipedia_path)
-# in a settings.py file. You'll need to provide that,
-# and/or refactor.
-
+Looks up the path to pywikipedia (pywikipedia_path)
+in a settings.py file. You'll need to provide that,
+and/or refactor.
+"""
 # (C) Kim Bruning for Wikiation, sponsored by Kennisnet, 2009
+# (C) Pywikipedia bot team, 2009-2013
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
+#
 
-import sys, os
+import sys
+import os
 import settings
+
 if settings.pywikipedia_path not in sys.path:
     sys.path.append(settings.pywikipedia_path)
 
 # pywikipedia can only set itself up if everything is
 # done in its own directory. This needs fixing sometime.
 # for now, we live with it.
-cwd=os.getcwd()
+cwd = os.getcwd()
 os.chdir(settings.pywikipedia_path)
 import wikipedia as pywikibot
 import login
 from simple_family import Family
 os.chdir(cwd)
+
 
 class LoginData:
     """An example class that uses pywikipedia as a library.
@@ -50,7 +56,7 @@ class LoginData:
         password='MY_SECRET_PASSWORD',
         RversionTab=None,
         api_supported=False
-        ):
+    ):
         """
         paramaters:
         name: arbitrary name. Pick something easy to remember
@@ -67,10 +73,10 @@ class LoginData:
         password: password for this user
         """
 
-        self.lang=lang
-        self.user=user
-        self.password=password
-        self.family=base_family.Family(
+        self.lang = lang
+        self.user = user
+        self.password = password
+        self.family = base_family.Family(
             name=name,
             protocol=protocol,
             server=server,
@@ -80,20 +86,20 @@ class LoginData:
             encoding=encoding,
             RversionTab=RversionTab,
             api_supported=api_supported)
-        self.site=None
+        self.site = None
 
     def login(self):
         """Attempt to log in on the site described
         by this class. Returns a pywikipedia site object"""
-        self.site=pywikibot.Site(
+        self.site = pywikibot.Site(
             code=self.lang,
             fam=self.family,
             user=self.user
-            )
-        loginManager=login.LoginManager(
+        )
+        loginManager = login.LoginManager(
             password=self.password,
             site=self.site,
             username=self.user
-            )
+        )
         loginManager.login()
         return self.site
