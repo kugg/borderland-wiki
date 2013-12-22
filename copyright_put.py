@@ -234,9 +234,8 @@ def run(send_stats=False):
         if m:
             m_end = re.search(separatorC, wikitext[m.end():])
             if m_end:
-                wikitext = wikitext[
-                    :m_end.start() + m.end()] + output_data + wikitext[
-                        m_end.start() + m.end():]
+                wikitext = (wikitext[:m_end.start() + m.end()] +
+                            output_data + wikitext[m_end.start() + m.end():])
             else:
                 wikitext += '\n' + output_data
         else:
