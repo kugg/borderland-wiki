@@ -48,16 +48,19 @@ Please fix these if you are capable and motivated:
 #
 # (C) Wikipedian, 2006-2007
 # (C) Siebrand Mazeland, 2007-2008
-# (C) xqt, 2010-2012
-# (C) Pywikipedia bot team, 2006-2013
+# (C) xqt, 2010-2013
+# (C) Pywikibot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import sys, re, webbrowser, urllib
-import wikipedia as pywikibot
+import sys
+import re
+import webbrowser
+import urllib
+import pywikibot
 import pagegenerators as pg
 import image
 # only for nowCommonsMessage
@@ -119,7 +122,7 @@ nowCommons = {
     'it': [
         u'NowCommons',
     ],
-    'ja':[
+    'ja': [
         u'NowCommons',
     ],
     'ko': [
@@ -128,7 +131,7 @@ nowCommons = {
         u'공용 중복',
         u'Nowcommons',
     ],
-    'nds-nl' : [
+    'nds-nl': [
         u'NoenCommons',
         u'NowCommons',
     ],
@@ -152,7 +155,7 @@ nowCommons = {
         u'Перенесено на Викисклад',
         u'На Викискладе',
     ],
-    'zh':[
+    'zh': [
         u'NowCommons',
         u'Nowcommons',
         u'NCT',
@@ -175,7 +178,7 @@ namespaceInTemplate = [
 word_to_skip = {
     'en': [],
     'it': ['stemma', 'stub', 'hill40 '],
-    }
+}
 
 #nowCommonsMessage = imagetransfer.nowCommonsMessage
 
@@ -200,7 +203,7 @@ class NowCommonsDeleteBot:
         images_processed = list()
         while 1:
             url = 'http://toolserver.org/~multichill/nowcommons.php?language=%s&page=%s&filter=' % (lang, num_page)
-            HTML_text = self.site.getUrl(url, no_hostname = True)
+            HTML_text = self.site.getUrl(url, no_hostname=True)
             reg = r'<[Aa] href="(?P<urllocal>.*?)">(?P<imagelocal>.*?)</[Aa]> +?</td><td>\n\s*?'
             reg += r'<[Aa] href="(?P<urlcommons>http://commons.wikimedia.org/.*?)">Image:(?P<imagecommons>.*?)</[Aa]> +?</td><td>'
             regex = re.compile(reg, re.UNICODE)
@@ -309,7 +312,7 @@ class NowCommonsDeleteBot:
         for page in self.getPageGenerator():
             if use_hash:
                 # Page -> Has the namespace | commons image -> Not
-                images_list = page # 0 -> local image, 1 -> commons image
+                images_list = page  # 0 -> local image, 1 -> commons image
                 page = pywikibot.Page(self.site, images_list[0])
             else:
                 # If use_hash is true, we have already print this before, no need
@@ -345,7 +348,7 @@ class NowCommonsDeleteBot:
                             u'\"\03{lightred}%s\03{default}\" is still used in %i pages.'
                             % (localImagePage.title(withNamespace=False),
                                len(usingPages)))
-                        if replace == True:
+                        if replace:
                                 pywikibot.output(
                                     u'Replacing \"\03{lightred}%s\03{default}\" by \"\03{lightgreen}%s\03{default}\".'
                                     % (localImagePage.title(withNamespace=False),
@@ -358,9 +361,10 @@ class NowCommonsDeleteBot:
                                 oImageRobot.run()
                                 # If the image is used with the urlname the
                                 # previous function won't work
-                                if len(list(pywikibot.ImagePage(self.site,
-                                                                page.title()).usingPages())) > 0 and \
-                                                                replaceloose:
+                                if len(list(pywikibot.ImagePage(
+                                    self.site,
+                                    page.title()).usingPages())) > 0 and \
+                                        replaceloose:
                                     oImageRobot = image.ImageRobot(
                                         pg.FileLinksGenerator(
                                             localImagePage),
@@ -377,7 +381,9 @@ class NowCommonsDeleteBot:
                                 if usingPages > 0 and use_hash:
                                     # just an enter
                                     pywikibot.input(
-                                        u'There are still %s pages with this image, confirm the manual removal from them please.'
+                                        u'There are still %s pages with this '
+                                        u'image, confirm the manual removal '
+                                        u'from them please.'
                                         % usingPages)
 
                         else:
@@ -388,15 +394,17 @@ class NowCommonsDeleteBot:
                             u'No page is using \"\03{lightgreen}%s\03{default}\" anymore.'
                             % localImagePage.title(withNamespace=False))
                 commonsText = commonsImagePage.get()
-                if replaceonly == False:
+                if not replaceonly:
                     if md5 == commonsImagePage.getFileMd5Sum():
                         pywikibot.output(
                             u'The image is identical to the one on Commons.')
-                        if len(localImagePage.getFileVersionHistory()) > 1 and not use_hash:
-                            pywikibot.output(
-                                u"This image has a version history. Please delete it manually after making sure that the old versions are not worth keeping.""")
+                        if len(localImagePage.getFileVersionHistory()) > 1 and \
+                           not use_hash:
+                            pywikibot.output(u"""
+This image has a version history. Please delete it manually after
+making sure that the old versions are not worth keeping.""")
                             continue
-                        if autonomous == False:
+                        if not autonomous:
                             pywikibot.output(
                                 u'\n\n>>>> Description on \03{lightpurple}%s\03{default} <<<<\n'
                                 % page.title())
@@ -406,17 +414,17 @@ class NowCommonsDeleteBot:
                                 % commonsImagePage.title())
                             pywikibot.output(commonsText)
                             choice = pywikibot.inputChoice(
-u'Does the description on Commons contain all required source and license\n'
-                                u'information?',
+                                u'Does the description on Commons contain all '
+                                u'required source and license\ninformation?',
                                 ['yes', 'no'], ['y', 'N'], 'N')
                             if choice.lower() in ['y', 'yes']:
                                 localImagePage.delete(
                                     comment + ' [[:commons:Image:%s]]'
-                                    % filenameOnCommons, prompt = False)
+                                    % filenameOnCommons, prompt=False)
                         else:
                             localImagePage.delete(
                                 comment + ' [[:commons:Image:%s]]'
-                                % filenameOnCommons, prompt = False)
+                                % filenameOnCommons, prompt=False)
                     else:
                         pywikibot.output(
                             u'The image is not identical to the one on Commons.')

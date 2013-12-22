@@ -38,7 +38,7 @@ summary_creation = {
 
 
 class StatisticsBot:
-    
+
     def __init__(self, screen, your_page):
         """
         Constructor. Parameter:

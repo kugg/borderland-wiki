@@ -20,14 +20,16 @@ Command line options:
    -main       only check pages in the main namespace, not in the talk,
                wikipedia, user, etc. namespaces.
 """
-__version__ = '$Id$'
 
 # (C) Daniel Herding, 2007
-# (C) Pywikipedia bot team 2007-2013
+# (C) Pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
+#
 
-import wikipedia as pywikibot
+import pywikibot
 import catlib
 import pagegenerators as pg
 import solve_disambiguation
@@ -73,7 +75,8 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
 
     def createPageGenerator(self, firstPageTitle):
         if pywikibot.getSite().lang in self.misspellingCategory:
-            misspellingCategoryTitle = self.misspellingCategory[pywikibot.getSite().lang]
+            misspellingCategoryTitle = self.misspellingCategory[
+                pywikibot.getSite().lang]
             misspellingCategory = catlib.Category(pywikibot.getSite(),
                                                   misspellingCategoryTitle)
             generator = pg.CategorizedPageGenerator(misspellingCategory,
@@ -81,14 +84,16 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
                                                     start=firstPageTitle)
         else:
             misspellingTemplateName = 'Template:%s' \
-                                      % self.misspellingTemplate[pywikibot.getSite().lang]
+                                      % self.misspellingTemplate[
+                                          pywikibot.getSite().lang]
             misspellingTemplate = pywikibot.Page(pywikibot.getSite(),
                                                  misspellingTemplateName)
             generator = pg.ReferringPageGenerator(misspellingTemplate,
                                                   onlyTemplateInclusion=True)
             if firstPageTitle:
                 pywikibot.output(
-                    u'-start parameter unsupported on this wiki because there is no category for misspellings.')
+                    u'-start parameter unsupported on this wiki because there '
+                    u'is no category for misspellings.')
         preloadingGen = pg.PreloadingGenerator(generator)
         return preloadingGen
 
@@ -119,8 +124,8 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
                           dn=False):
         # TODO: setSummaryMessage() in solve_disambiguation now has parameters
         # new_targets and unlink. Make use of these here.
-        comment = pywikibot.translate(self.mysite, self.msg) \
-                  % disambPage.title()
+        comment = pywikibot.translate(
+            self.mysite, self.msg) % disambPage.title()
         pywikibot.setAction(comment)
 
 
@@ -145,6 +150,7 @@ def main():
 
     bot = MisspellingRobot(always, firstPageTitle, main_only)
     bot.run()
+
 
 if __name__ == "__main__":
     try:
