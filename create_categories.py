@@ -24,22 +24,17 @@ create_categories.py
     -basename:"Cultural heritage monuments in"
 
 """
-__version__ = '$Id$'
 #
 # (C) Multichill, 2011
-# (C) xqt, 2011
+# (C) xqt, 2011-2013
 #
 #   Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
 #
-import os, sys, re, codecs
-import urllib, httplib, urllib2
-import catlib
-import time
-import socket
-import StringIO
-import wikipedia as pywikibot
-import config
+
+import sys
+import pywikibot
 import pagegenerators
 
 
@@ -62,13 +57,11 @@ def createCategory(page, parent, basename):
         newpage.put(newtext, comment)
     else:
         #FIXME: Add overwrite option
-        pywikibot.output(u'%s already exists, skipping'  % (newpage.title(),))
+        pywikibot.output(u'%s already exists, skipping' % newpage.title())
 
 
 def main(args):
-    '''
-    Main loop. Get a generator and options.
-    '''
+    """ Main loop. Get a generator and options. """
     generator = None
     parent = u''
     basename = u''
@@ -80,9 +73,9 @@ def main(args):
         if arg == '-always':
             always = True
         elif arg.startswith('-parent:'):
-            parent = arg [len('-parent:'):].strip()
+            parent = arg[len('-parent:'):].strip()
         elif arg.startswith('-basename'):
-            basename = arg [len('-basename:'):].strip()
+            basename = arg[len('-basename:'):].strip()
         else:
             genFactory.handleArg(arg)
 
