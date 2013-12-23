@@ -19,9 +19,10 @@ Arguments:
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
-import sys,re
+import sys
+import re
 import codecs
 import wikipedia as pywikibot
 # This bot does not contact the Wiki, so no need to get it on the list
@@ -38,7 +39,7 @@ for arg in pywikibot.handleArgs():
     elif arg.startswith("-bare"):
         complete = False
     elif fn:
-        print "Ignoring argument %s"%arg
+        print "Ignoring argument %s" % arg
     else:
         fn = arg
 
@@ -47,14 +48,14 @@ if not fn:
     sys.exit(1)
 
 mysite = pywikibot.getSite()
-f=open(fn,'r')
-text=f.read()
+f = open(fn, 'r')
+text = f.read()
 f.close()
 for hit in R.findall(text):
     if complete:
         list.append(mysite.linkto(hit))
     else:
-        list.append("[[%s]]"%hit)
+        list.append("[[%s]]" % hit)
 if sorted:
     list.sort()
 for page in list:

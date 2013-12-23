@@ -13,10 +13,11 @@ it is doing !
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 
 import sys
-import datetime, time
+import datetime
+import time
 import traceback
 import wikipedia as pywikibot
 import editarticle

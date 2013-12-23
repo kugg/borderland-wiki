@@ -20,9 +20,10 @@ options -file, -ref, -links, ...
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
-import re, sys
+import re
+import sys
 import wikipedia as pywikibot
 import pagegenerators
 from pywikibot import i18n
@@ -72,7 +73,7 @@ def treat(text, linkedPage, targetPage):
     curpos = 0
     # This loop will run until we have finished the current page
     while True:
-        m = linkR.search(text, pos = curpos)
+        m = linkR.search(text, pos=curpos)
         if not m:
             break
         # Make sure that next time around we will not find this same hit.
@@ -102,7 +103,7 @@ def treat(text, linkedPage, targetPage):
         if not link_text:
             # or like this: [[page_title]]trailing_chars
             link_text = page_title
-        if m.group('section') == None:
+        if m.group('section') is None:
             section = ''
         else:
             section = m.group('section')
@@ -117,16 +118,16 @@ def treat(text, linkedPage, targetPage):
         replaceit = choice in "rR"
 
         # remove preleading ":"
-        if link_text[0]==':':
+        if link_text[0] == ':':
             link_text = link_text[1:]
         if link_text[0].isupper():
             new_page_title = targetPage.title()
         else:
             new_page_title = targetPage.title()[0].lower() + \
-                             targetPage.title()[1:]
+            targetPage.title()[1:]
 
         # remove preleading ":"
-        if new_page_title[0]==':':
+        if new_page_title[0] == ':':
             new_page_title = new_page_title[1:]
 
         if replaceit and trailing_chars:
@@ -149,6 +150,7 @@ def treat(text, linkedPage, targetPage):
 
 pageCache = []
 
+
 def workon(page):
     mysite = pywikibot.getSite()
     try:
@@ -163,7 +165,7 @@ def workon(page):
                      % page.title())
     links = page.linkedPages()
     if len(links):
-        pywikibot.getall(mysite,links)
+        pywikibot.getall(mysite, links)
     else:
         pywikibot.output('Nothing left to do.')
         return

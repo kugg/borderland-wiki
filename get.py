@@ -13,9 +13,10 @@ Example: python get.py Wikipedia | grep MediaWiki > results.txt
 #
 # Distributed under the terms of the MIT license.
 
-__version__='$Id$'
+__version__ = '$Id$'
 
 import wikipedia as pywikibot
+
 
 def main():
     singlePageTitleParts = []
@@ -26,11 +27,10 @@ def main():
     page = pywikibot.Page(pywikibot.getSite(), pageTitle)
 
     # TODO: catch exceptions
-    pywikibot.output(page.get(), toStdout = True)
+    pywikibot.output(page.get(), toStdout=True)
 
 if __name__ == "__main__":
     try:
         main()
     finally:
         pywikibot.stopme()
-
