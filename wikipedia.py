@@ -8684,7 +8684,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             else:
                 break
 
-    def linksearch(self, siteurl, limit=500):
+    def linksearch(self, siteurl, limit=500, euprotocol=None):
         """Yield Pages from results of Special:Linksearch for 'siteurl'."""
         cache = []
         R = re.compile('title ?=\"([^<>]*?)\">[^<>]*</a></li>')
@@ -8701,6 +8701,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                     'eulimit': limit,
                     'euquery': url,
                 }
+                if euprotocol:
+                    params['euprotocol'] = euprotocol
                 count = 0
                 while True:
                     data = query.GetData(params, self)
