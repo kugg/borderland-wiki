@@ -108,9 +108,9 @@ __version__ = '$Id$'
 #
 
 import re
-import wikipedia as pywikibot
+import pywikibot
 from pywikibot import i18n
-import pagegenerators as pg
+import pagegenerators
 import xmlreader
 import replace
 import catlib
@@ -291,7 +291,7 @@ def main(*args):
     editSummary = ''
     addedCat = ''
     acceptAll = False
-    genFactory = pg.GeneratorFactory()
+    genFactory = pagegenerators.GeneratorFactory()
     # If xmlfilename is None, references will be loaded from the live wiki.
     xmlfilename = None
     user = None
@@ -356,12 +356,14 @@ u'Unless using solely -subst or -remove, you must give an even number of templat
     else:
         gen = genFactory.getCombinedGenerator()
     if not gen:
-        gens = [pg.ReferringPageGenerator(t, onlyTemplateInclusion=True)
-                for t in oldTemplates]
-        gen = pg.CombinedPageGenerator(gens)
-        gen = pg.DuplicateFilterPageGenerator(gen)
+        gens = [
+            pagegenerators.ReferringPageGenerator(t, onlyTemplateInclusion=True)
+            for t in oldTemplates
+        ]
+        gen = pagegenerators.CombinedPageGenerator(gens)
+        gen = pagegenerators.DuplicateFilterPageGenerator(gen)
 
-    preloadingGen = pg.PreloadingGenerator(gen)
+    preloadingGen = pagegenerators.PreloadingGenerator(gen)
 
     bot = TemplateRobot(preloadingGen, templates, subst, remove, editSummary,
                         acceptAll, addedCat)
