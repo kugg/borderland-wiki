@@ -15,7 +15,7 @@ python harvest_template.py -lang:nl -cat:Sisoridae -template:"Taxobox straalvinn
 """
 #
 # (C) 2013 Multichill, Amir
-# (C) 2013 Pywikipediabot team
+# (C) 2013 Pywikibot team
 #
 # Distributed under the terms of MIT License.
 #
@@ -23,8 +23,8 @@ __version__ = '$Id$'
 #
 
 import re
-import wikipedia as pywikibot
-import pagegenerators as pg
+import pywikibot
+import pagegenerators
 
 
 class HarvestRobot:
@@ -41,34 +41,33 @@ class HarvestRobot:
         """
         self.generator = generator
         self.templateTitle = templateTitle.replace(u'_', u' ')
-        self.pregen = pg.PreloadingGenerator(generator)
+        self.pregen = pagegenerators.PreloadingGenerator(generator)
         self.fields = fields
         self.site = pywikibot.getSite()
         self.repo = self.site.data_repository()
 
     def setSource(self, lang):
-        '''
-        Get the source
-        '''
-        source_values = {'en':  'Q328',
-                         'sv':  'Q169514',
-                         'de':  'Q48183',
-                         'it':  'Q11920',
-                         'no':  'Q191769',
-                         'fa':  'Q48952',
-                         'ar':  'Q199700',
-                         'es':  'Q8449',
-                         'pl':  'Q1551807',
-                         'ca':  'Q199693',
-                         'fr':  'Q8447',
-                         'nl':  'Q10000',
-                         'pt':  'Q11921',
-                         'ru':  'Q206855',
-                         'vi':  'Q200180',
-                         'be':  'Q877583',
-                         'uk':  'Q199698',
-                         'tr':  'Q58255',
-                        }  # TODO: Should be moved to a central wikidata library
+        """ Get the source """
+        source_values = {
+            'en':  'Q328',
+            'sv':  'Q169514',
+            'de':  'Q48183',
+            'it':  'Q11920',
+            'no':  'Q191769',
+            'fa':  'Q48952',
+            'ar':  'Q199700',
+            'es':  'Q8449',
+            'pl':  'Q1551807',
+            'ca':  'Q199693',
+            'fr':  'Q8447',
+            'nl':  'Q10000',
+            'pt':  'Q11921',
+            'ru':  'Q206855',
+            'vi':  'Q200180',
+            'be':  'Q877583',
+            'uk':  'Q199698',
+            'tr':  'Q58255',
+        }  # TODO: Should be moved to a central wikidata library
 
         if lang in source_values:
             source = ('143', source_values.get(lang))
@@ -112,9 +111,10 @@ class HarvestRobot:
                                 # checking
                             else:
                                 # Try to extract a valid page
-                                match = re.search(re.compile(
-                                    r'\[\[(?P<title>[^\]|[#<>{}]*)(\|.*?)?\]\]'),
-                                                  value)
+                                match = re.search(
+                                    re.compile(
+                                        r'\[\[(?P<title>[^\]|[#<>{}]*)(\|.*?)?\]\]'),
+                                    value)
                                 if match:
                                     try:
                                         link = match.group(1)
@@ -142,7 +142,7 @@ class HarvestRobot:
 
 
 def main():
-    genFactory = pg.GeneratorFactory()
+    genFactory = pagegenerators.GeneratorFactory()
     commandline_arguments = list()
     templateTitle = u''
     for arg in pywikibot.handleArgs():
@@ -164,10 +164,10 @@ def main():
     for i in xrange(0, len(commandline_arguments), 2):
         fields[commandline_arguments[i]] = commandline_arguments[i + 1]
     if templateTitle:
-        gen = pg.ReferringPageGenerator(pywikibot.Page(pywikibot.getSite(),
-                                                       "Template:%s"
-                                                       % templateTitle),
-                                        onlyTemplateInclusion=True)
+        gen = pagegenerators.ReferringPageGenerator(
+            pywikibot.Page(pywikibot.getSite(),
+                           "Template:%s" % templateTitle),
+            onlyTemplateInclusion=True)
     else:
         gen = genFactory.getCombinedGenerator()
     if not gen:
