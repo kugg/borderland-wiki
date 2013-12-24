@@ -34,13 +34,18 @@ The image "Flag.svg" has been uploaded, making the old "Flag.jpg" obselete:
     python image.py Flag.jpg Flag.svg
 
 """
-__version__ = '$Id$'
+#
+# (C) Pywikibot team, 2010-2013
 #
 # Distributed under the terms of the MIT license.
 #
-import wikipedia as pywikibot
-import replace, pagegenerators
+__version__ = '$Id$'
+#
+
 import re
+import wikipedia as pywikibot
+import replace
+import pagegenerators
 
 
 class ImageRobot:
@@ -49,7 +54,7 @@ class ImageRobot:
     replace or remove all occurences of the old image.
     """
     # Summary messages for replacing images
-    msg_replace={
+    msg_replace = {
         'ar': u'روبوت - استبدال الصورة %s مع %s',
         'de': u'Bot: Ersetze Bild %s durch %s',
         'en': u'Robot: Replacing image %s with %s',
@@ -71,7 +76,7 @@ class ImageRobot:
     }
 
     # Summary messages for removing images
-    msg_remove={
+    msg_remove = {
         'ar': u'روبوت - إزالة الصورة %s',
         'de': u'Bot: Entferne Bild %s',
         'en': u'Robot: Removing image %s',
@@ -114,11 +119,11 @@ class ImageRobot:
         if summary:
             self.editSummary = summary
         elif self.newImage:
-            self.editSummary = pywikibot.translate(mysite, self.msg_replace) \
-                               % (self.oldImage, self.newImage)
+            self.editSummary = (pywikibot.translate(mysite, self.msg_replace)
+                                % (self.oldImage, self.newImage))
         else:
-            self.editSummary = pywikibot.translate(mysite, self.msg_remove) \
-                               % self.oldImage
+            self.editSummary = (pywikibot.translate(mysite, self.msg_remove)
+                                % self.oldImage)
 
     def run(self):
         """
@@ -143,13 +148,18 @@ class ImageRobot:
         # Be careful, spaces and _ have been converted to '\ ' and '\_'
         escaped = re.sub('\\\\[_ ]', '[_ ]', escaped)
         if not self.loose or not self.newImage:
-            ImageRegex = re.compile(r'\[\[ *(?:' + '|'.join(site.namespace(6, all = True)) + ')\s*:\s*' + escaped + ' *(?P<parameters>\|[^\n]+|) *\]\]')
+
+            ImageRegex = re.compile(
+                r'\[\[ *(?:' + '|'.join(site.namespace(6, all=True)) +
+                ')\s*:\s*' + escaped + ' *(?P<parameters>\|[^\n]+|) *\]\]')
         else:
             ImageRegex = re.compile(r'' + escaped)
 
         if self.newImage:
             if not self.loose:
-                replacements.append((ImageRegex, '[[' + site.image_namespace() + ':' + self.newImage + '\g<parameters>]]'))
+                replacements.append((ImageRegex,
+                                     '[[' + site.image_namespace() + ':' +
+                                     self.newImage + '\g<parameters>]]'))
             else:
                 replacements.append((ImageRegex, self.newImage))
         else:
