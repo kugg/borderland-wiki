@@ -26,16 +26,18 @@ All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
 """
 #
-# (C) Pywikipedia bot team, 2006-2010
+# (C) Pywiki bot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
 #
 
-import re, sys
-import wikipedia as pywikibot
-import pagegenerators, catlib
+import re
+import sys
+import pywikibot
+import pagegenerators
+import catlib
 import editarticle
 
 # This is required for the text that is shown when you run this script
@@ -48,33 +50,35 @@ docuReplacements = {
 # NOTE: Predefined replacement tasks might use their own dictionary, see 'fixes'
 # in fixes.py.
 msg = {
-    'ar':u'روبوت: إزالة وصلات ذاتية',
-    'be-x-old':u'Робат: выдаленьне аўтаспасылкі',
-    'cs':u'Robot odstranil odkaz na název článku',
-    'da':u'Bot: fjerner selvreference',
-    'de':u'Bot: Entferne Selbstlinks',
-    'en':u'Robot: Removing selflinks',
-    'es':u'Bot: Eliminando enlaces al mismo artículo',
-    'fa':u'ربات:برداشتن پیوند به خود',
-    'fr':u'Robot: Enlève autoliens',
-    'he':u'בוט: מסיר קישורים של הדף לעצמו',
-    'hu':u'Bot: Önmagukra mutató hivatkozások eltávolítása',
-    'ja':u'ロボットによる 自己リンクの解除',
-    'ksh':u'Bot: Ene Lengk vun de Sigg op sesch sellver, erus jenumme.',
-    'nl':u'Bot: verwijzingen naar pagina zelf verwijderd',
-    'nn':u'robot: fjerna sjølvlenkjer',
-    'no':u'robot: fjerner selvlenker',
-    'pl':u'Robot automatycznie usuwa linki zwrotne',
-    'pt':u'Bot: Retirando link para o próprio artigo',
-    'ru':u'Бот: удалил заголовок-ссылку в тексте. см. ',
-    'zh':u'機器人:移除自我連結',
+    'ar': u'روبوت: إزالة وصلات ذاتية',
+    'be-x-old': u'Робат: выдаленьне аўтаспасылкі',
+    'cs': u'Robot odstranil odkaz na název článku',
+    'da': u'Bot: fjerner selvreference',
+    'de': u'Bot: Entferne Selbstlinks',
+    'en': u'Robot: Removing selflinks',
+    'es': u'Bot: Eliminando enlaces al mismo artículo',
+    'fa': u'ربات:برداشتن پیوند به خود',
+    'fr': u'Robot: Enlève autoliens',
+    'he': u'בוט: מסיר קישורים של הדף לעצמו',
+    'hu': u'Bot: Önmagukra mutató hivatkozások eltávolítása',
+    'ja': u'ロボットによる 自己リンクの解除',
+    'ksh': u'Bot: Ene Lengk vun de Sigg op sesch sellver, erus jenumme.',
+    'nl': u'Bot: verwijzingen naar pagina zelf verwijderd',
+    'nn': u'robot: fjerna sjølvlenkjer',
+    'no': u'robot: fjerner selvlenker',
+    'pl': u'Robot automatycznie usuwa linki zwrotne',
+    'pt': u'Bot: Retirando link para o próprio artigo',
+    'ru': u'Бот: удалил заголовок-ссылку в тексте. см. ',
+    'zh': u'機器人:移除自我連結',
 }
+
 
 class XmlDumpSelflinkPageGenerator:
     """
     Generator which will yield Pages that might contain selflinks.
     These pages will be retrieved from a local XML dump file
     (cur table).
+
     """
     def __init__(self, xmlFilename):
         """
@@ -100,6 +104,7 @@ class XmlDumpSelflinkPageGenerator:
                 yield pywikibot.Page(mysite, entry.title)
                 continue
 
+
 class SelflinkBot:
 
     def __init__(self, generator, always=False):
@@ -111,11 +116,12 @@ class SelflinkBot:
         # group label is the alternative link title, that's everything between | and ].
         # group linktrail is the link trail, that's letters after ]] which are part of the word.
         # note that the definition of 'letter' varies from language to language.
-        self.linkR = re.compile(r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>' + linktrail + ')')
+        self.linkR = re.compile(
+            r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>' + linktrail + ')')
         self.always = always
         self.done = False
 
-    def handleNextLink(self, page, text, match, context = 100):
+    def handleNextLink(self, page, text, match, context=100):
         """
         Returns a tuple (text, jumpToBeginning).
         text is the unicode string after the current link has been processed.
@@ -146,9 +152,9 @@ class SelflinkBot:
                 choice = 'a'
             else:
                 pywikibot.output(
-                    text[max(0, match.start() - context) : match.start()] \
-                    + '\03{lightred}' + text[match.start() : match.end()] \
-                    + '\03{default}' + text[match.end() : match.end() + context])
+                    text[max(0, match.start() - context):match.start()] \
+                    + '\03{lightred}' + text[match.start():match.end()] \
+                    + '\03{default}' + text[match.end():match.end() + context])
                 choice = pywikibot.inputChoice(
                     u'\nWhat shall be done with this selflink?\n',
                     ['unlink', 'make bold', 'skip', 'edit', 'more context',
@@ -161,7 +167,7 @@ class SelflinkBot:
                     return text, False
                 elif choice == 'e':
                     editor = editarticle.TextEditor()
-                    newText = editor.edit(text, jumpIndex = match.start())
+                    newText = editor.edit(text, jumpIndex=match.start())
                     # if user didn't press Cancel
                     if newText:
                         return newText, True
@@ -202,7 +208,7 @@ class SelflinkBot:
             text = oldText
             curpos = 0
             while curpos < len(text):
-                match = self.linkR.search(text, pos = curpos)
+                match = self.linkR.search(text, pos=curpos)
                 if not match:
                     break
                 # Make sure that next time around we will not find this same
@@ -231,8 +237,10 @@ class SelflinkBot:
         pywikibot.setAction(comment)
 
         for page in self.generator:
-            if self.done: break
+            if self.done:
+                break
             self.treat(page)
+
 
 def main():
     #page generator
@@ -289,10 +297,11 @@ LIMIT 100"""
         pywikibot.showHelp('selflink')
     else:
         if namespaces != []:
-            gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
+            gen = pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
         preloadingGen = pagegenerators.PreloadingGenerator(gen)
         bot = SelflinkBot(preloadingGen, always)
         bot.run()
+
 
 if __name__ == "__main__":
     try:
