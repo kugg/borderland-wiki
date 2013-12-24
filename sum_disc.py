@@ -524,8 +524,8 @@ class SumDiscBot(basic.AutoBasicBot):
             self._param['ignorepage_list'].append(self._userPage.title())
         self._datfilename = pywikibot.config.datafilepath(
             self._bot_config['data_path'], 'sum_disc-%s-%s-%s.dat'
-            % (self.site.family.name, self.site.lang, 
-                                      self._user.name())).encode('utf-8')
+            % (self.site.family.name, self.site.lang,
+               self._user.name())).encode('utf-8')
 
         # substitute variables for use in user defined parameters/options
         param_vars = {'username':     self._user.name(),
