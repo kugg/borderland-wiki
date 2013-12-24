@@ -20,15 +20,19 @@ All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
 """
 #
-# (C) Pywikipedia bot team, 2008-2011
+# (C) Pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
-import wikipedia as pywikibot
+#
+
+import os
+import sys
+import codecs
+import pywikibot
 from pywikibot import i18n
-import os, sys
-import config, codecs
+import config
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -38,7 +42,7 @@ docuReplacements = {
 
 class DjVuTextBot:
 
-    def __init__(self, djvu, index, pages, ask=False, overwrite='ask', dry=False):
+    def __init__(self, djvu, index, pages, ask=False, overwrite='ask'):
         """
         Constructor. Parameters:
         djvu : filename
@@ -48,13 +52,12 @@ class DjVuTextBot:
         self.djvu = djvu
         self.index = index
         self.pages = pages
-        self.dry = dry
         self.ask = ask
         self.overwrite = overwrite
 
     def NoOfImages(self):
         cmd = u"djvused -e 'n' \"%s\"" % (self.djvu)
-        count = os.popen( cmd.encode(sys.stdout.encoding) ).readline().rstrip()
+        count = os.popen(cmd.encode(sys.stdout.encoding)).readline().rstrip()
         count = int(count)
         pywikibot.output("page count = %d" % count)
         return count
@@ -96,7 +99,7 @@ class DjVuTextBot:
 
     def has_text(self):
         cmd = u"djvudump \"%s\" > \"%s\".out" % (self.djvu, self.djvu)
-        os.system ( cmd.encode(sys.stdout.encoding) )
+        os.system(cmd.encode(sys.stdout.encoding))
         f = codecs.open(u"%s.out" % self.djvu, 'r',
                         config.textfile_encoding, 'replace')
         s = f.read()
@@ -107,7 +110,7 @@ class DjVuTextBot:
         pywikibot.output(unicode("fetching page %d" % (pageno)))
         cmd = u"djvutxt --page=%d \"%s\" \"%s.out\"" \
               % (pageno, self.djvu, self.djvu)
-        os.system ( cmd.encode(sys.stdout.encoding) )
+        os.system(cmd.encode(sys.stdout.encoding))
         f = codecs.open(u"%s.out" % self.djvu, 'r',
                         config.textfile_encoding, 'replace')
         djvu_text = f.read()
@@ -126,15 +129,17 @@ class DjVuTextBot:
         djvutxt = self.get_page(pageno)
 
         if not djvutxt:
-            text = u'<noinclude><pagequality level="0" user="%s" /><div class="pagetext">\n\n\n</noinclude><noinclude><references/></div></noinclude>' % (self.username)
+            text = (u'<noinclude><pagequality level="0" user="%s" /><div class="pagetext">\n\n\n</noinclude><noinclude><references/></div></noinclude>'
+                    % (self.username))
         else:
-            text = u'<noinclude><pagequality level="1" user="%s" /><div class="pagetext">\n\n\n</noinclude>%s<noinclude><references/></div></noinclude>' % (self.username,djvutxt)
+            text = (u'<noinclude><pagequality level="1" user="%s" /><div class="pagetext">\n\n\n</noinclude>%s<noinclude><references/></div></noinclude>'
+                    % (self.username, djvutxt))
 
             # convert to wikisyntax
             # this adds a second line feed, which makes a new paragraph
-            text = text.replace('', "\n") # US /x1F
-            text = text.replace('', "\n") # GS /x1D
-            text = text.replace('', "\n") # FF /x0C
+            text = text.replace('', "\n")  # US /x1F
+            text = text.replace('', "\n")  # GS /x1D
+            text = text.replace('', "\n")  # FF /x0C
 
         # only save if something was changed
         # automatically ask if overwriting an existing page
@@ -152,11 +157,7 @@ class DjVuTextBot:
         pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
                          % page.title())
         pywikibot.showDiff(old_text, text)
-        if self.dry:
-            pywikibot.inputChoice(u'Dry mode... Press enter to continue', [],
-                                  [], 'dummy')
-            return
-        if ask: # True either when the -ask flag is used or if the page exists
+        if ask:  # True either when the -ask flag is used or if the page exists
             if self.overwrite == 'n':
                 choice = 'n'
                 pywikibot.output(u"You did not accept these changes")
@@ -181,7 +182,6 @@ class DjVuTextBot:
 
 
 def main():
-    import os
     index = None
     djvu = None
     pages = None
@@ -196,7 +196,8 @@ def main():
         elif arg.startswith("-overwrite:"):
             overwrite = arg[11:12]
             if overwrite != 'y' and overwrite != 'n':
-                pywikibot.output(u"Unknown argument %s; will ask before overwriting" % arg)
+                pywikibot.output(
+                    u"Unknown argument %s; will ask before overwriting" % arg)
                 overwrite = 'ask'
         elif arg.startswith("-djvu:"):
             djvu = arg[6:]
@@ -220,18 +221,20 @@ def main():
         index_page = pywikibot.Page(site, index)
 
         if site.family.name != 'wikisource':
-            raise pywikibot.PageNotFound(u"Found family '%s'; Wikisource required." % site.family.name)
+            raise pywikibot.PageNotFound(
+                u"Found family '%s'; Wikisource required." % site.family.name)
 
         if not index_page.exists() and index_page.namespace() == 0:
-            index_namespace = site.mediawiki_message('Proofreadpage index namespace')
+            index_namespace = site.mediawiki_message(
+                'Proofreadpage index namespace')
 
             index_page = pywikibot.Page(pywikibot.getSite(),
                                         u"%s:%s" % (index_namespace, index))
         if not index_page.exists():
             raise pywikibot.NoPage(u"Page '%s' does not exist" % index)
         pywikibot.output(u"uploading text from %s to %s"
-                         % (djvu, index_page.title(asLink=True)) )
-        bot = DjVuTextBot(djvu, index, pages, ask, overwrite, pywikibot.simulate)
+                         % (djvu, index_page.title(asLink=True)))
+        bot = DjVuTextBot(djvu, index, pages, ask, overwrite)
         if not bot.has_text():
             raise ValueError("No text layer in djvu file")
         bot.run()
