@@ -2,9 +2,11 @@
 
 __version__ = '$Id$'
 
-import wikipedia, config
+import sys
+import os
+import wikipedia
+import config
 
-import sys, os
 sys.path.insert(0, 'commonsdelinker')
 
 module = 'delinker'

@@ -32,11 +32,12 @@ Delete everything in the category "To delete" without prompting.
 __version__ = '$Id$'
 #
 
-import wikipedia as pywikibot
+import pywikibot
 from pywikibot import i18n
 import config
 import catlib
 import pagegenerators
+
 
 class DeletionRobot:
     """ This robot allows deletion of pages en masse. """
