@@ -7,11 +7,12 @@ the contents of an article
 # (C) Rob W.W. Hooft, 2003
 # (C) Daniel Herding, 2004
 #     Wikiwichtel
-# (C) the PyWikipediabot team, 2008-2010
+# (C) pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
-__version__='$Id$'
+__version__ = '$Id$'
+#
 
 from Tkinter import *
 from ScrolledText import ScrolledText
@@ -31,28 +32,31 @@ class TextEditor(ScrolledText):
     """
     def __init__(self, master=None, **kwargs):
         # get default settings from user's IDLE configuration
-        currentTheme=idleConf.CurrentTheme()
+        currentTheme = idleConf.CurrentTheme()
         textcf = dict(padx=5, wrap='word', undo='True',
                       foreground=idleConf.GetHighlight(currentTheme,
-                        'normal', fgBg='fg'),
+                                                       'normal', fgBg='fg'),
                       background=idleConf.GetHighlight(currentTheme,
-                        'normal', fgBg='bg'),
+                                                       'normal', fgBg='bg'),
                       highlightcolor=idleConf.GetHighlight(currentTheme,
-                        'hilite', fgBg='fg'),
+                                                           'hilite', fgBg='fg'),
                       highlightbackground=idleConf.GetHighlight(currentTheme,
-                        'hilite', fgBg='bg'),
+                                                                'hilite',
+                                                                fgBg='bg'),
                       insertbackground=idleConf.GetHighlight(currentTheme,
-                        'cursor', fgBg='fg'),
+                                                             'cursor',
+                                                             fgBg='fg'),
                       width=idleConf.GetOption('main', 'EditorWindow', 'width'),
                       height=idleConf.GetOption('main', 'EditorWindow',
                                                 'height')
-                    )
+                      )
         fontWeight = 'normal'
         if idleConf.GetOption('main', 'EditorWindow', 'font-bold', type='bool'):
-            fontWeight='bold'
-        textcf['font']=(idleConf.GetOption('main', 'EditorWindow', 'font'),
-                        idleConf.GetOption('main', 'EditorWindow', 'font-size'),
-                        fontWeight)
+            fontWeight = 'bold'
+        textcf['font'] = (idleConf.GetOption('main', 'EditorWindow', 'font'),
+                          idleConf.GetOption('main', 'EditorWindow',
+                                             'font-size'),
+                          fontWeight)
         # override defaults with any user-specified settings
         textcf.update(kwargs)
         ScrolledText.__init__(self, master, **textcf)
@@ -87,22 +91,23 @@ class TextEditor(ScrolledText):
                    '<<replace>>': ['<Control-Key-h>', '<Control-Key-H>'],
                    '<<select-all>>': ['<Control-Key-a>'],
                    '<<undo>>': ['<Control-Key-z>', '<Control-Key-Z>'],
-                  }
+                   }
+
         for event, keylist in keydefs.iteritems():
             if keylist:
                 self.event_add(event, *keylist)
 
-    def cut(self,event):
+    def cut(self, event):
         if self.tag_ranges("sel"):
             self.event_generate("<<Cut>>")
         return "break"
 
-    def copy(self,event):
+    def copy(self, event):
         if self.tag_ranges("sel"):
             self.event_generate("<<Copy>>")
         return "break"
 
-    def paste(self,event):
+    def paste(self, event):
         self.event_generate("<<Paste>>")
         return "break"
 
@@ -204,8 +209,8 @@ class TextEditor(ScrolledText):
         self.focus_set()
 
     def goto_line_event(self, event):
-        lineno = tkSimpleDialog.askinteger("Goto",
-                "Go to line number:", parent=self)
+        lineno = tkSimpleDialog.askinteger("Goto", "Go to line number:",
+                                           parent=self)
         if lineno is None:
             return "break"
         if lineno <= 0:
@@ -217,7 +222,7 @@ class TextEditor(ScrolledText):
 
 class EditBoxWindow(Frame):
 
-    def __init__(self, parent = None, **kwargs):
+    def __init__(self, parent=None, **kwargs):
         if parent is None:
             # create a new window
             parent = Tk()
@@ -323,13 +328,14 @@ class EditBoxWindow(Frame):
         # wait for user to push a button which will destroy (close) the window
         # enable word wrap
         self.editbox.tag_add('all', '1.0', END)
-        self.editbox.tag_config('all', wrap = WORD)
+        self.editbox.tag_config('all', wrap=WORD)
         # start search if required
         if highlight:
             self.find_all(highlight)
         if jumpIndex:
             print jumpIndex
-            line = text[:jumpIndex].count('\n') + 1 # lines are indexed starting at 1
+            # lines are indexed starting at 1
+            line = text[:jumpIndex].count('\n') + 1
             column = jumpIndex - (text[:jumpIndex].rfind('\n') + 1)
             # don't know how to place the caret, but scrolling to the right line
             # should already be helpful.
@@ -376,7 +382,7 @@ class ListBoxWindow:
         #ok closes listbox
         self.parent.destroy()
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         if parent is None:
             # create a new window
             parent = Tk()
@@ -399,21 +405,21 @@ class ListBoxWindow:
         # put list of alternatives into listbox
         self.list = list
         #find required area
-        laenge=len(list)
-        maxbreite=0
+        laenge = len(list)
+        maxbreite = 0
         for i in range(laenge):
             #cycle through all listitems to find maxlength
-            if len(list[i])+len(str(i))>maxbreite:
-                maxbreite=len(list[i])+len(str(i))
+            if len(list[i]) + len(str(i)) > maxbreite:
+                maxbreite = len(list[i]) + len(str(i))
             #show list as formerly in DOS-window
-            self.listbox.insert(END, str(i)+ ' - '+ list[i])
+            self.listbox.insert(END, str(i) + ' - ' + list[i])
         #set optimized height & width
         self.listbox.config(height=laenge, width=maxbreite+2)
         # wait for user to push a button which will destroy (close) the window
         return self.list
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     import wikipedia as pywikibot
     try:
         root = Tk()
@@ -423,6 +429,6 @@ if __name__=="__main__":
         content = page.get()
         myapp = EditBoxWindow(root)
         myapp.bind("<Control-d>", myapp.debug)
-        v = myapp.edit(content, highlight = page.title())
+        v = myapp.edit(content, highlight=page.title())
     finally:
         pywikibot.stopme()
