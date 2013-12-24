@@ -1,15 +1,25 @@
 # -*- coding: utf-8  -*-
 """ Script to create user files (user-config.py, user-fixes.py) """
+#
+# (C) Pywikibot team, 2008-2013
+#
+# Distributed under the terms of the MIT license
+#
 __version__ = '$Id$'
+#
 
-import codecs, os, re, sys
+import codecs
+import os
+import re
+import sys
 
 console_encoding = sys.stdout.encoding
 
 if console_encoding is None or sys.platform == 'cygwin':
     console_encoding = "iso-8859-1"
 
-def listchoice(clist = [], message = None, default = None):
+
+def listchoice(clist=[], message=None, default=None):
 
     if not message:
         message = "Select"
@@ -24,11 +34,10 @@ def listchoice(clist = [], message = None, default = None):
 
     while True:
         choice = raw_input(message)
-
         if choice == '' and default:
             return default
         try:
-            choice=int(choice)
+            choice = int(choice)
         except ValueError:
             pass
         if isinstance(choice, basestring):
@@ -43,45 +52,48 @@ def listchoice(clist = [], message = None, default = None):
                 print("Invalid response")
     return response
 
+
 def file_exists(filename):
     if os.path.exists(filename):
         print("'%s' already exists." % filename)
         return True
     return False
 
+
 def create_user_config(base_dir):
     _fnc = os.path.join(base_dir, "user-config.py")
     if not file_exists(_fnc):
         known_families = re.findall(r'(.+)_family.py\b',
-                                   '\n'.join(os.listdir(
-                                       os.path.join(base_dir,
-                                                    "families"))))
+                                    '\n'.join(os.listdir(
+                                        os.path.join(base_dir, "families"))))
         fam = listchoice(known_families,
                          "Select family of sites we are working on, " \
                          "just enter the number not name",
                          default='wikipedia')
-        codesds=codecs.open("families/%s_family.py" % fam, "r","utf-8").read()
-        rre=re.compile("self\.languages\_by\_size *\= *(.+?)\]",re.DOTALL)
-        known_langs=[]
+        codesds = codecs.open("families/%s_family.py"
+                              % fam, "r", "utf-8").read()
+        rre = re.compile("self\.languages\_by\_size *\= *(.+?)\]", re.DOTALL)
+        known_langs = []
         if not rre.findall(codesds):
-            rre=re.compile("self\.langs *\= *(.+?)\}",re.DOTALL)
+            rre = re.compile("self\.langs *\= *(.+?)\}", re.DOTALL)
             if rre.findall(codesds):
                 import ast
-                known_langs=ast.literal_eval(rre.findall(codesds)[0]+u"}").keys()
+                known_langs = ast.literal_eval(
+                    rre.findall(codesds)[0] + u"}").keys()
         else:
-            known_langs=eval(rre.findall(codesds)[0]+u"]")
+            known_langs = eval(rre.findall(codesds)[0] + u"]")
         print "This is the list of known language(s):"
         print " ".join(sorted(known_langs))
         mylang = raw_input(
-"The language code of the site we're working on (default: 'en'): ") or 'en'
+            "The language code of the site we're working on (default: 'en'): "
+        ) or 'en'
         username = raw_input("Username (%s %s): "
                              % (mylang, fam)) or 'UnnamedBot'
         username = unicode(username, console_encoding)
         while True:
             choice = raw_input(
-"Which variant of user_config.py:\n"\
-"[S]mall or [E]xtended (with further information)? "
-                               ).upper()
+                "Which variant of user_config.py:\n"
+                "[S]mall or [E]xtended (with further information)? ").upper()
             if choice in "SE":
                 break
 
@@ -135,6 +147,7 @@ usernames['%s']['%s'] = u'%s'
         f.close()
         print("'%s' written." % _fnc)
 
+
 def create_user_fixes(base_dir):
     _fnf = os.path.join(base_dir, "user-fixes.py")
     if not file_exists(_fnf):
@@ -158,6 +171,7 @@ fixes['example'] = {
 """)
         f.close()
         print("'%s' written." % _fnf)
+
 
 if __name__ == "__main__":
     print("1: Create user_config.py file (required)")
