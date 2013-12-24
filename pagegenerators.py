@@ -831,13 +831,13 @@ def PagesFromTitlesGenerator(iterable, site=None):
         yield pywikibot.Page(site, title)
 
 
-def LinksearchPageGenerator(link, step=500, site=None):
+def LinksearchPageGenerator(link, step=500, site=None, euprotocol=None):
     """Yields all pages that include a specified link, according to
     [[Special:Linksearch]].
     """
     if site is None:
         site = pywikibot.getSite()
-    for page in site.linksearch(link, limit=step):
+    for page in site.linksearch(link, limit=step, euprotocol=euprotocol):
         yield page
 
 
