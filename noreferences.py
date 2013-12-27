@@ -437,6 +437,8 @@ class NoReferencesBot:
         self.generator = generator
         self.always = always
         self.site = pywikibot.getSite()
+        self.comment = i18n.twtranslate(self.site, 'noreferences-add-tag')
+
         self.refR = re.compile('</ref>', re.IGNORECASE)
         self.referencesR = re.compile('<references.*?/>', re.IGNORECASE)
         self.referencesTagR = re.compile('<references>.*?</references>',
@@ -600,7 +602,7 @@ class NoReferencesBot:
 
         if self.always:
             try:
-                page.put(newText)
+                page.put(newText, self.comment)
             except pywikibot.EditConflict:
                 pywikibot.output(u'Skipping %s because of edit conflict'
                                  % (page.title(),))
@@ -612,12 +614,10 @@ class NoReferencesBot:
                 pywikibot.output(u'Skipping %s (locked page)' % (page.title(),))
         else:
             # Save the page in the background. No need to catch exceptions.
-            page.put_async(newText)
+            page.put_async(newText, self.comment)
         return
 
     def run(self):
-        comment = i18n.twtranslate(self.site, 'noreferences-add-tag')
-        pywikibot.setAction(comment)
 
         for page in self.generator:
             # Show the title of the page we're working on.
@@ -636,6 +636,10 @@ class NoReferencesBot:
                 continue
             except pywikibot.LockedPage:
                 pywikibot.output(u"Page %s is locked?!"
+                                 % page.title(asLink=True))
+                continue
+            if page.isDisambig():
+                pywikibot.output(u"Page %s is a disambig; skipping."
                                  % page.title(asLink=True))
                 continue
             if pywikibot.getSite().sitename() == 'wikipedia:en' and \
