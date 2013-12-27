@@ -33,8 +33,13 @@ namespace (using the -start) parameter, as that would consume too much
 bandwidth. Instead, use the -xml parameter, or use another way to generate
 a list of affected articles
 """
-
+#
+# (C) Pywikibot team, 2007-2013
+#
+# Distributed under the terms of the MIT license.
+#
 __version__ = '$Id$'
+#
 
 import re
 import sys
@@ -497,9 +502,11 @@ class NoReferencesBot:
                         pywikibot.output(
                             u'Adding references tag to existing %s section...\n'
                             % section)
-                        newText = oldText[:match.end()] + u'\n' + \
-                                  self.referencesText + u'\n' + \
-                                  oldText[match.end():]
+                        newText = (
+                            oldText[:match.end()] + u'\n' +
+                            self.referencesText + u'\n' +
+                            oldText[match.end():]
+                        )
                         return newText
                 else:
                     break
@@ -597,7 +604,7 @@ class NoReferencesBot:
             except pywikibot.EditConflict:
                 pywikibot.output(u'Skipping %s because of edit conflict'
                                  % (page.title(),))
-            except pywikibot.SpamfilterError, e:
+            except pywikibot.SpamfilterError as e:
                 pywikibot.output(
                     u'Cannot change %s because of blacklist entry %s'
                     % (page.title(), e.url))
@@ -690,8 +697,8 @@ def main():
         else:
             if not namespaces:
                 namespaces = [0]
-            cat = catlib.Category(site, "%s:%s" % (site.category_namespace(),
-                                                   cat))
+            cat = catlib.Category(site, "%s:%s" % (
+                site.category_namespace(), cat))
             gen = pagegenerators.CategorizedPageGenerator(cat)
     if not gen:
         pywikibot.showHelp('noreferences')
