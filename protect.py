@@ -49,58 +49,8 @@ __version__ = '$Id$'
 
 import pywikibot
 import catlib
+from pywikibot import i18n
 import pagegenerators
-
-# Summary messages for protecting from a category.
-msg_simple_protect = {
-    'ar': u'بوت: حماية قائمة من الملفات.',
-    'en': u'Robot: Protecting a list of files.',
-    'it': u'Bot: Protezione di una lista di pagine.',
-    'fa': u'ربات:حفاظت فهرستی از صفحه‌ها',
-    'nl': u'Bot: lijst met bestanden beveiligd',
-    'pt': u'Bot: Protegendo uma lista de artigos.',
-    'zh': u'機器人:保護清單中的所有檔案',
-}
-
-msg_protect_category = {
-    'ar': u'روبوت - حماية كل الصفحات من التصنيف %s',
-    'en': u'Robot: Protecting all pages from category %s',
-    'it': u'Bot: Protezione di tutte le pagine nella categoria %s.',
-    'fa': u'ربات:حفاظت تمام صفحه‌های رده %s',
-    'nl': u'Bot: alle pagina\'s uit categorie %s beveiligd',
-    'pt': u'Bot: Protegendo todos os artigos da categoria %s',
-    'zh': u'機器人: 保護目錄 %s 的所有頁面',
-}
-
-msg_protect_links = {
-    'ar': u'روبوت - حماية كل الصفحات الموصولة من %s',
-    'en': u'Robot: Protecting all pages linked from %s',
-    'it': u'Bot: Protezione di tutte le pagine linkate da %s.',
-    'fa': u'ربات:حفاظت تمام صفحه‌هایی که در %s پیوند شده‌اند.',
-    'nl': u'Bot: alle pagina\'s met verwijzingen vanaf %s beveiligd',
-    'pt': u'Bot: Protegendo todos os artigos ligados a %s',
-    'zh': u'機器人: 保護所有從 %s 連結的頁面',
-}
-
-msg_protect_ref = {
-    'ar': u'روبوت - حماية كل الصفحات الراجعة من %s',
-    'en': u'Robot: Protecting all pages referring from %s',
-    'it': u'Bot: Protezione di tutte le pagine con link verso %s.',
-    'fa': u'ربات:حفاظت تمام صفحه‌هایی که به %s پیوند داده‌اند',
-    'nl': u'Bot: alle pagina\'s met een verwijzing op beveiligd',
-    'pt': u'Bot: Protegendo todos os artigos afluentes a %s',
-    'zh': u'機器人: 保護所有連至 %s 的頁面',
-}
-
-msg_protect_images = {
-    'ar': u'روبوت - حماية كل الصور في الصفحة %s',
-    'en': u'Robot: Protecting all images on page %s',
-    'it': u'Bot: Protezione di tutte le immagini presenti in %s.',
-    'fa': u'ربات:حفاظت تمام تصاویر به کار رفته در %s',
-    'nl': u'Bot: alle bestanden gebruikt op %s beveiligd',
-    'pt': u'Bot: Protegendo todas as imagens do artigo %s',
-    'zh': u'機器人: 保護頁面 %s 中的所有圖條',
-}
 
 
 class ProtectionRobot:
@@ -132,7 +82,6 @@ class ProtectionRobot:
         #Loop through everything in the page generator and (un)protect it.
         for page in self.generator:
             pywikibot.output(u'Processing page %s' % page.title())
-            #print self.edit, self.move#, self.create
             page.protect(unprotect=self.unprotect, reason=self.summary,
                          prompt=self.prompt, editcreate=self.edit,
                          move=self.move)
@@ -244,30 +193,32 @@ def main():
         gen = iter([page])
     elif doCategory:
         if not summary:
-            summary = pywikibot.translate(mysite,
-                                          msg_protect_category) % pageName
+            summary = i18n.twtranslate(mysite, 'protect-category',
+                                       {'cat': pageName})
         ns = mysite.category_namespace()
         categoryPage = catlib.Category(mysite, ns + ':' + pageName)
         gen = pagegenerators.CategorizedPageGenerator(
             categoryPage, recurse=protectSubcategories)
     elif doLinks:
         if not summary:
-            summary = pywikibot.translate(mysite,
-                                          msg_protect_links) % pageName
+            summary = i18n.twtranslate(mysite, 'protect-links',
+                                       {'page': pageName})
         linksPage = pywikibot.Page(mysite, pageName)
         gen = pagegenerators.LinkedPageGenerator(linksPage)
     elif doRef:
         if not summary:
-            summary = pywikibot.translate(mysite, msg_protect_ref) % pageName
+            summary = i18n.twtranslate(mysite, 'protect-ref',
+                                       {'page': pageName})
         refPage = pywikibot.Page(mysite, pageName)
         gen = pagegenerators.ReferringPageGenerator(refPage)
     elif fileName:
         if not summary:
-            summary = pywikibot.translate(mysite, msg_simple_protect)
+            summary = i18n.twtranslate(mysite, 'protect-simple')
         gen = pagegenerators.TextfilePageGenerator(fileName)
     elif doImages:
         if not summary:
-            summary = pywikibot.translate(mysite, msg_protect_images) % pageName
+            summary = i18n.twtranslate(mysite, 'protect-images',
+                                       {'page': pageName})
         gen = pagegenerators.ImagesPageGenerator(pywikibot.Page(mysite,
                                                                 pageName))
 
@@ -284,6 +235,7 @@ def main():
         bot.run()
     else:
         pywikibot.showHelp(u'protect')
+
 
 if __name__ == "__main__":
     try:
