@@ -751,7 +751,7 @@ class Page(object):
         else:
             # Make sure we re-raise an exception we got on an earlier attempt
             if hasattr(self, '_redirarg') and not get_redirect:
-                raise IsRedirectPage, self._redirarg  # noqa
+                raise IsRedirectPage, self._redirarg  # do not change unless you see https://bugzilla.wikimedia.org/show_bug.cgi?id=57879
             elif hasattr(self, '_getexception'):
                 if self._getexception == IsRedirectPage and get_redirect:
                     pass
