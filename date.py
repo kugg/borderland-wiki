@@ -1577,7 +1577,7 @@ formats = {
              lambda p: p == 4),
             (lambda v: dh_constVal(v, 5, u'Föfte Johdousend'),
              lambda p: p == 5),
-            (lambda v: dh_milleniumAD(v, u'%d. Johdousend'), alwaysTrue)]),
+            (lambda v: dh_millenniumAD(v, u'%d. Johdousend'), alwaysTrue)]),
         'lb': lambda v: dh_millenniumAD(v, u'%d. Joerdausend'),
         'mhr': lambda v: dh_millenniumAD(v, u'%R. курым — '),
         'lt': lambda v: dh_millenniumAD(v, u'%d tūkstantmetis'),
