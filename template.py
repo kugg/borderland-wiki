@@ -351,8 +351,6 @@ u'Unless using solely -subst or -remove, you must give an even number of templat
 
     if xmlfilename:
         gen = XmlDumpTemplatePageGenerator(oldTemplates, xmlfilename)
-    elif user:
-        gen = UserEditFilterGenerator(gen, user, timestamp, skip)
     else:
         gen = genFactory.getCombinedGenerator()
     if not gen:
@@ -362,7 +360,8 @@ u'Unless using solely -subst or -remove, you must give an even number of templat
         ]
         gen = pagegenerators.CombinedPageGenerator(gens)
         gen = pagegenerators.DuplicateFilterPageGenerator(gen)
-
+    if user:
+        gen = UserEditFilterGenerator(gen, user, timestamp, skip)
     preloadingGen = pagegenerators.PreloadingGenerator(gen)
 
     bot = TemplateRobot(preloadingGen, templates, subst, remove, editSummary,
