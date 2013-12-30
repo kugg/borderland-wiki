@@ -66,7 +66,7 @@ or you need some help regarding this script, you can find us here:
 
 #
 # (C) Filnik, 2007-2010
-# (C) Pywikipedia bot team, 2007-2013
+# (C) Pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -77,11 +77,12 @@ import re
 import urllib2
 import webbrowser
 import codecs
+import time
+
 import wikipedia as pywikibot
 import config
 from pywikibot import i18n
 import pagegenerators
-import time
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp,
@@ -291,8 +292,8 @@ Match was: %s''' % result)
                     return (False, False, always)
                 elif choice == 'b':
                     webbrowser.open("http://%s%s" % (
-                        page.site().hostname(),
-                        page.site().nice_get_address(page.title())
+                        page.site.hostname(),
+                        page.site.nice_get_address(page.title())
                     ))
                     pywikibot.input("Press Enter when finished in browser.")
             if always or choice == 'y':
@@ -314,12 +315,12 @@ Match was: %s''' % result)
                         continue
                     else:
                         raise pywikibot.ServerError(u'Fifth Server Error!')
-                except pywikibot.SpamfilterError, e:
+                except pywikibot.SpamfilterError as e:
                     pywikibot.output(
                         u'Cannot change %s because of blacklist entry %s'
                         % (page.title(), e.url))
                     return (False, False, always)
-                except pywikibot.PageNotSaved, error:
+                except pywikibot.PageNotSaved as error:
                     pywikibot.output(u'Error putting page: %s' % error.args)
                     return (False, False, always)
                 except pywikibot.LockedPage:
