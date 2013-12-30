@@ -75,13 +75,13 @@ __version__ = '$Id$'
 
 import re
 import urllib2
-import urllib
 import webbrowser
 import codecs
 import wikipedia as pywikibot
 import config
 from pywikibot import i18n
 import pagegenerators
+import time
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp,
