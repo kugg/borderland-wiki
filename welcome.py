@@ -189,7 +189,7 @@ import codecs
 from datetime import timedelta
 from random import choice
 from string import capitalize
-import wikipedia as pywikibot
+import pywikibot
 from pywikibot import i18n
 import config
 import query
@@ -268,11 +268,13 @@ netext = {
         'zh': u'{{subst:welcome}} %s',
     },
     'wiktionary': {
+        'ar': u'{{subst:ترحيب}} %s',
         'bn': u'{{subst:স্বাগতম|%s}}',
         'fa': u'{{جا:خوشامد|%s}}',
         'it': u'{{subst:Utente:Filnik/Benve|firma=%s}}',
     },
     'wikiversity': {
+        'ar': u'{{subst:ترحيب}} %s',
         'de': u'{{subst:Willkommen|%s}}',
         'el': u'{{subst:καλωσόρισμα}} %s',
         'en': u'{{subst:Welcome}}\n\n{{subst:Talktome}} %s',
@@ -647,10 +649,6 @@ class WelcomeBot(object):
                 time.sleep(10)
 
     def parseNewUserLog(self):
-        #if __name__ != '__main__':
-        #    if self._checkQueue:
-        #        for nm in self._checkQueue:
-        #            yield userlib.User(self.site, nm)
 
         if not self.site.has_api() or self.site.versionnumber() < 13:
             for x in self._parseNewUserLogOld():
