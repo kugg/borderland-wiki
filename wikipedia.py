@@ -10348,7 +10348,7 @@ def _flush():
         format_values = dict(num=num, sec=sec)
         output(u'\03{lightblue}'
                u'Waiting for %(num)i pages to be put. '
-               u'Estimated time remaining: %(sec)s%'
+               u'Estimated time remaining: %(sec)s'
                '\03{default}' % format_values)
 
     while(_putthread.isAlive()):
