@@ -56,7 +56,6 @@ __version__ = '$Id$'
 import re
 
 import wikipedia as pywikibot
-import config
 import pagegenerators
 import add_text
 
@@ -569,7 +568,6 @@ def main():
 
     summary = None
     generator = None
-    checkcurrent = False
     always = False
     ns = []
     ns.append(14)
@@ -583,7 +581,6 @@ def main():
             else:
                 summary = arg[9:]
         elif arg.startswith('-checkcurrent'):
-            checkcurrent = True
             primaryCommonscat, commonscatAlternatives = \
                 CommonscatBot.getCommonscatTemplate(
                     pywikibot.getSite().language())

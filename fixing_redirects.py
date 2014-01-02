@@ -88,11 +88,6 @@ def treat(text, linkedPage, targetPage):
             if actualLinkPage != linkedPage:
                 continue
 
-        # how many bytes should be displayed around the current link
-        context = 15
-        # at the beginning of the link, start red color.
-        # at the end of the link, reset the color to default
-        #pywikibot.output(text[max(0, m.start() - context) : m.start()] + '\03{lightred}' + text[m.start() : m.end()] + '\03{default}' + text[m.end() : m.end() + context])
         choice = 'y'
 
         # The link looks like this:

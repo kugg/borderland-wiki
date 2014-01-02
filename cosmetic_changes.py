@@ -59,7 +59,6 @@ your user-config.py:
 #
 __version__ = '$Id$'
 #
-import sys
 import re
 import wikipedia as pywikibot
 import isbn
@@ -251,7 +250,7 @@ class CosmeticChangesToolkit:
             try:
                 categories = pywikibot.getCategoryLinks(text, site=self.site)
             # there are categories like [[categoy:Foo {{#time:Y...}}]]
-            except InvalidTitle:
+            except pywikibot.InvalidTitle:
                 pass
 
         if not self.talkpage:  # and pywikibot.calledModuleName() <> 'interwiki':
@@ -534,7 +533,6 @@ class CosmeticChangesToolkit:
         return text
 
     def removeUselessSpaces(self, text):
-        result = []
         multipleSpacesR = re.compile('  +')
         spaceAtLineEndR = re.compile(' $')
 

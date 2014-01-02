@@ -34,8 +34,6 @@ __version__ = '$Id$'
 
 import pywikibot
 from pywikibot import i18n
-import config
-import catlib
 import pagegenerators
 
 
