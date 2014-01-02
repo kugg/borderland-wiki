@@ -22,10 +22,7 @@ __version__ = '$Id$'
 #
 
 import cPickle
-import math
 import re
-import sys
-import traceback
 import time
 from datetime import datetime, timedelta
 import wikipedia as pywikibot
@@ -153,9 +150,6 @@ class CategoryRedirectBot(object):
                                          self.catprefix + oldCatTitle)
                 newCat = catlib.Category(self.site,
                                          self.catprefix + newCatTitle)
-
-                oldCatLink = oldCat.title()
-                newCatLink = newCat.title()
                 comment = editSummary % locals()
                 # Move articles
                 found, moved = 0, 0
@@ -179,7 +173,7 @@ class CategoryRedirectBot(object):
                     for item in result['categorymembers']:
                         doc = pywikibot.Page(self.site, item['title'] + "/doc")
                         try:
-                            old_text = doc.get()
+                            doc.get()
                         except pywikibot.Error:
                             continue
                         changed = self.change_category(doc, oldCat, newCat,
@@ -314,7 +308,6 @@ class CategoryRedirectBot(object):
         if other_words:
             redirect_magicwords.extend(other_words)
         problems = []
-
         l = time.localtime()
         today = "%04d-%02d-%02d" % l[:3]
         edit_request_page = pywikibot.Page(
@@ -391,15 +384,7 @@ class CategoryRedirectBot(object):
                            target.title(asLink=True, textlink=True)))
 
         pywikibot.output("Done checking hard-redirect category pages.")
-
         comment = i18n.twtranslate(self.site.lang, self.move_comment)
-        scan_data = {
-            u'action': 'query',
-            u'list': 'embeddedin',
-            u'einamespace': '14',   # Category:
-            u'eilimit': 'max',
-            u'format': 'json'
-        }
         counts, destmap, catmap = {}, {}, {}
         catlist, nonemptypages = [], []
         catpages = []
@@ -430,7 +415,7 @@ class CategoryRedirectBot(object):
                                      % cat.title(asLink=True, textlink=True))
                 continue
             try:
-                text = cat.get(get_redirect=True)
+                cat.get(get_redirect=True)
             except pywikibot.Error:
                 self.log_text.append(u"* Could not load %s; ignoring"
                                      % cat.title(asLink=True, textlink=True))
@@ -447,19 +432,6 @@ class CategoryRedirectBot(object):
             destination = target.title(withNamespace=False)
             destmap.setdefault(target, []).append(cat)
             catmap[cat] = destination
-##            if match.group(1):
-##                # category redirect target starts with "Category:" - fix it
-##                text = text[ :match.start(1)] + text[match.end(1): ]
-##                try:
-##                    cat.put(text,
-##                            u"Robot: fixing category redirect parameter format")
-##                    self.log_text.append(
-##                        u"* Removed category prefix from parameter in %s"
-##                         % cat.aslink(textlink=True))
-##                except pywikibot.Error:
-##                    self.log_text.append(
-##                        u"* Unable to save changes to %s"
-##                         % cat.aslink(textlink=True))
 
         # delete record entries for non-existent categories
         for cat_name in list(record.keys()):
@@ -525,8 +497,6 @@ class CategoryRedirectBot(object):
         pywikibot.output(u"")
         pywikibot.output(u"Moving pages out of %s redirected categories."
                          % len(cats_to_empty))
-#        thread_limit = int(math.log(len(cats_to_empty), 8) + 1)
-#        threadpool = ThreadList(limit=1)  # disabling multi-threads
 
         for cat in cats_to_empty:
             cat_title = cat.title(withNamespace=False)
