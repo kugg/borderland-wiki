@@ -22,7 +22,7 @@ __version__ = '$Id$'
 
 import wikipedia as pywikibot
 import pagegenerators
-import sys
+import re
 
 comment = {
     'ar': u'صور للاستبعاد',
@@ -83,8 +83,6 @@ def main():
     for arg in pywikibot.handleArgs():
         if arg == '-always':
             always = True
-        if arg == '-start':
-            start = True
 
     mysite = pywikibot.getSite()
     # If anything needs to be prepared, you can do it here
@@ -100,7 +98,7 @@ def main():
         pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
                          % page.title())
         if except_text_translated not in page.getImagePageHtml() and \
-           'http://' not in page.get():
+                not re.search("https?\:\/\/", page.get()):
             pywikibot.output(u'\n' + page.title())
             if template_image in page.get():
                 pywikibot.output(u"%s done already"
