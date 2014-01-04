@@ -1028,6 +1028,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[446] = {
+            'ar': u'Education Program',
             'cs': u'Education Program',
             'el': u'Education Program',
             'en': u'Education Program',
@@ -1040,6 +1041,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[447] = {
+            'ar': u'Education Program talk',
             'cs': u'Education Program talk',
             'el': u'Education Program talk',
             'en': u'Education Program talk',
@@ -1053,10 +1055,12 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[710] = {
             'en': u'TimedText',
+            'pt': u'TimedText',
         }
 
         self.namespaces[711] = {
             'en': u'TimedText talk',
+            'pt': u'TimedText talk',
         }
 
         self.category_redirect_templates = {
