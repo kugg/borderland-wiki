@@ -112,6 +112,7 @@ import pywikibot
 from pywikibot import i18n
 import config
 import pagegenerators
+import pywikibot.weblib
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
@@ -175,31 +176,6 @@ def weblinksIn(text, withoutBracketed=False, onlyBracketed=False):
             yield m.group('url')
         else:
             yield m.group('urlb')
-
-
-class InternetArchiveConsulter:
-    def __init__(self, url):
-        self.url = url
-
-    def getArchiveURL(self):
-        pywikibot.output(u'Consulting the Internet Archive for %s' % self.url)
-        archiveURL = 'http://web.archive.org/web/*/%s' % self.url
-        try:
-            f = urllib2.urlopen(archiveURL)
-        except urllib2.HTTPError:
-            # The Internet Archive yields a 403 error when the site was not
-            # archived due to robots.txt restrictions.
-            return
-        except UnicodeEncodeError:
-            return
-        data = f.read()
-        if f.headers.get('content-encoding', None) == 'gzip':
-            # Since 2008, the Internet Archive returns pages in GZIPed
-            # compression format. Unfortunatelly urllib2 doesn't handle
-            # the decompression for us, so we have to do it ourselves.
-            data = gzip.GzipFile(fileobj=StringIO.StringIO(data)).read()
-        if "Search Results for " in data:
-            return archiveURL
 
 
 class LinkChecker(object):
@@ -509,10 +485,10 @@ class History:
 
     def __init__(self, reportThread):
         self.reportThread = reportThread
-        site = pywikibot.getSite()
+        self.site = pywikibot.getSite()
         self.semaphore = threading.Semaphore()
         self.datfilename = pywikibot.config.datafilepath(
-            'deadlinks', 'deadlinks-%s-%s.dat' % (site.family.name, site.lang))
+            'deadlinks', 'deadlinks-%s-%s.dat' % (self.site.family.name, self.site.lang))
         # Count the number of logged links, so that we can insert captions
         # from time to time
         self.logCount = 0
@@ -528,7 +504,6 @@ class History:
         """
         Logs an error report to a text file in the deadlinks subdirectory.
         """
-        site = pywikibot.getSite()
         if archiveURL:
             errorReport = u'* %s ([%s archive])\n' % (url, archiveURL)
         else:
@@ -541,8 +516,8 @@ class History:
         pywikibot.output(u"** Logging link for deletion.")
         txtfilename = pywikibot.config.datafilepath('deadlinks',
                                                     'results-%s-%s.txt'
-                                                    % (site.family.name,
-                                                       site.lang))
+                                                    % (self.site.family.name,
+                                                       self.site.lang))
         txtfile = codecs.open(txtfilename, 'a', 'utf-8')
         self.logCount += 1
         if self.logCount % 30 == 0:
@@ -573,8 +548,9 @@ class History:
             # We'll list it in a file so that it can be removed manually.
             if timeSinceFirstFound > 60 * 60 * 24 * day:
                 # search for archived page
-                iac = InternetArchiveConsulter(url)
-                archiveURL = iac.getArchiveURL()
+                archiveURL = pywikibot.weblib.getInternetArchiveURL(self.site, url)
+                if archiveURL is None:
+                    archiveURL = pywikibot.weblib.getWebCitationURL(self.site, url)
                 self.log(url, error, page, archiveURL)
         else:
             self.historyDict[url] = [(page.title(), now, error)]
