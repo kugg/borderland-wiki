@@ -3249,9 +3249,18 @@ class Page(object):
                 elif 'invalid' in pageInfo:
                     raise BadTitle('BadTitle: %s' % self)
 
-            if 'query-continue' in result and getAll:
+            if 'query-continue' in result:
                 params.update(result['query-continue']['revisions'])
             else:
+                thisHistoryDone = True
+
+            if revCount > 0:
+                avail_revs = len(pageInfo['revisions'])
+                pageInfo['revisions'] = pageInfo['revisions'][:min(revCount, avail_revs)]
+                if not getAll:
+                    revCount = revCount - avail_revs
+            else:
+                pageInfo['revisions'] = []
                 thisHistoryDone = True
 
             if skipFirst:
@@ -3277,9 +3286,7 @@ class Page(object):
                     elements = params['rvprop'].split('|')
                     row = [values[e] for e in elements]
                     dataQ.append(tuple(row))
-                if len(result['query']['pages'].values()[0]['revisions']
-                       ) < revCount:
-                    thisHistoryDone = True
+
         return dataQ
 
     def _getVersionHistoryOld(self, getAll=False, skipFirst=False,
