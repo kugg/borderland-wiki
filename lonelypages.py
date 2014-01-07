@@ -31,7 +31,7 @@ Furthermore, the following command line parameters are supported:
 
 --- Credit and Help ---
 This Script has been developed by Pietrodn and Filnik on botwiki. If you want to help us
-improving our script archive and pywikipediabot's archive or you simply need help
+improving our script archive and pywikibot's archive or you simply need help
 you can find us here: http://botwiki.sno.cc
 
 --- Examples ---
@@ -40,7 +40,7 @@ python lonelypages.py -enable:User:Bot/CheckBot -always
 #
 # (C) Pietrodn, it.wiki 2006-2007
 # (C) Filnik, it.wiki 2007
-# (C) Pywikibot team, 2008-2013
+# (C) Pywikibot team, 2008-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -185,7 +185,7 @@ def main():
                 u"%s doesn't esist, I use the page as if it was blank!"
                 % enable.title())
             getenable = ''
-        except wikiepedia.IsRedirect:
+        except pywikibot.IsRedirect:
             pywikibot.output(u"%s is a redirect, skip!" % enable.title())
             getenable = ''
         # If the enable page is set to disable, turn off the bot
@@ -201,7 +201,7 @@ def main():
         except pywikibot.NoPage:
             pywikibot.output(u"%s doesn't esist, skip!" % disambigpage.title())
             disambigtext = ''
-        except wikiepedia.IsRedirect:
+        except pywikibot.IsRedirect:
             pywikibot.output(u"%s is a redirect, don't use it!"
                              % disambigpage.title())
             disambigPage = None
