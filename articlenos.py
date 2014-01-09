@@ -20,8 +20,6 @@ import wikipedia as pywikibot
 import externals
 externals.check_setup('irclib')
 from ircbot import SingleServerIRCBot
-from irclib import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad
-from irclib import ip_quad_to_numstr
 
 
 class ArtNoDisp(SingleServerIRCBot):
