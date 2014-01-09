@@ -30,7 +30,7 @@ TODO:
 __version__ = '$Id$'
 
 import datetime
-imporet re
+import re
 import wikipedia as pywikibot
 import query
 
