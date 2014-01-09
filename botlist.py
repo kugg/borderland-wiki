@@ -19,7 +19,6 @@ __version__ = '$Id$'
 #
 
 import re
-import sys
 import pickle
 import os.path
 import time

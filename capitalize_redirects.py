@@ -26,9 +26,6 @@ Example: "python capitalize_redirects.py -start:B -always"
 __version__ = '$Id$'
 #
 
-import time
-import sys
-import re
 import wikipedia as pywikibot
 from pywikibot import i18n
 import pagegenerators
