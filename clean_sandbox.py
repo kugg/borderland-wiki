@@ -31,9 +31,9 @@ This script understands the following command-line arguments:
 # (C) Wikipedian, 2006-2007
 # (C) Andre Engels, 2007
 # (C) Siebrand Mazeland, 2007
-# (C) xqt, 2009-2013
+# (C) xqt, 2009-2014
 # (C) Dr. Trigon, 2011-2012
-# (C) Pywikibot team, 2007-2012
+# (C) Pywikibot team, 2007-2013
 #
 # DrTrigonBot: http://de.wikipedia.org/wiki/Benutzer:DrTrigonBot
 # Clean User Sandbox Robot (clean_user_sandbox.py)
@@ -52,6 +52,7 @@ content = {
     'commons': u'{{Sandbox}}\n<!-- Please edit only below this line. -->',
     'als': u'{{subst:/Vorlage}}',
     'ar': u'{{عنوان الملعب}}\n<!-- مرحبا! خذ راحتك في تجربة مهارتك في التنسيق والتحرير أسفل هذا السطر. هذه الصفحة لتجارب التعديل ، سيتم تفريغ هذه الصفحة كل 12 ساعة. -->',
+    'arz': '{{عنوان السبوره}}\n<!-- مرحبا! خد راحتك فى تجريب مهاراتك فى\nالتحرير تحت الخط ده. بما إن الصفحه دى لتجارب التعديل، فالصفحه دى حيتم تنضيفها\nاوتوماتيكيا كل 12 ساعه. -->',
     'az': u'<!--- LÜTFƏN, BU SƏTRƏ TOXUNMAYIN --->\n{{Qaralama dəftəri}}\n<!-- AŞAĞIDAKI XƏTTİN ALTINDAN YAZA BİLƏRSİNİZ --->',
     'bar': u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
     'cs': u'{{subst:/uhrabat}}',
@@ -87,6 +88,7 @@ sandboxTitle = {
     'commons': u'Project:Sandbox',
     'als': u'Project:Sandchaschte',
     'ar': u'Project:ملعب',
+    'arz': u'Project:السبوره',
     'az': u'Vikipediya:Qaralama dəftəri',
     'bar': u'Project:Spuiwiesn',
     'cs': u'Project:Pískoviště',
