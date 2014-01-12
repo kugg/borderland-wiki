@@ -502,7 +502,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[104] = {
             'bs': u'Dodatak',
             'cy': u'WiciSawrws',
-            'de': u'Thesaurus',
+            'de': [u'Thesaurus', u'WikiSaurus'],
             'en': u'Index',
             'fr': u'Portail',
             'ku': u'Portal',
@@ -516,7 +516,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[105] = {
             'bs': u'Razgovor o Dodatku',
             'cy': u'Sgwrs WiciSawrws',
-            'de': u'Thesaurus Diskussion',
+            'de': [u'Thesaurus Diskussion', u'WikiSaurus Diskussion'],
             'en': u'Index talk',
             'fr': u'Discussion Portail',
             'ku': u'Gotûbêja portalê',
