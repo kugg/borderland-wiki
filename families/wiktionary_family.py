@@ -40,6 +40,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
+        self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Uzantino-Diskuto', u'Uzanto-Diskuto', u'Uzula diskuto', u'Vikipediista diskuto']
         self.namespaces[2]['fa'] = [u'کاربر']
         self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[2]['fr'] = [u'Utilisateur']
