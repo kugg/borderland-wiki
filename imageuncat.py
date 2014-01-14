@@ -16,7 +16,6 @@ __version__ = '$Id$'
 import os
 import sys
 import re
-import codecs
 from datetime import datetime
 from datetime import timedelta
 import pywikibot

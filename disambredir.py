@@ -16,7 +16,6 @@ import sys
 import re
 import pywikibot
 import pagegenerators
-import catlib
 
 msg = {
     'ar': u'تغيير التحويلات في صفحة توضيح',

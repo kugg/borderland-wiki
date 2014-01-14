@@ -22,7 +22,6 @@ __version__ = '$Id$'
 
 import time
 import pywikibot
-import pagegenerators
 import query
 
 # This is the title of the wikipage where to render stats.

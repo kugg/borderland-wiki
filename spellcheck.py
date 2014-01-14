@@ -59,7 +59,6 @@ __version__ = '$Id$'
 #
 
 import re
-import sys
 import string
 import codecs
 import wikipedia as pywikibot

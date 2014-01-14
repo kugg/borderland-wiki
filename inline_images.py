@@ -29,11 +29,9 @@ will only touch a single page.
 __version__ = '$Id$'
 #
 
-import sys
 import re
 import pywikibot
 import pagegenerators
-import catlib
 import weblinkchecker
 import upload
 

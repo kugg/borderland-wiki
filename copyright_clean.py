@@ -12,14 +12,12 @@ __version__ = '$Id$'
 #
 
 import sys
-import httplib
 import socket
 import re
 import time
 from urllib import urlencode
 
 import wikipedia as pywikibot
-import config
 import catlib
 import pagegenerators
 import query

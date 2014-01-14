@@ -23,7 +23,6 @@ from ircbot import SingleServerIRCBot
 from irclib import nm_to_n
 import threading
 import time
-import math
 
 tasks = 'rciw|censure'
 projtasks = {}

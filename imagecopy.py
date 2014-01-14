@@ -90,7 +90,6 @@ import re
 import codecs
 import urllib
 import httplib
-import urllib2
 import webbrowser
 import time
 import threading

@@ -13,7 +13,6 @@ __version__ = '$Id$'
 
 import wikipedia as pywikibot
 import sys
-import thread
 
 # The indexes for projects are as: <language code>.<family>
 

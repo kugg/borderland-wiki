@@ -63,7 +63,6 @@ __version__ = '$Id$'
 
 import re
 import datetime
-import urllib
 import wikipedia as pywikibot
 from pywikibot import i18n
 import config

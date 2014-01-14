@@ -16,9 +16,7 @@ Parameters:
 __version__ = '$Id$'
 #
 
-import os
 import sys
-import difflib
 import wikipedia as pywikibot
 import config
 

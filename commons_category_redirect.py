@@ -21,7 +21,6 @@ from datetime import datetime
 from datetime import timedelta
 
 import wikipedia as pywikibot
-import config
 import catlib
 from category import *
 
