@@ -67,6 +67,7 @@ class HarvestRobot:
             'be':  'Q877583',
             'uk':  'Q199698',
             'tr':  'Q58255',
+            'cs':  'Q191168',
         }  # TODO: Should be moved to a central wikidata library
 
         if lang in source_values:
