@@ -94,7 +94,6 @@ Syntax examples:
 #
 __version__ = '$Id$'
 
-import sys
 import re
 import codecs
 import pickle
@@ -230,7 +229,7 @@ class LinkChecker(object):
                 conn.request('HEAD', '/', None, self.header)
                 self.response = conn.getresponse()
 
-                self.readEncodingFromResponse(response)
+                self.readEncodingFromResponse(self.response)
             except:
                 pass
             if not self.serverEncoding:

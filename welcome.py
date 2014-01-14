@@ -192,7 +192,6 @@ from string import capitalize
 import pywikibot
 from pywikibot import i18n
 import config
-import query
 import userlib
 
 locale.setlocale(locale.LC_ALL, '')
