@@ -404,9 +404,8 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
             while not gotPhotos:
                 try:
                     for photo in flickr.groups_pools_getPhotos(
-                        group_id=group_id, user_id=user_id, tags=tags,
-                        per_page='100', page=i)
-                    .find('photos').getchildren():
+                            group_id=group_id, user_id=user_id, tags=tags,
+                            per_page='100', page=i).find('photos').getchildren():
                         gotPhotos = True
                         if photo.attrib['id'] == start_id:
                             found_start_id = True
@@ -434,8 +433,7 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
             while not gotPhotos:
                 try:
                     for photo in flickr.photosets_getPhotos(
-                        photoset_id=photoset_id, per_page='100', page=i)
-                    .find('photoset').getchildren():
+                            photoset_id=photoset_id, per_page='100', page=i).find('photoset').getchildren():
                         gotPhotos = True
                         if photo.attrib['id'] == start_id:
                             found_start_id = True
@@ -463,8 +461,7 @@ def getPhotos(flickr=None, user_id=u'', group_id=u'', photoset_id=u'',
             while not gotPhotos:
                 try:
                     for photo in flickr.people_getPublicPhotos(
-                        user_id=user_id, per_page='100', page=i)
-                    .find('photos').getchildren():
+                            user_id=user_id, per_page='100', page=i).find('photos').getchildren():
                         gotPhotos = True
                         if photo.attrib['id'] == start_id:
                             found_start_id = True
