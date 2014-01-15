@@ -28,7 +28,6 @@ __version__ = '$Id$'
 import wikipedia as pywikibot
 import pagegenerators
 import config
-import sys
 
 docuReplacements = {'&params;': pagegenerators.parameterHelp}
 

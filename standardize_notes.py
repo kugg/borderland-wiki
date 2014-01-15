@@ -51,7 +51,6 @@ __version__ = '$Id$'
 #
 
 import subprocess
-import sys
 import re
 import random
 import socket

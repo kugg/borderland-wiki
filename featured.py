@@ -66,7 +66,6 @@ import wikipedia as pywikibot
 from pywikibot import i18n
 from pagegenerators import PreloadingGenerator
 import catlib
-import config
 
 
 def CAT(site, name, hide):

@@ -104,7 +104,6 @@ import urllib
 import urllib2
 import threading
 import time
-import gzip
 import StringIO
 
 import pywikibot

@@ -32,7 +32,6 @@ __version__ = '$Id$'
 import httplib
 import StringIO
 import re
-import sys
 import md5
 import os
 import string

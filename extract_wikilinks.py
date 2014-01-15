@@ -23,7 +23,6 @@ __version__ = '$Id$'
 #
 import sys
 import re
-import codecs
 import wikipedia as pywikibot
 # This bot does not contact the Wiki, so no need to get it on the list
 pywikibot.stopme()

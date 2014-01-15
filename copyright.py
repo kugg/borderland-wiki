@@ -92,7 +92,6 @@ import os
 import time
 import urllib
 import urllib2
-import httplib
 
 import wikipedia as pywikibot
 import pagegenerators

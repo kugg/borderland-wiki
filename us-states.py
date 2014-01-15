@@ -24,7 +24,6 @@ __version__ = '$Id$'
 #
 
 import re
-import sys
 import wikipedia as pywikibot
 
 

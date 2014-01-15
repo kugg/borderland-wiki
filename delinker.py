@@ -3,9 +3,7 @@
 __version__ = '$Id$'
 
 import sys
-import os
 import wikipedia
-import config
 
 sys.path.insert(0, 'commonsdelinker')
 

@@ -31,10 +31,8 @@ finally:
 __version__ = '$Id$'
 #
 
-import urllib
 import wikipedia as pywikibot
 import login
-import config
 
 
 class Importer(pywikibot.Page):

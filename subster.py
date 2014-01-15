@@ -80,7 +80,6 @@ import mailbox
 import mimetypes
 import datetime
 import email.utils
-import logging
 import ast
 import shelve
 import pprint
