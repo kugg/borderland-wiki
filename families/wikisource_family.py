@@ -726,3 +726,5 @@ class Family(family.WikimediaFamily):
         for key, values in self.authornamespaces.iteritems():
             for item in values:
                 self.crossnamespace[item].update({key: self.authornamespaces})
+    def shared_data_repository(self, code, transcluded=False):
+        return ('wikidata', 'wikidata')
