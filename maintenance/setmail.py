@@ -9,7 +9,6 @@
 __version__ = '$Id$'
 #
 
-import getpass
 import os
 import re
 import sys
@@ -19,7 +18,6 @@ import poplib
 import preferences
 sys.path.insert(1, '..')
 import wikipedia
-import config
 
 
 def confirm(link):

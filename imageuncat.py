@@ -19,7 +19,6 @@ import re
 from datetime import datetime
 from datetime import timedelta
 import pywikibot
-import config
 import pagegenerators
 import query
 

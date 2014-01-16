@@ -16,7 +16,6 @@ Parameters:
 __version__ = '$Id$'
 #
 
-import sys
 import wikipedia as pywikibot
 import config
 

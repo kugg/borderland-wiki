@@ -12,7 +12,6 @@ or querying third-party sites.
 __version__ = '$Id$'
 
 import wikipedia as pywikibot
-import config
 from pywikibot.comms import http
 
 def getInternetArchiveURL(site, url, timestamp=None):

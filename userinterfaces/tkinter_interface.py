@@ -1,7 +1,6 @@
 __version__ = '$Id$'
 
 import re
-import sys
 import threading
 import time
 import tkMessageBox, tkSimpleDialog

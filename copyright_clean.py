@@ -12,7 +12,6 @@ __version__ = '$Id$'
 #
 
 import sys
-import socket
 import re
 import time
 from urllib import urlencode

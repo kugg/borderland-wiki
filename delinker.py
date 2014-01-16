@@ -3,7 +3,6 @@
 __version__ = '$Id$'
 
 import sys
-import wikipedia
 
 sys.path.insert(0, 'commonsdelinker')
 

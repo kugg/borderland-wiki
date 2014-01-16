@@ -104,7 +104,6 @@ import urllib
 import urllib2
 import threading
 import time
-import StringIO
 
 import pywikibot
 from pywikibot import i18n

@@ -36,7 +36,6 @@ __version__ = '$Id$'
 import re
 import pywikibot
 import pagegenerators
-import catlib
 import editarticle
 
 # This is required for the text that is shown when you run this script

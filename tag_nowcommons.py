@@ -14,7 +14,6 @@ __version__ = '$Id$'
 
 import sys
 import re
-import urllib
 
 import wikipedia as pywikibot
 import pagegenerators

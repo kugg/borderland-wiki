@@ -32,7 +32,6 @@ __version__ = '$Id$'
 #
 
 import wikipedia as pywikibot
-import login
 
 
 class Importer(pywikibot.Page):

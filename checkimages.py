@@ -99,7 +99,6 @@ import wikipedia as pywikibot
 import pagegenerators as pg
 import catlib
 import config
-import query
 import userlib
 
 locale.setlocale(locale.LC_ALL, '')

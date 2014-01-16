@@ -61,7 +61,6 @@ import string
 
 import wikipedia as pywikibot
 import pagegenerators
-import config
 
 # httpcache is optional
 have_httpcache = True

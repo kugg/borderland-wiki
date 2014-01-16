@@ -21,7 +21,6 @@ __version__ = '$Id$'
 
 import StringIO
 import wikipedia
-import config
 from PIL import Image
 
 
