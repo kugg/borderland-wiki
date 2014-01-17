@@ -21,8 +21,7 @@ class Family(family.WikimediaFamily):
         # Override defaults
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
         self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
-        self.namespaces[2]['fr'] = [u'Utilisateur']
-        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur', u'Discussion utilisatrice']
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[2]['ko'] = [u'사용자']
         self.namespaces[3]['ko'] = [u'사용자토론']
