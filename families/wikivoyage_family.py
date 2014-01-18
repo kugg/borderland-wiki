@@ -13,7 +13,7 @@ class Family(family.WikimediaFamily):
         self.name = 'wikivoyage'
         self.languages_by_size = [
             'en', 'de', 'pt', 'fr', 'it', 'nl', 'pl', 'ru', 'es', 'vi', 'sv',
-            'he', 'ro', 'uk', 'el',
+            'he', 'zh', 'ro', 'uk', 'el',
         ]
 
         self.langs = dict([(lang, '%s.wikivoyage.org' % lang)
@@ -53,6 +53,7 @@ class Family(family.WikimediaFamily):
             'sv': u'Wikivoyage',
             'uk': u'Вікімандри',
             'vi': u'Wikivoyage',
+            'zh': u'Wikivoyage',
         }
 
         self.namespaces[5] = {
@@ -71,6 +72,7 @@ class Family(family.WikimediaFamily):
             'sv': u'Wikivoyagediskussion',
             'uk': u'Обговорення Вікімандри',
             'vi': u'Thảo luận Wikivoyage',
+            'zh': u'Wikivoyage talk',
         }
 
         self.namespaces[100] = {
