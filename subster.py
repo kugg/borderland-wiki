@@ -200,8 +200,11 @@ class SubsterBot(basic.AutoBasicBot):
             self.site, self._bot_config['TemplateName']).title()
         self._template_regex = re.compile(
             '\{\{' + self._bot_config['TemplateName'] + '(.*?)\}\}', re.S)
-        if self.site.is_data_repository():
-            self._bot_config['VerboseMessage'] = self._bot_config['data_VerboseMessage']
+        # TODO: implement proper error handling template/output for wikidata
+        #       see: https://bugzilla.wikimedia.org/show_bug.cgi?id=60225
+        #       see: https://www.wikidata.org/wiki/Template:Exchange_Rate_Data
+        #if self.site.is_data_repository():
+        #    self._bot_config['VerboseMessage'] = self._bot_config['data_VerboseMessage']
 
         # init constants
         self._userListPage = pywikibot.Page(self.site,
