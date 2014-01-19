@@ -13,14 +13,10 @@ __version__ = '$Id$'
 #
 
 import sys
-import re
-
 import wikipedia as pywikibot
 import pagegenerators
-import image
 #FIXME: Move these lists to commons_lib.py
 from imagetransfer import nowCommonsTemplate
-from nowcommons import nowCommons
 from pywikibot import i18n
 
 
@@ -99,14 +95,12 @@ def tagNowCommons(page):
             pywikibot.showDiff(imagepage.get(), newtext)
             try:
                 imagepage.put(newtext, comment)
-            except wikipedia.LockedPage:
+            except pywikibot.LockedPage:
                 return
 
 
 def main(args):
     generator = None
-    always = False
-
     # Load a lot of default generators
     genFactory = pagegenerators.GeneratorFactory()
 
