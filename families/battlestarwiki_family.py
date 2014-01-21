@@ -57,13 +57,6 @@ class Family(family.Family):
             '_default': u'Podcast talk',
         }
 
-        # A few selected big languages for things that we do not want to loop over
-        # all languages. This is only needed by the titletranslate.py module, so
-        # if you carefully avoid the options, you could get away without these
-        # for another wiki family.
-
-        alphabetic = ['de', 'en', 'es', 'fr', 'tr', 'zh']
-
     def hostname(self, code):
         return '%s.battlestarwiki.org' % code
 
