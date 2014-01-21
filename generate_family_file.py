@@ -21,7 +21,7 @@ import codecs
 from distutils.version import LooseVersion as V
 
 # creating urls
-from urlparse import urlparse, urljoin, ParseResult
+from urlparse import urlparse, urljoin
 
 # retrieving urls
 import urllib2

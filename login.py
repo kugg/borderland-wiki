@@ -56,9 +56,7 @@ subdirectory.
 __version__ = '$Id$'
 
 import re
-import os
 import query
-import urllib2
 import wikipedia as pywikibot
 import config
 
@@ -354,9 +352,6 @@ class LoginManager:
             api = False
             return self.login(False, retry)
         if cookiedata:
-            fn = '%s-%s-%s-login.data' % (self.site.family.name,
-                                          self.site.lang, self.username)
-            #self.storecookiedata(fn,cookiedata)
             pywikibot.output(u"Should be logged in now")
             # Show a warning according to the local bot policy
             if not self.botAllowed():
@@ -401,7 +396,7 @@ class LoginManager:
 
 
 def main():
-    username = password = None
+    password = None
     sysop = False
     logall = False
     forceLogin = False
