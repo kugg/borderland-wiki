@@ -57,7 +57,6 @@ __version__ = '$Id$'
 # Distributed under the terms of the MIT license.
 #
 
-import os.path
 import pickle
 import re
 import sys
@@ -474,7 +473,6 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet):
                                fromsite.lang), re.IGNORECASE)
     gen = featuredArticles(fromsite, pType)
     gen = PreloadingGenerator(gen)
-    pairs = []
     for a in gen:
         if a.title() < afterpage:
             continue
@@ -560,7 +558,7 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet):
                     else:
                         pywikibot.output(u"(already done)")
                     cc[a.title()] = atrans.title()
-        except pywikibot.PageNotSaved, e:
+        except pywikibot.PageNotSaved:
             pywikibot.output(u"Page not saved")
 
 
