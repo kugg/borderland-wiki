@@ -233,7 +233,7 @@ class Family(family.WikimediaFamily):
             'bs': u'Razgovor s Vikirječnikom',
             'ca': u'Viccionari Discussió',
             'chr': u'Wiktionary talk',
-            'co': u'Wiktionary talk',
+            'co': u'Discussioni Wiktionary',
             'cs': [u'Diskuse k Wikislovníku', u'Wikislovník diskuse', u'Wiktionary diskuse', u'Wiktionary talk'],
             'csb': u'Diskùsëjô Wiktionary',
             'cy': u'Sgwrs Wiciadur',

@@ -32,6 +32,9 @@ class Family(family.WikimediaFamily):
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[12]['uk'] = [u'Довідка', u'Д']
         self.namespaces[14]['uk'] = [u'Категорія', u'К']
+        self.namespaces[10]['zh'] = [u'Template', u'样板', u'模板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'使用說明', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
