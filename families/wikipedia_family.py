@@ -405,7 +405,7 @@ class Family(family.WikimediaFamily):
             'chr': u'Wikipedia talk',
             'chy': u'Wikipedia talk',
             'ckb': u'لێدوانی ویکیپیدیا',
-            'co': u'Wikipedia talk',
+            'co': u'Discussioni Wikipedia',
             'cr': u'Wikipedia talk',
             'crh': [u'Vikipediya muzakeresi', u'Vikipediya музакереси'],
             'cs': [u'Diskuse k Wikipedii', u'Wikipedie diskuse'],
