@@ -566,7 +566,7 @@ class CaseChecker(object):
                 if badWord in self.alwaysInLocal:
                     mightBeLat = False
                 elif badWord in self.alwaysInLatin:
-                    mightBeLoc = False
+                    mightBeLcl = False
 
             if mightBeLcl:
                 mapLcl[badWord] = badWord.translate(self.latToLclDict)
@@ -819,7 +819,7 @@ class CaseChecker(object):
     def ReplaceLink(self, text, oldtxt, newtxt):
 
         frmParts = [s.strip(self.stripChars)
-                    for d in self.wordBreaker.split(oldtxt)]
+                    for s in self.wordBreaker.split(oldtxt)]
         toParts = [s.strip(self.stripChars)
                    for s in self.wordBreaker.split(newtxt)]
 
