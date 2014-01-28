@@ -9633,7 +9633,7 @@ More information: See https://sourceforge.net/support/tracker.php?aid=3081100
 
 """)
     if verbose:
-        output(u'Pywikipediabot %s' % (version.getversion()))
+        output(u'Pywikibot %s' % (version.getversion()))
         output(u'Python %s' % sys.version)
 
     if do_help:
@@ -10481,6 +10481,6 @@ if '*' in config.log or calledModuleName() in config.log:
 
 if __name__ == '__main__':
     import doctest
-    print 'Pywikipediabot %s' % version.getversion()
+    print 'Pywikibot %s' % version.getversion()
     print 'Python %s' % sys.version
     doctest.testmod()
