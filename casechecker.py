@@ -15,6 +15,7 @@ import sys
 import query
 import re
 import codecs
+import i18n
 import wikipedia as pywikibot
 
 
@@ -78,25 +79,6 @@ def SetColor(color):
 
 
 class CaseChecker(object):
-    msgRename = {
-        'ar': u'تغيير اسم لحالة مخلوطة',
-        'en': u'mixed case rename',
-        'ru': u'[[ВП:КЛ]]',
-    }
-    msgDeleteRedirect = {
-        'en': u'This redirect contains identical looking Cyrillic and Latin letters in its title',
-        'ru': u'[[ВП:КЛ]] Перенаправление содержит смесь кириллицы и латиницы в названии',
-    }
-    textDeleteRedirect = {
-        'en': u'{{db-r3|bot=CaseChecker}}\n\nThis redirect used to point to %s',
-        'ru': u'{{Db-redirtypo|[[ВП:КЛ]] Перенаправление на %s содержало смесь кириллицы и латиницы в названии}}',
-    }
-    msgLinkReplacement = {
-        'en': u'Case Replacements',
-        'ar': u'استبدالات الحالة',
-        'ru': u'[[ВП:КЛ]]',
-    }
-
     # These words are always in one language, even though they could be typed
     # in both
     alwaysInLocal = [u'СССР', u'Как', u'как']
@@ -157,7 +139,8 @@ class CaseChecker(object):
                 if arg.startswith('-from:'):
                     self.apfrom = arg[6:]
                 else:
-                    self.apfrom = pywikibot.input(u'Which page to start from: ')
+                    self.apfrom = pywikibot.input(
+                        u'Which page to start from: ')
             elif arg.startswith('-reqsize:'):
                 self.aplimit = int(arg[9:])
             elif arg == '-links':
@@ -393,44 +376,37 @@ class CaseChecker(object):
                     if self.replace:
                         if len(err[1]) == 1:
                             newTitle = err[1][0]
-##                            choice = pywikibot.inputChoice(u'Move %s to %s?'
-##                                                           % (title, newTitle),
-##                                                           ['Yes', 'No'],
-##                                                           ['y', 'n'])
-                            editSummary = pywikibot.translate(self.site,
-                                                              self.msgRename)
+                            editSummary = i18n.twtranslate(
+                                self.site, "casechecker-rename")
                             dst = self.Page(newTitle)
-
                             if 'redirect' in page:
                                 src = self.Page(title)
                                 redir = src.getRedirectTarget()
-                                redirTitle = redir.title(asLink=True,
-                                                         textlink=True)
-
+                                redirTitle = redir.title(
+                                    asLink=True, textlink=True)
                                 if not dst.exists():
-                                    src.move(newTitle, editSummary,
-                                             movesubpages=True)
+                                    src.move(
+                                        newTitle, editSummary, movesubpages=True)
                                     changed = True
-
                                 replErrors = False
                                 for p in src.getReferences(
                                         follow_redirects=False):
                                     if p.namespace() == 2:
                                         continue
                                     oldText = p.get(get_redirect=True)
-                                    newText = self.ReplaceLink(oldText, title,
-                                                               newTitle)
+                                    newText = self.ReplaceLink(
+                                        oldText, title, newTitle)
                                     if not self.PutNewPage(
                                         p, newText, [
                                             self.MakeMoveSummary(title,
                                                                  newTitle)]):
                                         replErrors = True
                                 if not replErrors:
-                                    editSummary = pywikibot.translate(
-                                        self.site, self.msgDeleteRedirect)
-                                    newText = pywikibot.translate(
+                                    editSummary = i18n.twtranslate(
+                                        self.site, "casechecker-delete-summary")
+                                    newText = i18n.twtranslate(
                                         self.site,
-                                        self.textDeleteRedirect, redirTitle,
+                                        "casechecker-delete-reason", redirTitle,
                                         fallback=False)
                                     if newText:
                                         src.put(newText, editSummary,
@@ -783,10 +759,10 @@ class CaseChecker(object):
                 pageObj.put(
                     pageTxt,
                     u'%s: %s'
-                    % (pywikibot.translate(
+                    % (i18n.twtranslate(
                         self.site,
-                        self.msgLinkReplacement),
-                        u', '.join(msg)))
+                        "casechecker-replacement-summary"),
+                        self.site.mediawiki_message(u"Comma-separator").join(msg)))
                 return True
             except KeyboardInterrupt:
                 raise
@@ -796,7 +772,7 @@ class CaseChecker(object):
         return False
 
     def MakeMoveSummary(self, fromTitle, toTitle):
-        return u'[[%s]]→[[%s]]' % (fromTitle, toTitle)
+        return i18n.twtranslate(self.site, "casechecker-replacement-linklist") % {'source': fromTitle, 'target': toTitle}
 
     def MakeLink(self, title, colorcode=True):
         prf = u'' if self.Page(title).namespace() == 0 else u':'
