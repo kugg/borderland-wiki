@@ -16,7 +16,6 @@ Library to work with category pages on Wikipedia
 __version__ = '$Id$'
 #
 import re
-import time
 import urllib
 import wikipedia as pywikibot
 import query
@@ -322,7 +321,6 @@ class Category(pywikibot.Page):
                 '<div class\s?=\s?\"thumb\"\sstyle=\"[^\"]*\">'
                 '(?:<div style=\"[^\"]*\">)?<a href=\".*?\"'
                 '(?:\sclass="image")?\stitle\s?=\s?\"([^\"]*)\"')
-        ns = self.site().category_namespaces()
         # regular expression matching the "(next 200)" link
         RLinkToNextPage = re.compile('&amp;from=(.*?)" title="')
 
@@ -733,7 +731,6 @@ def categoryAllElementsAPI(CatName, cmlimit=5000, categories_parsed=[],
     results = list()
     for subcat in members:
         ns = subcat['ns']
-        pageid = subcat['pageid']
         title = subcat['title']
         if ns == 14:
             if title not in categories_parsed:
@@ -743,9 +740,6 @@ def categoryAllElementsAPI(CatName, cmlimit=5000, categories_parsed=[],
                                                              categories_parsed)
                 allmembers.extend(results_part)
     for member in allmembers:
-        ns = member['ns']
-        pageid = member['pageid']
-        title = member['title']
         results.append(member)
     return (results, categories_parsed)
 
