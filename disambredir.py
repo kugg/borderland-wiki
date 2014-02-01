@@ -40,8 +40,11 @@ def firstcap(string):
 def treat(text, linkedPage, targetPage):
     """ Based on the method of the same name in solve_disambiguation.py. """
     # make a backup of the original text so we can show the changes later
+    mysite = pywikibot.getSite()
+    linktrail = mysite.linktrail()
     linkR = re.compile(
-        r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>' + linktrail + ')')
+        r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>%s)'
+        % linktrail)
     curpos = 0
     # This loop will run until we have finished the current page
     while True:
@@ -54,7 +57,7 @@ def treat(text, linkedPage, targetPage):
         if m.group('title') == '' or mysite.isInterwikiLink(m.group('title')):
             continue
         else:
-            actualLinkPage = pywikibot.Page(page.site(), m.group('title'))
+            actualLinkPage = pywikibot.Page(page.site, m.group('title'))
             # Check whether the link found is to page.
             if actualLinkPage != linkedPage:
                 continue
@@ -63,9 +66,9 @@ def treat(text, linkedPage, targetPage):
         context = 30
         # at the beginning of the link, start red color.
         # at the end of the link, reset the color to default
-        pywikibot.output(text[max(0, m.start() - context):m.start()] +
-                         '\03{lightred}' + text[m.start():m.end()] +
-                         '\03{default}' + text[m.end():m.end() + context])
+        pywikibot.output(text[max(0, m.start() - context): m.start()] +
+                         '\03{lightred}' + text[m.start(): m.end()] +
+                         '\03{default}' + text[m.end(): m.end() + context])
         while True:
             choice = pywikibot.input(
                 u"Option (N=do not change, y=change link to \03{lightpurple}%s\03{default}, r=change and replace text, u=unlink)"
