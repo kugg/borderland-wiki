@@ -123,7 +123,7 @@ def main():
                     change = ''
                     if p.isRedirectPage():
                         p2 = p.getRedirectTarget()
-                        wikipeda.ouput(
+                        pywikibot.ouput(
                             u'Note: goal page is redirect. Creating redirect '
                             u'to "%s" to avoid double redirect.'
                             % p2.title().replace("%2C", ",").replace("_", " "))
