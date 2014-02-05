@@ -53,7 +53,7 @@ your user-config.py:
 """
 #
 # (C) xqt, 2009-2013
-# (C) Pywikipedia bot team, 2006-2013
+# (C) Pywikibot team, 2006-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -175,7 +175,7 @@ class CosmeticChangesToolkit:
             text = self.fixArabicLetters(text)
         try:
             text = isbn.hyphenateIsbnNumbers(text)
-        except isbn.InvalidIsbnException, error:
+        except isbn.InvalidIsbnException as error:
             if pywikibot.verbose:
                 pywikibot.output(u"ISBN error: %s" % error)
             pass
@@ -222,6 +222,7 @@ class CosmeticChangesToolkit:
             u'liên[ _]kết[ _]bài[ _]chất[ _]lượng[ _]tốt',
             u'liên[ _]kết[ _]chọn[ _]lọc',
             u'ligam[ _]adq',
+            u'ligazón[ _]a[bd]',
             u'ligoelstara',
             u'ligoleginda',
             u'link[ _][afgu]a', u'link[ _]adq', u'link[ _]f[lm]', u'link[ _]km',
@@ -346,9 +347,10 @@ class CosmeticChangesToolkit:
             if thisNs and namespaces:
                 text = pywikibot.replaceExcept(
                     text,
-                    r'\[\[\s*(' + '|'.join(namespaces) +
-                    ') *:(?P<nameAndLabel>.*?)\]\]', r'[[' + thisNs +
-                    ':\g<nameAndLabel>]]', exceptions)
+                    r'\[\[\s*(%s) *:(?P<nameAndLabel>.*?)\]\]'
+                    % '|'.join(namespaces),
+                    r'[[%s:\g<nameAndLabel>]]' % thisNs,
+                    exceptions)
         return text
 
     def translateMagicWords(self, text):
@@ -367,7 +369,7 @@ class CosmeticChangesToolkit:
                     continue
                 text = pywikibot.replaceExcept(
                     text,
-                    r'\[\[(?P<left>.+?:.+?\..+?\|) *(' + '|'.join(aliases) + \
+                    r'\[\[(?P<left>.+?:.+?\..+?\|) *(' + '|'.join(aliases) +
                     ') *(?P<right>(\|.*?)?\]\])',
                     r'[[\g<left>' + aliases[0] + '\g<right>', exceptions)
         return text
@@ -449,11 +451,11 @@ class CosmeticChangesToolkit:
                         newLink = "[[%s]]" % label
                     # Check if we can create a link with trailing characters
                     # instead of a pipelink
-                    elif self.site.sitename() != 'wikipedia:fa' and \
-                         len(titleWithSection) <= len(label) and \
-                         label[:len(titleWithSection)] == titleWithSection and \
-                         re.sub(trailR, '',
-                                label[len(titleWithSection):]) == '':
+                    elif (self.site.sitename() != 'wikipedia:fa' and
+                          len(titleWithSection) <= len(label) and
+                          label[:len(titleWithSection)] == titleWithSection and
+                          re.sub(trailR, '',
+                                 label[len(titleWithSection):]) == ''):
                         newLink = "[[%s]]%s" % (label[:len(titleWithSection)],
                                                 label[len(titleWithSection):])
                     else:
@@ -535,20 +537,21 @@ class CosmeticChangesToolkit:
     def removeUselessSpaces(self, text):
         multipleSpacesR = re.compile('  +')
         spaceAtLineEndR = re.compile(' $')
-
-        exceptions = ['comment', 'math', 'nowiki', 'pre', 'startspace', 'table', 'template']
+        exceptions = ['comment', 'math', 'nowiki', 'pre', 'startspace', 'table',
+                      'template']
         text = pywikibot.replaceExcept(text, multipleSpacesR, ' ', exceptions)
         text = pywikibot.replaceExcept(text, spaceAtLineEndR, '', exceptions)
-
         return text
 
     def removeNonBreakingSpaceBeforePercent(self, text):
-        '''
+        """
         Newer MediaWiki versions automatically place a non-breaking space in
         front of a percent sign, so it is no longer required to place it
         manually.
-        '''
-        text = pywikibot.replaceExcept(text, r'(\d)&nbsp;%', r'\1 %', ['timeline'])
+
+        """
+        text = pywikibot.replaceExcept(text, r'(\d)&nbsp;%', r'\1 %',
+                                       ['timeline'])
         return text
 
     def cleanUpSectionHeaders(self, text):
@@ -590,7 +593,8 @@ class CosmeticChangesToolkit:
         exceptions = ['comment', 'math', 'nowiki', 'pre']
         if self.site.family.name in deprecatedTemplates and \
            self.site.lang in deprecatedTemplates[self.site.family.name]:
-            for template in deprecatedTemplates[self.site.family.name][self.site.lang]:
+            for template in deprecatedTemplates[
+                    self.site.family.name][self.site.lang]:
                 old = template[0]
                 new = template[1]
                 if new is None:
@@ -617,9 +621,10 @@ class CosmeticChangesToolkit:
 ##                                       % (self.site.lang, self.site.family.name),
 ##                                       r'[[\g<link>|\g<title>]]', exceptions)
         # external link in double brackets
-        text = pywikibot.replaceExcept(text,
-                                       r'\[\[(?P<url>https?://[^\]]+?)\]\]',
-                                       r'[\g<url>]', exceptions)
+        text = pywikibot.replaceExcept(
+            text,
+            r'\[\[(?P<url>https?://[^\]]+?)\]\]',
+            r'[\g<url>]', exceptions)
         # external link starting with double bracket
         text = pywikibot.replaceExcept(text,
                                        r'\[\[(?P<url>https?://.+?)\]',
@@ -627,15 +632,17 @@ class CosmeticChangesToolkit:
         # external link and description separated by a dash, with
         # whitespace in front of the dash, so that it is clear that
         # the dash is not a legitimate part of the URL.
-        text = pywikibot.replaceExcept(text,
-                                       r'\[(?P<url>https?://[^\|\] \r\n]+?) +\| *(?P<label>[^\|\]]+?)\]',
-                                       r'[\g<url> \g<label>]', exceptions)
+        text = pywikibot.replaceExcept(
+            text,
+            r'\[(?P<url>https?://[^\|\] \r\n]+?) +\| *(?P<label>[^\|\]]+?)\]',
+            r'[\g<url> \g<label>]', exceptions)
         # dash in external link, where the correct end of the URL can
         # be detected from the file extension. It is very unlikely that
         # this will cause mistakes.
-        text = pywikibot.replaceExcept(text,
-                                       r'\[(?P<url>https?://[^\|\] ]+?(\.pdf|\.html|\.htm|\.php|\.asp|\.aspx|\.jsp)) *\| *(?P<label>[^\|\]]+?)\]',
-                                       r'[\g<url> \g<label>]', exceptions)
+        text = pywikibot.replaceExcept(
+            text,
+            r'\[(?P<url>https?://[^\|\] ]+?(\.pdf|\.html|\.htm|\.php|\.asp|\.aspx|\.jsp)) *\| *(?P<label>[^\|\]]+?)\]',
+            r'[\g<url> \g<label>]', exceptions)
         return text
 
     def fixHtml(self, text):
@@ -679,9 +686,11 @@ class CosmeticChangesToolkit:
         # it should be name = " or name=" NOT name   ="
         text = re.sub(r'(?i)<ref +name(= *| *=)"', r'<ref name="', text)
         #remove empty <ref/>-tag
-        text = pywikibot.replaceExcept(text, r'(?i)(<ref\s*/>|<ref *>\s*</ref>)',
+        text = pywikibot.replaceExcept(text,
+                                       r'(?i)(<ref\s*/>|<ref *>\s*</ref>)',
                                        r'', exceptions)
-        text = pywikibot.replaceExcept(text, r'(?i)<ref\s+([^>]+?)\s*>\s*</ref>',
+        text = pywikibot.replaceExcept(text,
+                                       r'(?i)<ref\s+([^>]+?)\s*>\s*</ref>',
                                        r'<ref \1/>', exceptions)
         return text
 
@@ -691,17 +700,18 @@ class CosmeticChangesToolkit:
         # convert prettytable to wikitable class
         if self.site.language in ('de', 'en'):
             text = pywikibot.replaceExcept(text,
-                                           ur'(class="[^"]*)prettytable([^"]*")',
-                                           ur'\1wikitable\2', exceptions)
+                                           r'(class="[^"]*)prettytable([^"]*")',
+                                           r'\1wikitable\2', exceptions)
         return text
 
     def fixTypo(self, text):
         exceptions = ['nowiki', 'comment', 'math', 'pre', 'source',
                       'startspace', 'gallery', 'hyperlink', 'interwiki', 'link']
         # change <number> ccm -> <number> cm³
-        text = pywikibot.replaceExcept(text, ur'(\d)\s*&nbsp;ccm',
+        text = pywikibot.replaceExcept(text, r'(\d)\s*&nbsp;ccm',
                                        ur'\1&nbsp;cm³', exceptions)
-        text = pywikibot.replaceExcept(text, ur'(\d)\s*ccm', ur'\1&nbsp;cm³',
+        text = pywikibot.replaceExcept(text,
+                                       r'(\d)\s*ccm', ur'\1&nbsp;cm³',
                                        exceptions)
         # Solve wrong Nº sign with °C or °F
         # additional exception requested on fr-wiki for this stuff
@@ -711,7 +721,8 @@ class CosmeticChangesToolkit:
                                        ur'\1&nbsp;°\2', exceptions)
         text = pywikibot.replaceExcept(text, ur'(\d)\s*[º°]([CF])',
                                        ur'\1&nbsp;°\2', exceptions)
-        text = pywikibot.replaceExcept(text, ur'º([CF])', ur'°\1', exceptions)
+        text = pywikibot.replaceExcept(text, u'º([CF])', ur'°\1',
+                                       exceptions)
         return text
 
     def fixArabicLetters(self, text):
@@ -741,8 +752,10 @@ class CosmeticChangesToolkit:
         old = digits[digits.keys()[0]]
         # do not change inside file links
         namespaces = list(self.site.namespace(6, all=True))
-        pattern = re.compile(u'\[\[(' + '|'.join(namespaces) + '):.+?\.\w+? *(\|((\[\[.*?\]\])|.)*)?\]\]',
-                             re.UNICODE)
+        pattern = re.compile(
+            u'\[\[(' + '|'.join(namespaces) +
+            '):.+?\.\w+? *(\|((\[\[.*?\]\])|.)*)?\]\]',
+            re.UNICODE)
         #not to let bot edits in latin content
         exceptions.append(re.compile(u"[^%(fa)s] *?\"*? *?, *?[^%(fa)s]"
                                      % {'fa': faChrs}))
@@ -755,7 +768,7 @@ class CosmeticChangesToolkit:
             text = pywikibot.replaceExcept(text, u'ه‌', u'ە', exceptions)
             text = pywikibot.replaceExcept(text, u'ه', u'ھ', exceptions)
         text = pywikibot.replaceExcept(text, u'ك', u'ک', exceptions)
-        text = pywikibot.replaceExcept(text, ur'[ىي]', u'ی', exceptions)
+        text = pywikibot.replaceExcept(text, u'[ىي]', u'ی', exceptions)
         return text
         # replace persian/arabic digits
         ## deactivated due to bug #3539407
@@ -821,7 +834,6 @@ class CosmeticChangesToolkit:
             text,
             r'([\r\n]|^)\=\= *{{int:license-header}} *\=\=(?:[\r\n ]*)\=\= *{{int:license-header}} *\=\=',
             r'\1== {{int:license-header}} ==', exceptions, True)
-
         return text
 
 

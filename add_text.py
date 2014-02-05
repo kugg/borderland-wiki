@@ -66,7 +66,7 @@ or you need some help regarding this script, you can find us here:
 
 #
 # (C) Filnik, 2007-2010
-# (C) Pywikibot team, 2007-2013
+# (C) Pywikibot team, 2007-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -104,6 +104,7 @@ starsList = [
     u'liên[ _]kết[ _]bài[ _]chất[ _]lượng[ _]tốt',
     u'liên[ _]kết[ _]chọn[ _]lọc',
     u'ligam[ _]adq',
+    u'ligazón[ _]a[bd]',
     u'ligoelstara',
     u'ligoleginda',
     u'link[ _][afgu]a', u'link[ _]adq', u'link[ _]f[lm]', u'link[ _]km',

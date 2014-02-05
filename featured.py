@@ -52,7 +52,7 @@ __version__ = '$Id$'
 # (C) Maxim Razin, 2005
 # (C) Leonardo Gregianin, 2005-2008
 # (C) xqt, 2009-2013
-# (C) Pywikipedia bot team, 2005-2012
+# (C) Pywikibot team, 2005-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -92,7 +92,7 @@ template = {
     'ast': ['Enllaz AD'],
     'az': ['Link FM'],
     'br': ['Liamm PuB', 'Lien AdQ'],
-    'ca': [u'Enllaç AD', 'Link FA', 'Destacat'],
+    'ca': [u'Enllaç AD', 'Destacat'],
     'cy': ['Cyswllt erthygl ddethol', 'Dolen ED'],
     'eo': ['LigoElstara'],
     'en': ['Link FA', 'FA link'],
@@ -101,6 +101,7 @@ template = {
     'fr': ['Lien AdQ'],
     'fur': ['Leam VdC'],
     'ga': ['Nasc AR'],
+    'gl': [u'Ligazón AD', 'Destacado'],
     'hi': ['Link FA', 'Lien AdQ'],
     'is': [u'Tengill ÚG'],
     'it': ['Link V', 'Link AdQ'],
@@ -117,11 +118,12 @@ template = {
 template_good = {
     '_default': ['Link GA'],
     'ar': [u'وصلة مقالة جيدة'],
-    'ca': [u'Enllaç AB', 'Lien BA', 'Abo', 'Link GA'],
+    'ca': [u'Enllaç AB', 'Lien BA', 'Abo'],
     'da': ['Link GA', 'Link AA'],
     'eo': ['LigoLeginda'],
     'es': ['Bueno'],
     'fr': ['Lien BA'],
+    'gl': [u'Ligazón AB'],
     'is': ['Tengill GG'],
     'it': ['Link VdQ'],
     'nn': ['Link AA'],
