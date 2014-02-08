@@ -51,6 +51,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[461] = {
             '_default': [u'Campaign talk'],
         }
+        self.namespaces[490] = {
+            '_default': [u'GWToolset'],
+        }
+        self.namespaces[491] = {
+            '_default': [u'GWToolset talk'],
+        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }
