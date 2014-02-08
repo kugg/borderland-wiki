@@ -3049,6 +3049,8 @@ class _MidiFile(_OggFile):
 
     # midi audio stream/feature extraction, detect streams of notes; parts
     def _detect_Streams(self):
+        import _music21 as music21
+
         # like in '_OggFile' (streams) a nice content listing of MIDI (music21)
         d = self._util_get_DataStreams_MUSIC21()
         if not d:
@@ -3064,12 +3066,16 @@ class _MidiFile(_OggFile):
             #print mm.durationToSeconds(part.duration.quarterLength)
             #print sum([item.seconds for item in stream])    # sum over all Note(s)
             #print part.metadata
+            try:
+                duration = part.seconds
+            except music21.stream.StreamException:
+                duration = None
             data.append({'ID':        (i + 1),
                           'Format':    u'(audio/midi)',
                           # note rate / noteduration ...??
                           'Rate':      u'%s/-/-' % d["channels"][i],
                           'Dimension': (None, None),
-                          'Duration':  part.seconds,})
+                          'Duration':  duration,})
 
         self._features['Streams'] = data
         return
