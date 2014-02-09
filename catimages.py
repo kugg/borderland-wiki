@@ -3024,6 +3024,8 @@ class _MidiFile(_OggFile):
                 result.update(s.metadata)
         except music21.midi.base.MidiException:
             pass
+        except Exception:
+            pass
 
         self._properties['Metadata'] = [result]
         return
@@ -3038,7 +3040,7 @@ class _MidiFile(_OggFile):
         d = self._util_get_DataStreams_MUSIC21()
 
         result =      { 'Format':     u'%s' % self.file_mime[1].upper(),
-                        'Length':     d["duration"],    # secs
+                        'Length':     d["duration"] if d else u'-',    # secs
                         'Dimensions': self.image_size,
                         'Filesize':   os.path.getsize(self.file_name),
                         'MIME':       u'%s/%s' % tuple(self.file_mime[:2]), }
@@ -3092,6 +3094,9 @@ class _MidiFile(_OggFile):
             #s = music21.midi.translate.midiFilePathToStream(self.file_name)
             s = music21.converter.parse(self.file_name)
         except music21.midi.base.MidiException:
+            pywikibot.warning(u'unknown file type [_detect_Streams]')
+            return
+        except Exception:
             pywikibot.warning(u'unknown file type [_detect_Streams]')
             return
 
