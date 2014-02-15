@@ -1,7 +1,7 @@
 # -*- coding: utf-8  -*-
 
 #
-# (C) Pywikibot team, 2004-2013
+# (C) Pywikibot team, 2004-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -4712,6 +4712,7 @@ class WikimediaFamily(Family):
             'gn': u'Módulo',
             'hak': u'模組',
             'he': u'יחידה',
+            'hr': u'Modul',
             'hsb': u'Modul',
             'hu': u'Modul',
             'id': u'Modul',
@@ -4764,7 +4765,7 @@ class WikimediaFamily(Family):
             'sh': u'Modul',
             'sk': u'Modul',
             'sl': u'Modul',
-            'sr': u'Модул',
+            'sr': [u'Модул', u'Modul'],
             'stq': u'Modul',
             'su': u'Modul',
             'sv': u'Modul',
@@ -4843,6 +4844,7 @@ class WikimediaFamily(Family):
             'gn': u'Módulo discusión',
             'hak': u'模組討論',
             'he': u'שיחת יחידה',
+            'hr': u'Razgovor o modulu',
             'hsb': u'Modul diskusija',
             'ht': u'Discussion module',
             'hu': u'Modulvita',
@@ -4901,7 +4903,7 @@ class WikimediaFamily(Family):
             'sh': u'Razgovor o modulu',
             'sk': u'Diskusia k modulu',
             'sl': u'Pogovor o modulu',
-            'sr': u'Разговор о модулу',
+            'sr': [u'Разговор о модулу', u'Razgovor o modulu'],
             'srn': u'Overleg module',
             'stq': u'Modul Diskussion',
             'su': u'Pembicaraan Modul',
