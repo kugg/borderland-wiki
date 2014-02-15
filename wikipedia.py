@@ -3057,11 +3057,11 @@ class Page(object):
                 results.append(ImagePage(page.site(), page.title()))
         # Find images in galleries
         pageText = self.get(get_redirect=followRedirects)
-        galleryR = re.compile('<gallery>.*?</gallery>', re.DOTALL)
-        galleryEntryR = re.compile('(?P<title>(%s|%s):.+?)(\|.+)?\n'
-                                   % (self.site().image_namespace(),
-                                      self.site().family.image_namespace(
-                                          code='_default')))
+        galleryR = re.compile('<gallery[^>]*>.*?</gallery>', re.DOTALL)
+        galleryEntryR = re.compile(
+            '(?P<title>(?:%s|%s):[\|\r\n]+?)(?:\|.*)?\r?\n'
+            % (self.site().image_namespace(),
+               self.site().family.image_namespace(code='_default')))
         for gallery in galleryR.findall(pageText):
             for match in galleryEntryR.finditer(gallery):
                 results.append(ImagePage(self.site(), match.group('title')))
