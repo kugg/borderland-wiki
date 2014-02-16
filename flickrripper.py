@@ -119,7 +119,7 @@ def downloadPhoto(photoUrl=''):
     return StringIO.StringIO(imageFile)
 
 
-def findDuplicateImages(photo=None, ite=pywikibot.getSite(u'commons', u'commons')):
+def findDuplicateImages(photo=None, site=pywikibot.getSite(u'commons', u'commons')):
     ''' Takes the photo, calculates the SHA1 hash and asks the mediawiki api
     for a list of duplicates.
 
