@@ -9,7 +9,7 @@ has some content that allows to assign it to a category.
 This script runs on commons only. It needs also external libraries
 (see imports and comments there) and additional configuration/data
 files in order to run properly. Most of them can be checked-out at:
-    http://svn.toolserver.org/svnroot/drtrigon/
+    https://gerrit.wikimedia.org/r/#/admin/projects/?filter=pywikibot
 (some code might get compiled on-the-fly, so a GNU compiler along
 with library header files is needed too)
 
