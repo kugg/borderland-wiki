@@ -305,20 +305,23 @@ class _UnknownFile(object):
             return self._buffer_EXIF
 
         res = {}
-        enable_recovery()  # enable recovery from hard crash
+        enable_recovery('exif') # enable recovery from hard crash
         try:
             if hasattr(pyexiv2, 'ImageMetadata'):
-                metadata = pyexiv2.ImageMetadata(self.file_name)
-                metadata.read()
-
-                for key in metadata.exif_keys:
-                    res[key] = metadata[key]
-
-                for key in metadata.iptc_keys:
-                    res[key] = metadata[key]
-
-                for key in metadata.xmp_keys:
-                    res[key] = metadata[key]
+# TODO: find solution to avoid segfaults (error/exit code 139)
+#       file pyexiv2 bug report
+#                metadata = pyexiv2.ImageMetadata(self.file_name)
+#                metadata.read()
+#
+#                for key in metadata.exif_keys:
+#                    res[key] = metadata[key]
+#
+#                for key in metadata.iptc_keys:
+#                    res[key] = metadata[key]
+#
+#                for key in metadata.xmp_keys:
+#                    res[key] = metadata[key]
+                pass
             else:
                 image = pyexiv2.Image(self.file_name)
                 image.readMetadata()
@@ -335,7 +338,7 @@ class _UnknownFile(object):
             pass
         except RuntimeError:
             pass
-        disable_recovery()  # disable since everything worked out fine
+        disable_recovery()      # disable since everything worked out fine
 
 
         # http://www.sno.phy.queensu.ca/~phil/exiftool/
@@ -1043,9 +1046,9 @@ class _JpegFile(_UnknownFile):
         # groupThreshold (set groupThreshold to 0 to turn off the grouping completely).
         # detectMultiScale(img, hit_threshold=0, win_stride=Size(),
         #                  padding=Size(), scale0=1.05, group_threshold=2)
-        enable_recovery()   # enable recovery from hard crash
+        enable_recovery('hog')  # enable recovery from hard crash
         ret = hog.detectMultiScale(img, 0.25, (8,8), (32,32), 1.05, 2)
-        disable_recovery()  # disable since everything worked out fine
+        disable_recovery()      # disable since everything worked out fine
         if cv2.__version__ == '$Rev: 4557 $':   # TS
             found = ret
         else:                #'2.4.5' or else (e.g. on fedora 18)
@@ -1545,10 +1548,10 @@ class _JpegFile(_UnknownFile):
         # sys.stdout handeled, but with freopen which could give issues
         import jseg
         # e.g. "segdist -i test3.jpg -t 6 -r9 test3.map.gif"
-        enable_recovery()   # enable recovery from hard crash
+        enable_recovery('jseg') # enable recovery from hard crash
         jseg.segdist_cpp.main([item.encode('utf-8') for item in
                                  ("segdist -i %s -t 6 -r9 %s"%(tmpjpg, tmpgif)).split(" ")])
-        disable_recovery()  # disable since everything worked out fine
+        disable_recovery()      # disable since everything worked out fine
         #out = open((tmpgif + ".stdout"), "r").read()    # reading stdout
         #print out
         os.remove(tmpgif + ".stdout")
@@ -1780,9 +1783,9 @@ class _JpegFile(_UnknownFile):
                                int(img.size[1] / scale)))
         img = smallImg
 
-        enable_recovery()   # enable recovery from hard crash
+        enable_recovery('dmtx') # enable recovery from hard crash
         #res = dm_read.decode(img.size[0], img.size[1], buffer(img.tostring()))
-        disable_recovery()  # disable since everything worked out fine
+        disable_recovery()      # disable since everything worked out fine
         #print res
 
         result = []
@@ -2642,9 +2645,9 @@ class _PdfFile(_JpegFile):
         #proc = Popen("pdftotext -layout %s %s" % (self.image_path, self.image_path+'.txt'),
         proc = Popen("pdftotext %s %s" % (self.image_path, self.image_path+'.txt'),
                      shell=True, stderr=PIPE)#.stderr.readlines()
-        enable_recovery()   # enable recovery from hard crash
+        enable_recovery('pdftotext')    # enable recovery from hard crash
         proc.wait()
-        disable_recovery()  # disable since everything worked out fine
+        disable_recovery()              # disable since everything worked out fine
         if proc.returncode:
             raise ImportError("pdftotext not found!")
         data = open(self.image_path+'.txt', 'r').readlines()
@@ -4560,9 +4563,9 @@ def trainbot(generator, Bot, image_old_namespace, image_namespace):
 
 # for functions in C/C++ that might crash hard without any exception throwed
 # e.g. an abort due to an assert or something else
-def enable_recovery():
+def enable_recovery(note=''):
     recoveryfile = open(os.path.join(scriptdir, 'cache/catimages_recovery'), "w")
-    recoveryfile.write('')
+    recoveryfile.write(note)
     recoveryfile.close()
 
 
