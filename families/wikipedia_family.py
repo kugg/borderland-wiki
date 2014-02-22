@@ -89,7 +89,7 @@ class Family(family.WikimediaFamily):
             'als': u'Wikipedia',
             'am': u'ውክፔዲያ',
             'an': u'Wikipedia',
-            'ang': [u'Wikipǣdia', u'Wikipaedia', u'Wikipedia'],
+            'ang': [u'Wikipǣdia', u'Wicipaedia', u'Wicipædia', u'Wicipǣdia', u'Wikipaedia', u'Wikipedia', u'Wikipædia', u'Ƿicipaedia', u'Ƿicipædia', u'Ƿicipǣdia', u'Ƿikipaedia', u'Ƿikipædia', u'Ƿikipǣdia'],
             'ar': [u'ويكيبيديا', u'وب'],
             'arc': [u'ܘܝܩܝܦܕܝܐ', u'Wikipedia'],
             'arz': u'ويكيبيديا',
@@ -369,7 +369,7 @@ class Family(family.WikimediaFamily):
             'als': u'Wikipedia Diskussion',
             'am': u'ውክፔዲያ ውይይት',
             'an': u'Descusión Wikipedia',
-            'ang': [u'Wikipǣdiamōtung', u'Wikipaediamotung', u'Wikipædiamotung'],
+            'ang': [u'Wikipǣdiamōtung', u'Wicipaediamotung', u'Wicipædiamotung', u'Wicipǣdiamōtung', u'Wikipaediamotung', u'Wikipedia talk', u'Wikipædiamotung', u'Ƿicipaediamotung', u'Ƿicipædiamotung', u'Ƿicipǣdiamōtung', u'Ƿikipaediamotung', u'Ƿikipædiamotung', u'Ƿikipǣdiamōtung'],
             'ar': [u'نقاش ويكيبيديا', u'نو'],
             'arc': u'ܡܡܠܠܐ ܕܘܝܩܝܦܕܝܐ',
             'arz': u'نقاش ويكيبيديا',
@@ -1036,6 +1036,7 @@ class Family(family.WikimediaFamily):
             'fa': u'برنامه آموزشی',
             'he': u'הוראה',
             'mk': u'Образовен програм',
+            'nl': u'Onderwijsprogramma',
             'pt': u'Ensino',
             'sv': u'Education Program',
         }
@@ -1049,6 +1050,7 @@ class Family(family.WikimediaFamily):
             'fa': u'بحث برنامه آموزشی',
             'he': u'שיחת הוראה',
             'mk': u'Разговор за Образовен програм',
+            'nl': u'Overleg onderwijsprogramma',
             'pt': u'Ensino Discussão',
             'sv': u'Education Program talk',
         }
