@@ -4054,13 +4054,15 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
     def _append_to_template(self, text, name, append):
         # mask/search template to append to
         pattern = re.compile(u"(\{\{%s.*?\n)(\s*\}\}\n{2})" % name, flags=re.S)
-        template = pattern.search(text).groups()
+        match = pattern.search(text)
+        template = match.groups()
 
         # append to template
         template = u"".join([template[0], append, u"\n", template[1]])
 
         # apply changes
-        text = pattern.sub(template, text)
+        #text = pattern.sub(template, text)  # '\number' from e.g. date cause 'sre_constants.error: invalid group reference'
+        text = text.replace(match.group(0), template)
         return text
 
     # gather data from all information interfaces
