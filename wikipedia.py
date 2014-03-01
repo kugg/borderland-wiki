@@ -8155,7 +8155,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
     def recentchanges(self, number=100, rcstart=None, rcend=None, rcshow=None,
                       rcdir='older', rctype='edit|new', namespace=None,
                       includeredirects=True, repeat=False, user=None,
-                      returndict=False, nobots=False):
+                      returndict=False, nobots=False, revision=False):
         """
         Yield recent changes as Page objects
         uses API call:
@@ -8200,6 +8200,9 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         timestamp (unicode), length (int), an empty unicode string, username
         or IP address (str), comment (unicode).
 
+        If parameter revision is true, this function returns distinct
+        revisions. If false, it returns only distinct pages.
+
         # TODO: Detection of unregistered users is broken
         """
         if rctype is None:
@@ -8231,6 +8234,11 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         if rctype:
             params['rctype'] = rctype
 
+        if revision:
+            keyseen = 'revid'
+        else:
+            keyseen = 'pageid'
+
         seen = set()
         while True:
             data = query.GetData(params, self)
@@ -8243,8 +8251,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                     "The APIs don't return data, the site may be down")
 
             for i in rcData:
-                if i['pageid'] not in seen:
-                    seen.add(i['pageid'])
+                if i[keyseen] not in seen:
+                    seen.add(i[keyseen])
                     page = Page(self, i['title'], defaultNamespace=i['ns'])
                     if 'comment' in i:
                         page._comment = i['comment']
