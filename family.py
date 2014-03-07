@@ -4775,6 +4775,7 @@ class WikimediaFamily(Family):
             'tyv': u'Модуль',
             'udm': u'Модуль',
             'uk': u'Модуль',
+            'ur': u'ماڈیول',
             'vec': u'Modulo',
             'vep': u'Moodul',
             'vi': u'Mô đun',
@@ -4915,6 +4916,7 @@ class WikimediaFamily(Family):
             'tyv': u'Обсуждение модуля',
             'udm': u'Обсуждение модуля',
             'uk': u'Обговорення модуля',
+            'ur': u'تبادلۂ خیال ماڈیول',
             'vec': u'Discussioni modulo',
             'vep': u'Mooduli arutelu',
             'vi': u'Thảo luận Mô đun',
@@ -4944,7 +4946,7 @@ class WikimediaFamily(Family):
         """Return Wikimedia projects version number as a string."""
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
-        return '1.23wmf15'
+        return '1.23wmf16'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
