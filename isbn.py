@@ -36,7 +36,7 @@ Furthermore, the following command line parameters are supported:
 
 """
 #
-# (C) Pywikibot team, 2006-2013
+# (C) Pywikibot team, 2006-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -1363,10 +1363,10 @@ def _hyphenateIsbnNumber(match):
     code = match.group('code')
     try:
         i = getIsbn(code)
+        i.format()
     except InvalidIsbnException:
         # don't change
         return code
-    i.format()
     return i.code
 
 
