@@ -4270,12 +4270,20 @@ class Family(object):
         return self.namespace(code, 14, all=True)
 
     # Methods
+    def ssl_available(self):
+        """Check if SSL support is available"""
+        import httplib
+        return hasattr(httplib, "HTTPS")
+
     def protocol(self, code):
         """
         Can be overridden to return 'https'. Other protocols are not supported.
 
         """
-        return 'http%s' % ('', 's')[config.SSL_connection]
+        if self.ssl_available():
+            return 'http%s' % ('', 's')[config.SSL_connection]
+        else:
+            return 'http'
 
     def hostname(self, code):
         """The hostname to use for standard http connections."""
@@ -4952,4 +4960,7 @@ class WikimediaFamily(Family):
         return ('commons', 'commons')
 
     def protocol(self, code):
-        return 'https'
+        if self.ssl_available():
+            return 'https'
+        else:
+            return 'http'
