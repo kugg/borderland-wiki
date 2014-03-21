@@ -1,13 +1,15 @@
 # -*- coding: utf-8  -*-
-""" Various i18n functions, both for the internal translation system
-    and for TranslateWiki-based translations
+"""
+Various i18n functions, both for the internal translation system
+and for TranslateWiki-based translations
 """
 #
-# (C) Pywikipedia bot team, 2004-2013
+# (C) Pywikibot team, 2004-2014
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
+#
 
 import re
 import sys
@@ -257,9 +259,9 @@ def translate(code, xdict, parameters=None, fallback=True):
 
     family = pywikibot.default_family
     # If a site is given instead of a code, use its language
-    if hasattr(code, 'lang'):
+    if hasattr(code, 'code'):
         family = code.family.name
-        code = code.lang
+        code = code.code
 
     # Check whether xdict has multiple projects
     if type(xdict) == dict:
@@ -337,8 +339,8 @@ def twtranslate(code, twtitle, parameters=None):
 
     code_needed = False
     # If a site is given instead of a code, use its language
-    if hasattr(code, 'lang'):
-        lang = code.lang
+    if hasattr(code, 'code'):
+        lang = code.code
     # check whether we need the language code back
     elif type(code) == list:
         lang = code.pop()
@@ -363,7 +365,7 @@ def twtranslate(code, twtitle, parameters=None):
                 break
             except KeyError:
                 continue
-        if not trans:
+        if trans is None:
             raise TranslationError("No English translation has been defined "
                                    "for TranslateWiki key %r" % twtitle)
     # send the language code back via the given list
@@ -402,11 +404,11 @@ def twntranslate(code, twtitle, parameters=None):
         },
         'nl': {
             # format sting inside PLURAL tag is allowed
-            'test-changing': u'Bot: Endrer {{PLURAL:num|1 pagina|%(num)d pagina\'s}}.',
+            'test-changing': u'Bot: Pas {{PLURAL:num|1 pagina|%(num)d pagina\'s}} aan.',
         },
         'fr': {
             # additional sting inside or outside PLURAL tag is allowed
-            'test-changing': u'Robot: Changer %(descr)s {{PLURAL:num|une page|un peu pages}}.',
+            'test-changing': u'Robot: Changer %(descr)s {{PLURAL:num|une page|quelques pages}}.',
         },
     }
     #use a number
@@ -419,11 +421,11 @@ def twntranslate(code, twtitle, parameters=None):
     >>> i18n.twntranslate('en', 'test-changing', {'num':2})
     Bot: Changing 2 pages.
     #use additional format strings
-    >>> i18n.twntranslate('fr', 'test-changing', {'num':1, 'descr':'seulement'})
-    Bot: Changer seulement une pages.
+    >>> i18n.twntranslate('fr', 'test-changing', {'num': 1, 'descr': 'seulement'})
+    Robot: Changer seulement une pages.
     #use format strings also outside
-    >>> i18n.twntranslate('fr', 'test-changing', 0) % {'descr':'seulement'}
-    Bot: Changer seulement un peu pages.
+    >>> i18n.twntranslate('fr', 'test-changing', 10) % {'descr': 'seulement'}
+    Robot: Changer seulement quelques pages.
 
     The translations are retrieved from i18n.<package>, based on the callers
     import table.
@@ -433,8 +435,8 @@ def twntranslate(code, twtitle, parameters=None):
     if type(parameters) == dict:
         param = parameters
     # If a site is given instead of a code, use its language
-    if hasattr(code, 'lang'):
-        code = code.lang
+    if hasattr(code, 'code'):
+        code = code.code
     # we send the code via list and get the alternate code back
     code = [code]
     trans = twtranslate(code, twtitle, None)
@@ -492,8 +494,8 @@ def twhas_key(code, twtitle):
     package = twtitle.split("-")[0]
     transdict = getattr(__import__("i18n", {}, {}, [package]), package).msg
     # If a site is given instead of a code, use its language
-    if hasattr(code, 'lang'):
-        code = code.lang
+    if hasattr(code, 'code'):
+        code = code.code
     return code in transdict and twtitle in transdict[code]
 
 
