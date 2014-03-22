@@ -990,14 +990,12 @@ class GoogleSearchPageGenerator:
                     continue
 
             for result in data.results:
-                #print 'DBG: ', result.URL
                 yield result.URL
             # give an estimate of pages to work on, but only once.
             if not estimatedTotalResultsCount:
                 pywikibot.output(u'Estimated total result count: %i pages.'
                                  % data.meta.estimatedTotalResultsCount)
             estimatedTotalResultsCount = data.meta.estimatedTotalResultsCount
-            #print 'estimatedTotalResultsCount: ', estimatedTotalResultsCount
             offset += 10
 
     def __iter__(self):
@@ -1029,11 +1027,9 @@ def MySQLPageGenerator(query, site=None):
     while True:
         try:
             namespaceNumber, pageName = cursor.fetchone()
-            print namespaceNumber, pageName
         except TypeError:
             # Limit reached or no more results
             break
-        #print pageName
         if pageName:
             namespace = site.namespace(namespaceNumber)
             pageName = unicode(pageName, site.encoding())
