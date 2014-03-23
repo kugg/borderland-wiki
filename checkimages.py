@@ -511,18 +511,18 @@ duplicatesRegex = {
 # Category with the licenses and / or with subcategories with the other
 # licenses.
 category_with_licenses = {
-    'commons': 'Category:License tags',
-    'ar': 'تصنيف:قوالب حقوق الصور',
-    'de': 'Kategorie:Vorlage:Lizenz für Bilder',
-    'en': 'Category:Wikipedia image copyright templates',
+    'commons': u'Category:License tags',
+    'ar': u'تصنيف:قوالب حقوق الصور',
+    'de': u'Kategorie:Vorlage:Lizenz für Bilder',
+    'en': u'Category:Wikipedia image copyright templates',
     'fa': u'رده:الگو:حق تکثیر پرونده',
-    'ga': 'Catagóir:Clibeanna cóipchirt d\'íomhánna',
-    'it': 'Categoria:Template Licenze copyright',
-    'ja': 'Category:画像の著作権表示テンプレート',
-    'ko': '분류:위키백과 그림 저작권 틀',
-    'ta': 'Category:காப்புரிமை வார்ப்புருக்கள்',
+    'ga': u'Catagóir:Clibeanna cóipchirt d\'íomhánna',
+    'it': u'Categoria:Template Licenze copyright',
+    'ja': u'Category:画像の著作権表示テンプレート',
+    'ko': u'분류:위키백과 그림 저작권 틀',
+    'ta': u'Category:காப்புரிமை வார்ப்புருக்கள்',
     'ur': u'زمرہ:ویکیپیڈیا سانچہ جات حقوق تصاویر',
-    'zh': 'Category:版權申告模板',
+    'zh': u'Category:版權申告模板',
 }
 
 # Page where is stored the message to send as email to the users
