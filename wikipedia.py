@@ -2528,6 +2528,9 @@ class Page(object):
                     # using status code
                     #
                     return 302, response.msg, data['edit']
+                if data['edit']['result'] == u"Failure":
+                    if u'spamblacklist' in data['edit']:
+                        raise SpamfilterError(data['edit'][u'spamblacklist'])
 
             solve = self.site().solveCaptcha(data)
             if solve:
