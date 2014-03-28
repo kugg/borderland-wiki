@@ -79,6 +79,30 @@ def getversiondict():
     return cache
 
 
+def getversion_git_windows(hsh, path=None):
+    _program_dir = path or _get_program_dir()
+    rev = None
+    try:
+        rev = open(os.path.join(_program_dir, 'cache/git'), 'r').read().split("|")[0]
+        date = open(os.path.join(_program_dir, 'cache/git'), 'r').read().split("|")[1]
+        date = time.strptime(date, "%Y-%m-%d %H:%M:%S")
+    except IOError:
+        #the code can be found in https://tools.wmflabs.org/pywikibot/gitlog.py
+        url = "https://tools.wmflabs.org/pywikibot/gitlog.txt"
+        print "Retreving commit log from %s" % url
+        ff = urllib.urlopen(url).read().splitlines()
+        for line in ff:
+            if hsh in line:
+                rev = line.split("|")[2]
+                date = line.split("|")[0]
+                open(os.path.join(_program_dir, 'cache/git'), 'w').write(rev+u"|"+date)
+                date = time.strptime(date, "%Y-%m-%d %H:%M:%S")
+                return rev, date
+    if not rev:
+        return "(unknown)", time.strptime("2000-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+    return rev, date
+
+
 def getversion_svn(path=None):
     import httplib
     import xml.dom.minidom
@@ -129,33 +153,43 @@ order by revision desc, changed_date desc""")
 def getversion_git(path=None):
     _program_dir = path or _get_program_dir()
     cmd = 'git'
+    rev = None
+    date = None
     try:
         subprocess.Popen([cmd], stdout=subprocess.PIPE).communicate()
     except WindowsError:
         # some windows git versions provide git.cmd instead of git.exe
         cmd = 'git.cmd'
-
+        try:
+            subprocess.Popen([cmd], stdout=subprocess.PIPE).communicate()
+        except:
+            #Means git hasn't been installed, no way to get the date, retreving date from gitblit
+            hsh = open(os.path.join(_program_dir, '.git/refs/heads/master'), 'r').read().strip(" \n")
+            rev, date = getversion_git_windows(hsh, path)
     tag = open(os.path.join(_program_dir, '.git/config'), 'r').read()
     s = tag.find('url = ', tag.find('[remote "origin"]'))
     e = tag.find('\n', s)
     tag = tag[(s + 6):e]
     t = tag.strip().split('/')
     tag = '[%s] %s' % (t[0][:-1], '-'.join(t[3:]))
-    info = subprocess.Popen([cmd, '--no-pager',
-                             'log', '-1',
-                             '--pretty=format:"%ad|%an|%h|%H|%d"'
-                             '--abbrev-commit',
-                             '--date=iso'],
-                            cwd=_program_dir,
-                            stdout=subprocess.PIPE).stdout.read()
-    info = info.split('|')
-    date = info[0][:-6]
-    date = time.strptime(date.strip('"'), '%Y-%m-%d %H:%M:%S')
-    rev = subprocess.Popen([cmd, 'rev-list', 'HEAD'],
-                           cwd=_program_dir,
-                           stdout=subprocess.PIPE).stdout.read()
-    rev = 'g%s' % len(rev.splitlines())
-    hsh = info[3]  # also stored in '.git/refs/heads/master'
+    if not date:
+        info = subprocess.Popen(
+            [cmd, '--no-pager', 'log', '-1',
+                                   '--pretty=format:"%ad|%an|%h|%H|%d"'
+                                   '--abbrev-commit',
+                                   '--date=iso'],
+            cwd=_program_dir,
+            stdout=subprocess.PIPE).stdout.read()
+        info = info.split('|')
+        date = info[0][:-6]
+        date = time.strptime(date.strip('"'), '%Y-%m-%d %H:%M:%S')
+        hsh = info[3]  # also stored in '.git/refs/heads/master'
+    if not rev:
+        rev = subprocess.Popen(
+            [cmd, 'rev-list', 'HEAD'],
+            cwd=_program_dir,
+            stdout=subprocess.PIPE).stdout.read()
+        rev = 'g%s' % len(rev.splitlines())
     if (not date or not tag or not rev) and not path:
         raise ParseError
     return (tag, rev, date, hsh)
