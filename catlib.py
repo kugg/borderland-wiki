@@ -581,7 +581,7 @@ def remove_cfd_templates(cfdTemplates, pageText):
         matchcfd = re.compile(r"{{%s.*?}}" % regexName, re.IGNORECASE)
         pageText = matchcfd.sub('', pageText)
         matchcomment = re.compile(
-            r"<!--BEGIN CFD TEMPLATE-->.*<!--END CFD TEMPLATE-->",
+            r"<!--\s*?BEGIN CFD TEMPLATE\s*?-->.*?<!--\s*?END CFD TEMPLATE\s*?-->",
             re.IGNORECASE | re.MULTILINE | re.DOTALL)
         pageText = matchcomment.sub('', pageText)
         pos = 0
