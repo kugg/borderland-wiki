@@ -138,7 +138,7 @@ def request(site, uri, retry=None, sysop=False, data=None, compress=True,
                 raise PageNotFound(
                     u'Page %s could not be retrieved. Check your virus wall.'
                     % url)
-            elif e.code == 504:
+            elif e.code in [500, 502, 504]:
                 pywikibot.output(u'HTTPError: %s %s' % (e.code, e.msg))
                 if retry:
                     retry_attempt += 1
