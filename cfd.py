@@ -17,9 +17,6 @@ import wikipedia as pywikibot
 import re
 import category
 
-# The location of the CFD working page.
-cfdPage = 'Wikipedia:Categories for discussion/Working'
-
 # A list of templates that are used on category pages as part of the CFD
 # process that contain information such as the link to the per-day discussion
 # page.
@@ -60,8 +57,17 @@ class ReCheck:
         return self.result
 
 
-def main():
-    pywikibot.handleArgs()
+def main(*args):
+    # The location of the CFD working page.
+    cfdPage = 'Wikipedia:Categories for discussion/Working'
+    for arg in pywikibot.handleArgs(*args):
+        # Use a non-default CFD working page if one is specified from the command-line using -page.
+        if arg.startswith('-page'):
+            if len(arg) == len('-page'):
+                cfdPage = pywikibot.input(
+                    u'Enter the CFD working page to use:')
+            else:
+                cfdPage = arg[len('-page:'):].replace('_', ' ')
 
     page = pywikibot.Page(pywikibot.getSite(), cfdPage)
 
