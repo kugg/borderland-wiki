@@ -36,6 +36,11 @@ These command line parameters can be used to specify which pages to work on:
 -namespace   Only process templates in the namespace with the given number or
              name. This parameter may be used multiple times.
 
+-xml         Should be used instead of a simple page fetching method from
+             pagegenerators.py for performance and load issues
+
+-xmlstart    Page to start with when using an XML dump
+
 -ignore      HTTP return codes to ignore. Can be provided several times :
                 -ignore:401 -ignore:500
 
@@ -109,6 +114,7 @@ import pywikibot
 from pywikibot import i18n
 import config
 import pagegenerators
+import xmlreader
 import pywikibot.weblib
 
 docuReplacements = {
@@ -173,6 +179,47 @@ def weblinksIn(text, withoutBracketed=False, onlyBracketed=False):
             yield m.group('url')
         else:
             yield m.group('urlb')
+
+
+class XmlDumpPageGenerator:
+    """Xml generator that yiels pages containing a web link"""
+
+    def __init__(self, xmlFilename, xmlStart, namespaces):
+        self.xmlStart = xmlStart
+        self.namespaces = namespaces
+        self.skipping = bool(xmlStart)
+        self.site = pywikibot.getSite()
+
+        dump = xmlreader.XmlDump(xmlFilename)
+        self.parser = dump.parse()
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        try:
+            for entry in self.parser:
+                if self.skipping:
+                    if entry.title != self.xmlStart:
+                        continue
+                    self.skipping = False
+                page = pywikibot.Page(self.site, entry.title)
+                if not self.namespaces == []:
+                    if page.namespace() not in self.namespaces:
+                        continue
+                found = False
+                for url in weblinksIn(entry.text):
+                    found = True
+                if found:
+                    return page
+        except KeyboardInterrupt:
+            try:
+                if not self.skipping:
+                    pywikibot.output(
+                        u'To resume, use "-xmlstart:%s" on the command line.'
+                        % entry.title)
+            except NameError:
+                pass
 
 
 class LinkChecker(object):
@@ -754,6 +801,7 @@ def check(url):
 def main():
     gen = None
     singlePageTitle = []
+    xmlFilename = None
     # Which namespaces should be processed?
     # default to [] which means all namespaces will be processed
     namespaces = []
@@ -780,6 +828,17 @@ def main():
             HTTPignore.append(int(arg[8:]))
         elif arg.startswith('-day:'):
             day = int(arg[5:])
+        elif arg.startswith('-xmlstart'):
+            if len(arg) == 9:
+                xmlStart = pywikibot.input(
+                    u'Please enter the dumped article to start with:')
+            else:
+                xmlStart = arg[10:]
+        elif arg.startswith('-xml'):
+            if len(arg) == 4:
+                xmlFilename = i18n.input('pywikibot-enter-xml-filename')
+            else:
+                xmlFilename = arg[5:]
         else:
             if not genFactory.handleArg(arg):
                 singlePageTitle.append(arg)
@@ -788,6 +847,13 @@ def main():
         singlePageTitle = ' '.join(singlePageTitle)
         page = pywikibot.Page(pywikibot.getSite(), singlePageTitle)
         gen = iter([page])
+
+    if xmlFilename:
+        try:
+            xmlStart
+        except NameError:
+            xmlStart = None
+        gen = XmlDumpPageGenerator(xmlFilename, xmlStart, namespaces)
 
     if not gen:
         gen = genFactory.getCombinedGenerator()
