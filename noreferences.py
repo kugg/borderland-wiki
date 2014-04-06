@@ -359,7 +359,7 @@ referencesTemplates = {
                u'فهرست منابع'],
         'fi': [u'Viitteet', u'Reflist'],
         'fr': [u'Références', u'Notes', u'References', u'Reflist'],
-        'he': [u'הערה', u'הערות שוליים'],
+        'he': [u'הערות שוליים', u'הערה'],
         'hsb': [u'Referency'],
         'hu': [u'reflist', u'források', u'references', u'megjegyzések'],
         'is': [u'reflist'],
