@@ -119,6 +119,12 @@ placeBeforeSections = {
         u'Voir aussi',
         u'Notes'
     ],
+    'he': [
+        u'ראו גם',
+        u'לקריאה נוספת',
+        u'קישורים חיצוניים',
+        u'הערות שוליים',
+    ],
     'hsb': [
         u'Nóžki',
     ],
@@ -353,6 +359,7 @@ referencesTemplates = {
                u'فهرست منابع'],
         'fi': [u'Viitteet', u'Reflist'],
         'fr': [u'Références', u'Notes', u'References', u'Reflist'],
+        'he': [u'הערה'],
         'hsb': [u'Referency'],
         'hu': [u'reflist', u'források', u'references', u'megjegyzések'],
         'is': [u'reflist'],
@@ -385,6 +392,7 @@ referencesSubstitute = {
         'dsb': u'{{referency}}',
         'fa': u'{{پانویس}}',
         'fi': u'{{viitteet}}',
+        'he': u'{{הערה}}',
         'hsb': u'{{referency}}',
         'hu': u'{{Források}}',
         'pl': u'{{Przypisy}}',
