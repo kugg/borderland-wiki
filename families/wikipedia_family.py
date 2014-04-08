@@ -446,7 +446,7 @@ class Family(family.WikimediaFamily):
             'gl': u'Conversa Wikipedia',
             'glk': u'بحث Wikipedia',
             'gn': u'Vikipetã myangekõi',
-            'got': u'𐌸𐌹𐍃 Wikipedia 𐌲𐌰𐍅𐌰𐌿𐍂𐌳𐌾𐌰',
+            'got': u'??? Wikipedia ?????????',
             'gu': u'વિકિપીડિયા ચર્ચા',
             'gv': u'Resooney Wikipedia',
             'ha': u'Wikipedia talk',
@@ -1053,6 +1053,14 @@ class Family(family.WikimediaFamily):
             'nl': u'Overleg onderwijsprogramma',
             'pt': u'Ensino Discussão',
             'sv': u'Education Program talk',
+        }
+
+        self.namespaces[460] = {
+            'ro': u'Campaign'
+        }
+
+        self.namespaces[461] = {
+            'ro': u'Campaign talk'
         }
 
         self.namespaces[710] = {
