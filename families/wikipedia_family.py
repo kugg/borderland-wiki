@@ -56,7 +56,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['hi'] = [u'सदस्य वार्ता', u'UT', u'सवा']
         self.namespaces[10]['hi'] = [u'साँचा', u'सा', u'T']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता', u'सावा']
-        self.namespaces[14]['hi'] = [u'श्रेणी', u'श्र', u'C']
+        self.namespaces[14]['hi'] = [u'श्रेणी', u'श्र']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता', u'श्रवा', u'CT']
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
@@ -692,7 +692,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Portail',
             'gl': u'Portal',
             'he': u'פורטל',
-            'hi': u'प्रवेशद्वार',
+            'hi': [u'प्रवेशद्वार', u'P', u'प्र'],
             'hr': u'Portal',
             'hu': u'Portál',
             'hy': u'Պորտալ',
