@@ -4683,6 +4683,7 @@ class WikimediaFamily(Family):
             'bar': u'Modul',
             'be': u'Модуль',
             'be-x-old': u'Модуль',
+            'bg': u'Модул',
             'bjn': u'Modul',
             'bn': u'মডিউল',
             'bpy': u'মডিউল',
@@ -4812,6 +4813,7 @@ class WikimediaFamily(Family):
             'bar': u'Modul Diskussion',
             'be': u'Размовы пра модуль',
             'be-x-old': u'Абмеркаваньне модулю',
+            'bg': u'Модул беседа',
             'bjn': u'Pembicaraan Modul',
             'bm': u'Discussion module',
             'bn': u'মডিউল আলাপ',
@@ -4954,7 +4956,7 @@ class WikimediaFamily(Family):
         """Return Wikimedia projects version number as a string."""
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
-        return '1.23wmf20'
+        return '1.23wmf22'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
