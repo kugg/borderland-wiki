@@ -270,7 +270,8 @@ class SumDiscBot(basic.AutoBasicBot):
 
         # modification of timezone to be in sync with wiki
         os.environ['TZ'] = 'Europe/Amsterdam'
-        time.tzset()
+        if hasattr(time, "tzset"):
+            time.tzset()
         pywikibot.output(u'Setting process TimeZone (TZ): %s' % str(time.tzname))    # ('CET', 'CEST')
 
         # init constants
@@ -283,7 +284,10 @@ class SumDiscBot(basic.AutoBasicBot):
         lang = locale.locale_alias.get(self.site.lang,
                                        locale.locale_alias['en']).split('.')[0]
         # use e.g. 'de_DE.UTF-8', 'de_DE.utf8' (thus no decode('latin-1') anymore!)
-        locale.setlocale(locale.LC_TIME, lang + '.UTF-8')
+        try:
+            locale.setlocale(locale.LC_TIME, lang + '.UTF-8')
+        except locale.Error:
+            pass
 
         # init constants
         self._userListPage = pywikibot.Page(self.site, bot_config['userlist'])
@@ -514,7 +518,10 @@ class SumDiscBot(basic.AutoBasicBot):
         # (wenn nötig smooth update: alle keys mit namen '_list' einzeln updaten, dann werden sie ergänzt statt überschrieben)
         self._param.update(user.param)
         # re-add defaults to lists in self._param else they are overwritten
-        for key in bot_config['default_keep']:
+        keep = self._param['default_keep'] \
+               if 'default_keep' in self._param \
+               else bot_config['default_keep']
+        for key in keep:
             if key in user.param:
                 self._param[key] += copy.deepcopy(self._param_default[key])
         self._param['ignorepage_list'].append(self._userPage.title())  # disc-seite von user IMMER ausschliessen
