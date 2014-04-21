@@ -82,23 +82,21 @@ To complete a move of a page, one can use:
 # (C) Daniel Herding, 2004
 # (C) Andre Engels, 2003-2004
 # (C) WikiWichtel, 2004
-# (C) Pywikibot team, 2003-2013
-#
-__version__ = '$Id$'
+# (C) Pywikibot team, 2003-2014
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
+#
 
-
-# Standard library imports
 import re
 import sys
 import codecs
 
-# Application specific imports
 import wikipedia as pywikibot
 import editarticle
 import pagegenerators
+from pywikibot import config
 from pywikibot import i18n
 # Summary message when working on disambiguation pages
 msg = 'solve_disambiguation-links-resolved'
@@ -146,6 +144,7 @@ primary_topic_format = {
     'no': u'%s_(peker)',
     'pl': u'%s_(ujednoznacznienie)',
     'pt': u'%s_(desambiguação)',
+    'pfl': u'%s_BKL',
     'he': u'%s_(פירושונים)',
     'ru': u'%s_(значения)',
     'sr': u'%s_(вишезначна одредница)',
@@ -372,7 +371,7 @@ ignore_title = {
 
 
 def firstcap(string):
-    return string[0].upper()+string[1:]
+    return string[0].upper() + string[1:]
 
 
 def correctcap(link, text):
@@ -387,13 +386,15 @@ def correctcap(link, text):
 
 
 def firstlinks(page):
-    #Returns a list of first links of every line beginning with *
-    #When a disambpage is full of unnecessary links, this may be useful
-    #to sort out the relevant links. E.g. from line
-    #*[[Jim Smith (smith)|Jim Smith]] ([[1832]]-[[1932]]) [[English]] [[smith]]
-    #it returns only 'Jim Smith (smith)'
-    #Lines without an asterisk at the beginning will be disregarded.
-    #No check for page existence, it has already been done.
+    """Return a list of first links of every line beginning with *
+    When a disambpage is full of unnecessary links, this may be useful
+    to sort out the relevant links. E.g. from line
+    *[[Jim Smith (smith)|Jim Smith]] ([[1832]]-[[1932]]) [[English]] [[smith]]
+    it returns only 'Jim Smith (smith)'
+    Lines without an asterisk at the beginning will be disregarded.
+    No check for page existence, it has already been done.
+
+    """
     list = []
     reg = re.compile(r'\*.*?\[\[(.*?)(\||\]\])')
     for line in page.get().splitlines():
@@ -438,8 +439,9 @@ class PrimaryIgnoreManager(object):
         self.enabled = enabled
 
         self.ignorelist = []
-        filename = pywikibot.config.datafilepath(
-            'disambiguations', self.disambPage.titleForFilename() + '.txt')
+        filename = config.datafilepath(
+            'disambiguations',
+            self.disambPage.titleForFilename() + '.txt')
         try:
             # The file is stored in the disambiguation/ subdir.
             # Create if necessary.
@@ -461,8 +463,9 @@ class PrimaryIgnoreManager(object):
     def ignore(self, refPage):
         if self.enabled:
             # Skip this occurence next time.
-            filename = pywikibot.config.datafilepath(
-                'disambiguations', self.disambPage.urlname() + '.txt')
+            filename = config.datafilepath(
+                'disambiguations',
+                self.disambPage.urlname() + '.txt')
             try:
                 # Open file for appending. If none exists yet, create a new one.
                 f = codecs.open(filename, 'a', 'utf-8')
@@ -610,7 +613,7 @@ class DisambiguationRobot(object):
                                  % (self.mysite.redirect(default=True), target)
                     try:
                         refPage.put_async(redir_text, comment=self.comment)
-                    except pywikibot.PageNotSaved, error:
+                    except pywikibot.PageNotSaved as error:
                         pywikibot.output(u'Page not saved: %s' % error.args)
             else:
                 choice = pywikibot.inputChoice(
@@ -685,8 +688,7 @@ class DisambiguationRobot(object):
                     if not self.always:
                         # at the beginning of the link, start red color.
                         # at the end of the link, reset the color to default
-                        pywikibot.output(text[max(0,
-                                                  m.start() - context):
+                        pywikibot.output(text[max(0, m.start() - context):
                                               m.start()]
                                          + '\03{lightred}'
                                          + text[m.start():m.end()]
@@ -725,7 +727,7 @@ u"        [m]ore context, show [d]isambiguation page, [l]ist, [a]dd new):")
                                 jumpIndex=m.start(),
                                 highlight=disambredir.title())
                         else:
-                            disambigText = editor.edit(
+                            editor.edit(
                                 disambPage.get(),
                                 jumpIndex=m.start(),
                                 highlight=disambPage.title())
@@ -787,8 +789,9 @@ u"        [m]ore context, show [d]isambiguation page, [l]ist, [a]dd new):")
                     else:
                         position_split = 0
                     #insert dab needed template
-                    text = text[:m.end() + position_split] + dn_template_str \
-                           + text[m.end() + position_split:]
+                    text = (text[:m.end() + position_split] +
+                            dn_template_str +
+                            text[m.end() + position_split:])
                     dn = True
                     continue
                 elif choice in ['u', 'U']:
@@ -831,8 +834,8 @@ u"        [m]ore context, show [d]isambiguation page, [l]ist, [a]dd new):")
                         new_page_title = repPl.title()
                     else:
                         new_page_title = repPl.title()
-                        new_page_title = new_page_title[0].lower() \
-                                         + new_page_title[1:]
+                        new_page_title = (new_page_title[0].lower() +
+                                          new_page_title[1:])
                     if new_page_title not in new_targets:
                         new_targets.append(new_page_title)
                     if replaceit and trailing_chars:
@@ -844,12 +847,12 @@ u"        [m]ore context, show [d]isambiguation page, [l]ist, [a]dd new):")
                         newlink = "[[%s]]" % new_page_title
                     # check if we can create a link with trailing characters
                     # instead of a pipelink
-                    elif len(new_page_title) <= len(link_text) \
-                         and firstcap(link_text[:len(new_page_title)]) \
-                         == firstcap(new_page_title) \
-                         and re.sub(self.trailR, '',
-                                    link_text[len(new_page_title):]) == '' \
-                         and not section:
+                    elif (
+                        (len(new_page_title) <= len(link_text)) and
+                        (firstcap(link_text[:len(new_page_title)]) == firstcap(new_page_title)) and
+                        (re.sub(self.trailR, '', link_text[len(new_page_title):]) == '') and
+                        (not section)
+                    ):
                         newlink = "[[%s]]%s" \
                                   % (link_text[:len(new_page_title)],
                                      link_text[len(new_page_title):])
@@ -872,7 +875,7 @@ u"        [m]ore context, show [d]isambiguation page, [l]ist, [a]dd new):")
                     refPage.put_async(text, comment=self.comment)
                 except pywikibot.LockedPage:
                     pywikibot.output(u'Page not saved: page is locked')
-                except pywikibot.PageNotSaved, error:
+                except pywikibot.PageNotSaved as error:
                     pywikibot.output(u'Page not saved: %s' % error.args)
         return True
 
@@ -1067,7 +1070,6 @@ def main(*args):
     first_only = False
 
     # For sorting the linked pages, case can be ignored
-    ignoreCase = False
     minimum = 0
 
     for arg in pywikibot.handleArgs(*args):
@@ -1122,10 +1124,10 @@ def main(*args):
                 generator = pagegenerators.NamespaceFilterPageGenerator(
                     generator, [0])
             except pywikibot.NoPage:
-                print "Disambiguation category for your wiki is not known."
+                pywikibot.output("Disambiguation category for your wiki is not known.")
                 raise
         elif arg.startswith("-"):
-            print "Unrecognized command line argument: %s" % arg
+            pywikibot.output("Unrecognized command line argument: %s" % arg)
             # show help text and exit
             pywikibot.showHelp()
         else:
