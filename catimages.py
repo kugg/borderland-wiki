@@ -864,7 +864,7 @@ class _JpegFile(_UnknownFile):
         rvec, tvec = cv2.solvePnP(np.array(D3points).astype('float32'),
                                   np.array(D2points).astype('float32'),
                                   np.array(cameraMatrix).astype('float32'),
-                                  None)
+                                  None)[-2:]
 
         # compare to 2D points
         err = []
