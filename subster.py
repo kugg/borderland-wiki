@@ -13,6 +13,15 @@ following code was used in file '$HOME/.forward+subster':
 --- --- --- --- --- --- --- --- --- ---
 in order to enable mail (mbox style) storage in given file for address:
 drtrigon+subster@toolserver.org
+On tool labs the following code was used in file '$HOME/.forward.subster':
+--- --- --- --- --- --- --- --- --- ---
+|jmail cat >> ~/data/subster/mail_inbox
+--- --- --- --- --- --- --- --- --- ---
+in order to enable mail (mbox style) storage in given file for address:
+drtrigonbot.subster@tools.wmflabs.org
+For some tips how to configure the forward consult:
+https://bugzilla.wikimedia.org/show_bug.cgi?id=63702
+https://wikitech.wikimedia.org/wiki/DrTrigonBot#Setup_drtrigonbot (fabfile.py)
 
 Other scripts and tools related to this bot are:
 - subster_irc.py            IRC Robot
