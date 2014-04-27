@@ -19,6 +19,18 @@ class Family(family.WikimediaFamily):
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[1]['beta'] = [u'Talk', u'Aptarimas']
+        self.namespaces[2]['beta'] = [u'User', u'Naudotojas']
+        self.namespaces[3]['beta'] = [u'User talk', u'Naudotojo aptarimas']
+        self.namespaces[6]['beta'] = [u'File', u'Vaizdas']
+        self.namespaces[7]['beta'] = [u'File talk', u'Vaizdo aptarimas']
+        self.namespaces[9]['beta'] = [u'MediaWiki talk', u'MediaWiki aptarimas']
+        self.namespaces[10]['beta'] = [u'Template', u'Šablonas']
+        self.namespaces[11]['beta'] = [u'Template talk', u'Šablono aptarimas']
+        self.namespaces[12]['beta'] = [u'Help', u'Pagalba']
+        self.namespaces[13]['beta'] = [u'Help talk', u'Pagalbos aptarimas']
+        self.namespaces[14]['beta'] = [u'Category', u'Kategorija']
+        self.namespaces[15]['beta'] = [u'Category talk', u'Kategorijos aptarimas']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
         self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur', u'Discussion utilisatrice']
@@ -35,7 +47,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[4] = {
             '_default': self.namespaces[4]['_default'],
             'ar': [u'ويكي الجامعة', u'Wikiversity', u'وج'],
-            'beta': u'Wikiversity',
+            'beta': [u'Wikiversity', u'Vikiversitetas'],
             'cs': [u'Wikiverzita', u'WV', u'Wikiversity'],
             'de': u'Wikiversity',
             'el': [u'Βικιεπιστήμιο', u'Wikiversity'],
@@ -54,7 +66,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[5] = {
             '_default': self.namespaces[5]['_default'],
             'ar': u'نقاش ويكي الجامعة',
-            'beta': u'Wikiversity talk',
+            'beta': [u'Wikiversity talk', u'Vikiversiteto aptarimas'],
             'cs': [u'Diskuse k Wikiverzitě', u'Wikiversity diskuse', u'Wikiversity talk', u'Wikiverzita diskuse'],
             'de': u'Wikiversity Diskussion',
             'el': [u'Συζήτηση Βικιεπιστημίου', u'Βικιεπιστήμιο συζήτηση'],
