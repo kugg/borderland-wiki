@@ -1072,5 +1072,6 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        catDB.dump()
+        if 'catDB' in globals():
+            catDB.dump()
         pywikibot.stopme()
