@@ -85,7 +85,7 @@ def main():
         pywikibot.getall(mysite, pages)
         for p in pages:
             text = p.get()
-            if not spamSite in text:
+            if spamSite not in text:
                 continue
             # Show the title of the page we're working on.
             # Highlight the title in purple.

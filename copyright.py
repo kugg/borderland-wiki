@@ -436,7 +436,7 @@ class URLExclusion:
     def sanity_check(self):
         print "Exclusion list sanity check..."
         for entry in self.URLlist:
-            if (not '.' in entry and not '/' in entry) or len(entry) < 5:
+            if ('.' not in entry and '/' not in entry) or len(entry) < 5:
                 print "** " + entry
 
     def dump(self):
@@ -613,7 +613,7 @@ def n_index(text, n, sep):
 
 
 def mysplit(text, dim, sep):
-    if not sep in text:
+    if sep not in text:
         return [text]
     t = text
     l = list()

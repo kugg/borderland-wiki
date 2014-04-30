@@ -132,7 +132,7 @@ def main():
                     if force:
                         change = 'y'
                     else:
-                        while not change in ['y', 'n']:
+                        while change not in ['y', 'n']:
                             pywikibot.output(
                                 u"Create redirect %s" %
                                 pl.title().replace("%2C",

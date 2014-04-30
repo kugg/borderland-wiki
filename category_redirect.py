@@ -209,7 +209,7 @@ class CategoryRedirectBot(object):
         querydata = {'action': 'query',
                      'maxlag': str(pywikibot.config.maxlag)}
         querydata = query.CombineParams(querydata, data)
-        if not "action" in querydata or not querydata['action'] == 'query':
+        if "action" not in querydata or querydata['action'] != 'query':
             raise ValueError(
                 "query_results: 'action' set to value other than 'query'")
         waited = 0

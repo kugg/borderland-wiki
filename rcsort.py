@@ -47,7 +47,7 @@ else:
 for element in form:
     if element != 'newbies':
         path += '&%s=%s' % (element, form[element].value)
-if not 'limit' in form:
+if 'limit' not in form:
     path += '&limit=1000'
 
 text = mysite.getUrl(path)

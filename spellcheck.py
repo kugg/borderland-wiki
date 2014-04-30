@@ -423,7 +423,7 @@ class Word(object):
         knownwords[self.word] = self.word
 
     def declare_alternative(self, alt):
-        if not alt in knownwords[self.word]:
+        if alt not in knownwords[self.word]:
             knownwords[self.word].append(word)
             newwords.append(self.word)
         return self.alternatives
@@ -505,7 +505,7 @@ try:
                     word = line[1]
                     knownwords[word] = line[2:]
                     for word2 in line[2:]:
-                        if not '_' in word2:
+                        if '_' not in word2:
                             knownwords[word2] = word2
         f.close()
     except IOError:
