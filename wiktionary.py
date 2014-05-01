@@ -678,7 +678,7 @@ class Entry:
         self.meanings.setdefault(term.pos, []).append(meaning)
         # we only need each part of speech once in our list where we keep track
         # of the order
-        if not term.pos in self.posorder:
+        if term.pos not in self.posorder:
             self.posorder.append(term.pos)
 
     def getMeanings(self):

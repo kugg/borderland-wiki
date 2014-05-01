@@ -155,12 +155,12 @@ class Category(pywikibot.Page):
                                                  sortdir, endsort):
                 if tag == ARTICLE:
                     self.articleCache.append(page)
-                    if not page in cache:
+                    if page not in cache:
                         cache.append(page)
                         yield ARTICLE, page
                 elif tag == SUBCATEGORY:
                     self.subcatCache.append(page)
-                    if not page in cache:
+                    if page not in cache:
                         cache.append(page)
                         yield SUBCATEGORY, page
                         if recurse:
@@ -594,7 +594,7 @@ def remove_cfd_templates(cfdTemplates, pageText):
 def add_category(article, category, comment=None, createEmptyPages=False):
     """Given an article and a category, adds the article to the category."""
     cats = article.categories(get_redirect=True)
-    if not category in cats:
+    if category not in cats:
         cats.append(category)
         try:
             text = article.get()

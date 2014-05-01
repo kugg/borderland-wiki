@@ -178,7 +178,7 @@ def put_stats():
 
 def output_files_gen():
     for f in os.listdir(appdir):
-        if 'output' in f and not '_pending' in f:
+        if 'output' in f and '_pending' not in f:
             m = re.search('output_(.*?)\.txt', f)
             if m:
                 tag = m.group(1)

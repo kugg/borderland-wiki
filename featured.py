@@ -461,9 +461,9 @@ def getTemplateList(lang, pType):
 
 
 def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet):
-    if not fromsite.lang in cache:
+    if fromsite.lang not in cache:
         cache[fromsite.lang] = {}
-    if not tosite.lang in cache[fromsite.lang]:
+    if tosite.lang not in cache[fromsite.lang]:
         cache[fromsite.lang][tosite.lang] = {}
     cc = cache[fromsite.lang][tosite.lang]
     if nocache:

@@ -41,7 +41,7 @@ def listchoice(clist=[], message=None, default=None):
         except ValueError:
             pass
         if isinstance(choice, basestring):
-            if not choice in clist:
+            if choice not in clist:
                 print("Invalid response")
             else:
                 return choice
@@ -185,5 +185,5 @@ if __name__ == "__main__":
     if choice == "3":
         create_user_config('')
         create_user_fixes('')
-    if not choice in "123":
+    if choice not in "123":
         print("Nothing to do")

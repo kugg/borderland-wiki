@@ -191,11 +191,11 @@ def JSONTree(metadata, fieldlist, record):
             metadata = JSONTree(metadata, fieldlist + [k], v)
     elif type(record) == unicode:
         key = u'_'.join(fieldlist)
-        if not key in metadata:
+        if key not in metadata:
             metadata[key] = record
         else:
             newkey = key + u'_2'
-            if not newkey in metadata:
+            if newkey not in metadata:
                 metadata[newkey] = record
     return metadata
 

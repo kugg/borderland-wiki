@@ -843,7 +843,7 @@ class Page(object):
         data = query.GetData(params, self.site(), sysop=sysop)
         if 'error' in data:
             raise RuntimeError("API query error: %s" % data)
-        if not 'pages' in data['query']:
+        if 'pages' not in data['query']:
             raise RuntimeError("API query error, no pages found: %s" % data)
         pageInfo = data['query']['pages'].values()[0]
         if data['query']['pages'].keys()[0] == "-1":
@@ -903,7 +903,7 @@ class Page(object):
         m = self.site().redirectRegex().match(pagetext)
         if m:
             # page text matches the redirect pattern
-            if self.section() and not "#" in m.group(1):
+            if self.section() and "#" not in m.group(1):
                 redirtarget = "%s#%s" % (m.group(1), self.section())
             else:
                 redirtarget = m.group(1)
@@ -1061,7 +1061,7 @@ class Page(object):
         m = self.site().redirectRegex().match(pagetext)
         if m:
             # page text matches the redirect pattern
-            if self.section() and not "#" in m.group(1):
+            if self.section() and "#" not in m.group(1):
                 redirtarget = "%s#%s" % (m.group(1), self.section())
             else:
                 redirtarget = m.group(1)
@@ -1620,7 +1620,7 @@ class Page(object):
             namesofextensions = []
             for extension in extensions:
                 namesofextensions.append(extension['name'])
-            if not u'Disambiguator' in namesofextensions:
+            if u'Disambiguator' not in namesofextensions:
                 return self._isDisambig_disambiguationspage(get_Index)
             else:
                 return self._isDisambig_disambiguator(get_Index)
@@ -2087,7 +2087,7 @@ class Page(object):
             if 'missing' in text[pageid]:
                 self._getexception = NoPage
                 raise NoPage('Page %s does not exist' % self.title(asLink=True))
-            elif not 'pageid' in text[pageid]:
+            elif 'pageid' not in text[pageid]:
                 # Don't know what may happen here.
                 # We may want to have better error handling
                 raise Error("BUG> API problem.")
@@ -4973,7 +4973,7 @@ class DataPage(Page):
             data['query']['pages'].update(data['entities'])
         if 'error' in data:
             raise RuntimeError("API query error: %s" % data)
-        if not 'pages' in data['query']:
+        if 'pages' not in data['query']:
             raise NoPage(self.site(), unicode(self),
                          "API query error, no pages found: %s" % data)
         pageInfo = ndata['query']['pages'].values()[0]
@@ -5029,7 +5029,7 @@ class DataPage(Page):
         m = self.site().redirectRegex().match(pagetext)
         if m:
             # page text matches the redirect pattern
-            if self.section() and not "#" in m.group(1):
+            if self.section() and "#" not in m.group(1):
                 redirtarget = "%s#%s" % (m.group(1), self.section())
             else:
                 redirtarget = m.group(1)
@@ -5660,7 +5660,7 @@ class _GetAll(object):
                     if m:
 ##                        output(u"%s is a redirect" % page2.title(asLink=True))
                         redirectto = m.group(1)
-                        if section and not "#" in redirectto:
+                        if section and "#" not in redirectto:
                             redirectto += "#" + section
                         page2._getexception = IsRedirectPage
                         page2._redirarg = redirectto
@@ -5843,7 +5843,7 @@ class _GetAll(object):
 ##                        output(u"%s is a redirect" % page2.title(asLink=True))
                         m = self.site.redirectRegex().match(text)
                         redirectto = m.group(1)
-                        if section and not "#" in redirectto:
+                        if section and "#" not in redirectto:
                             redirectto += "#" + section
                         page2._getexception = IsRedirectPage
                         page2._redirarg = redirectto
@@ -7244,7 +7244,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         # Get username.
         # The data in anonymous mode had key 'anon'
         # if 'anon' exist, username is IP address, not to collect it right now
-        if not 'anon' in text:
+        if 'anon' not in text:
             self._isLoggedIn[index] = True
             self._userName[index] = text['name']
         else:
@@ -7857,7 +7857,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 raise Error
             for c in result['query']['logevents']:
                 if (not namespace or c['ns'] in namespace) and \
-                   not 'actionhidden' in c.keys():
+                   'actionhidden' not in c.keys():
                     if dump:
                         # dump result only.
                         yield c
@@ -8515,7 +8515,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 raise RuntimeError("API query warning: %s" % warning)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
-            if not 'allpages' in data['query']:
+            if 'allpages' not in data['query']:
                 raise RuntimeError("API query error, no pages found: %s" % data)
             count = 0
             for p in data['query']['allpages']:
@@ -8728,7 +8728,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                         break
                     for pages in data['query']['exturlusage']:
                         count += 1
-                        if not siteurl in pages['title']:
+                        if siteurl not in pages['title']:
                             # the links themselves have similar form
                             if pages['pageid'] not in cache:
                                 cache.append(pages['pageid'])
@@ -8769,7 +8769,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                         #no more page to be fetched for that link
                         break
                     for title in links:
-                        if not siteurl in title:
+                        if siteurl not in title:
                             # the links themselves have similar form
                             if title in cache:
                                 continue
@@ -8799,7 +8799,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
 
         """
         s = s.replace("_", " ").strip(" ").lstrip(":")
-        if not ':' in s:
+        if ':' not in s:
             return False
         first, rest = s.split(':', 1)
         # interwiki codes are case-insensitive
@@ -9507,7 +9507,7 @@ def getSite(code=None, fam=None, user=None, noLogin=False):
         except KeyError:
             user = None
     key = '%s:%s:%s' % (fam, code, user)
-    if not key in _sites:
+    if key not in _sites:
         _sites[key] = Site(code=code, fam=fam, user=user)
     ret = _sites[key]
     if not ret.family.isPublic(code) and not noLogin:

@@ -32,7 +32,7 @@ def splitwarning(folder):
             family = m.group('family')
             code = m.group('code')
             if code in pywikibot.getSite().languages():
-                if not code in files:
+                if code not in files:
                     files[code] = codecs.open(
                         pywikibot.config.datafilepath(
                             folder, 'warning-%s-%s.log' % (family, code)),
