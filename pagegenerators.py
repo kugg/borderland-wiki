@@ -14,7 +14,7 @@ These parameters are supported to specify which pages titles to print:
 &params;
 """
 #
-# (C) Pywikipedia bot team, 2005-2013
+# (C) Pywikibot team, 2005-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -1320,25 +1320,23 @@ class PreloadingGenerator(object):
 
 
 def main(*args):
-    try:
-        genFactory = GeneratorFactory()
-        for arg in pywikibot.handleArgs(*args):
-            if not genFactory.handleArg(arg):
-                pywikibot.showHelp()
-                break
+    genFactory = GeneratorFactory()
+    for arg in pywikibot.handleArgs(*args):
+        if not genFactory.handleArg(arg):
+            pywikibot.showHelp()
+            break
+    else:
+        gen = genFactory.getCombinedGenerator()
+        if gen:
+            for i, page in enumerate(gen, start=1):
+                pywikibot.output("%4d: %s" % (i, page.title()),
+                                 toStdout=True)
         else:
-            gen = genFactory.getCombinedGenerator()
-            if gen:
-                i = 0
-                for page in gen:
-                    i += 1
-                    pywikibot.output("%4d: %s" % (i, page.title()),
-                                     toStdout=True)
-            else:
-                pywikibot.showHelp()
-    finally:
-        pywikibot.stopme()
+            pywikibot.showHelp()
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        pywikibot.stopme()
