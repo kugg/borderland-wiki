@@ -49,18 +49,18 @@ class PyWikiIpRegexCase(PyWikiTestCase):
         self.ipv6test(1, "FF02:0000:0000:0000:0000:0000:0000:0001");
         self.ipv6test(1, "0000:0000:0000:0000:0000:0000:0000:0001");
         self.ipv6test(1, "0000:0000:0000:0000:0000:0000:0000:0000");
-        self.ipv6test(not 1, "02001:0000:1234:0000:0000:C1C0:ABCD:0876");	# extra 0 not allowed! 
-        self.ipv6test(not 1, "2001:0000:1234:0000:00001:C1C0:ABCD:0876");	# extra 0 not allowed! 
-        #self.ipv6test(1, " 2001:0000:1234:0000:0000:C1C0:ABCD:0876");		# leading space
-        #self.ipv6test(1, "2001:0000:1234:0000:0000:C1C0:ABCD:0876");		# trailing space
-        #self.ipv6test(1, " 2001:0000:1234:0000:0000:C1C0:ABCD:0876  ");	# leading and trailing space
-        self.ipv6test(not 1, "2001:0000:1234:0000:0000:C1C0:ABCD:0876  0");	# junk after valid address
-        self.ipv6test(not 1, "2001:0000:1234: 0000:0000:C1C0:ABCD:0876");	# internal space
+        self.ipv6test(not 1, "02001:0000:1234:0000:0000:C1C0:ABCD:0876");       # extra 0 not allowed!
+        self.ipv6test(not 1, "2001:0000:1234:0000:00001:C1C0:ABCD:0876");       # extra 0 not allowed!
+        #self.ipv6test(1, " 2001:0000:1234:0000:0000:C1C0:ABCD:0876");          # leading space
+        #self.ipv6test(1, "2001:0000:1234:0000:0000:C1C0:ABCD:0876");           # trailing space
+        #self.ipv6test(1, " 2001:0000:1234:0000:0000:C1C0:ABCD:0876  ");        # leading and trailing space
+        self.ipv6test(not 1, "2001:0000:1234:0000:0000:C1C0:ABCD:0876  0");     # junk after valid address
+        self.ipv6test(not 1, "2001:0000:1234: 0000:0000:C1C0:ABCD:0876");       # internal space
 
-        self.ipv6test(not 1, "3ffe:0b00:0000:0001:0000:0000:000a");			# seven segments
-        self.ipv6test(not 1, "FF02:0000:0000:0000:0000:0000:0000:0000:0001");	# nine segments
-        self.ipv6test(not 1, "3ffe:b00::1::a");								# double "::"
-        self.ipv6test(not 1, "::1111:2222:3333:4444:5555:6666::");			# double "::"
+        self.ipv6test(not 1, "3ffe:0b00:0000:0001:0000:0000:000a");             # seven segments
+        self.ipv6test(not 1, "FF02:0000:0000:0000:0000:0000:0000:0000:0001");   # nine segments
+        self.ipv6test(not 1, "3ffe:b00::1::a");                                 # double "::"
+        self.ipv6test(not 1, "::1111:2222:3333:4444:5555:6666::");              # double "::"
         self.ipv6test(1, "2::10");
         self.ipv6test(1, "ff02::1");
         self.ipv6test(1, "fe80::");
@@ -96,7 +96,7 @@ class PyWikiIpRegexCase(PyWikiTestCase):
         self.ipv6test(1, "1:2::");
         self.ipv6test(1, "1::");
         self.ipv6test(1, "1:2:3:4:5::7:8");
-        self.ipv6test(not 1, "1:2:3::4:5::7:8");							# Double "::"
+        self.ipv6test(not 1, "1:2:3::4:5::7:8");                           # Double "::"
         self.ipv6test(not 1, "12345::6:7:8");
         self.ipv6test(1, "1:2:3:4::7:8");
         self.ipv6test(1, "1:2:3::7:8");
@@ -165,8 +165,8 @@ class PyWikiIpRegexCase(PyWikiTestCase):
         self.ipv6test(not 1, "::3000.30.30.30");
         self.ipv6test(1, "fe80::217:f2ff:254.7.237.98");
         self.ipv6test(1, "::ffff:192.168.1.26");
-        self.ipv6test(not 1, "2001:1:1:1:1:1:255Z255X255Y255");				# garbage instead of "." in IPv4
-        self.ipv6test(not 1, "::ffff:192x168.1.26");							# ditto
+        self.ipv6test(not 1, "2001:1:1:1:1:1:255Z255X255Y255");                          # garbage instead of "." in IPv4
+        self.ipv6test(not 1, "::ffff:192x168.1.26");                                     # ditto
         self.ipv6test(1, "::ffff:192.168.1.1");
         self.ipv6test(1, "0:0:0:0:0:0:13.1.68.3");# IPv4-compatible IPv6 address, full, deprecated 
         self.ipv6test(1, "0:0:0:0:0:FFFF:129.144.52.38");# IPv4-mapped IPv6 address, full 

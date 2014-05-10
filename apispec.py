@@ -118,19 +118,19 @@ class Blocks(object):
     rangeblocks     List of range blocks
     reguserblocks   List of blocks concerning registered users, not anons
     byadmin         Blocks raised by a given admin
-    user	        Blocks of the given user or single IP (exact match)
+    user            Blocks of the given user or single IP (exact match)
                         (Only direct blocks for the given IP, not range blocks)
-    userfragment	Blocks of the given user or single IP
+    userfragment        Blocks of the given user or single IP
                         You may give any part of the username.
-    userregex	    Blocks of the given user or single IP
+    userregex       Blocks of the given user or single IP
                         Give a regex with r'...' or ur'...'
-    IP	            Blocks of the given single IP or range (max. /16)
+    IP              Blocks of the given single IP or range (max. /16)
                         If you give an IP, this will return also range blocks
                         concerning this IP (not like user()).
-    reason	        Blocks raised with the given reason (exact match)
-    reasonfragment	Blocks raised with the given reason
+    reason          Blocks raised with the given reason (exact match)
+    reasonfragment  Blocks raised with the given reason
                         You may give any part of the reason, e.g. 'andalism'
-    reasonregex	    Blocks raised with the given reason (regex)
+    reasonregex     Blocks raised with the given reason (regex)
     Remarks:    user-like and reason-like methods are case sensitive.
                 Use user() and IP() whenever appropriate. They are much faster
                 and cause less server load!
