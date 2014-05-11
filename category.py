@@ -415,14 +415,12 @@ class CategoryMoveRobot(object):
         site = pywikibot.getSite()
         newCat = catlib.Category(site, self.newCatTitle)
         # set edit summary message
-
         if self.useSummaryForDeletion and self.editSummary:
             reason = self.editSummary
         else:
             reason = i18n.twtranslate(site, 'category-was-moved',
                                       {'newcat': self.newCatTitle,
                                        'title': self.newCatTitle})
-
         if not self.editSummary:
             self.editSummary = i18n.twtranslate(site, 'category-changing',
                                                 {'oldcat': self.oldCat.title(),
@@ -433,7 +431,7 @@ class CategoryMoveRobot(object):
         oldMovedTalk = None
         if self.oldCat.exists() and self.moveCatPage:
             copied = self.oldCat.copyAndKeep(
-                self.newCatTitle, pywikibot.translate(site, cfd_templates))
+                newCat.title(), pywikibot.translate(site, cfd_templates))
             # Also move the talk page
             if copied:
                 oldTalk = self.oldCat.toggleTalkPage()
