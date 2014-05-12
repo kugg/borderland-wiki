@@ -1038,7 +1038,8 @@ class Family(family.WikimediaFamily):
             'mk': u'Образовен програм',
             'nl': u'Onderwijsprogramma',
             'pt': u'Ensino',
-            'sv': u'Education Program',
+            'sv': u'Utbildningsprogram',
+            'uk': u'Education Program',
         }
 
         self.namespaces[447] = {
@@ -1052,7 +1053,8 @@ class Family(family.WikimediaFamily):
             'mk': u'Разговор за Образовен програм',
             'nl': u'Overleg onderwijsprogramma',
             'pt': u'Ensino Discussão',
-            'sv': u'Education Program talk',
+            'sv': u'Utbildningsprogramsdiskussion',
+            'uk': u'Education Program talk',
         }
 
         self.namespaces[460] = {
