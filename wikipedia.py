@@ -4734,13 +4734,12 @@ class DataPage(Page):
                         pass
                 else:
                     pass
-                value = "{\"entity-type\":\"item\",\"numeric-id\":%s}" % value
+                value = {"entity-type": "item", "numeric-id": value}
             else:
                 raise RuntimeError("Unknown property type: %s" % value)
-                value = "{\"entity-type\":\"item\",\"numeric-id\":%s}" % value
         elif data_type == "time":
-            value = "{\"time\":\"%s\",\"timezone\":0,\"before\":0,\"after\":0,\"precision\":11,\"calendarmodel\":\"http://www.wikidata.org/entity/Q1985727\"}" \
-                    % value
+            value = {"time": value, "timezone": 0, "before": 0, "after": 0, "precision": 11,
+                     "calendarmodel": "http://www.wikidata.org/entity/Q1985727"}
             # about calendarmodel see
             # https://bugzilla.wikimedia.org/show_bug.cgi?id=48965
         else:
@@ -4750,6 +4749,8 @@ class DataPage(Page):
         for claim in claims:
             if claim['m'][1] == propertyID:
                 theclaim = claim
+        if isinstance(value, dict):
+            value = json.dumps(value)
         if theclaim and override:
             params = {
                 'action': 'wbsetclaimvalue',
