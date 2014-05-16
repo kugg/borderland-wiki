@@ -75,8 +75,8 @@ class Category(pywikibot.Page):
         self.sortKey = sortKey
         self.sortKeyPrefix = sortKeyPrefix
         if self.namespace() != 14:
-            raise ValueError(u'BUG: %s is not in the category namespace!'
-                             % title)
+            pywikibot.Page.__init__(self, site=site, title="Category:" + title, insite=insite,
+                                    defaultNamespace=14)
         self.completelyCached = False
         self.articleCache = []
         self.subcatCache = []
