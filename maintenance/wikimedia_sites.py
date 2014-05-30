@@ -4,8 +4,8 @@ This script checks the language list of each Wikimedia multiple-language site
 against the language lists
 """
 #
-# (C) xqt, 2009-2013
-# (C) Pywikipedia bot team, 2008-2013
+# (C) xqt, 2009-2014
+# (C) Pywikibot team, 2008-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -25,7 +25,6 @@ URL = 'http://wikistats.wmflabs.org/api.php?action=dump&table=%s&format=xml'
 
 familiesDict = {
     'anarchopedia': 'anarchopedias',
-    'gentoo':       'gentoo',
     'wikibooks':    'wikibooks',
     'wikinews':     'wikinews',
     'wikipedia':    'wikipedias',

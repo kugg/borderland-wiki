@@ -22,4 +22,3 @@ class Family(family.WikimediaFamily):
         }
 
         self.interwiki_forward = 'wikipedia'
-

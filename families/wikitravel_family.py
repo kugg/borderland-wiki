@@ -488,5 +488,5 @@ class Family(family.Family):
         return site
 
     def version(self, code):
-        return "1.11.2"
+        return "1.22.2"
 
