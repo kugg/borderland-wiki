@@ -343,20 +343,6 @@ db_password = ''
 
 ############## SEARCH ENGINE SETTINGS ##############
 
-# Some scripts allow querying Google via the Google Web API. To use this
-# feature, you must install the pyGoogle module from http://pygoogle.sf.net/
-# and have a Google Web API license key. Note that Google doesn't give out
-# license keys anymore.
-# --------------------
-# Google web API is obsoleted for long time, now we can use Google AJAX Search
-# API. You can signup an API key from
-# http://code.google.com/apis/ajaxsearch/signup.html.
-google_key = ''
-
-# using Google AJAX Search API, it requires the referer website, this variable
-# saves the referer web address when you sign up with the key.
-google_api_refer = ''
-
 # Some scripts allow using the Yahoo! Search Web Services. To use this feature,
 # you must install the pYsearch module from http://pysearch.sourceforge.net/
 # and get a Yahoo AppID from http://developer.yahoo.com
