@@ -1,6 +1,6 @@
 How to create a new family file to add a new wiki to the bot framework.
 
-(c) 2008-2013, the Pywikipediabot team
+(c) 2008-2014, the Pywikibot team
 
 First of all, run generate_family_file.py, and see if this works. If it doesn't,
 please read the text below and check the example.
