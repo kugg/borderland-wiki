@@ -552,10 +552,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[114] = {
             'en': u'Translation',
             'uk': u'Переклад',
+            'zh': u'Translation',
         }
         self.namespaces[115] = {
             'en': u'Translation talk',
             'uk': u'Обговорення перекладу',
+            'zh': u'Translation talk',
         }
 
         self.namespaces[250] = {
