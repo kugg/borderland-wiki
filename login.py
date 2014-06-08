@@ -68,9 +68,6 @@ botList = {
     'wikipedia': {
         'en': [u'Wikipedia:Bots/Status/active bots', 'BotS'],
         'simple': [u'Wikipedia:Bots', '/links']
-    },
-    'gentoo': {
-        'en': [u'Help:Bots', None],
     }
 }
 
