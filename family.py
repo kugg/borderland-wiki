@@ -96,13 +96,10 @@ class Family(object):
         ]
 
         # Order for fy: alphabetical by code, but y counts as i
-        def fycomp(x, y):
-            x = x.replace("y", "i") + x.count("y") * "!"
-            y = y.replace("y", "i") + y.count("y") * "!"
-            return cmp(x, y)
         self.fyinterwiki = self.alphabetic[:]
         self.fyinterwiki.remove('nb')
-        self.fyinterwiki.sort(fycomp)
+        self.fyinterwiki.sort(key=lambda x:
+                              x.replace("y", "i") + x.count("y") * "!")
 
         self.langs = {}
 
@@ -4055,15 +4052,19 @@ class Family(object):
         #     '_default'; values are a list of namespace numbers
         self.crossnamespace = collections.defaultdict(dict)
         ##
-        ## Examples :
-        ## Allowing linking to pt' 102 NS from any other lang' 0 NS is
-        # self.crossnamespace[0] = {
-        #     '_default': { 'pt': [102]}
-        # }
-        ## While allowing linking from pt' 102 NS to any other lang' = NS is
-        # self.crossnamespace[102] = {
-        #     'pt': { '_default': [0]}
-        # }
+        # Examples :
+        #
+        # Allowing linking to pt' 102 NS from any other lang' 0 NS is
+        #
+        #   self.crossnamespace[0] = {
+        #       '_default': { 'pt': [102]}
+        #   }
+        #
+        # While allowing linking from pt' 102 NS to any other lang' = NS is
+        #
+        #   self.crossnamespace[102] = {
+        #       'pt': { '_default': [0]}
+        #   }
 
     @property
     def iwkeys(self):
@@ -4325,7 +4326,7 @@ class Family(object):
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
         # Here we return the latest mw release for downloading
-        return '1.20wmf2'
+        return '1.23.0'
 
     def versionnumber(self, code, version=None):
         """Return an int identifying MediaWiki version.
@@ -4640,7 +4641,7 @@ class Family(object):
         return (None, None)
 
     def shared_data_repository(self, code, transcluded=False):
-        """Return the shared wikidata repository, if any."""
+        """Return the shared Wikibase repository, if any."""
         return (None, None)
 
     def server_time(self, code):
@@ -4960,7 +4961,8 @@ class WikimediaFamily(Family):
         """Return Wikimedia projects version number as a string."""
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
-        return '1.24wmf5'
+        # Here we return the latest mw release of wikimedia projects
+        return '1.24wmf7'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
