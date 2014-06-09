@@ -175,10 +175,7 @@ def weblinksIn(text, withoutBracketed=False, onlyBracketed=False):
     text = pywikibot.removeDisabledParts(text)
     linkR = pywikibot.compileLinkR(withoutBracketed, onlyBracketed)
     for m in linkR.finditer(text):
-        if m.group('url'):
-            yield m.group('url')
-        else:
-            yield m.group('urlb')
+        yield m.group('url')
 
 
 class XmlDumpPageGenerator:

@@ -871,18 +871,18 @@ def compileLinkR(withoutBracketed=False, onlyBracketed=False):
     # not allowed inside links. For example, in this wiki text:
     #       ''Please see http://www.example.org.''
     # .'' shouldn't be considered as part of the link.
-    regex = r'(?P<url>http[s]?://[^%(notInside)s]*?[^%(notAtEnd)s]' \
+    regex = r'https?://[^%(notInside)s]*?[^%(notAtEnd)s]' \
             r'(?=[%(notAtEnd)s]*\'\')|http[s]?://[^%(notInside)s]*' \
-            r'[^%(notAtEnd)s])' % {'notInside': notInside, 'notAtEnd': notAtEnd}
-    regexb = r'(?P<urlb>http[s]?://[^%(notInside)s]*?[^%(notAtEnd)s]' \
+            r'[^%(notAtEnd)s]' % {'notInside': notInside, 'notAtEnd': notAtEnd}
+    regexb = r'https?://[^%(notInside)s]*?[^%(notAtEnd)s]' \
              r'(?=[%(notAtEnd)s]*\'\')|http[s]?://[^%(notInside)s]*' \
-             r'[^%(notAtEnd)s])' % {'notInside': notInside, 'notAtEnd': notAtEndb}
+             r'[^%(notAtEnd)s]' % {'notInside': notInside, 'notAtEnd': notAtEndb}
     if withoutBracketed:
-        regex = r'(?<!\[)' + regex
+        regex = r'(?<!\[)(?P<url>%s)' % regex
     elif onlyBracketed:
-        regex = r'\[' + regexb
+        regex = r'\[(?P<url>%s)' % regexb
     else:
-        regex=r'(?:(?<!\[)'+ regex+r'|\['+regexb+')'
+        regex = r'(?P<url>(?<!\[)%s|\[%s)' % (regex, regexb)
     linkR = re.compile(regex)
     return linkR
 
