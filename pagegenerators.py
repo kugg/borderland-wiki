@@ -186,12 +186,6 @@ parameterHelp = u"""\
                   "-redirectonly:Template:!" will make the bot work on
                   all redirect pages in the template namespace.
 
--google           Work on all pages that are found in a Google search.
-                  You need a Google Web API license key. Note that Google
-                  doesn't give out license keys anymore. See google_key in
-                  config.py for instructions.
-                  Argument can also be given as "-google:searchstring".
-
 -yahoo            Work on all pages that are found in a Yahoo search.
                   Depends on python module pYsearch.  See yahoo_appid in
                   config.py for instructions.
@@ -505,8 +499,6 @@ class GeneratorFactory(object):
                     u'What do you want to search for?')
             gen = SearchPageGenerator(mediawikiQuery, number=None,
                                       namespaces=self.getNamespaces)
-        elif arg.startswith('-google'):
-            gen = GoogleSearchPageGenerator(arg[8:])
         elif arg.startswith('-titleregex'):
             if len(arg) == 11:
                 regex = pywikibot.input(u'What page names are you looking for?')
@@ -901,116 +893,6 @@ class YahooSearchPageGenerator:
                 title = url[len(base):]
                 page = pywikibot.Page(self.site, title)
                 yield page
-
-
-class GoogleSearchPageGenerator:
-    """
-    To use this generator, you must install the pyGoogle module from
-    http://pygoogle.sf.net/ and get a Google Web API license key from
-    http://www.google.com/apis/index.html . The google_key must be set to your
-    license key in your configuration.
-
-    """
-
-    def __init__(self, query=None, site=None):
-        self.query = query or pywikibot.input(u'Please enter the search query:')
-        if site is None:
-            site = pywikibot.getSite()
-        self.site = site
-
-    #########
-    # partially commented out because it is probably not in compliance with
-    # Google's "Terms of service"
-    # (see 5.3, http://www.google.com/accounts/TOS?loc=US)
-    def queryGoogle(self, query):
-        #if config.google_key:
-        if True:
-            try:
-                for url in self.queryViaSoapApi(query):
-                    yield url
-                return
-            except ImportError:
-                for u in self.queryViaAPI(query):
-                    yield u
-                return
-        # No google license key, or pygoogle not installed. Do it the ugly way.
-        #for url in self.queryViaWeb(query):
-        #    yield url
-
-    def queryViaAPI(self, query):
-        try:
-            import json
-        except ImportError:
-            import simplejson as json
-        url = u'http://ajax.googleapis.com/ajax/services/search/web?'
-        params = {
-            'key': config.google_key,
-            'v': '1.0',
-            'q': query,
-        }
-        url += urllib.urlencode(params)
-
-        while True:
-            try:
-                pywikibot.output(u'Querying Google AJAX Search API...')
-                result = json.loads(
-                    self.site.getUrl(url, refer=config.google_api_refer,
-                                     no_hostname=True))
-                for res in result['responseData']['results']:
-                    yield res['url']
-            except:
-                pywikibot.output(u"An error occured. Retrying in 10 seconds...")
-                time.sleep(10)
-                continue
-
-    def queryViaSoapApi(self, query):
-        import google
-        google.LICENSE_KEY = config.google_key
-        offset = 0
-        estimatedTotalResultsCount = None
-        while not estimatedTotalResultsCount or \
-                offset < estimatedTotalResultsCount:
-            while True:
-                # Google often yields 502 errors.
-                try:
-                    pywikibot.output(u'Querying Google, offset %i' % offset)
-                    data = google.doGoogleSearch(query, start=offset,
-                                                 filter=False)
-                    break
-                except KeyboardInterrupt:
-                    raise
-                except:
-                    # SOAPpy.Errors.HTTPError or SOAP.HTTPError
-                    # (502 Bad Gateway) can happen here, depending on the module
-                    # used. It's not easy to catch this properly because
-                    # pygoogle decides which one of the soap modules to use.
-                    pywikibot.output(u"An error occured. "
-                                     u"Retrying in 10 seconds...")
-                    time.sleep(10)
-                    continue
-
-            for result in data.results:
-                yield result.URL
-            # give an estimate of pages to work on, but only once.
-            if not estimatedTotalResultsCount:
-                pywikibot.output(u'Estimated total result count: %i pages.'
-                                 % data.meta.estimatedTotalResultsCount)
-            estimatedTotalResultsCount = data.meta.estimatedTotalResultsCount
-            offset += 10
-
-    def __iter__(self):
-        # restrict query to local site
-        localQuery = '%s site:%s' % (self.query, self.site.hostname())
-        base = 'http://%s%s' % (self.site.hostname(),
-                                self.site.nice_get_address(''))
-        for url in self.queryGoogle(localQuery):
-            if url[:len(base)] == base:
-                title = url[len(base):]
-                page = pywikibot.Page(self.site, title)
-                # Google contains links in the format
-                # http://de.wikipedia.org/wiki/en:Foobar
-                if page.site == self.site:
-                    yield page
 
 
 def MySQLPageGenerator(query, site=None):
