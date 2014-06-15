@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-This is a script written to add the template "orphan" to the pages that aren't linked by other pages.
-It can give some strange Errors sometime, I hope that all of them are fixed in this version.
+This is a script written to add the template "orphan" to the pages that aren't
+linked by other pages. It can give some strange Errors sometime, I hope that
+all of them are fixed in this version.
 
 These command line parameters can be used to specify which pages to work on:
 
@@ -18,21 +19,15 @@ These command line parameters can be used to specify which pages to work on:
 
 Furthermore, the following command line parameters are supported:
 
--enable:            - Enable or disable the bot via a Wiki Page.
+-enable:          Enable or disable the bot via a Wiki Page.
 
--disambig:          - Set a page where the bot save the name of the disambig pages found (default: skip the pages)
+-disambig:        Set a page where the bot save the name of the disambig
+                  pages found (default: skip the pages)
 
--limit:             - Set how many pages check.
+-limit:           Set how many pages check.
 
--always             - Always say yes, won't ask
+-always           Always say yes, won't ask
 
---- FixMes ---
-* Check that all the code hasn't bugs
-
---- Credit and Help ---
-This Script has been developed by Pietrodn and Filnik on botwiki. If you want to help us
-improving our script archive and pywikibot's archive or you simply need help
-you can find us here: http://botwiki.sno.cc
 
 --- Examples ---
 python lonelypages.py -enable:User:Bot/CheckBot -always
@@ -47,9 +42,11 @@ python lonelypages.py -enable:User:Bot/CheckBot -always
 __version__ = '$Id$'
 #
 
-import pywikibot
-import pagegenerators
 import re
+
+import pywikibot
+from pywikibot import i18n
+import pagegenerators
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -57,13 +54,6 @@ docuReplacements = {
     '&params;':     pagegenerators.parameterHelp,
 }
 
-#####################################################
-# Here you have to put the config for your Project. #
-#####################################################
-
-# ************* Modify only below! ************* #
-
-# Template to add in the orphan pages
 Template = {
     'ar': u'{{يتيمة|تاريخ={{نسخ:اسم_شهر}} {{نسخ:عام}}}}',
     'ca': u'{{Orfe|date={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
@@ -73,30 +63,8 @@ Template = {
     'zh': u'{{subst:Orphan/auto}}',
 }
 
-# Comment that the Bot will use to put the template
-commento = {
-    'ar': u'بوت: صفحة يتيمة، إضافة قالب',
-    'ca': u'Bot:Pàgina orfe, afegint plantilla',
-    'en': u'Robot: Orphan page, add template',
-    'it': u'[[Project:Bot|Bot]]: Voce orfana, aggiungo template {{O}}',
-    'ja': u'ロボットによる: 孤立したページへのテンプレート貼付け',
-    'zh': u'機器人: 本頁的鏈入頁面太少',
-}
-
-# When you add a disambig to the list of disambig pages
-#(if you set disambigPage to None, you can put here nothing)
-commenttodisambig = {
-    'ar': u'بوت: إضافة صفحة توضيح',
-    'ca': u'Bot; Afegint una desambiguació',
-    'en': u'Robot: Adding a disambig page',
-    'it': u'[[Project:Bot|Bot]]: Aggiungo una disambigua',
-    'ja': u'ロボットによる: 曖昧さ回避の追加',
-    'zh': u'機器人: 增加消歧義頁面',
-}
-
 # Use regex to prevent to put the same template twice!
-# Warning: put always "()" inside the regex, so the bot will find "something"
-exception = {
+exception_regex = {
     'ar': [ur'\{\{(?:قالب:|)(يتيمة)[\|\}]'],
     'ca': [r'\{\{(?:template:|)(orfe)[\|\}]'],
     'en': [r'\{\{(?:template:|)(orphan)[\|\}]',
@@ -106,24 +74,12 @@ exception = {
     'zh': [r'\{\{(?:template:|)(orphan)[\|\}]'],
 }
 
-# ************* Modify only above! ************* #
-
 
 def main():
-    # Load the configurations in the function namespace
-    global commento
-    global Template
-    global disambigPage
-    global commenttodisambig
-    global exception
-
     enablePage = None  # Check if someone set an enablePage or not
-    # All the pages! (I hope that there aren't so many lonely pages in a
-    # project..)
-    limit = 50000
-    # Check if the bot should use the default generator or not
-    generator = None
-    # Load all the default generators!
+    limit = 50000  # Hope that there aren't so many lonely pages in a project
+    generator = None  # Check if bot should use default generator or not
+    # Load all default generators!
     genFactory = pagegenerators.GeneratorFactory()
     nwpages = False  # Check variable for newpages
     always = False  # Check variable for always
@@ -169,12 +125,14 @@ def main():
     if not generator:
         generator = wikiSite.lonelypages(repeat=True, number=limit)
     # Take the configurations according to our project
-    comment = pywikibot.translate(wikiSite, commento)
-    commentdisambig = pywikibot.translate(wikiSite, commenttodisambig)
-    template = pywikibot.translate(wikiSite, Template)
-    exception = pywikibot.translate(wikiSite, exception)
+    comment = i18n.twtranslate(wikiSite, 'lonelypages-comment-add-template')
+    commentdisambig = i18n.twtranslate(wikiSite, 'lonelypages-comment-add-disambig-template')
+    template = i18n.translate(wikiSite, Template)
+    exception = i18n.translate(wikiSite, exception_regex)
+    if template is None or exception is None:
+        raise Exception("Missing configuration for site %r" % wikiSite)
     # EnablePage part
-    if enablePage:
+    if enablePage is not None:
         # Define the Page Object
         enable = pywikibot.Page(wikiSite, enablePage)
         # Loading the page's data
@@ -185,7 +143,7 @@ def main():
                 u"%s doesn't esist, I use the page as if it was blank!"
                 % enable.title())
             getenable = ''
-        except pywikibot.IsRedirect:
+        except pywikibot.IsRedirectPage:
             pywikibot.output(u"%s is a redirect, skip!" % enable.title())
             getenable = ''
         # If the enable page is set to disable, turn off the bot
@@ -201,14 +159,14 @@ def main():
         except pywikibot.NoPage:
             pywikibot.output(u"%s doesn't esist, skip!" % disambigpage.title())
             disambigtext = ''
-        except pywikibot.IsRedirect:
+        except pywikibot.IsRedirectPage:
             pywikibot.output(u"%s is a redirect, don't use it!"
                              % disambigpage.title())
             disambigPage = None
     # Main Loop
     for page in generator:
         if nwpages:
-            # newpages generator returns a tuple, not a Page object.
+            # The newpages generator returns a tuple, not a Page object.
             page = page[0]
         pywikibot.output(u"Checking %s..." % page.title())
         if page.isRedirectPage():  # If redirect, skip!
@@ -233,8 +191,7 @@ def main():
             pywikibot.error(u'2 --> Skip page')
             continue
         else:
-            # Ok, no refs, no redirect...
-            # let's check if there's already the template
+            # no refs, no redirect; check if there's already the template
             try:
                 oldtxt = page.get()
             except pywikibot.NoPage:
@@ -243,9 +200,9 @@ def main():
             except pywikibot.IsRedirectPage:
                 pywikibot.output(u"%s is a redirect! Skip..." % page.title())
                 continue
-            # I've used a loop in a loop. If I use continue in the second loop, it won't do anything
-            # in the first. So let's create a variable to avoid this problem.
-            Find = False
+            # I've used a loop in a loop. If I use continue in the second loop,
+            # it won't do anything in the first. So let's create a variable to
+            # avoid this problem.
             for regexp in exception:
                 res = re.findall(regexp, oldtxt.lower())
                 # Found a template! Let's skip the page!
@@ -253,11 +210,10 @@ def main():
                     pywikibot.output(
                         u'Your regex has found something in %s, skipping...'
                         % page.title())
-                    Find = True
                     break
-            if Find:
-                continue  # Skip the page..
-            if page.isDisambig() and disambigPage:
+            else:
+                continue
+            if page.isDisambig() and disambigPage is not None:
                 pywikibot.output(u'%s is a disambig page, report..'
                                  % page.title())
                 if not page.title().lower() in disambigtext.lower():
@@ -277,10 +233,12 @@ def main():
                 pywikibot.showDiff(oldtxt, newtxt)
                 choice = 'y'
                 if not always:
-                    choice = pywikibot.inputChoice(u'Orphan page found, shall I add the template?',  ['Yes', 'No', 'All'], ['y', 'n', 'a'])
-                if choice == 'a':
-                    always = True
-                    choice = 'y'
+                    choice = pywikibot.inputChoice(
+                        u'Orphan page found, add template?',
+                        ['Yes', 'No', 'All'], 'yna')
+                    if choice == 'a':
+                        always = True
+                        choice = 'y'
                 if choice == 'y':
                     try:
                         page.put(newtxt, comment)
