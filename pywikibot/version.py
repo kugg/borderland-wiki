@@ -142,8 +142,11 @@ order by revision desc, changed_date desc""")
                  "<propfind xmlns=\"DAV:\"><allprop/></propfind>",
                  {'Label': rev, 'User-Agent': 'SVN/1.7.5-pywikibot1'})
     resp = conn.getresponse()
-    dom = xml.dom.minidom.parse(resp)
-    hsh = dom.getElementsByTagName("C:git-commit")[0].firstChild.nodeValue
+    try:
+        dom = xml.dom.minidom.parse(resp)
+        hsh = dom.getElementsByTagName("C:git-commit")[0].firstChild.nodeValue
+    except Exception:
+        raise ParseError
     rev = 's%s' % rev
     if (not date or not tag or not rev) and not path:
         raise ParseError
