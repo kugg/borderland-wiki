@@ -7117,11 +7117,16 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         else:
             ck = f.info().getallmatchingheaders('set-cookie')
         if ck:
-            Reat = re.compile(': (.*?)=(.*?);')
+            Reat = re.compile(': (.*?)=(.*?); (expires=(.*?);)?')
             tmpc = {}
             for d in ck:
                 m = Reat.search(d)
                 if m:
+                    exps = m.group(4)
+                    if exps:
+                        if (datetime.datetime.strptime(exps, '%a, %d-%b-%Y %H:%M:%S %Z')
+                                - datetime.datetime.utcnow()) < datetime.timedelta(seconds=1):
+                            continue
                     tmpc[m.group(1)] = m.group(2)
             if self.cookies(sysop):
                 self.updateCookies(tmpc, sysop)

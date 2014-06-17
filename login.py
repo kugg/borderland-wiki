@@ -59,6 +59,7 @@ import re
 import query
 import wikipedia as pywikibot
 import config
+from datetime import datetime, timedelta
 
 # On some wikis you are only allowed to run a bot if there is a link to
 # the bot's user page in a specific list.
@@ -230,7 +231,7 @@ class LoginManager:
                 pywikibot.output(u"%s/%s\n%s" % (response.code, response.msg,
                                                  fakeresponsemsg))
 
-        Reat = re.compile(': (.*?)=(.*?);')
+        Reat = re.compile(': (.*?)=(.*?); (expires=(.*?);)?')
 
         L = {}
         if hasattr(response, 'sheaders'):
@@ -240,6 +241,10 @@ class LoginManager:
         for eat in ck:
             m = Reat.search(eat)
             if m:
+                exps = m.group(4)
+                if exps:
+                    if (datetime.strptime(exps, '%a, %d-%b-%Y %H:%M:%S %Z') - datetime.utcnow()) < timedelta(seconds=1):
+                        continue
                 L[m.group(1)] = m.group(2)
 
         got_token = got_user = False
