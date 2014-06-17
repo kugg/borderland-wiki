@@ -156,7 +156,7 @@ class PageFromFileRobot:
         self.minor = minor
         self.autosummary = autosummary
         self.dry = dry
-        self.nocontents = nocontents
+        self.nocontent = nocontents
 
     def run(self):
         for title, contents in self.reader.run():
