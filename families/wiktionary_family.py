@@ -15,16 +15,16 @@ class Family(family.WikimediaFamily):
             'sv', 'ko', 'it', 'de', 'ku', 'tr', 'ta', 'hu', 'fi', 'kn', 'io',
             'vi', 'pt', 'chr', 'no', 'ml', 'my', 'id', 'ja', 'li', 'ro', 'et',
             'te', 'jv', 'fa', 'cs', 'ca', 'ar', 'eu', 'gl', 'lo', 'uk', 'hy',
-            'br', 'fj', 'eo', 'bg', 'th', 'hr', 'ps', 'oc', 'is', 'uz', 'vo',
-            'az', 'simple', 'cy', 'zh-min-nan', 'scn', 'sr', 'da', 'ast', 'af',
+            'br', 'fj', 'eo', 'bg', 'th', 'hr', 'ps', 'oc', 'uz', 'is', 'az',
+            'vo', 'simple', 'cy', 'zh-min-nan', 'da', 'scn', 'sr', 'ast', 'af',
             'he', 'sw', 'or', 'hi', 'fy', 'tl', 'wa', 'nn', 'ur', 'la', 'sq',
             'pnb', 'ka', 'sm', 'sl', 'nah', 'tt', 'lb', 'lv', 'bs', 'sk', 'tk',
             'nds', 'hsb', 'kk', 'ky', 'be', 'mk', 'km', 'ms', 'ga', 'wo', 'sa',
-            'ang', 'co', 'mn', 'tg', 'gn', 'mr', 'ug', 'csb', 'st', 'ia', 'so',
+            'ang', 'co', 'tg', 'mn', 'gn', 'mr', 'ug', 'csb', 'st', 'so', 'ia',
             'sd', 'si', 'kl', 'vec', 'jbo', 'an', 'ln', 'fo', 'zu', 'gv', 'kw',
             'gu', 'rw', 'bn', 'qu', 'ss', 'ie', 'mt', 'om', 'pa', 'roa-rup',
-            'iu', 'na', 'su', 'am', 'za', 'gd', 'ne', 'mi', 'tpi', 'yi', 'ti',
-            'sg', 'dv', 'tn', 'ts', 'ha', 'ks', 'ay',
+            'iu', 'na', 'su', 'am', 'za', 'ne', 'gd', 'mi', 'tpi', 'yi', 'ti',
+            'sg', 'tn', 'dv', 'ts', 'ha', 'ks', 'ay',
         ]
 
         self.langs = dict([(lang, '%s.wiktionary.org' % lang)
