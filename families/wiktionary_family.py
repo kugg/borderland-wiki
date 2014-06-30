@@ -13,17 +13,17 @@ class Family(family.WikimediaFamily):
         self.languages_by_size = [
             'en', 'mg', 'fr', 'sh', 'zh', 'es', 'lt', 'ru', 'el', 'pl', 'nl',
             'sv', 'ko', 'it', 'de', 'ku', 'tr', 'ta', 'hu', 'fi', 'kn', 'io',
-            'vi', 'pt', 'chr', 'no', 'ml', 'my', 'id', 'ja', 'li', 'ro', 'et',
-            'te', 'jv', 'fa', 'cs', 'ca', 'ar', 'eu', 'gl', 'lo', 'uk', 'hy',
+            'vi', 'pt', 'chr', 'no', 'ml', 'id', 'my', 'ja', 'li', 'ro', 'et',
+            'te', 'jv', 'fa', 'ca', 'cs', 'ar', 'eu', 'gl', 'lo', 'uk', 'hy',
             'br', 'fj', 'eo', 'bg', 'th', 'hr', 'ps', 'oc', 'uz', 'is', 'az',
             'vo', 'simple', 'cy', 'zh-min-nan', 'da', 'scn', 'sr', 'ast', 'af',
             'he', 'sw', 'or', 'hi', 'fy', 'tl', 'wa', 'nn', 'ur', 'la', 'sq',
             'pnb', 'ka', 'sm', 'sl', 'nah', 'tt', 'lb', 'lv', 'bs', 'sk', 'tk',
             'nds', 'hsb', 'kk', 'ky', 'be', 'mk', 'km', 'ms', 'ga', 'wo', 'sa',
             'ang', 'co', 'tg', 'mn', 'gn', 'mr', 'ug', 'csb', 'st', 'so', 'ia',
-            'sd', 'si', 'kl', 'vec', 'jbo', 'an', 'ln', 'fo', 'zu', 'gv', 'kw',
+            'sd', 'si', 'kl', 'vec', 'an', 'jbo', 'ln', 'fo', 'zu', 'gv', 'kw',
             'gu', 'rw', 'bn', 'qu', 'ss', 'ie', 'mt', 'om', 'pa', 'roa-rup',
-            'iu', 'na', 'su', 'am', 'za', 'ne', 'gd', 'mi', 'tpi', 'yi', 'ti',
+            'iu', 'na', 'su', 'am', 'mi', 'za', 'ne', 'gd', 'tpi', 'yi', 'ti',
             'sg', 'tn', 'dv', 'ts', 'ha', 'ks', 'ay',
         ]
 
