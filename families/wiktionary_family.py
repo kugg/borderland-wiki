@@ -22,7 +22,7 @@ class Family(family.WikimediaFamily):
             'nds', 'hsb', 'kk', 'ky', 'be', 'mk', 'km', 'ms', 'ga', 'wo', 'sa',
             'ang', 'co', 'tg', 'mn', 'gn', 'mr', 'ug', 'csb', 'st', 'so', 'ia',
             'sd', 'si', 'kl', 'vec', 'an', 'jbo', 'ln', 'fo', 'zu', 'gv', 'kw',
-            'gu', 'rw', 'bn', 'qu', 'ss', 'ie', 'mt', 'om', 'pa', 'roa-rup',
+            'gu', 'rw', 'bn', 'om', 'qu', 'ss', 'ie', 'mt', 'pa', 'roa-rup',
             'iu', 'na', 'su', 'am', 'mi', 'za', 'ne', 'gd', 'tpi', 'yi', 'ti',
             'sg', 'tn', 'dv', 'ts', 'ha', 'ks', 'ay',
         ]
