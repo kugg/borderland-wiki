@@ -1,9 +1,9 @@
 # -*- coding: utf-8  -*-
-""" Module to determine the pywikipedia version (tag, revision and date) """
+""" Module to determine the pywikibot version (tag, revision and date) """
 #
 # (C) Merlijn 'valhallasw' van Deen, 2007-2014
 # (C) xqt, 2010-2014
-# (C) Pywikipedia bot team, 2007-2013
+# (C) Pywikibot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -20,7 +20,8 @@ cache = None
 
 
 class ParseError(Exception):
-    """ Parsing went wrong """
+
+    """ Parsing went wrong. """
 
 
 def _get_program_dir():
@@ -28,14 +29,21 @@ def _get_program_dir():
     return _program_dir
 
 
-def getversion():
+def getversion(online=True):
+    """Return a pywikibot version string
+    @param online: (optional) Include information obtained online
+    """
     data = dict(getversiondict())  # copy dict to prevent changes in 'chache'
-    try:
-        hsh2 = getversion_onlinerepo()
-        hsh1 = data['hsh']
-        data['cmp_ver'] = 'OUTDATED' if hsh1 != hsh2 else 'ok'
-    except Exception:
-        data['cmp_ver'] = 'n/a'
+    data['cmp_ver'] = 'n/a'
+
+    if online:
+        try:
+            hsh2 = getversion_onlinerepo()
+            hsh1 = data['hsh']
+            data['cmp_ver'] = 'OUTDATED' if hsh1 != hsh2 else 'ok'
+        except ParseError:
+            pass
+
     data['hsh'] = data['hsh'][:7]  # make short hash from full hash
     return '%(tag)s (%(hsh)s, %(rev)s, %(date)s, %(cmp_ver)s)' % data
 
@@ -109,7 +117,7 @@ def getversion_svn(path=None):
     _program_dir = path or _get_program_dir()
     entries = open(os.path.join(_program_dir, '.svn/entries'))
     version = entries.readline().strip()
-    #use sqlite table for new entries format
+    # use sqlite table for new entries format
     if version == "12":
         entries.close()
         from sqlite3 import dbapi2 as sqlite
@@ -125,13 +133,13 @@ order by revision desc, changed_date desc""")
         tag = os.path.split(tag)[1]
         date = time.gmtime(date / 1000000)
     else:
-        for i in xrange(3):
+        for i in range(3):
             entries.readline()
         tag = entries.readline().strip()
         t = tag.split('://')
         t[1] = t[1].replace('svn.wikimedia.org/svnroot/pywikipedia/', '')
         tag = '[%s] %s' % (t[0], t[1])
-        for i in xrange(4):
+        for i in range(4):
             entries.readline()
         date = time.strptime(entries.readline()[:19], '%Y-%m-%dT%H:%M:%S')
         rev = entries.readline()[:-1]
@@ -199,17 +207,27 @@ def getversion_git(path=None):
 
 
 def getversion_nightly():
-    data = open(os.path.join(wikipediatools.get_base_dir(), 'version'))
+    import wikipediatools
+    try:
+        data = open(os.path.join(wikipediatools.get_base_dir(), 'version'))
+    except IOError:
+        raise ParseError
     tag = data.readline().strip()
-    date = time.strptime(data.readline()[:19], '%Y-%m-%dT%H:%M:%S')
     rev = data.readline().strip()
+    date = time.strptime(data.readline()[:19], '%Y-%m-%dT%H:%M:%S')
+    hsh = data.readline().strip()
+
     if not date or not tag or not rev:
         raise ParseError
-    return (tag, rev, date, '(unknown)')
+    return (tag, rev, date, hsh)
 
 
 def getversion_onlinerepo(repo=None):
-    """ Retrieve revision number of framework online repository's svnroot """
+    """Retrieve current framework revision number from online repository.
+
+    @param repo: (optional) Online repository location
+    @type repo: URL or string
+    """
     url = repo or 'https://git.wikimedia.org/feed/pywikibot/compat'
     hsh = None
     try:
