@@ -34,7 +34,8 @@ __version__ = '$Id$'
 #
 import sys
 import re
-import urllib
+import urllib2
+from urllib import urlencode
 import catlib
 import time
 import socket
@@ -122,14 +123,14 @@ def getCommonshelperCats(imagepage):
     lang = site.language()
     family = site.family.name
     if lang == u'commons' and family == u'commons':
-        parameters = urllib.urlencode(
+        parameters = urlencode(
             {'i': imagepage.title(withNamespace=False).encode('utf-8'),
              'r': 'on',
              'go-clean': 'Find+Categories',
              'p': search_wikis,
              'cl': hint_wiki})
     elif family == u'wikipedia':
-        parameters = urllib.urlencode(
+        parameters = urlencode(
             {'i': imagepage.title(withNamespace=False).encode('utf-8'),
              'r': 'on',
              'go-move': 'Find+Categories',
@@ -152,7 +153,7 @@ def getCommonshelperCats(imagepage):
         try:
             if tries < maxtries:
                 tries += 1
-                commonsHelperPage = urllib.urlopen(
+                commonsHelperPage = urllib2.urlopen(
                     "http://toolserver.org/~daniel/WikiSense/CommonSense.php?%s"
                     % parameters)
                 matches = commonsenseRe.search(
@@ -215,11 +216,11 @@ def getOpenStreetMap(latitude, longitude):
     """
     result = []
     gotInfo = False
-    parameters = urllib.urlencode({'lat': latitude, 'lon': longitude,
+    parameters = urlencode({'lat': latitude, 'lon': longitude,
                                    'accept-language': 'en'})
     while(not gotInfo):
         try:
-            page = urllib.urlopen(
+            page = urllib2.urlopen(
                 "http://nominatim.openstreetmap.org/reverse?format=xml&%s"
                 % parameters)
             et = xml.etree.ElementTree.parse(page)
@@ -380,11 +381,11 @@ def filterParents(categories):
     for cat in categories:
         cat = cat.replace('_', ' ')
         toFilter = toFilter + "[[Category:" + cat + "]]\n"
-    parameters = urllib.urlencode({'source': toFilter.encode('utf-8'),
+    parameters = urlencode({'source': toFilter.encode('utf-8'),
                                    'bot': '1'})
     filterCategoriesRe = re.compile('\[\[Category:([^\]]*)\]\]')
     try:
-        filterCategoriesPage = urllib.urlopen(
+        filterCategoriesPage = urllib2.urlopen(
             "http://toolserver.org/~multichill/filtercats.php?%s" % parameters)
         result = filterCategoriesRe.findall(
             filterCategoriesPage.read().decode('utf-8'))

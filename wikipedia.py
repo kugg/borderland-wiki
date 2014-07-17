@@ -10491,6 +10491,8 @@ if config.authenticate:
 
 MyURLopener.addheaders = [('User-agent', useragent)]
 
+urllib2.install_opener(MyURLopener)
+
 # The following will monkey-patch the pywikibot module to contain the same
 # functions and variables as wikipedia itself. This means we no longer have
 # to import wikipedia as pywikibot - instead, we can just import pywikibot

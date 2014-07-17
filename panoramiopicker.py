@@ -13,7 +13,7 @@ Tool to copy a Panoramio set to Commons
 __version__ = '$Id$'
 
 import sys
-import urllib
+import urllib2
 import re
 import StringIO
 import hashlib
@@ -53,7 +53,7 @@ def downloadPhoto(photoUrl=''):
     TODO: Add exception handling
 
     '''
-    imageFile = urllib.urlopen(photoUrl).read()
+    imageFile = urllib2.urlopen(photoUrl).read()
     return StringIO.StringIO(imageFile)
 
 
@@ -84,7 +84,7 @@ def getLicense(photoInfo=None):
     '''
 
     photoInfo['license'] = u'c'
-    page = urllib.urlopen(photoInfo.get(u'photo_url'))
+    page = urllib2.urlopen(photoInfo.get(u'photo_url'))
     data = page.read()
     soup = BeautifulSoup(data)
     if soup.find("div", {'id': 'photo-info'}):
@@ -348,8 +348,8 @@ def getPhotos(photoset=u'', start_id='', end_id='', interval=100):
             try:
                 if tries < maxtries:
                     tries += 1
-                    panoramioApiPage = urllib.urlopen(url % (photoset, i,
-                                                             i + interval))
+                    panoramioApiPage = urllib2.urlopen(url % (photoset, i,
+                                                              i + interval))
                     contents = panoramioApiPage.read().decode('utf-8')
                     gotInfo = True
                     i += interval

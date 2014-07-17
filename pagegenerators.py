@@ -25,7 +25,6 @@ import codecs
 import date
 import datetime
 import time
-import urllib
 import traceback
 import wikipedia as pywikibot
 import config

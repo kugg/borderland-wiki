@@ -106,7 +106,6 @@ import httplib
 import socket
 import urlparse
 import urllib
-import urllib2
 import threading
 import time
 

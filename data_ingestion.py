@@ -14,7 +14,7 @@ __version__ = '$Id$'
 
 import posixpath
 import urlparse
-import urllib
+import urllib2
 import hashlib
 import base64
 import StringIO
@@ -53,7 +53,7 @@ class Photo(object):
 
         """
         if not self.contents:
-            imageFile = urllib.urlopen(self.URL).read()
+            imageFile = urllib2.urlopen(self.URL).read()
             self.contents = StringIO.StringIO(imageFile)
         return self.contents
 
@@ -135,7 +135,7 @@ def processJSONPage(url, JSONBase=None, metadataFunction=None,
     Will a return Photo object with metadata or None if something is wrong
 
     """
-    JSONPage = urllib.urlopen(url)
+    JSONPage = urllib2.urlopen(url)
     JSONData = json.load(JSONPage)
     JSONPage.close()
 
@@ -283,7 +283,7 @@ class DataIngestionBot:
 
         TODO: Add exception handling
         '''
-        imageFile=urllib.urlopen(photoUrl).read()
+        imageFile=urllib2.urlopen(photoUrl).read()
         return StringIO.StringIO(imageFile)
 
     def findDuplicateImages(self, photo = None, site = pywikibot.getSite(u'commons', u'commons')):
