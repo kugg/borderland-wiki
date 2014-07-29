@@ -5,6 +5,7 @@ import family
 
 
 # The Anarchopedia family
+# Offline in July 2014
 class Family(family.Family):
     def __init__(self):
         family.Family.__init__(self)
@@ -149,8 +150,5 @@ class Family(family.Family):
     def scriptpath(self, code):
         return ''
 
-    def path(self, code):
-        return '/index.php'
-
-    def apipath(self, code):
-        return '/api.php'
+    def nicepath(self, code):
+        return '/'

@@ -76,8 +76,5 @@ class Family(family.Family):
     def scriptpath(self, code):
         return ''
 
-    def path(self, code):
-        return '/index.php'
-
-    def apipath(self, code):
-        return '/api.php'
+    def nicepath(self, code):
+        return '/'

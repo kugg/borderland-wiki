@@ -43,6 +43,3 @@ class Family(family.Family):
 
     def scriptpath(self, code):
         return ''
-
-    def apipath(self, code):
-        return '/api.php'

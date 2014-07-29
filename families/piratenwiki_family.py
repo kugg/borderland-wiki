@@ -144,11 +144,7 @@ class Family(family.Family):
        return "/wiki/"
 
    def nicepath(self, code):
-       return ""
+       return '/'
 
    def version(self, code):
-       return "1.16.0"
-
-   if family.config.SSL_connection:
-       def protocol(self, code):
-           return "https"
+       return '1.22.8'

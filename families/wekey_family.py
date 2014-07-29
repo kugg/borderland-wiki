@@ -77,10 +77,13 @@ class Family(family.Family):
         return 'wekey.westart.tw'
 
     def version(self, code):
-        return "1.12.0"
+        return '1.16.0'
 
     def scriptpath(self, code):
         return ''
+
+    def nicepath(self, code):
+        return '/'
 
     def apipath(self, code):
         raise NotImplementedError(

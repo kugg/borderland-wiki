@@ -34,10 +34,10 @@ class Family(family.Family):
         self.namespaces[503] = { '_default': u'Blog talk', }
 
     def version(self, code):
-        return "1.16.2"
+        return '1.19.17'
 
     def scriptpath(self, code):
         return ''
 
-    def apipath(self, code):
-        return '/api.php'
+    def nicepath(self, code):
+        return '/'

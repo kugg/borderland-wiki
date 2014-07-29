@@ -38,9 +38,12 @@ class Family(family.Family):
     def scriptpath(self, code):
         return '/wiki/shared'
 
+    def nicepath(self, code):
+        return '/shared/'
+
     def shared_image_repository(self, code):
         return ('wikitravel_shared', 'wikitravel_shared')
 
     def version(self, code):
-        return "1.10.1"
+        return '1.22.2'
 

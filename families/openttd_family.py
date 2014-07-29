@@ -31,8 +31,11 @@ class Family(family.Family):
     def scriptpath(self, code):
         return ''
 
+    def nicepath(self, code):
+        return '/'
+
     def version(self, code):
-        return "1.12.0"
+        return '1.19.1'
 
     def apipath(self, code):
         raise NotImplementedError(
