@@ -330,7 +330,7 @@ class Family(family.Family):
         self.namespaces[801] = {
             'en': u'Poll talk'
         }
-        
+
         self.namespaces[902] = {
             'es': u'Layout'
         }
@@ -352,4 +352,4 @@ class Family(family.Family):
         return ''
 
     def version(self, code):
-        return '1.19.17'
+        return '1.19.18'

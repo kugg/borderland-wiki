@@ -34,7 +34,7 @@ class Family(family.Family):
         self.namespaces[503] = { '_default': u'Blog talk', }
 
     def version(self, code):
-        return '1.19.17'
+        return '1.19.18'
 
     def scriptpath(self, code):
         return ''
