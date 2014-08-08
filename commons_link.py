@@ -1,8 +1,7 @@
 #!/usr/bin/python
-# coding: utf-8
-
+# -*- coding: utf-8 -*-
 """
-Include commons template in home wiki.
+Include Commons template in home wiki.
 
 This bot functions mainly in the en.wikipedia, because it
 compares the names of articles and category in English
@@ -11,23 +10,19 @@ an article in Commons will not be in English but with
 redirect, this also functions.
 
 Run:
-Syntax: python commons_link.py action [-option]
+Syntax: python commons_link.py [action] [pagegenerator]
 
 where action can be one of these:
  * pages      : Run over articles, include {{commons}}
  * categories : Run over categories, include {{commonscat}}
 
-and option can be one of these:
- * -cat     : Work on all pages which are in a specific category.
- * -ref     : Work on all pages that link to a certain page.
- * -link    : Work on all pages that are linked from a certain page.
- * -start   : Work on all pages on the home wiki, starting at the named page.
- * -page    : Work on one page.
+and pagegenerator can be one of these:
+&params;
 
 """
 #
 # (C) Leonardo Gregianin, 2006
-# (C) Pywikibot team, 2007-2013
+# (C) Pywikibot team, 2007-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -38,6 +33,10 @@ import re
 import wikipedia as pywikibot
 import pagegenerators
 import catlib
+
+docuReplacements = {
+    '&params;':     pagegenerators.parameterHelp,
+}
 
 comment1 = {
     'ar': u'روبوت: تضمين قالب كومنز',
@@ -171,54 +170,28 @@ class CommonsLinkBot:
                     pywikibot.output(u'Category does not exist in Commons!')
 
             except pywikibot.NoPage:
-                pywikibot.output(u'Page %s does not exist?!' % page.title())
+                pywikibot.output(u'Page %s does not exist' % page.title())
             except pywikibot.IsRedirectPage:
                 pywikibot.output(u'Page %s is a redirect; skipping.'
                                  % page.title())
             except pywikibot.LockedPage:
-                pywikibot.output(u'Page %s is locked?!' % page.title())
+                pywikibot.output(u'Page %s is locked' % page.title())
 
 if __name__ == "__main__":
-    singlepage = []
-    gen = None
-    start = None
+    genFactory = pagegenerators.GeneratorFactory()
     try:
         action = None
         for arg in pywikibot.handleArgs():
-            if arg == ('pages'):
-                action = 'pages'
-            elif arg == ('categories'):
-                action = 'categories'
-            elif arg.startswith('-start:'):
-                start = pywikibot.Page(pywikibot.getSite(), arg[7:])
-                gen = pagegenerators.AllpagesPageGenerator(
-                    start.title(withNamespace=False),
-                    namespace=start.namespace(),
-                    includeredirects=False)
-            elif arg.startswith('-cat:'):
-                cat = catlib.Category(pywikibot.getSite(),
-                                      'Category:%s' % arg[5:])
-                gen = pagegenerators.CategorizedPageGenerator(cat)
-            elif arg.startswith('-ref:'):
-                ref = pywikibot.Page(pywikibot.getSite(), arg[5:])
-                gen = pagegenerators.ReferringPageGenerator(ref)
-            elif arg.startswith('-link:'):
-                link = pywikibot.Page(pywikibot.getSite(), arg[6:])
-                gen = pagegenerators.LinkedPageGenerator(link)
-            elif arg.startswith('-page:'):
-                singlepage = pywikibot.Page(pywikibot.getSite(), arg[6:])
-                gen = iter([singlepage])
-            #else:
-                #bug
+            if arg in ('pages', 'categories'):
+                action = arg
+            else:
+                genFactory.handleArg(arg)
 
-        if action == 'pages':
-            preloadingGen = pagegenerators.PreloadingGenerator(gen)
-            bot = CommonsLinkBot(preloadingGen, acceptall=False)
-            bot.pages()
-        elif action == 'categories':
-            preloadingGen = pagegenerators.PreloadingGenerator(gen)
-            bot = CommonsLinkBot(preloadingGen, acceptall=False)
-            bot.categories()
+        gen = genFactory.getCombinedGenerator()
+        if gen and action:
+            gen = pagegenerators.PreloadingGenerator(gen)
+            bot = CommonsLinkBot(gen, acceptall=False)
+            getattr(bot, action)()
         else:
             pywikibot.showHelp(u'commons_link')
     finally:
