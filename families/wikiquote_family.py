@@ -237,27 +237,27 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[102] = {
             'fr': u'Projet',
-            }
+        }
 
         self.namespaces[103] = {
             'fr': u'Discussion Projet',
-            }
+        }
 
         self.namespaces[104] = {
             'fr': u'Référence',
-            }
+        }
 
         self.namespaces[105] = {
             'fr': u'Discussion Référence',
-            }
+        }
 
         self.namespaces[108] = {
             'fr': u'Transwiki',
-            }
+        }
 
         self.namespaces[109] = {
             'fr': u'Discussion Transwiki',
-            }
+        }
 
         # attop is a list of languages that prefer to have the interwiki
         # links at the top of the page.

@@ -415,7 +415,7 @@ class Family(family.WikimediaFamily):
             'pl': u'Aneks',
             'pt': u'Apêndice',
             'ro': u'Portal',
-            'ru': [u'Приложение', u'Appendix'],
+            'ru': u'Приложение',
             'sr': u'Портал',
             'tr': u'Portal',
             'uk': u'Додаток',
@@ -453,7 +453,7 @@ class Family(family.WikimediaFamily):
             'pl': u'Dyskusja aneksu',
             'pt': u'Apêndice Discussão',
             'ro': u'Discuție Portal',
-            'ru': [u'Обсуждение приложения', u'Appendix talk'],
+            'ru': u'Обсуждение приложения',
             'sr': u'Разговор о порталу',
             'tr': u'Portal tartışma',
             'uk': u'Обговорення додатка',
@@ -473,7 +473,7 @@ class Family(family.WikimediaFamily):
             'pl': u'Indeks',
             'pt': u'Vocabulário',
             'ro': u'Apendice',
-            'ru': [u'Конкорданс', u'Concordance'],
+            'ru': u'Конкорданс',
             'sv': u'Appendix',
             'uk': u'Індекс',
             'zh': u'Transwiki',
@@ -492,7 +492,7 @@ class Family(family.WikimediaFamily):
             'pl': u'Dyskusja indeksu',
             'pt': u'Vocabulário Discussão',
             'ro': u'Discuție Apendice',
-            'ru': [u'Обсуждение конкорданса', u'Concordance talk'],
+            'ru': u'Обсуждение конкорданса',
             'sv': u'Appendixdiskussion',
             'uk': u'Обговорення індексу',
             'zh': u'Transwiki talk',
@@ -501,28 +501,28 @@ class Family(family.WikimediaFamily):
         self.namespaces[104] = {
             'bs': u'Dodatak',
             'cy': u'WiciSawrws',
-            'de': [u'Thesaurus', u'WikiSaurus'],
+            'de': u'Thesaurus',
             'en': u'Index',
             'fr': u'Portail',
             'ku': u'Portal',
             'mr': u'सूची',
             'pl': u'Portal',
             'pt': u'Rimas',
-            'ru': [u'Индекс', u'Index'],
+            'ru': u'Индекс',
             'sv': u'Rimord',
         }
 
         self.namespaces[105] = {
             'bs': u'Razgovor o Dodatku',
             'cy': u'Sgwrs WiciSawrws',
-            'de': [u'Thesaurus Diskussion', u'WikiSaurus Diskussion'],
+            'de': u'Thesaurus Diskussion',
             'en': u'Index talk',
             'fr': u'Discussion Portail',
             'ku': u'Gotûbêja portalê',
             'mr': u'सूची चर्चा',
             'pl': u'Dyskusja portalu',
             'pt': u'Rimas Discussão',
-            'ru': [u'Обсуждение индекса', u'Index talk'],
+            'ru': u'Обсуждение индекса',
             'sv': u'Rimordsdiskussion',
         }
 
@@ -532,7 +532,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Thésaurus',
             'is': u'Viðauki',
             'pt': u'Portal',
-            'ru': [u'Рифмы', u'Rhymes'],
+            'ru': u'Рифмы',
             'sv': u'Transwiki',
         }
 
@@ -542,7 +542,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Discussion Thésaurus',
             'is': u'Viðaukaspjall',
             'pt': u'Portal Discussão',
-            'ru': [u'Обсуждение рифм', u'Rhymes talk'],
+            'ru': u'Обсуждение рифм',
             'sv': u'Transwikidiskussion',
         }
 
@@ -559,7 +559,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[110] = {
-            'en': [u'Wikisaurus', u'WS'],
+            'en': u'Wikisaurus',
             'is': u'Samheitasafn',
             'ko': u'미주알고주알',
         }

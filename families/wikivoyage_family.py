@@ -73,7 +73,7 @@ class Family(family.WikimediaFamily):
             'ro': u'Discuție Wikivoyage',
             'ru': u'Обсуждение Wikivoyage',
             'sv': u'Wikivoyagediskussion',
-            'uk': u'Обговорення Вікімандри',
+            'uk': u'Обговорення Вікімандрів',
             'vi': u'Thảo luận Wikivoyage',
             'zh': u'Wikivoyage talk',
         }

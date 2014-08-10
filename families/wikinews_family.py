@@ -158,7 +158,7 @@ class Family(family.WikimediaFamily):
             'fa': u'بحث درگاه',
             'he': u'שיחת פורטל',
             'it': u'Discussioni portale',
-            'ja': [u'ポータル・トーク', u'ポータル‐ノート'],
+            'ja': u'ポータル・トーク',
             'no': u'Kommentarer-diskusjon',
             'pl': u'Dyskusja portalu',
             'pt': u'Portal Discussão',

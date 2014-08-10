@@ -70,9 +70,11 @@ class Family(family.WikimediaFamily):
         self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
         self.namespaces[829]['ja'] = [u'モジュール‐ノート', u'モジュール・トーク']
         self.namespaces[12]['nl'] = [u'Help', u'H']
-        self.namespaces[2]['ru'] = [u'Участник', u'У', u'Участница']
+        self.namespaces[2]['ru'] = [u'Участник', u'U', u'У', u'Участница']
+        self.namespaces[3]['ru'] =[u'Обсуждение участника', u'UT', u'ОУ', u'Обсуждение участницы']
         self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T']
         self.namespaces[14]['ru'] = [u'Категория', u'К']
+        self.namespaces[12]['th'] = [u'วิธีใช้', u'H']
         self.namespaces[12]['zh'] = [u'Help', u'H', u'帮助', u'幫助']
         self.namespaces[12]['zh-yue'] = [u'Help', u'H', u'幫手', u'幫助', u'說明', u'帮手', u'帮助', u'说明']
 
@@ -1080,7 +1082,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[2600] = {
-            'en': 'Topic',
+            'en': u'Topic',
         }
 
         self.category_redirect_templates = {
