@@ -31,9 +31,6 @@ class Timestamp(datetime.datetime):
     Use Timestamp.fromISOformat() and Timestamp.fromtimestampformat() to
     create Timestamp objects from Mediawiki string formats.
 
-    Use Site.getcurrenttime() for the current time; this is more reliable
-    than using Timestamp.utcnow().
-
     """
     mediawikiTSFormat = "%Y%m%d%H%M%S"
     ISO8601Format = "%Y-%m-%dT%H:%M:%SZ"
