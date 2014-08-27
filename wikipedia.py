@@ -4442,6 +4442,29 @@ class DataPage(Page):
         items = self.get()
         return int(self.title()[1:])
 
+    def _make_old_dict(self):
+        """Convert the new dictionary to the old one for consistency."""
+        old_dict = self._contents
+        new_dict = {
+            'links': {}, 'claims': [], 'description': old_dict['descriptions'],
+            'label': {}}
+        for site_name in old_dict.get('sitelinks', []):
+            new_dict['links'][site_name] = {
+                'name': old_dict['sitelinks'][site_name].get('title'),
+                'badges': old_dict['sitelinks'][site_name].get('badges', [])
+            }
+        for claim_name in old_dict.get('claims', []):
+            for claim in old_dict['claims'][claim_name]:
+                new_claim = {'m': ['value', int(claim_name[1:]), 'value']}
+                new_claim['refs'] = claim.get('references', [])
+                new_claim['g'] = claim['id']
+                new_claim['q'] = claim.get('qualifiers', [])
+                new_claim['m'].append(claim.get('mainsnak', {}).get('datavalue', {}).get('value'))
+                new_dict['claims'].append(new_claim)
+        for label in old_dict['labels']:
+            new_dict['label'][label] = old_dict['labels'][label]['value']
+        self._contents = new_dict
+
     def setSitelink(self, page, summary=""):
         """Set a Sitelink for a Datapage.
         @param page: the site to link to
@@ -5046,14 +5069,18 @@ class DataPage(Page):
             except AttributeError:
                 raise SectionError  # Page has no section by this name
         self._contents = json.loads(pagetext)
-        if self._contents['entity'][0] == 'item':
-            self._title = "Q"
-        elif self._contents['entity'][0] == 'property':
-            self._title = "P"
+        if not self._contents.get('id'):
+            if self._contents['entity'][0] == 'item':
+                self._title = "Q"
+            elif self._contents['entity'][0] == 'property':
+                self._title = "P"
+            else:
+                raise RuntimeError("unknown type: %s Make a bug report in bugzilla"
+                                   "this" % self._contents['entity'][0])
+            self._title += str(self._contents['entity'][1])
         else:
-            raise RuntimeError("unknown type: %s call User:Ladsgroup to fix "
-                               "this" % self._contents['entity'][0])
-        self._title += str(self._contents['entity'][1])
+            self._title = self._contents['id']
+            self._make_old_dict()
         return self._contents
 
     @deprecate_arg("get", None)
@@ -5118,6 +5145,9 @@ class DataPage(Page):
             else:
                 pagetext = super(DataPage, self).get(*args, **kwargs)
                 self._contents = json.loads(pagetext)
+        # If self._contents is using the new system, convert it
+        if not isinstance(self._contents.get('claims', {}), list):
+            self._make_old_dict()
         return self._contents
 
     def isEmpty(self):
