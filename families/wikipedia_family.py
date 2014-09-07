@@ -48,6 +48,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[-2]['bar'] = [u'Media', u'Medium']
         self.namespaces[6]['be'] = [u'Файл', u'Выява']
         self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
+        self.namespaces[2]['ckb'] = [u'بەکارھێنەر', u'U', u'ب']
+        self.namespaces[3]['ckb'] = [u'لێدوانی بەکارھێنەر', u'UT', u'قسەی بەکارھێنەر', u'لب']
+        self.namespaces[8]['ckb'] = [u'میدیاویکی', u'MW', u'مو']
+        self.namespaces[10]['ckb'] = [u'داڕێژە', u'T', u'د', u'قاڵب']
+        self.namespaces[12]['ckb'] = [u'یارمەتی', u'H', u'ی']
+        self.namespaces[14]['ckb'] = [u'پۆل', u'C', u'پ']
         self.namespaces[2]['cs'] = [u'Wikipedista', u'Uživatel', u'Wikipedistka']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
         self.namespaces[12]['de'] = [u'Hilfe', u'H']
@@ -126,7 +132,7 @@ class Family(family.WikimediaFamily):
             'ch': u'Wikipedia',
             'chr': u'Wikipedia',
             'chy': u'Wikipedia',
-            'ckb': [u'ویکیپیدیا', u'وپ'],
+            'ckb': [u'ویکیپیدیا', u'WP', u'وپ'],
             'co': u'Wikipedia',
             'cr': u'Wikipedia',
             'crh': u'Vikipediya',
@@ -406,7 +412,7 @@ class Family(family.WikimediaFamily):
             'ch': u'Kombetsasion nu Wikipedia',
             'chr': u'Wikipedia talk',
             'chy': u'Wikipedia talk',
-            'ckb': u'لێدوانی ویکیپیدیا',
+            'ckb': [u'لێدوانی ویکیپیدیا', u'WT', u'لو'],
             'co': u'Discussioni Wikipedia',
             'cr': u'Wikipedia talk',
             'crh': [u'Vikipediya muzakeresi', u'Vikipediya музакереси'],
@@ -448,7 +454,7 @@ class Family(family.WikimediaFamily):
             'gl': u'Conversa Wikipedia',
             'glk': u'بحث Wikipedia',
             'gn': u'Vikipetã myangekõi',
-            'got': u'𐌸𐌹𐍃 Wikipedia 𐌲𐌰𐍅𐌰𐌿𐍂𐌳𐌾𐌰',
+            'got': u'??? Wikipedia ?????????',
             'gu': u'વિકિપીડિયા ચર્ચા',
             'gv': u'Resooney Wikipedia',
             'ha': u'Wikipedia talk',
@@ -1083,6 +1089,8 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[2600] = {
             'en': u'Topic',
+            'fr': u'Sujet',
+            'he': u'נושא',
         }
 
         self.category_redirect_templates = {
