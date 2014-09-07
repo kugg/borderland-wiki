@@ -2,7 +2,7 @@
 
 __version__ = '$Id$'
 
-import config, family, urllib
+import family
 
 
 class Family(family.Family):
