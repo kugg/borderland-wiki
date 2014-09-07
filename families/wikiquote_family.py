@@ -1,4 +1,6 @@
 # -*- coding: utf-8  -*-
+"""Family module for Wikiquote."""
+
 import family
 
 __version__ = '$Id$'
@@ -6,7 +8,11 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wikiquote
 class Family(family.WikimediaFamily):
+
+    """Family class for Wikiquote."""
+
     def __init__(self):
+        """Constructor."""
         super(Family, self).__init__()
         self.name = 'wikiquote'
 
@@ -301,39 +307,41 @@ class Family(family.WikimediaFamily):
         }
 
         self.obsolete = {
-            'als': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Alemannic_Wikiquote
+            'als': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Alemannic_Wikiquote
             'ang': None,  # https://bugzilla.wikimedia.org/show_bug.cgi?id=29150
             'ast': None,  # https://bugzilla.wikimedia.org/show_bug.cgi?id=28964
-            'bm': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bambara_Wikiquote
+            'bm': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Bambara_Wikiquote
             'co': None,
-            'cr': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nehiyaw_Wikiquote
+            'cr': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nehiyaw_Wikiquote
             'dk': 'da',
-            'ga': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gaeilge_Wikiquote
+            'ga': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gaeilge_Wikiquote
             'jp': 'ja',
             'kk': None,   # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
-            'kr': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kanuri_Wikiquote
-            'ks': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kashmiri_Wikiquote
-            'kw': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kernewek_Wikiquote
+            'kr': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kanuri_Wikiquote
+            'ks': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kashmiri_Wikiquote
+            'kw': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kernewek_Wikiquote
             'lb': None,
             'minnan': 'zh-min-nan',
-            'na': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nauruan_Wikiquote
+            'na': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nauruan_Wikiquote
             'nb': 'no',
-            'nds': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Low_Saxon_Wikiquote
-            'qu': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Quechua_Wikiquote
-            'simple': 'en',  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Simple_English_(3)_Wikiquote
-            'tk': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Turkmen_Wikiquote
+            'nds': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Low_Saxon_Wikiquote
+            'qu': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Quechua_Wikiquote
+            'simple': 'en',  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Simple_English_(3)_Wikiquote
+            'tk': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Turkmen_Wikiquote
             'tokipona': None,
-            'tt': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Tatar_Wikiquote
-            'ug': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Oyghurque_Wikiquote
-            'vo': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Volapuk_Wikiquote
-            'za': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Zhuang_Wikiquote
+            'tt': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Tatar_Wikiquote
+            'ug': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Oyghurque_Wikiquote
+            'vo': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Volapuk_Wikiquote
+            'za': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Zhuang_Wikiquote
             'zh-tw': 'zh',
             'zh-cn': 'zh'
         }
 
     def code2encodings(self, code):
         """
-        Return a list of historical encodings for a specific language wikipedia
+        Return a list of historical encodings for a specific language.
+
+        @param code: site code
         """
         # Historic compatibility
         if code == 'pl':
@@ -341,6 +349,7 @@ class Family(family.WikimediaFamily):
         if code == 'ru':
             return 'utf-8', 'iso8859-5'
         return self.code2encoding(code),
-        
+
     def shared_data_repository(self, code, transcluded=False):
+        """Return the shared data repository for this family."""
         return ('wikidata', 'wikidata')

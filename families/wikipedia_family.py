@@ -1,4 +1,6 @@
 # -*- coding: utf-8  -*-
+"""Family module for Wikipedia."""
+
 import family
 
 __version__ = '$Id$'
@@ -6,7 +8,11 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wikipedia, the Free Encyclopedia
 class Family(family.WikimediaFamily):
+
+    """Family module for Wikipedia."""
+
     def __init__(self):
+        """Constructor."""
         super(Family, self).__init__()
         self.name = 'wikipedia'
 
@@ -1293,7 +1299,7 @@ class Family(family.WikimediaFamily):
         ]
 
         # Global bot allowed languages on
-        # http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
+        # https://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
             'ab', 'ace', 'af', 'ak', 'als', 'am', 'an', 'ang', 'ar', 'arc',
             'arz', 'as', 'ast', 'av', 'ay', 'az', 'ba', 'bar', 'bat-smg', 'bcl',
@@ -1394,24 +1400,24 @@ class Family(family.WikimediaFamily):
         }
 
         self.obsolete = {
-            'aa': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Afar_Wikipedia
-            'cho': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Choctaw_Wikipedia
+            'aa': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Afar_Wikipedia
+            'cho': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Choctaw_Wikipedia
             'dk': 'da',
-            'ho': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Hiri_Motu_Wikipedia
-            'hz': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Herero_Wikipedia
-            'ii': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Yi_Wikipedia
-            'kj': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kwanyama_Wikipedia
-            'kr': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kanuri_Wikipedia
-            'mh': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Marshallese_Wikipedia
+            'ho': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Hiri_Motu_Wikipedia
+            'hz': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Herero_Wikipedia
+            'ii': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Yi_Wikipedia
+            'kj': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kwanyama_Wikipedia
+            'kr': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kanuri_Wikipedia
+            'mh': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Marshallese_Wikipedia
             'minnan': 'zh-min-nan',
-            'mo': 'ro',  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Moldovan_Wikipedia
-            'mus': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Muscogee_Wikipedia
+            'mo': 'ro',  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Moldovan_Wikipedia
+            'mus': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Muscogee_Wikipedia
             'nan': 'zh-min-nan',
             'nl_nds': 'nl-nds',  # miss-spelling
             'nb': 'no',
-            'ng': None,  # (not reachable) http://meta.wikimedia.org/wiki/Inactive_wikis
+            'ng': None,  # (not reachable) https://meta.wikimedia.org/wiki/Inactive_wikis
             'jp': 'ja',
-            'ru-sib': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Siberian_Wikipedia
+            'ru-sib': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Siberian_Wikipedia
             'tlh': None,
             'tokipona': None,
             'zh-tw': 'zh',
@@ -1441,7 +1447,7 @@ class Family(family.WikimediaFamily):
             'km': {
                 '_default': [0, 4, 12],
             },
-            #wrong wikipedia namespace alias
+            # wrong wikipedia namespace alias
             'mzn': {
                 '_default': [0, 4],
 
@@ -1581,6 +1587,7 @@ class Family(family.WikimediaFamily):
         }
 
     def get_known_families(self, site):
+        """Override the family interwiki prefixes for each site."""
         # In Swedish Wikipedia 's:' is part of page title not a family
         # prefix for 'wikisource'.
         if site.language() == 'sv':
@@ -1598,8 +1605,7 @@ class Family(family.WikimediaFamily):
         return '%swiki_p' % code
 
     def code2encodings(self, code):
-        """Return a list of historical encodings for a specific language
-           wikipedia"""
+        """Return a list of historical encodings for a specific site."""
         # Historic compatibility
         if code == 'pl':
             return 'utf-8', 'iso8859-2'
@@ -1610,4 +1616,5 @@ class Family(family.WikimediaFamily):
         return self.code2encoding(code),
 
     def shared_data_repository(self, code, transcluded=False):
+        """Return the shared data repository for this site."""
         return ('wikidata', 'wikidata')

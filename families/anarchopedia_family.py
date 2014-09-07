@@ -1,4 +1,6 @@
 # -*- coding: utf-8  -*-
+"""Family module for Anarchopedia wiki."""
+
 __version__ = '$Id$'
 
 import family
@@ -7,7 +9,11 @@ import family
 # The Anarchopedia family
 # Offline in July 2014
 class Family(family.Family):
+
+    """Family class for Anarchopedia wiki."""
+
     def __init__(self):
+        """Constructor."""
         family.Family.__init__(self)
         self.name = 'anarchopedia'
 
@@ -145,9 +151,11 @@ class Family(family.Family):
         }
 
     def version(self, code):
+        """Return the version for this family."""
         return "1.14alpha"
 
     def scriptpath(self, code):
+        """Return the script path for this family."""
         return ''
 
     def nicepath(self, code):

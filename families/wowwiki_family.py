@@ -1,4 +1,5 @@
 # -*- coding: utf-8  -*-
+"""Family module for WOW Wiki."""
 
 __version__ = '$Id$'
 
@@ -6,7 +7,11 @@ import family
 
 
 class Family(family.Family):
+
+    """Family class for WOW Wiki."""
+
     def __init__(self):
+        """Constructor."""
         family.Family.__init__(self)
         self.name = 'wowwiki'
 
@@ -349,7 +354,9 @@ class Family(family.Family):
         return 'http'
 
     def scriptpath(self, code):
+        """Return the script path for this family."""
         return ''
 
     def version(self, code):
+        """Return the version for this family."""
         return '1.19.18'

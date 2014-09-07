@@ -1,5 +1,5 @@
 # -*- coding: utf-8  -*-
-
+"""Family module for Omega Wiki."""
 __version__ = '$Id$'
 
 import family
@@ -8,7 +8,10 @@ import family
 # Omegawiki, the Ultimate online dictionary
 class Family(family.Family):
 
+    """Family class for Omega Wiki."""
+
     def __init__(self):
+        """Constructor."""
         family.Family.__init__(self)
         self.name = 'omegawiki'
         self.langs['omegawiki'] = 'www.omegawiki.org'
@@ -68,12 +71,15 @@ class Family(family.Family):
         self.nocapitalize = self.langs.keys()
 
     def hostname(self, code):
+        """Return the hostname for this family."""
         return 'www.omegawiki.org'
 
     def version(self, code):
+        """Return the version for this family."""
         return "1.22.6"
 
     def scriptpath(self, code):
+        """Return the script path for this family."""
         return ''
 
     def nicepath(self, code):

@@ -1,4 +1,5 @@
 # -*- coding: utf-8  -*-
+"""Family module for Wikisource."""
 import family
 
 __version__ = '$Id$'
@@ -6,7 +7,11 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wikisource
 class Family(family.WikimediaFamily):
+
+    """Family class for Wikisource."""
+
     def __init__(self):
+        """Constructor."""
         super(Family, self).__init__()
         self.name = 'wikisource'
 
@@ -684,9 +689,9 @@ class Family(family.WikimediaFamily):
         }
 
         self.obsolete = {
-            'ang': None,  # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Old_English_Wikisource
+            'ang': None,  # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Old_English_Wikisource
             'dk': 'da',
-            'ht': None,   # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Haitian_Creole_Wikisource
+            'ht': None,   # https://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Haitian_Creole_Wikisource
             'jp': 'ja',
             'minnan': 'zh-min-nan',
             'nb': 'no',
@@ -729,5 +734,7 @@ class Family(family.WikimediaFamily):
         for key, values in self.authornamespaces.iteritems():
             for item in values:
                 self.crossnamespace[item].update({key: self.authornamespaces})
+
     def shared_data_repository(self, code, transcluded=False):
+        """Return the shared data repository for this site."""
         return ('wikidata', 'wikidata')

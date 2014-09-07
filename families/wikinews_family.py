@@ -1,4 +1,6 @@
 # -*- coding: utf-8  -*-
+"""Family module for Wikinews."""
+
 import family
 
 __version__ = '$Id$'
@@ -6,7 +8,11 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wikinews
 class Family(family.WikimediaFamily):
+
+    """Family class for Wikinews."""
+
     def __init__(self):
+        """Constructor."""
         super(Family, self).__init__()
         self.name = 'wikinews'
 

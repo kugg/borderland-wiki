@@ -1,14 +1,18 @@
 # -*- coding: utf-8  -*-
-
+"""Family module for Wikidata."""
 __version__ = '$Id$'
 
 import family
 
-# The wikidata family
+# The Wikidata family
 
 
 class Family(family.WikimediaFamily):
+
+    """Family class for Wikidata."""
+
     def __init__(self):
+        """Constructor."""
         super(Family, self).__init__()
         self.name = 'wikidata'
         self.langs = {
