@@ -4716,6 +4716,15 @@ class DataPage(Page):
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
 
+    def getPropertyType(self, prop):
+        params = {
+            'action': 'wbgetentities',
+            'ids': prop,
+            'props': 'datatype',
+        }
+        data = query.GetData(params, self.site())
+        return data['entities']['datatype']
+
     def editclaim(self, WDproperty, value, data_type=None, raw_value=False,
                   refs=None, comment=None, token=None, sysop=False,
                   botflag=True, override=True):
