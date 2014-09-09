@@ -42,7 +42,7 @@ __version__ = '$Id$'
 #               patch (unix/linux & gnuwin32 version/flavour)
 modules_needed = {
           'patch.exe': ({},  # for win32 only, unix/linux is already equipped with a patch tool
-                        {  'url': 'http://downloads.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip',
+                        {  'url': 'https://downloads.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip',
                           'path': 'bin/patch.exe'},
                         {}),  # OK
             'crontab': ({},
@@ -93,11 +93,11 @@ modules_needed = {
                           'path': 'jpeg-6b',},
                         {}),  # OK
               '_mlpy': ({},
-                        {  'url': 'http://downloads.sourceforge.net/project/mlpy/mlpy%203.5.0/mlpy-3.5.0.tar.gz',
+                        {  'url': 'https://downloads.sourceforge.net/project/mlpy/mlpy%203.5.0/mlpy-3.5.0.tar.gz',
                           'path': 'mlpy-3.5.0/mlpy'},
                         {}),  # OK
            '_music21': ({},
-                        {  'url': 'http://music21.googlecode.com/files/music21-1.4.0.tar.gz',
+                        {  'url': 'https://music21.googlecode.com/files/music21-1.4.0.tar.gz',
                           'path': 'music21-1.4.0',
                          #$ diff -Naur --exclude="*.pyc" TEST__music21/ _music21/ > patch-music21
                          'patch': 'patch-music21'},
@@ -223,7 +223,7 @@ def show_question(module):
                      "This package is not installed, but required by the file"
                      " '%s'." % (module, inspect.stack()[2][1]))
     lowlevel_warning("For more and additional information, please confer:\n"
-                     "http://www.mediawiki.org/wiki/Manual:Pywikipediabot/"
+                     "https://www.mediawiki.org/wiki/Manual:Pywikibot/"
                      "Installation#Dependencies")
     options = [(i+1) for i, item in enumerate(modules_needed[module]) if item]
     options += [0, 's', '']
