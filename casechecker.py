@@ -4,7 +4,7 @@
 with mixed latin and cyrilic alphabets.
 """
 #
-# (C) Pywikibot team, 2006-2013
+# (C) Pywikibot team, 2006-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -21,7 +21,7 @@ import wikipedia as pywikibot
 
 #
 # Permutations code was taken from
-# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/190465
+# https://code.activestate.com/recipes/190465/
 #
 def xuniqueCombinations(items, n):
     if n == 0:
@@ -38,7 +38,7 @@ def xuniqueCombinations(items, n):
 # This code makes this script Windows ONLY!!!
 # Feel free to adapt it to another platform
 #
-# Adapted from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496901
+# Adapted from https://code.activestate.com/recipes/496901/
 #
 STD_OUTPUT_HANDLE = -11
 
@@ -251,8 +251,8 @@ class CaseChecker(object):
         self.seenUnresolvedLinks = set()
 
         # TODO: handle "continue"
-        if self.site.lang in self.whitelists:
-            wlpage = self.whitelists[self.site.lang]
+        if self.site.code in self.whitelists:
+            wlpage = self.whitelists[self.site.code]
             pywikibot.output(u'Loading whitelist from %s' % wlpage)
             wlparams = {
                 'action': 'query',
@@ -289,7 +289,7 @@ class CaseChecker(object):
                                                for i in self.knownWords]))
         else:
             pywikibot.output(u'Whitelist is not known for language %s'
-                             % self.site.lang)
+                             % self.site.code)
 
     def RunQuery(self, params):
         while True:
@@ -379,23 +379,26 @@ class CaseChecker(object):
                             editSummary = i18n.twtranslate(
                                 self.site, "casechecker-rename")
                             dst = self.Page(newTitle)
+
                             if 'redirect' in page:
                                 src = self.Page(title)
                                 redir = src.getRedirectTarget()
-                                redirTitle = redir.title(
-                                    asLink=True, textlink=True)
+                                redirTitle = redir.title(asLink=True,
+                                                         textlink=True)
+
                                 if not dst.exists():
-                                    src.move(
-                                        newTitle, editSummary, movesubpages=True)
+                                    src.move(newTitle, editSummary,
+                                             movesubpages=True)
                                     changed = True
+
                                 replErrors = False
                                 for p in src.getReferences(
                                         follow_redirects=False):
                                     if p.namespace() == 2:
                                         continue
                                     oldText = p.get(get_redirect=True)
-                                    newText = self.ReplaceLink(
-                                        oldText, title, newTitle)
+                                    newText = self.ReplaceLink(oldText, title,
+                                                               newTitle)
                                     if not self.PutNewPage(
                                         p, newText, [
                                             self.MakeMoveSummary(title,
@@ -406,11 +409,10 @@ class CaseChecker(object):
                                         self.site, "casechecker-delete-summary")
                                     newText = i18n.twtranslate(
                                         self.site,
-                                        "casechecker-delete-reason", redirTitle,
-                                        fallback=False)
+                                        "casechecker-delete-reason", redirTitle)
                                     if newText:
-                                        src.put(newText, editSummary,
-                                                minorEdit=False)
+                                        src.put(u'{{delete}}\n\n' + newText,
+                                                editSummary, minorEdit=False)
                                         changed = True
 
                             elif not dst.exists():
@@ -645,7 +647,7 @@ class CaseChecker(object):
             if len(pagesRedir) == 1:
                 return pagesRedir.keys()[0]
             t = None
-            for k, v in pagesRedir.iteritems():
+            for v in pagesRedir.values():
                 if not t:
                     t = v  # first item
                 elif t != v:
@@ -762,7 +764,7 @@ class CaseChecker(object):
                     % (i18n.twtranslate(
                         self.site,
                         "casechecker-replacement-summary"),
-                        self.site.mediawiki_message(u"Comma-separator").join(msg)))
+                        self.site.mediawiki_message(u"comma-separator").join(msg)))
                 return True
             except KeyboardInterrupt:
                 raise
@@ -772,7 +774,8 @@ class CaseChecker(object):
         return False
 
     def MakeMoveSummary(self, fromTitle, toTitle):
-        return i18n.twtranslate(self.site, "casechecker-replacement-linklist") % {'source': fromTitle, 'target': toTitle}
+        return i18n.twtranslate(self.site, "casechecker-replacement-linklist",
+                                {'source': fromTitle, 'target': toTitle})
 
     def MakeLink(self, title, colorcode=True):
         prf = u'' if self.Page(title).namespace() == 0 else u':'
@@ -809,7 +812,6 @@ class CaseChecker(object):
                                     toParts[i][0].lower() + toParts[i][1:])
                 text = text.replace(frmParts[i][0].upper() + frmParts[i][1:],
                                     toParts[i][0].upper() + toParts[i][1:])
-
         return text
 
 
