@@ -18,9 +18,9 @@ class Family(family.WikimediaFamily):
         self.languages_by_size = [
             'fr', 'en', 'de', 'ru', 'it', 'pl', 'zh', 'he', 'es', 'sv', 'pt',
             'cs', 'ca', 'fa', 'hu', 'ar', 'ml', 'ko', 'sl', 'te', 'ro', 'fi',
-            'sr', 'vi', 'sa', 'el', 'hr', 'no', 'th', 'bn', 'hy', 'is', 'nl',
-            'gu', 'la', 'ja', 'br', 'vec', 'uk', 'eo', 'tr', 'mk', 'yi', 'ta',
-            'az', 'id', 'be', 'da', 'li', 'et', 'as', 'mr', 'bg', 'bs', 'sah',
+            'sr', 'vi', 'sa', 'el', 'hr', 'th', 'no', 'bn', 'hy', 'is', 'nl',
+            'gu', 'la', 'ja', 'br', 'vec', 'uk', 'eo', 'tr', 'az', 'mk', 'yi',
+            'ta', 'id', 'be', 'da', 'li', 'et', 'as', 'mr', 'bg', 'bs', 'sah',
             'kn', 'gl', 'lt', 'cy', 'sk', 'zh-min-nan', 'fo',
         ]
 
@@ -277,6 +277,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[102] = {
             'ar': u'مؤلف',
+            'as': u'লেখক',
             'az': u'Müəllif',
             'be': u'Аўтар',
             'bn': u'নির্ঘণ্ট',
@@ -318,6 +319,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[103] = {
             'ar': u'نقاش المؤلف',
+            'as': u'লেখক আলোচনা',
             'az': u'Müəllif müzakirəsi',
             'be': u'Размовы пра аўтара',
             'bn': u'নির্ঘণ্ট আলাপ',
