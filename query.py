@@ -110,7 +110,7 @@ def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
     if site.versionnumber() >= 18:
         postAC.append('watch')
     if useAPI:
-        if params['action'] in postAC:
+        if params['action'] in postAC or params['action'][:5] == 'wbset':
             path = site.api_address()
         else:
             path = site.api_address() + site.urlEncode(params.items())
