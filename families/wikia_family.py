@@ -46,7 +46,7 @@ class Family(family.Family):
 
     def version(self, code):
         """Return the version for this family."""
-        return "1.19.18"
+        return "1.19.20"
 
     def scriptpath(self, code):
         """Return the script path for this family."""
