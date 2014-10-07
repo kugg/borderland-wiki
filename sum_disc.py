@@ -553,7 +553,6 @@ class SumDiscBot(basic.AutoBasicBot):
             for key in self._param[item]:
                 self._param[item][key] = i18n.twtranslate(self.site,
                                                           self._param[item][key])
-                                                          #{})
 
         # generate all possible signatures and drop duplicates
         ns_list = self.site.family.namespace(self.site.lang, 2, all=True)
