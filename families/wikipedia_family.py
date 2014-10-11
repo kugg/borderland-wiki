@@ -56,10 +56,10 @@ class Family(family.WikimediaFamily):
         self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
         self.namespaces[2]['ckb'] = [u'بەکارھێنەر', u'U', u'ب']
         self.namespaces[3]['ckb'] = [u'لێدوانی بەکارھێنەر', u'UT', u'قسەی بەکارھێنەر', u'لب']
-        self.namespaces[8]['ckb'] = [u'میدیاویکی', u'MW', u'مو']
+        self.namespaces[8]['ckb'] = [u'میدیاویکی', u'مو']
         self.namespaces[10]['ckb'] = [u'داڕێژە', u'T', u'د', u'قاڵب']
         self.namespaces[12]['ckb'] = [u'یارمەتی', u'H', u'ی']
-        self.namespaces[14]['ckb'] = [u'پۆل', u'C', u'پ']
+        self.namespaces[14]['ckb'] = [u'پۆل', u'پ']
         self.namespaces[2]['cs'] = [u'Wikipedista', u'Uživatel', u'Wikipedistka']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
         self.namespaces[12]['de'] = [u'Hilfe', u'H']
@@ -1047,6 +1047,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[446] = {
             'ar': u'برنامج التعليم',
+            'ca': u'Education Program',
             'cs': u'Education Program',
             'el': u'Education Program',
             'en': u'Education Program',
@@ -1062,6 +1063,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[447] = {
             'ar': u'نقاش برنامج التعليم',
+            'ca': u'Education Program talk',
             'cs': u'Education Program talk',
             'el': u'Education Program talk',
             'en': u'Education Program talk',

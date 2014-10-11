@@ -29,6 +29,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
         self.namespaces[12]['de'] = [u'Hilfe', u'H']
         self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
+        self.namespaces[2]['fa'] = [u'کاربر']
+        self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur', u'Discussion utilisatrice']
         self.namespaces[2]['pl'] = [u'Użytkownik', u'Użytkowniczka']
         self.namespaces[3]['pl'] = [u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
