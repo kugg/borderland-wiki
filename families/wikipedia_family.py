@@ -1048,7 +1048,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[446] = {
             'ar': u'برنامج التعليم',
             'ca': u'Education Program',
-            'cs': u'Education Program',
+            'cs': u'Kurz',
             'el': u'Education Program',
             'en': u'Education Program',
             'es': u'Education Program',
@@ -1064,7 +1064,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[447] = {
             'ar': u'نقاش برنامج التعليم',
             'ca': u'Education Program talk',
-            'cs': u'Education Program talk',
+            'cs': u'Diskuse ke kurzu',
             'el': u'Education Program talk',
             'en': u'Education Program talk',
             'es': u'Education Program talk',
