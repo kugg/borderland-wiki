@@ -4326,7 +4326,7 @@ class Family(object):
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
         # Here we return the latest mw release for downloading
-        return '1.23.5'
+        return '1.23.6'
 
     def versionnumber(self, code, version=None):
         """Return an int identifying MediaWiki version.
