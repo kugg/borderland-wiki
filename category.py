@@ -429,7 +429,15 @@ class CategoryMoveRobot(object):
         # Copy the category contents to the new category page
         copied = False
         oldMovedTalk = None
-        if self.oldCat.exists() and self.moveCatPage:
+        if (site.isAllowed('move-categorypages') and self.oldCat.exists()
+                and self.moveCatPage):
+            self.oldCat.move(
+                newCat.title(),
+                reason=self.editSummary,
+                movetalkpage=True,
+                leaveRedirect=not self.deleteEmptySourceCat)
+            copied = True
+        elif self.oldCat.exists() and self.moveCatPage:
             copied = self.oldCat.copyAndKeep(
                 newCat.title(), pywikibot.translate(site, cfd_templates))
             # Also move the talk page
