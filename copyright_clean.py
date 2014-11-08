@@ -14,7 +14,6 @@ __version__ = '$Id$'
 import sys
 import re
 import time
-from urllib import urlencode
 
 import wikipedia as pywikibot
 import catlib

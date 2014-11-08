@@ -15,7 +15,7 @@ __version__ = '$Id$'
 import sys
 import re
 import codecs
-import urllib
+import urllib2
 from xml.etree import cElementTree
 
 sys.path.insert(1, '..')
@@ -48,7 +48,7 @@ def update_family(families):
         original = pywikibot.Family(family).languages_by_size
         obsolete = pywikibot.Family(family).obsolete
 
-        feed = urllib.urlopen(URL % familiesDict[family])
+        feed = urllib2.urlopen(URL % familiesDict[family])
         tree = cElementTree.parse(feed)
 
         new = []

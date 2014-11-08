@@ -32,7 +32,8 @@ Todo:
 __version__ = '$Id$'
 
 import sys
-import urllib
+import urllib2
+from urllib import urlencode
 import re
 import StringIO
 import hashlib
@@ -115,7 +116,7 @@ def downloadPhoto(photoUrl=''):
     TODO: Add exception handling
 
     '''
-    imageFile = urllib.urlopen(photoUrl).read()
+    imageFile = urllib2.urlopen(photoUrl).read()
     return StringIO.StringIO(imageFile)
 
 
@@ -146,9 +147,9 @@ def getFlinfoDescription(photo_id=0):
 
     TODO: Add exception handling, try a couple of times
     '''
-    parameters = urllib.urlencode({'id': photo_id, 'raw': 'on'})
+    parameters = urlencode({'id': photo_id, 'raw': 'on'})
 
-    rawDescription = urllib.urlopen(
+    rawDescription = urllib2.urlopen(
         "http://wikipedia.ramselehof.de/flinfo.php?%s" % parameters).read()
 
     return rawDescription.decode('utf-8')

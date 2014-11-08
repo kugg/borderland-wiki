@@ -88,7 +88,8 @@ import os
 import sys
 import re
 import codecs
-import urllib
+import urllib2
+from urllib import urlencode
 import httplib
 import webbrowser
 import time
@@ -217,7 +218,7 @@ def pageTextPost(url, parameters):
     gotInfo = False
     while not gotInfo:
         try:
-            commonsHelperPage = urllib.urlopen(
+            commonsHelperPage = urllib2.urlopen(
                 "http://tools.wmflabs.org/commonshelper/index.php", parameters)
             data = commonsHelperPage.read().decode('utf-8')
             gotInfo = True
@@ -248,7 +249,7 @@ class imageTransfer(threading.Thread):
                   'doit': 'Uitvoeren'
                   }
 
-        tosend = urllib.urlencode(tosend)
+        tosend = urlencode(tosend)
         print tosend
         CH = pageTextPost('http://tools.wmflabs.org/commonshelper/index.php',
                           tosend)

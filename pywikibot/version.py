@@ -1,5 +1,15 @@
 # -*- coding: utf-8  -*-
-""" Module to determine the pywikibot version (tag, revision and date) """
+""" Module to determine the pywikibot version (tag, revision and date).
+
+This module must not be loaded before the module wikipedia, otherwise
+the proxy configuration does not have any effect, and the urllib2 open
+calls will either fail or block depending on the proxy server
+and config.socket_timeout, which defaults to two minutes.
+
+Unfortunately this module can not import the module wikipedia,
+as that would create a cyclic dependency.
+
+"""
 #
 # (C) Merlijn 'valhallasw' van Deen, 2007-2014
 # (C) xqt, 2010-2014
@@ -13,7 +23,7 @@ import os
 import sys
 import time
 import datetime
-import urllib
+import urllib2
 import subprocess
 
 cache = None
@@ -98,7 +108,7 @@ def getversion_git_windows(hsh, path=None):
         #the code can be found in https://tools.wmflabs.org/pywikibot/gitlog.py
         url = "https://tools.wmflabs.org/pywikibot/gitlog.txt"
         print "Retreving commit log from %s" % url
-        ff = urllib.urlopen(url).read().splitlines()
+        ff = urllib2.urlopen(url).read().splitlines()
         for line in ff:
             if hsh in line:
                 rev = line.split("|")[2]
@@ -231,7 +241,7 @@ def getversion_onlinerepo(repo=None):
     url = repo or 'https://git.wikimedia.org/feed/pywikibot/compat'
     hsh = None
     try:
-        buf = urllib.urlopen(url).readlines()
+        buf = urllib2.urlopen(url).readlines()
         hsh = buf[13].split('/')[5][:-1]
     except:
         raise ParseError
