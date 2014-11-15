@@ -265,7 +265,7 @@ class Family(family.Family):
 
     def version(self, code):
         """Return the version for this family."""
-        return "1.23alpha"
+        return "1.25alpha"
 
     def protocol(self, *args, **kwargs):
         return 'https'
