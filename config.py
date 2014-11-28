@@ -336,6 +336,9 @@ max_external_links = 50
 
 report_dead_links_on_talk = False
 
+# Don't alert on links days_dead old or younger
+weblink_dead_days = 7
+
 ############## DATABASE SETTINGS ##############
 db_hostname = 'localhost'
 db_username = 'wikiuser'
