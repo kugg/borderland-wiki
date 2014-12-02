@@ -8561,7 +8561,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             'list':       'allpages',
             'aplimit':     config.special_page_limit,
             'apnamespace': namespace,
-            'apfrom':      start
+            'apfrom':      start,
+            'rawcontinue': ''
         }
 
         if not includeredirects:
@@ -8576,8 +8577,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             if verbose:
                 debug(u'allpages>>> data.keys() %s' % data.keys())
             if 'warnings' in data:
-                warning = data['warnings']['allpages']['*']
-                raise RuntimeError("API query warning: %s" % warning)
+                warning = data['warnings']['query']['*']
+                pywikibot.warning("API query warning: %s" % warning)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
             if 'allpages' not in data['query']:
