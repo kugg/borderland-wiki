@@ -76,7 +76,6 @@ To complete a move of a page, one can use:
     python solve_disambiguation.py -just -pos:New_Name Old_Name
 
 """
-
 #
 # (C) Rob W.W. Hooft, 2003
 # (C) Daniel Herding, 2004
@@ -96,8 +95,7 @@ import codecs
 import wikipedia as pywikibot
 import editarticle
 import pagegenerators
-from pywikibot import config
-from pywikibot import i18n
+from pywikibot import config, i18n
 # Summary message when working on disambiguation pages
 msg = 'solve_disambiguation-links-resolved'
 
@@ -113,6 +111,7 @@ msg_redir_unlink = 'solve_disambiguation-redirect-removed'
 # Disambiguation Needed template
 dn_template = {
     'en': u'{{dn}}',
+    'fr': u'{{Lien vers un homonyme}}',
 }
 
 # Summary message when adding Disambiguation Needed template
