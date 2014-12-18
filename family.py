@@ -4327,7 +4327,7 @@ class Family(object):
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
         # Here we return the latest mw release for downloading
-        return '1.24.0'
+        return '1.24.1'
 
     def versionnumber(self, code, version=None):
         """Return an int identifying MediaWiki version.
@@ -4963,7 +4963,7 @@ class WikimediaFamily(Family):
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
         # Here we return the latest mw release of wikimedia projects
-        return '1.25wmf11'
+        return '1.25wmf12'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
