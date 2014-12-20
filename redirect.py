@@ -69,6 +69,8 @@ import config
 import query
 import xmlreader
 
+SPECIALPAGE_REGEX = '\<li\>\<a href=".+?" title=".*?">(.+?)</a>'
+
 
 class RedirectGenerator:
     def __init__(self, xmlFilename=None, namespaces=[], offset=-1,
@@ -127,7 +129,7 @@ class RedirectGenerator:
                     if target.startswith('%s:' % code) \
                             or target.startswith(':%s:' % code):
                         if code == self.site.language():
-                        # link to our wiki, but with the lang prefix
+                            # link to our wiki, but with the lang prefix
                             target = target[(len(code) + 1):]
                             if target.startswith(':'):
                                 target = target[1:]
@@ -234,7 +236,7 @@ class RedirectGenerator:
         params = {
             'action': 'query',
             'redirects': 1,
-            #'': '',
+            # '': '',
         }
         for apiQ in self._next_redirect_group():
             params['pageids'] = apiQ
@@ -294,7 +296,7 @@ class RedirectGenerator:
 
             # regular expression which finds redirects which point to a
             # non-existing page inside the HTML
-            Rredir = re.compile('\<li\>\<a href=".+?" title="(.*?)"')
+            Rredir = re.compile(SPECIALPAGE_REGEX)
 
             redir_names = Rredir.findall(maintenance_txt)
             pywikibot.output(u'Retrieved %d redirects from special page.\n'
@@ -350,7 +352,7 @@ class RedirectGenerator:
 
             # regular expression which finds redirects which point to
             # another redirect inside the HTML
-            Rredir = re.compile('\<li\>\<a href=".+?" title="(.*?)">')
+            Rredir = re.compile(SPECIALPAGE_REGEX)
             redir_names = Rredir.findall(maintenance_txt)
             pywikibot.output(u'Retrieved %i redirects from special page.\n'
                              % len(redir_names))
@@ -521,8 +523,8 @@ class RedirectRobot:
                                  u"Won't delete anything."
                                  % targetPage.title(asLink=True))
             else:
-                #we successfully get the target page, meaning that
-                #it exists and is not a redirect: no reason to touch it.
+                # we successfully get the target page, meaning that
+                # it exists and is not a redirect: no reason to touch it.
                 pywikibot.output(
                     u'Redirect target %s does exist! Won\'t delete anything.'
                     % targetPage.title(asLink=True))
