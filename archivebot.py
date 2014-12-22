@@ -412,7 +412,9 @@ class DiscussionThread(object):
                 #return 'unsigned'
             maxage = str2time(reT.group(1))
             if self.now - self.timestamp > maxage:
-                return message('archivebot-older-than') + ' ' + reT.group(1)
+                return i18n.twtranslate(Site.language,
+                                        'archivebot-older-than',
+                                        {'duration': reT.group(1)})
         return ''
 
 
