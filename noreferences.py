@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
-
 """
-This script goes over multiple pages, searches for pages where <references />
+This script adds a missing references section to pages.
+
+It goes over multiple pages, searches for pages where <references />
 is missing although a <ref> tag is present, and in that case adds a new
 references section.
 
@@ -11,7 +12,7 @@ These command line parameters can be used to specify which pages to work on:
 &params;
 
     -xml          Retrieve information from a local XML dump (pages-articles
-                  or pages-meta-current, see http://download.wikimedia.org).
+                  or pages-meta-current, see https://download.wikimedia.org).
                   Argument can also be given as "-xml:filename".
 
     -namespace:n  Number or name of namespace to process. The parameter can be
@@ -34,7 +35,7 @@ bandwidth. Instead, use the -xml parameter, or use another way to generate
 a list of affected articles
 """
 #
-# (C) Pywikibot team, 2007-2013
+# (C) Pywikibot team, 2007-2014
 #
 # Distributed under the terms of the MIT license.
 #
@@ -64,6 +65,13 @@ placeBeforeSections = {
         u'وصلات خارجية',
         u'انظر أيضا',
         u'ملاحظات'
+    ],
+    'ca': [
+        u'Bibliografia',
+        u'Bibliografia complementària',
+        u'Vegeu també',
+        u'Enllaços externs',
+        u'Enllaços',
     ],
     'cs': [
         u'Externí odkazy',
@@ -192,6 +200,12 @@ placeBeforeSections = {
         u'Przipisy',
         u'Připisy',
     ],
+    'th': [
+        u'อ่านเพิ่มเติม',
+        u'แหล่งข้อมูลอื่น',
+        u'ดูเพิ่ม',
+        u'หมายเหตุ',
+    ],
     'zh': [
         u'外部链接',
         u'外部連结',
@@ -213,6 +227,9 @@ referencesSections = {
         u'مصادر ومراجع',
         u'المراجع والمصادر',
         u'المصادر والمراجع',
+    ],
+    'ca': [
+        u'Referències',
     ],
     'cs': [
         u'Reference',
@@ -329,6 +346,11 @@ referencesSections = {
         u'Przipisy',
         u'Připisy',
     ],
+    'th': [
+        u'อ้างอิง',
+        u'เชิงอรรถ',
+        u'หมายเหตุ',
+    ],
     'zh': [
         u'參考資料',
         u'参考资料',
@@ -347,6 +369,9 @@ referencesTemplates = {
         'be': [u'Зноскі', u'Примечания', u'Reflist', u'Спіс заўваг',
                u'Заўвагі'],
         'be-x-old': [u'Зноскі'],
+        'ca': [u'Referències', u'Reflist', u'Listaref', u'Referència',
+               u'Referencies', u'Referències2',
+               u'Amaga', u'Amaga ref', u'Amaga Ref', u'Amaga Ref2', u'Apèndix'],
         'da': [u'Reflist'],
         'dsb': [u'Referency'],
         'en': [u'Reflist', u'Refs', u'FootnotesSmall', u'Reference',
@@ -378,6 +403,7 @@ referencesTemplates = {
                u'Примечания', u'Список примечаний',
                u'Сноска', u'Сноски'],
         'szl': [u'Przipisy', u'Připisy'],
+        'th': [u'รายการอ้างอิง'],
         'zh': [u'Reflist', u'RefFoot', u'NoteFoot'],
     },
 }
@@ -398,6 +424,7 @@ referencesSubstitute = {
         'pl': u'{{Przypisy}}',
         'ru': u'{{примечания}}',
         'szl': u'{{Przipisy}}',
+        'th': u'{{รายการอ้างอิง}}',
         'zh': u'{{reflist}}',
     },
 }
@@ -424,13 +451,18 @@ maintenance_category = {
 
 
 class XmlDumpNoReferencesPageGenerator:
+
     """
     Generator which will yield Pages that might lack a references tag.
+
     These pages will be retrieved from a local XML dump file
     (pages-articles or pages-meta-current).
     """
+
     def __init__(self, xmlFilename):
         """
+        Constructor.
+
         Arguments:
             * xmlFilename  - The dump's path, either absolute or relative
         """
@@ -451,7 +483,10 @@ class XmlDumpNoReferencesPageGenerator:
 
 class NoReferencesBot:
 
+    """References section bot."""
+
     def __init__(self, generator, always=False):
+        """Constructor."""
         self.generator = generator
         self.always = always
         self.site = pywikibot.getSite()
@@ -463,19 +498,17 @@ class NoReferencesBot:
                                          re.IGNORECASE | re.DOTALL)
         try:
             self.referencesTemplates = referencesTemplates[
-                pywikibot.getSite().family.name][pywikibot.getSite().lang]
+                self.site.family.name][self.site.lang]
         except KeyError:
             self.referencesTemplates = []
         try:
             self.referencesText = referencesSubstitute[
-                pywikibot.getSite().family.name][pywikibot.getSite().lang]
+                self.site.family.name][self.site.lang]
         except KeyError:
             self.referencesText = u'<references />'
 
     def lacksReferences(self, text, verbose=True):
-        """
-        Checks whether or not the page is lacking a references tag.
-        """
+        """Check whether or not the page is lacking a references tag."""
         oldTextCleaned = pywikibot.removeDisabledParts(text)
         if self.referencesR.search(oldTextCleaned) or \
            self.referencesTagR.search(oldTextCleaned):
@@ -500,14 +533,15 @@ class NoReferencesBot:
 
     def addReferences(self, oldText):
         """
-        Tries to add a references tag into an existing section where it fits
-        into. If there is no such section, creates a new section containing
+        Add a references tag into an existing section where it fits into.
+
+        If there is no such section, creates a new section containing
         the references tag.
         * Returns : The modified pagetext
 
         """
         # Is there an existing section where we can add the references tag?
-        for section in pywikibot.translate(self.site, referencesSections):
+        for section in i18n.translate(self.site, referencesSections, fallback=False):
             sectionR = re.compile(r'\r?\n=+ *%s *=+ *\r?\n' % section)
             index = 0
             while index < len(oldText):
@@ -532,7 +566,7 @@ class NoReferencesBot:
                     break
 
         # Create a new section for the references tag
-        for section in pywikibot.translate(self.site, placeBeforeSections):
+        for section in i18n.translate(self.site, placeBeforeSections, fallback=False):
             # Find out where to place the new section
             sectionR = re.compile(r'\r?\n(?P<ident>=+) *%s *(?P=ident) *\r?\n'
                                   % section)
@@ -542,7 +576,7 @@ class NoReferencesBot:
                 if match:
                     if pywikibot.isDisabled(oldText, match.start()):
                         pywikibot.output(
-                            'Existing  %s section is commented out, won\'t add '
+                            'Existing %s section is commented out, won\'t add '
                             'the references in front of it.' % section)
                         index = match.end()
                     else:
@@ -569,11 +603,11 @@ class NoReferencesBot:
         interwikiPattern = r'\[\[([a-zA-Z\-]+)\s?:([^\[\]\n]*)\]\]\s*'
         # won't work with nested templates
         # the negative lookahead assures that we'll match the last template
-        # occurence in the temp text.
-        ### fix me:
-        ### {{commons}} or {{commonscat}} are part of Weblinks section
-        ### * {{template}} is mostly part of a section
-        ### so templatePattern must be fixed
+        # occurrence in the temp text.
+        # FIXME:
+        # {{commons}} or {{commonscat}} are part of Weblinks section
+        # * {{template}} is mostly part of a section
+        # so templatePattern must be fixed
         templatePattern = r'\r?\n{{((?!}}).)+?}}\s*'
         commentPattern = r'<!--((?!-->).)*?-->\s*'
         metadataR = re.compile(r'(\r?\n)?(%s|%s|%s|%s)$'
@@ -598,9 +632,10 @@ class NoReferencesBot:
             newSection = u'\n%s\n' % (self.referencesText)
         else:
             newSection = u'\n%s %s %s\n%s\n' % (ident,
-                                                pywikibot.translate(
+                                                i18n.translate(
                                                     self.site,
-                                                    referencesSections)[0],
+                                                    referencesSections,
+                                                    fallback=False)[0],
                                                 ident, self.referencesText)
         return oldText[:index] + newSection + oldText[index:]
 
@@ -660,7 +695,7 @@ class NoReferencesBot:
                 pywikibot.output(u"Page %s is a disambig; skipping."
                                  % page.title(asLink=True))
                 continue
-            if pywikibot.getSite().sitename() == 'wikipedia:en' and \
+            if self.site.sitename() == 'wikipedia:en' and \
                page.isIpEdit():
                 pywikibot.output(
                     u"Page %s is edited by IP. Possible vandalized"
@@ -672,7 +707,9 @@ class NoReferencesBot:
 
 
 def main():
-    #page generator
+    """Process command line arguments and invoke bot."""
+
+    # page generator
     gen = None
     # This temporary array is used to read the page title if one single
     # page to work on is specified by the arguments.
