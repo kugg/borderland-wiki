@@ -1,7 +1,7 @@
 # -*- coding: utf-8  -*-
 
 #
-# (C) Pywikibot team, 2004-2014
+# (C) Pywikibot team, 2004-2015
 #
 # Distributed under the terms of the MIT license.
 #
@@ -4963,7 +4963,7 @@ class WikimediaFamily(Family):
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
         # Here we return the latest mw release of wikimedia projects
-        return '1.25wmf12'
+        return '1.25wmf13'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
