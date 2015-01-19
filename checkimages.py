@@ -735,7 +735,7 @@ class checkImagesBot(object):
                 nick = self.uploader
             else:
                 nick = reportPageObject.getLatestUploader()[0]
-        except pywikibot.NoPage:
+        except KeyError:
             pywikibot.output(
                 u"Seems that %s has only the description and not the file..."
                 % self.image_to_report)
@@ -1049,7 +1049,10 @@ class checkImagesBot(object):
 
                     if DupePage.urlname() != self.image.urlname() or \
                        self.timestamp is None:
-                        self.timestamp = DupePage.getLatestUploader()[1]
+                        try:
+                            self.timestamp = DupePage.getLatestUploader()[1]
+                        except KeyError:
+                            continue
                     data = time.strptime(self.timestamp, u"%Y-%m-%dT%H:%M:%SZ")
                     data_seconds = time.mktime(data)
                     time_image_list.append([data_seconds, duplicate])
@@ -1556,7 +1559,7 @@ class checkImagesBot(object):
                 for image in generator:
                     try:
                         timestamp = image.getLatestUploader()[1]
-                    except pywikibot.NoPage:
+                    except (pywikibot.NoPage, KeyError):
                         continue
                     # not relative to localtime
                     img_time = datetime.datetime.strptime(timestamp,
