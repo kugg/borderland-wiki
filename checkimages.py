@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Script to check recently uploaded files. This script checks if a file
-description is present and if there are other problems in the image's
-description.
+Script to check recently uploaded files.
+
+This script checks if a file description is present and if there are other
+problems in the image's description.
 
 This script will have to be configured for each language. Please submit
-translations as addition to the pywikipediabot framework.
+translations as addition to the Pywikibot framework.
 
 Everything that needs customisation is indicated by comments.
 
@@ -83,7 +84,7 @@ right parameter.
 # (C) Kyle/Orgullomoore, 2006-2007 (newimage.py)
 # (C) Siebrand Mazeland, 2007-2010
 # (C) Filnik, 2007-2011
-# (C) Pywikipedia team, 2007-2013
+# (C) Pywikibot team, 2007-2015
 #
 # Distributed under the terms of the MIT license.
 #
@@ -332,11 +333,15 @@ bot_list = {
 # The message that the bot will add the second time that find another license
 # problem.
 second_message_without_license = {
-    'hu': u'\nSzia! Úgy tűnik a [[:Kép:%s]] képpel is hasonló a probléma, mint az előbbivel. Kérlek olvasd el a [[WP:KÉPLIC|feltölthető képek]]ről szóló oldalunk, és segítségért fordulj a [[WP:KF-JO|Jogi kocsmafalhoz]]. Köszönöm --~~~~',
-    'it': u':{{subst:Progetto:Coordinamento/Immagini/Bot/Messaggi/Senza licenza2|%s|__botnick__}} --~~~~',
+    'hu': u'\nSzia! Úgy tűnik a [[:Kép:%s]] képpel is hasonló a probléma, '
+          u'mint az előbbivel. Kérlek olvasd el a [[WP:KÉPLIC|feltölthető '
+          u'képek]]ről szóló oldalunk, és segítségért fordulj a [[WP:KF-JO|'
+          u'Jogi kocsmafalhoz]]. Köszönöm --~~~~',
+    'it': u':{{subst:Progetto:Coordinamento/Immagini/Bot/Messaggi/Senza'
+          u'licenza2|%s|__botnick__}} --~~~~',
 }
 
-# You can add some settings to wikipedia. In this way, you can change them
+# You can add some settings to a wiki page. In this way, you can change them
 # without touching the code. That's useful if you are running the bot on
 # Toolserver.
 page_with_settings = {
@@ -527,12 +532,12 @@ category_with_licenses = {
 
 # Page where is stored the message to send as email to the users
 emailPageWithText = {
-    #'de': 'Benutzer:ABF/D3',
+    # 'de': 'Benutzer:ABF/D3',
 }
 
 # Title of the email
 emailSubject = {
-    #'de': 'Problemen mit Deinem Bild auf der Deutschen Wikipedia',
+    # 'de': 'Problemen mit Deinem Bild auf der Deutschen Wikipedia',
 }
 
 # Seems that uploaderBots aren't interested to get messages regarding the
@@ -554,31 +559,23 @@ serviceTemplates = {
 project_inserted = ['ar', 'commons', 'de', 'en', 'fa', 'ga', 'hu', 'it', 'ja',
                     'ko', 'ta', 'ur', 'zh']
 
-################################################################################
-# <--------------------------- Change only above! ---------------------------> #
-################################################################################
+# END OF CONFIGURATION.
 
 
 class LogIsFull(pywikibot.Error):
-    """An exception indicating that the log is full and the Bot cannot add
-    other data to prevent Errors.
 
-    """
+    """Log is full and the Bot cannot add other data to prevent Errors."""
 
 
 class NothingFound(pywikibot.Error):
-    """ An exception indicating that a regex has return [] instead of results.
 
-    """
+    """Regex returned [] instead of results."""
 
 
 def printWithTimeZone(message):
-    """ Function to print the messages followed by the TimeZone encoded
-    correctly.
-
-    """
+    """Print the messages followed by the TimeZone encoded correctly."""
     if message[-1] != ' ':
-        message = '%s ' % unicode(message)
+        message = u'%s ' % unicode(message)
     if locale.getlocale()[1]:
         time_zone = unicode(time.strftime(u"%d %b %Y %H:%M:%S (UTC)",
                                           time.gmtime()),
@@ -590,9 +587,12 @@ def printWithTimeZone(message):
 
 
 class checkImagesBot(object):
+
+    """A robot to check recently uploaded files."""
+
     def __init__(self, site, logFulNumber=25000, sendemailActive=False,
                  duplicatesReport=False, logFullError=True):
-        """ Constructor, define some global variable """
+        """Constructor, define some global variable."""
         self.site = site
         self.logFullError = logFullError
         self.logFulNumber = logFulNumber
@@ -637,9 +637,10 @@ class checkImagesBot(object):
         self.list_licenses = self.load_licenses()
 
     def setParameters(self, imageName):
-        """ Function to set parameters, now only image but maybe it can be used
-        for others in "future"
+        """
+        Set parameters.
 
+        Now only image but maybe it can be used for others in "future".
         """
         self.imageName = imageName
         self.image = pywikibot.ImagePage(self.site, self.imageName)
@@ -693,7 +694,7 @@ class checkImagesBot(object):
                 break
 
     def uploadBotChangeFunction(self, reportPageText, upBotArray):
-        """Detect the user that has uploaded the file through the upload bot"""
+        """Detect the user that has uploaded the file through the upload bot."""
         regex = upBotArray[1]
         results = re.findall(regex, reportPageText)
 
@@ -705,10 +706,7 @@ class checkImagesBot(object):
             return upBotArray[0]
 
     def tag_image(self, put=True):
-        """ Function to add the template in the image and to find out
-        who's the user that has uploaded the file.
-
-        """
+        """Add template to the Image page and find out the uploader."""
         # Get the image's description
         reportPageObject = pywikibot.ImagePage(self.site, self.image_to_report)
 
@@ -865,17 +863,14 @@ class checkImagesBot(object):
                 u'that it works!')
 
     def regexGenerator(self, regexp, textrun):
-        """ Generator used when an user use a regex parsing a page to yield the
-        results
-
-        """
+        """Find page to yield using regex to parse text."""
         regex = re.compile(r'%s' % regexp, re.UNICODE | re.DOTALL)
         results = regex.findall(textrun)
         for image in results:
             yield pywikibot.ImagePage(self.site, image)
 
     def loadHiddenTemplates(self):
-        """ Function to load the white templates """
+        """Function to load the white templates."""
         # A template as {{en is not a license! Adding also them in the
         # whitelist template...
         for langK in pywikibot.Family(u'wikipedia').langs.keys():
@@ -894,8 +889,7 @@ class checkImagesBot(object):
         return self.hiddentemplates
 
     def returnOlderTime(self, listGiven, timeListGiven):
-        """ Get some time and return the oldest of them """
-        usage = False
+        """Get some time and return the oldest of them."""
         num = 0
         num_older = None
         max_usage = 0
@@ -925,11 +919,7 @@ class checkImagesBot(object):
                 return imageName
 
     def convert_to_url(self, page):
-        # Function stolen from wikipedia.py
-        """The name of the page this Page refers to, in a form suitable for the
-        URL of the page.
-
-        """
+        """Return the page title suitable as for an URL."""
         title = page.replace(u" ", u"_")
         encodedTitle = title.encode(self.site.encoding())
         return urllib.quote(encodedTitle)
@@ -937,7 +927,7 @@ class checkImagesBot(object):
     def countEdits(self, pagename, userlist):
         """Function to count the edit of a user or a list of users in a page."""
         # self.botolist
-        if type(userlist) == str:
+        if isinstance(userlist, basestring):
             userlist = [userlist]
         page = pywikibot.Page(self.site, pagename)
         history = page.getVersionHistory()
@@ -952,7 +942,7 @@ class checkImagesBot(object):
         return number_edits
 
     def checkImageOnCommons(self):
-        """ Checking if the file is on commons """
+        """Checking if the file is on commons."""
         pywikibot.output(u'Checking if [[%s]] is on commons...'
                          % self.imageName)
         commons_site = pywikibot.getSite('commons', 'commons')
@@ -1339,11 +1329,7 @@ class checkImagesBot(object):
         return list_licenses
 
     def miniTemplateCheck(self, template):
-        """
-        Check whether the given template given in the licenses allowed or in the
-        licenses to skip.
-
-        """
+        """Check if template is in allowed licenses or in licenses to skip."""
         # the list_licenses are loaded in the __init__
         # (not to load them multimple times)
         if template in self.list_licenses:
@@ -1365,11 +1351,12 @@ class checkImagesBot(object):
 
     def templateInList(self):
         """
+        Check if template is in list.
+
         The problem is the calls to the Mediawiki system because they can be
         pretty slow. While searching in a list of objects is really fast, so
         first of all let's see if we can find something in the info that we
         already have, then make a deeper check.
-
         """
         for template in self.licenses_found:
             result = self.miniTemplateCheck(template)
@@ -1388,10 +1375,12 @@ class checkImagesBot(object):
                     continue
 
     def smartDetection(self):
-        """The bot instead of checking if there's a simple template in the
+        """
+        Detect templates.
+
+        The bot instead of checking if there's a simple template in the
         image's description, checks also if that template is a license or
         something else. In this sense this type of check is smart.
-
         """
         self.seems_ok = False
         self.license_found = None
@@ -1454,8 +1443,9 @@ class checkImagesBot(object):
                     self.license_found = self.allLicenses[0].title()
         self.some_problem = False  # If it has "some_problem" it must check
                                    # the additional settings.
-        # if self.settingsData, use addictional settings
+
         if self.settingsData:
+            # use additional settings
             self.findAdditionalProblems()
 
         if self.some_problem:
@@ -1503,7 +1493,6 @@ class checkImagesBot(object):
     def load(self, raw):
         """ Load a list of objects from a string using regex. """
         list_loaded = []
-        pos = 0
         # I search with a regex how many user have not the talk page
         # and i put them in a list (i find it more easy and secure)
         regl = r"(\"|\')(.*?)\1(?:,|\])"
@@ -1541,9 +1530,10 @@ class checkImagesBot(object):
             pywikibot.output('')
 
     def wait(self, waitTime, generator, normal, limit):
-        """ Skip the images uploaded before x seconds to let
-            the users to fix the image's problem alone in the
-            first x seconds.
+        """
+        Skip the images uploaded before x seconds.
+
+        Let the users to fix the image's problem alone in the first x seconds.
         """
         imagesToSkip = 0
         # if normal, we can take as many images as "limit" has told us,
@@ -1783,8 +1773,15 @@ class checkImagesBot(object):
             return True
 
 
-def main():
-    """ Main function """
+def main(*args):
+    """
+    Process command line arguments and invoke bot.
+
+    If args is an empty list, sys.argv is used.
+
+    @param args: command line arguments
+    @type args: list of unicode
+    """
     # Command line configurable parameters
     repeat = True  # Restart after having check all the images?
     limit = 80  # How many images check?
