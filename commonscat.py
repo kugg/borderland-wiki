@@ -2,8 +2,9 @@
 # -*- coding: utf-8  -*-
 """
 With this tool you can add the template {{commonscat}} to categories.
+
 The tool works by following the interwiki links. If the template is present on
-another langauge page, the bot will use it.
+another language page, the bot will use it.
 
 You could probably use it at articles as well, but this isn't tested.
 
@@ -45,8 +46,8 @@ TODO:
 
 #
 # (C) Multichill, 2008-2009
-# (C) Xqt, 2009-2013
-# (C) Pywikipedia bot team, 2008-2012
+# (C) Xqt, 2009-2015
+# (C) Pywikipedia bot team, 2008-2015
 #
 # Distributed under the terms of the MIT license.
 #
@@ -55,9 +56,10 @@ __version__ = '$Id$'
 
 import re
 
+import add_text
 import wikipedia as pywikibot
 import pagegenerators
-import add_text
+from pywikibot import i18n
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
@@ -193,7 +195,11 @@ ignoreTemplates = {
     'nl': [u'Commons', u'Commonsklein', u'Commonscatklein', u'Catbeg',
            u'Catsjab', u'Catwiki'],
     'om': [u'Commons'],
-    'pt': [u'Correlatos'],
+    'pt': [u'Correlatos',
+           u'Commons',
+           u'Commons cat multi',
+           u'Commons1',
+           u'Commons2'],
     'simple': [u'Sisterlinks'],
     'ru': [u'Навигация', u'Навигация для категорий', u'КПР', u'КБР',
            u'Годы в России', u'commonscat-inline'],
@@ -205,26 +211,10 @@ ignoreTemplates = {
            u'分类重定向', u'追蹤分類', u'共享資源', u'追蹤分類'],
 }
 
-msg_change = {
-    'be-x-old': u'Робат: зьмяніў шаблён [[:Commons:Category:%(oldcat)s|%(oldcat)s]] на [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'cs': u'Robot změnil šablonu Commonscat z [[:Commons:Category:%(oldcat)s|%(oldcat)s]] na [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'da': u'Robot: Ændrer commonscat link fra [[:Commons:Category:%(oldcat)s|%(oldcat)s]] til [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'de': u'Bot: Ändere commonscat link von [[:Commons:Category:%(oldcat)s|%(oldcat)s]] zu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'en': u'Bot: Changing commonscat link from [[:Commons:Category:%(oldcat)s|%(oldcat)s]] to [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'fa': u'ربات: تغییر پیوند به انبار از [[:Commons:Category:%(oldcat)s|%(oldcat)s]] به [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'fr': u'Robot: Changé commonscat link de [[:Commons:Category:%(oldcat)s|%(oldcat)s]] à [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'frr': u'Bot: Feranere commonscat link faan [[:Commons:Category:%(oldcat)s|%(oldcat)s]] tu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'is': u'Vélmenni: Breyti Commonscat tengli frá [[:Commons:Category:%(oldcat)s|%(oldcat)s]] í [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'pdc': u'Waddefresser: commonscat Gleecher vun [[:Commons:Category:%(oldcat)s|%(oldcat)s]] nooch [[:Commons:Category:%(newcat)s|%(newcat)s]] geennert',
-    'ru': u'Бот: Изменение commonscat-ссылки с [[:Commons:Category:%(oldcat)s|%(oldcat)s]] на [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'sk': u'Robot zmenil šablónu Commonscat z [[:Commons:Category:%(oldcat)s|%(oldcat)s]] na [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'uk': u'Бот: Зміна commonscat-посилання з [[:Commons:Category:%(oldcat)s|%(oldcat)s]] на [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'th': u'บอต: เปลี่ยนลิงก์หมวดหมู่คอมมอนส์จาก [[:Commons:Category:%(oldcat)s|%(oldcat)s]] เป็น [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'zh': u'機器人：更改 commonscat 連結，從 %(oldcat)s 至 %(newcat)s',
-}
-
 
 class CommonscatBot:
+
+    """Commons categorisation bot."""
 
     def __init__(self, generator, always, summary=None):
         self.generator = generator
@@ -237,7 +227,7 @@ class CommonscatBot:
             self.treat(page)
 
     def treat(self, page):
-        """ Loads the given page, does some changes, and saves it. """
+        """ Load the given page, do some changes, and save it. """
         if not page.exists():
             pywikibot.output(u'Page %s does not exist. Skipping.'
                              % page.title(asLink=True))
@@ -295,25 +285,24 @@ class CommonscatBot:
         return False
 
     @classmethod
-    def getCommonscatTemplate(self, lang=None):
-        """Get the template name in a language. Expects the language code.
-        Return as tuple containing the primary template and it's alternatives
+    def getCommonscatTemplate(cls, code=None):
+        """Get the template name of a site. Expects the site code.
+
+        Return as tuple containing the primary template and its alternatives.
 
         """
-        if lang in commonscatTemplates:
-            return commonscatTemplates[lang]
+        if code in commonscatTemplates:
+            return commonscatTemplates[code]
         else:
             return commonscatTemplates[u'_default']
 
     def skipPage(self, page):
-        '''
-        Do we want to skip this page?
-        '''
-        if page.site().language() in ignoreTemplates:
+        """Determine if the page should be skipped."""
+        if page.site.code in ignoreTemplates:
             templatesInThePage = page.templates()
             templatesWithParams = page.templatesWithParams()
-            for template in ignoreTemplates[page.site().language()]:
-                if type(template) != tuple:
+            for template in ignoreTemplates[page.site.code]:
+                if not isinstance(template, tuple):
                     if template in templatesInThePage:
                         return True
                 else:
@@ -354,7 +343,10 @@ class CommonscatBot:
             commonsPage.put(newtext=newtext, comment=comment)
 
     def addCommonscat(self, page):
-        """Take a page. Go to all the interwiki page looking for a commonscat
+        """
+        Add CommonsCat template to page.
+
+        Take a page. Go to all the interwiki page looking for a commonscat
         template. When all the interwiki's links are checked and a proper
         category is found add it to the page.
 
@@ -362,7 +354,7 @@ class CommonscatBot:
         pywikibot.output(u'Working on ' + page.title())
         # Get the right templates for this page
         primaryCommonscat, commonscatAlternatives = self.getCommonscatTemplate(
-            page.site().language())
+            page.site.code)
         commonscatLink = self.getCommonscatLink(page)
         if commonscatLink:
             pywikibot.output(u'Commonscat template is already on %s'
@@ -384,14 +376,13 @@ class CommonscatBot:
                                       checkedCommonscatTarget, LinkText, Note)
                 return (True, self.always)
             else:
-                #Commonscat link is wrong
+                # Commonscat link is wrong
                 commonscatLink = self.findCommonscatLink(page)
                 if (commonscatLink != u''):
                     self.changeCommonscat(page, currentCommonscatTemplate,
                                           currentCommonscatTarget,
                                           primaryCommonscat, commonscatLink)
-                #else
-                #Should i remove the commonscat link?
+                # TODO: if the commonsLink == u'', should it be removed?
 
         elif self.skipPage(page):
             pywikibot.output("Found a template in the skip list. Skipping %s"
@@ -417,7 +408,7 @@ class CommonscatBot:
                          description=u''):
         """ Change the current commonscat template and target. """
         if oldcat == '3=S' or linktitle == '3=S':
-            return  # additional param on de-wiki, TODO: to be handled
+            return  # TODO: handle additional param on de-wiki
         if not linktitle and (page.title().lower() in oldcat.lower() or
                               oldcat.lower() in page.title().lower()):
             linktitle = oldcat
@@ -441,45 +432,47 @@ class CommonscatBot:
         if self.summary:
             comment = self.summary
         else:
-            comment = pywikibot.translate(page.site(),
-                                          msg_change) % {'oldcat': oldcat,
-                                                         'newcat': newcat}
+            comment = i18n.twtranslate(page.site.code,
+                                       'commonscat-msg_change',
+                                       {'oldcat': oldcat, 'newcat': newcat})
         self.save(newtext, page, comment)
 
     def findCommonscatLink(self, page=None):
+        """Find CommonsCat template on interwiki pages."""
         for ipage in page.interwiki():
             try:
-                if(ipage.exists() and not ipage.isRedirectPage()
-                   and not ipage.isDisambig()):
-                    commonscatLink = self.getCommonscatLink(ipage)
-                    if commonscatLink:
-                        (currentTemplate,
-                         possibleCommonscat, linkText, Note) = commonscatLink
-                        checkedCommonscat = self.checkCommonscatLink(
-                            possibleCommonscat)
-                        if (checkedCommonscat != u''):
-                            pywikibot.output(
-                                u"Found link for %s at [[%s:%s]] to %s."
-                                % (page.title(), ipage.site().language(),
-                                   ipage.title(), checkedCommonscat))
-                            return checkedCommonscat
+                if(not ipage.exists() or ipage.isRedirectPage()
+                   or ipage.isDisambig()):
+                    continue
+                commonscatLink = self.getCommonscatLink(ipage)
+                if not commonscatLink:
+                    continue
+                (currentTemplate,
+                 possibleCommonscat, linkText, Note) = commonscatLink
+                checkedCommonscat = self.checkCommonscatLink(possibleCommonscat)
+                if (checkedCommonscat != u''):
+                    pywikibot.output(
+                        u"Found link for %s at [[%s:%s]] to %s."
+                        % (page.title(), ipage.site.code,
+                           ipage.title(), checkedCommonscat))
+                    return checkedCommonscat
             except pywikibot.BadTitle:
-                #The interwiki was incorrect
+                # The interwiki was incorrect
                 return u''
         return u''
 
     def getCommonscatLink(self, wikipediaPage=None):
-        '''
-        Go through the page and return a tuple of (<templatename>, <target>)
-        '''
+        """Find CommonsCat template on page.
+
+        @rtype: tuple of (<templatename>, <target>, <linktext>, <note>)
+        """
         primaryCommonscat, commonscatAlternatives = self.getCommonscatTemplate(
-            wikipediaPage.site().language())
+            wikipediaPage.site.code)
         commonscatTemplate = u''
         commonscatTarget = u''
         commonscatLinktext = u''
         commonscatNote = u''
         # See if commonscat is present
-
         for template in wikipediaPage.templatesWithParams():
             if template[0] == primaryCommonscat \
                or template[0] in commonscatAlternatives:
@@ -497,16 +490,17 @@ class CommonscatBot:
         return None
 
     def checkCommonscatLink(self, name=""):
-        """ This function will return the name of a valid commons category
+        """ Return the name of a valid commons category.
+
         If the page is a redirect this function tries to follow it.
-        If the page doesnt exists the function will return an empty string
+        If the page doesn't exists the function will return an empty string
 
         """
         if pywikibot.verbose:
             pywikibot.output("getCommonscat: " + name)
         try:
             commonsSite = self.site.image_repository()
-            #This can throw a pywikibot.BadTitle
+            # This can throw a pywikibot.BadTitle
             commonsPage = pywikibot.Page(commonsSite, "Category:" + name)
 
             if not commonsPage.exists():
@@ -525,9 +519,9 @@ class CommonscatBot:
                             return self.checkCommonscatLink(m.group('newcat2'))
                     else:
                         pywikibot.output(
-                            u'getCommonscat: Deleted by %s. Couldn\'t find '
+                            u'getCommonscat: %s deleted by %s. Couldn\'t find '
                             u'move target in "%s"'
-                            % (loguser, logcomment))
+                            % (commonsPage, loguser, logcomment))
                         return u''
                 except StopIteration:
                     if pywikibot.verbose:
@@ -563,20 +557,26 @@ class CommonscatBot:
             return u''
 
 
-def main():
-    """ Parse the command line arguments and get a pagegenerator to work on.
-    Iterate through all the pages.
+def main(*args):
     """
+    Process command line arguments and invoke bot.
 
+    If args is an empty list, sys.argv is used.
+
+    @param args: command line arguments
+    @type args: list of unicode
+    """
     summary = None
     generator = None
     always = False
     ns = []
     ns.append(14)
-    # Load a lot of default generators
+
+    # Process global args and prepare generator args parser
+
     genFactory = pagegenerators.GeneratorFactory()
 
-    for arg in pywikibot.handleArgs():
+    for arg in pywikibot.handleArgs(*args):
         if arg.startswith('-summary'):
             if len(arg) == 8:
                 summary = pywikibot.input(u'What summary do you want to use?')
@@ -599,13 +599,14 @@ def main():
 
     if not generator:
         generator = genFactory.getCombinedGenerator()
-    if not generator:
-        raise add_text.NoEnoughData(u'You have to specify the generator you '
-                                    u'want to use for the script!')
 
-    pregenerator = pagegenerators.PreloadingGenerator(generator)
-    bot = CommonscatBot(pregenerator, always, summary)
-    bot.run()
+    if generator:
+        pregenerator = pagegenerators.PreloadingGenerator(generator)
+        bot = CommonscatBot(pregenerator, always, summary)
+        bot.run()
+    else:
+        pywikibot.showHelp()
+
 
 if __name__ == "__main__":
     try:
