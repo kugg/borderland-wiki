@@ -9,7 +9,7 @@ be followed before running it on any wiki.
 
 To get started on proper usage of the bot framework, please refer to:
 
-    http://www.mediawiki.org/wiki/Manual:Pywikipediabot
+    http://www.mediawiki.org/wiki/Manual:Pywikibot
 
 The contents of the package are:
 
@@ -17,9 +17,9 @@ The contents of the package are:
 
 CONTENTS               : THIS file
 LICENSE                : a reference to the MIT license
-README                 : Short info string used by PyWikipediaBot Nightlies
+README                 : Short info string used by Pywikibot Nightlies
 setup.cfg              : Setup file for automated tests of the package
-version                : package version collected by PyWikipediaBot Nightlies,
+version                : package version collected by Pywikibot Nightlies,
                          otherwise omitted
 config.py              : Configuration module containing all defaults. Do not
                          change these! See below how to change values.
@@ -40,7 +40,7 @@ diskcache.py           : Disk caching module
 family.py              : Abstract superclass for wiki families. Subclassed by
                          the classes in the 'families' subdirectory.
 gui.py                 : Some GUI elements for solve_disambiguation.py
-logindata.py           : Use of pywikipedia as a library.
+logindata.py           : Use of pywikibot as a library.
 mysql_autoconnection.py: A small MySQL wrapper that catches dead MySQL
                          connections, and tries to reconnect them.
 pagegenerators.py      : Generator pages.
@@ -49,11 +49,11 @@ query.py               : API query library
 rciw.py                : A IRC script to check for Recent Changes through IRC,
                          and to check for interwikis in those recently modified
                          articles.
-simple_family.py       : Family file in conjunction with none-pywikipedia
+simple_family.py       : Family file in conjunction with none-wikimedia
                          config files
 titletranslate.py      : rules and tricks to auto-translate wikipage titles
 userlib.py             : Library to work with users, their pages and talk pages
-wikicomserver.py       : This library allows the use of the pywikipediabot
+wikicomserver.py       : This library allows the use of the pywikibot
                          directly from COM-aware applications.
 wikipedia.py           : The wikipedia library
 wikipediatools.py      : Returns package base directory
@@ -95,7 +95,7 @@ testfamily.py          : Check whether you are logged in all known languages
 rcsort.py              : A tool to see the recentchanges ordered by user instead
                          of by date.
 upd-log.py             : Update notification script
-version.py             : Outputs Pywikipedia's revision number, Python's version
+version.py             : Outputs Pywikibot's revision number, Python's version
                          and OS used.
 warnfile.py            : A robot that parses a warning file created by
                          interwiki.py on another language wiki, and
@@ -257,7 +257,7 @@ deadlinks              : Contains information retrieved by weblinkchecker.py
 disambiguations        : If you run solve_disambiguation.py with the -primary
                          argument, the bot will save information here
 externals              : Contains all external software that might be used by
-                         by PyWikipediaBot scripts and libraries. The most
+                         by Pywikibot scripts and libraries. The most
                          important among them are:
                          * spelling; dictionaries for spellcheck.py
                          * BeautifulSoup.py; http://www.crummy.com/software/BeautifulSoup
@@ -284,7 +284,7 @@ watchlists             : Information retrieved by watchlist.py will be stored
                          here.
 wiktionary             : Contains script to used for Wiktionary project.
 
-External software can be used with PyWikipediaBot:
+External software can be used with Pywikibot:
   * Win32com library for use with wikicomserver.py
   * Pydot, Pyparsing and Graphviz for use with interwiki_graph.py
   * JSON for use with query.py
@@ -292,7 +292,7 @@ External software can be used with PyWikipediaBot:
     Web Services for use with copyright.py and pagegenerators.py
   * MySQLdb to access MySQL database for use with pagegenerators.py
 
-PyWikipediaBot makes use of some modules that are part of python, but that
+Pywikibot makes use of some modules that are part of python, but that
 are not installed by default on some Linux distributions:
   * python-xml (required to parse XML via SaX2)
   * python-celementtree (recommended if you use XML dumps)
@@ -311,14 +311,14 @@ parameter, e.g.
 
 You need to have at least python version 2.7.2 (http://www.python.org/download/)
 or newer installed on your computer to be able to run any of the code in this
-package, but not 3.x, because pywikipediabot is still not updated to it! Support
+package, but not 3.x, because pywikibot is still not updated to it! Support
 for older versions of python is not planned. Some scripts could run with older
 python releases. Please refer the manual at mediawiki for further details and
 restrictions.
 
 You do not need to "install" this package to be able to make use of
 it. You can actually just run it from the directory where you unpacked
-it or where you have your copy of the SVN sources.
+it or where you have your copy of the SVN or git sources.
 
 The first time you run a script, the package creates a file named user-config.py
 in your current directory. It asks for the family and language code you are
