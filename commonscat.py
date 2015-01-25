@@ -25,7 +25,6 @@ supported:
 For example to go through all categories:
 commonscat.py -start:Category:!
 """
-# TODO:
 """
 Commonscat bot:
 
@@ -47,7 +46,7 @@ TODO:
 #
 # (C) Multichill, 2008-2009
 # (C) Xqt, 2009-2015
-# (C) Pywikipedia bot team, 2008-2015
+# (C) Pywikibot team, 2008-2015
 #
 # Distributed under the terms of the MIT license.
 #
@@ -82,7 +81,6 @@ commonscatTemplates = {
     'da': (u'Commonscat',
            [u'Commons cat', u'Commons category', u'Commonscat left',
             u'Commonscat2']),
-    'de': (u'Commonscat', [u'Commons cat']),
     'en': (u'Commons category',
            [u'Commoncat', u'Commonscat', u'Commons cat', u'Commons+cat',
             u'Commonscategory', u'Commons and category', u'Commonscat-inline',
