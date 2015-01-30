@@ -536,7 +536,7 @@ class Family(family.WikimediaFamily):
             'mwl': [u'Biquipédia cumbersa', u'Wikipedia cumbersa', u'Biquipédia Discussão'],
             'my': u'Wikipedia talk',
             'myv': u'Википедиясь кортамось',
-            'mzn': [u'ویکی پدیا گپ', u'Wikipedia گپ', u'بحث ویکی‌پدیا'],
+            'mzn': [u'ویکی‌پدیا گپ', u'Wikipedia گپ', u'بحث ویکی‌پدیا'],
             'na': u'Wikipedia talk',
             'nah': [u'Huiquipedia tēixnāmiquiliztli', u'Wikipedia tēixnāmiquiliztli', u'Wikipedia Discusión'],
             'nap': [u'Wikipedia chiàcchiera', u'Discussioni Wikipedia'],
@@ -649,7 +649,7 @@ class Family(family.WikimediaFamily):
             'zea': u'Overleg Wikipedia',
             'zh': [u'Wikipedia talk', u'维基百科讨论', u'维基百科对话', u'維基百科討論', u'維基百科對話', u'WT'],
             'zh-classical': u'維基大典 talk',
-            'zh-min-nan': u'Wikipedia討論',
+            'zh-min-nan': [u'Wikipedia thó-lūn', u'Wikipedia討論'],
             'zh-yue': [u'Wikipedia talk', u'WT', u'Wikipedia 傾偈'],
             'zu': u'Wikipedia talk',
         }
@@ -716,8 +716,9 @@ class Family(family.WikimediaFamily):
             'it': u'Portale',
             'ja': u'Portal',
             'ka': u'პორტალი',
+            'kab': u'Awwur',
             'kk': u'Портал',
-            'ko': u'들머리',
+            'ko': u'포털',
             'ku': u'Portal',
             'kw': u'Porth',
             'la': u'Porta',
@@ -745,6 +746,7 @@ class Family(family.WikimediaFamily):
             'ro': u'Portal',
             'roa-tara': u'Portale',
             'ru': u'Портал',
+            'sa': u'प्रवेशद्वारम्',
             'scn': u'Purtali',
             'sco': u'Portal',
             'se': u'Portála',
@@ -825,8 +827,9 @@ class Family(family.WikimediaFamily):
             'it': u'Discussioni portale',
             'ja': u'Portal‐ノート',
             'ka': u'პორტალი განხილვა',
+            'kab': u'Amyannan uwwur',
             'kk': u'Портал талқылауы',
-            'ko': u'들머리토론',
+            'ko': u'포털토론',
             'ku': u'Gotûbêja portalê',
             'kw': u'Keskows Porth',
             'la': u'Disputatio Portae',
@@ -854,6 +857,7 @@ class Family(family.WikimediaFamily):
             'ro': u'Discuție Portal',
             'roa-tara': u'\'Ngazzaminde d\'u Portale',
             'ru': u'Обсуждение портала',
+            'sa': u'सहाय्यस्य प्रवेशद्वारम्',
             'scn': u'Discussioni purtali',
             'sco': u'Portal talk',
             'se': u'Portálaságastallan',
@@ -909,6 +913,7 @@ class Family(family.WikimediaFamily):
             'ia': u'Appendice',
             'it': u'Progetto',
             'ja': u'プロジェクト',
+            'kab': u'Asenfaṛ',
             'kk': u'Жоба',
             'ko': u'위키프로젝트',
             'lmo': u'Purtaal',
@@ -945,6 +950,7 @@ class Family(family.WikimediaFamily):
             'ia': u'Discussion Appendice',
             'it': u'Discussioni progetto',
             'ja': u'プロジェクト‐ノート',
+            'kab': u'Amyannan usenfaṛ',
             'kk': u'Жоба талқылауы',
             'ko': u'위키프로젝트토론',
             'lmo': u'Descüssiun Purtaal',
@@ -1040,9 +1046,11 @@ class Family(family.WikimediaFamily):
         }
         self.namespaces[118] = {
             'en': u'Draft',
+            'he': u'טיוטה',
         }
         self.namespaces[119] = {
             'en': u'Draft talk',
+            'he': u'שיחת טיוטה',
         }
 
         self.namespaces[446] = {
@@ -1096,9 +1104,11 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[2600] = {
+            'ca': u'Topic',
             'en': u'Topic',
             'fr': u'Sujet',
             'he': u'נושא',
+            'pt': u'Tópico',
         }
 
         self.category_redirect_templates = {

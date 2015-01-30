@@ -40,6 +40,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['fa'] = [u'کاربر']
         self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur', u'Discussion utilisatrice']
+        self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
@@ -218,7 +219,7 @@ class Family(family.WikimediaFamily):
             'vo': u'Bespik dö Wikiquote',
             'wo': [u'Wikiquote waxtaan', u'Discussion Wikiquote'],
             'zh': [u'Wikiquote talk', u'Wikiquote討論', u'Wikiquote讨论'],
-            'zh-min-nan': u'Wikiquote討論',
+            'zh-min-nan': [u'Wikiquote thó-lūn', u'Wikiquote討論'],
         }
 
         self.namespaces[100] = {

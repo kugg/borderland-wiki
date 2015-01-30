@@ -192,7 +192,7 @@ class Family(family.WikimediaFamily):
             'vi': u'Thảo luận Wikisource',
             'yi': [u'װיקיביבליאָטעק רעדן', u'וויקיביבליאטעק רעדן'],
             'zh': [u'Wikisource talk', u'Wikisource討論', u'Wikisource讨论'],
-            'zh-min-nan': u'Wikisource討論',
+            'zh-min-nan': [u'Wikisource thó-lūn', u'Wikisource討論'],
         }
 
         self.namespaces[90] = {
@@ -519,6 +519,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[108] = {
             '-': u'Author',
+            'el': u'Συγγραφέας',
             'gu': u'સર્જક',
             'he': u'מחבר',
             'it': u'Pagina',
@@ -529,6 +530,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[109] = {
             '-': u'Author talk',
+            'el': u'Συζήτηση συγγραφέα',
             'gu': u'સર્જક ચર્ચા',
             'he': u'שיחת מחבר',
             'it': u'Discussioni pagina',

@@ -41,6 +41,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['fa'] = [u'کاربر']
         self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur', u'Discussion utilisatrice']
+        self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
@@ -224,7 +225,7 @@ class Family(family.WikimediaFamily):
             'uz': [u'Vikikitob munozarasi', u'Vikikitob talk'],
             'vi': u'Thảo luận Wikibooks',
             'zh': [u'Wikibooks talk', u'Wikibooks討論', u'Wikibooks讨论'],
-            'zh-min-nan': u'Wikibooks討論',
+            'zh-min-nan': [u'Wikibooks thó-lūn', u'Wikibooks討論'],
         }
 
         self.namespaces[90] = {
@@ -284,6 +285,7 @@ class Family(family.WikimediaFamily):
             'cy': u'Silff lyfrau',
             'de': u'Regal',
             'en': u'Cookbook',
+            'fa': u'کتاب‌آشپزی',
             'fr': u'Wikijunior',
             'hy': u'Եփութուխ',
             'id': u'Wisata',
@@ -305,6 +307,7 @@ class Family(family.WikimediaFamily):
             'cy': u'Sgwrs Silff lyfrau',
             'de': u'Regal Diskussion',
             'en': u'Cookbook talk',
+            'fa': u'بحث کتاب‌آشپزی',
             'fr': u'Discussion Wikijunior',
             'hy': u'Եփութուխի քննարկում',
             'id': u'Pembicaraan Wisata',
@@ -362,6 +365,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[110] = {
             'az': u'Vikiuşaq',
             'en': u'Wikijunior',
+            'fa': u'ویکی‌کودک',
             'hy': u'Վիքիփոքրիկ',
             'tr': u'Vikiçocuk',
             'zh': u'Wikijunior',
@@ -370,6 +374,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[111] = {
             'az': u'Vikiuşaq müzakirəsi',
             'en': u'Wikijunior talk',
+            'fa': u'بحث ویکی‌کودک',
             'hy': u'Վիքիփոքրիկի քննարկում',
             'tr': u'Vikiçocuk tartışma',
             'zh': u'Wikijunior talk',
@@ -377,6 +382,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[112] = {
             'en': u'Subject',
+            'fa': u'موضوع',
             'si': u'විෂයය',
             'tr': u'Kitaplık',
             'zh': u'Subject',
@@ -384,6 +390,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[113] = {
             'en': u'Subject talk',
+            'fa': u'بحث موضوع',
             'si': u'විෂයය සාකච්ඡාව',
             'tr': u'Kitaplık tartışma',
             'zh': u'Subject talk',

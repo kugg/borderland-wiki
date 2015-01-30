@@ -276,7 +276,7 @@ class Family(object):
                 'yo': u'Amóhùnmáwòrán',
                 'za': [u'媒体文件', u'媒体'],
                 'zh': [u'Media', u'媒体', u'媒体文件', u'媒體'],
-                'zh-min-nan': u'媒體',
+                'zh-min-nan': [u'Mûi-thé', u'媒體'],
                 'zh-yue': [u'Media', u'媒體', u'媒体'],
             },
             -1: {
@@ -497,7 +497,7 @@ class Family(object):
                 'za': u'特殊',
                 'zea': u'Speciaol',
                 'zh': [u'Special', u'特殊'],
-                'zh-min-nan': u'特殊',
+                'zh-min-nan': [u'Tek-pia̍t', u'特殊'],
                 'zh-yue': [u'Special', u'特別', u'特殊'],
             },
             0: {
@@ -730,7 +730,7 @@ class Family(object):
                 'za': [u'讨论', u'对话'],
                 'zea': u'Overleg',
                 'zh': [u'Talk', u'讨论', u'討論', u'对话', u'對話'],
-                'zh-min-nan': [u'討論', u'對話'],
+                'zh-min-nan': [u'Thó-lūn', u'討論', u'對話'],
                 'zh-yue': [u'Talk', u'傾偈', u'對話', u'对话', u'討論', u'讨论'],
             },
             2: {
@@ -960,7 +960,7 @@ class Family(object):
                 'za': u'用户',
                 'zea': u'Gebruker',
                 'zh': [u'User', u'使用者', u'用戶', u'用户'],
-                'zh-min-nan': u'用戶',
+                'zh-min-nan': [u'Iōng-chiá', u'用戶'],
                 'zh-yue': [u'User', u'用戶', u'用户'],
             },
             3: {
@@ -1190,7 +1190,7 @@ class Family(object):
                 'za': [u'用户讨论', u'用户对话'],
                 'zea': u'Overleg gebruker',
                 'zh': [u'User talk', u'使用者討論', u'用戶對話', u'用戶討論', u'用户对话', u'用户讨论'],
-                'zh-min-nan': [u'用戶討論', u'用戶對話'],
+                'zh-min-nan': [u'Iōng-chiá thó-lūn', u'用戶討論', u'用戶對話'],
                 'zh-yue': [u'User talk', u'用戶傾偈', u'用戶 對話', u'用户 对话', u'用戶 討論', u'用户 讨论'],
             },
             4: {
@@ -1427,7 +1427,7 @@ class Family(object):
                 'za': [u'文件', u'图像', u'档案'],
                 'zea': [u'Plaetje', u'Afbeelding'],
                 'zh': [u'File', u'图像', u'圖像', u'档案', u'檔案', u'文件'],
-                'zh-min-nan': [u'文件', u'圖像', u'檔案'],
+                'zh-min-nan': [u'tóng-àn', u'文件', u'圖像', u'檔案'],
                 'zh-yue': [u'File', u'文件', u'檔', u'檔案', u'档', u'档案', u'圖', u'圖像', u'图', u'图像'],
             },
             7: {
@@ -1657,7 +1657,7 @@ class Family(object):
                 'za': [u'文件讨论', u'图像对话', u'图像讨论', u'档案对话', u'档案讨论', u'文件对话'],
                 'zea': [u'Overleg plaetje', u'Overleg afbeelding'],
                 'zh': [u'File talk', u'图像对话', u'圖像對話', u'图像讨论', u'圖像討論', u'档案对话', u'檔案對話', u'档案讨论', u'檔案討論', u'文件对话', u'文件對話', u'文件讨论', u'文件討論'],
-                'zh-min-nan': [u'文件討論', u'圖像對話', u'圖像討論', u'文件對話', u'檔案對話', u'檔案討論'],
+                'zh-min-nan': [u'tóng-àn thó-lūn', u'文件討論', u'圖像對話', u'圖像討論', u'文件對話', u'檔案對話', u'檔案討論'],
                 'zh-yue': [u'File talk', u'文件傾偈', u'MediaWiki 傾偈', u'檔 討論', u'档 讨论', u'檔案 討論', u'档案 讨论', u'圖 討論', u'图 讨论', u'圖像 討論', u'图像 讨论'],
             },
             8: {
@@ -1964,7 +1964,7 @@ class Family(object):
                 'za': u'MediaWiki讨论',
                 'zea': u'Overleg MediaWiki',
                 'zh': [u'MediaWiki talk', u'MediaWiki討論', u'MediaWiki讨论'],
-                'zh-min-nan': u'媒體維基討論',
+                'zh-min-nan': [u'MediaWiki thó-lūn', u'媒體維基討論'],
                 'zh-yue': u'MediaWiki talk',
             },
             10: {
@@ -2185,7 +2185,7 @@ class Family(object):
                 'za': u'模板',
                 'zea': u'Sjabloon',
                 'zh': [u'Template', u'T', u'模板', u'样板', u'樣板'],
-                'zh-min-nan': [u'模板', u'樣板'],
+                'zh-min-nan': [u'Pang-bô͘', u'模板', u'樣板'],
                 'zh-yue': [u'Template', u'T', u'模'],
             },
             11: {
@@ -2412,7 +2412,7 @@ class Family(object):
                 'za': [u'模板讨论', u'模板对话'],
                 'zea': u'Overleg sjabloon',
                 'zh': [u'Template talk', u'模板对话', u'模板對話', u'模板讨论', u'模板討論', u'样板对话', u'樣板對話', u'样板讨论', u'樣板討論'],
-                'zh-min-nan': [u'模板討論', u'模板對話', u'樣板對話', u'樣板討論'],
+                'zh-min-nan': [u'Pang-bô͘ thó-lūn', u'模板討論', u'模板對話', u'樣板對話', u'樣板討論'],
                 'zh-yue': [u'Template talk', u'模傾偈', u'模 討論', u'模 讨论'],
             },
             12: {
@@ -2642,7 +2642,7 @@ class Family(object):
                 'za': u'帮助',
                 'zea': u'Ulpe',
                 'zh': [u'Help', u'H', u'使用說明', u'帮助', u'幫助'],
-                'zh-min-nan': u'幫助',
+                'zh-min-nan': [u'Pang-chān', u'幫助'],
                 'zh-yue': [u'Help', u'幫手', u'幫助', u'說明', u'帮手', u'帮助', u'说明'],
             },
             13: {
@@ -2872,7 +2872,7 @@ class Family(object):
                 'za': [u'帮助讨论', u'帮助对话'],
                 'zea': u'Overleg ulpe',
                 'zh': [u'Help talk', u'使用說明討論', u'帮助对话', u'帮助讨论', u'幫助對話', u'幫助討論'],
-                'zh-min-nan': [u'幫助討論', u'幫助對話'],
+                'zh-min-nan': [u'Pang-chān thó-lūn', u'幫助討論', u'幫助對話'],
                 'zh-yue': [u'Help talk', u'幫手傾偈', u'幫手 討論', u'幫助 討論', u'說明 討論', u'帮手 讨论', u'帮助 讨论', u'说明 讨论'],
             },
             14: {
@@ -3103,7 +3103,7 @@ class Family(object):
                 'za': u'分类',
                 'zea': u'Categorie',
                 'zh': [u'Category', u'CAT', u'分类', u'分類'],
-                'zh-min-nan': u'分類',
+                'zh-min-nan': [u'Lūi-pia̍t', u'分類'],
                 'zh-yue': [u'Category', u'分類', u'類', u'类', u'分类'],
             },
             15: {
@@ -3333,7 +3333,7 @@ class Family(object):
                 'za': [u'分类讨论', u'分类对话'],
                 'zea': u'Overleg categorie',
                 'zh': [u'Category talk', u'分类讨论', u'分類討論', u'分类对话', u'分類對話'],
-                'zh-min-nan': [u'分類討論', u'分類對話'],
+                'zh-min-nan': [u'Lūi-pia̍t thó-lūn', u'分類討論', u'分類對話'],
                 'zh-yue': [u'Category talk', u'分類傾偈', u'類 討論', u'分類 討論', u'类 讨论', u'分类 讨论'],
             },
         }

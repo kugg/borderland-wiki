@@ -369,7 +369,7 @@ class Family(family.WikimediaFamily):
             'yi': [u'װיקיװערטערבוך רעדן', u'וויקיווערטערבוך רעדן'],
             'za': u'Wiktionary讨论',
             'zh': [u'Wiktionary talk', u'Wiktionary討論', u'Wiktionary讨论'],
-            'zh-min-nan': u'Wiktionary討論',
+            'zh-min-nan': [u'Wiktionary thó-lūn', u'Wiktionary討論'],
             'zu': u'Wiktionary talk',
         }
 
@@ -416,6 +416,7 @@ class Family(family.WikimediaFamily):
             'lt': u'Sąrašas',
             'lv': u'Pielikums',
             'mg': u'Rakibolana',
+            'nds': u'Anhang',
             'no': u'Tillegg',
             'oc': u'Annèxa',
             'pl': u'Aneks',
@@ -454,6 +455,7 @@ class Family(family.WikimediaFamily):
             'lt': u'Sąrašo aptarimas',
             'lv': u'Pielikuma diskusija',
             'mg': u'Dinika amin\'ny rakibolana',
+            'nds': u'Anhang Diskuschoon',
             'no': u'Tilleggdiskusjon',
             'oc': u'Discussion Annèxa',
             'pl': u'Dyskusja aneksu',
@@ -553,12 +555,14 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[108] = {
+            'de': u'Flexion',
             'en': u'Transwiki',
             'fr': u'Projet',
             'pt': u'Citações',
         }
 
         self.namespaces[109] = {
+            'de': u'Flexion Diskussion',
             'en': u'Transwiki talk',
             'fr': u'Discussion Projet',
             'pt': u'Citações Discussão',
@@ -578,10 +582,12 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[114] = {
             'en': u'Citations',
+            'nds': u'Zitaten',
         }
 
         self.namespaces[115] = {
             'en': u'Citations talk',
+            'nds': u'Zitaten Diskuschoon',
         }
 
         self.namespaces[116] = {
