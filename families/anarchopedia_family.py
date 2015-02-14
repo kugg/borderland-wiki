@@ -7,7 +7,6 @@ import family
 
 
 # The Anarchopedia family
-# Offline in July 2014
 class Family(family.Family):
 
     """Family class for Anarchopedia wiki."""
@@ -18,18 +17,34 @@ class Family(family.Family):
         self.name = 'anarchopedia'
 
         self.languages_by_size = [
-            'ar', 'en', 'ger', 'de', 'nl', 'el', 'it', 'fa', 'fi', 'fr', 'he',
-            'es', 'hy', 'id', 'meta', 'ja', 'ko', 'lv', 'lit', 'no', 'hrv',
-            'pl', 'pt', 'ro', 'ru', 'sr', 'sq', 'da', 'sv', 'tr', 'zh', 'gre',
-            'chi',
+            'ar', 'en', 'de', 'nl', 'el', 'it', 'fa', 'fi', 'fr', 'he',
+            'es', 'hy', 'id', 'meta', 'ja', 'ko', 'lv', 'lt', 'no', 'hr',
+            'pl', 'pt', 'ro', 'ru', 'sr', 'sq', 'da', 'sv', 'tr', 'zh',
+            'eo',
         ]
-        for l in self.languages_by_size:
-            self.langs[l] = '%s.anarchopedia.org' % l
+        self.langs = dict([(lang, '%s.anarchopedia.org' % lang)
+                           for lang in self.languages_by_size])
 
+        # Override defaults
         self.namespaces[1]['fr'] = u'Discuter'
-
         self.namespaces[3]['fr'] = u'Discussion Utilisateur'
+        self.namespaces[6]['tr'] = u'Resim'
+        self.namespaces[6]['da'] = u'Billede'
+        self.namespaces[6]['sq'] = u'Figura'
+        self.namespaces[7]['da'] = u'Billeddiskussion'
+        self.namespaces[7]['fr'] = u'Discussion Fichier'
+        self.namespaces[7]['sq'] = u'Figura diskutim'
+        self.namespaces[7]['tr'] = u'Resim tartışma'
+        self.namespaces[11]['fr'] = u'Discussion Modèle'
+        self.namespaces[13]['fr'] = u'Discussion Aide'
+        self.namespaces[14]['sq'] = u'Kategori'
+        self.namespaces[15]['fr'] = u'Discussion Catégorie'
+        self.namespaces[15]['sq'] = u'Kategori Diskutim'
 
+        # Most namespaces are inherited from family.Family.
+        # Translation used on all wikis for the different namespaces.
+        # (Please sort languages alphabetically)
+        # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': u'Anarchopedia',
             'ar': u'أنارشوبيديا',
@@ -84,36 +99,16 @@ class Family(family.Family):
             'zh': u'安那其百科 talk',
         }
 
-        self.namespaces[6]['tr'] = u'Resim'
-        self.namespaces[6]['da'] = u'Billede'
-        self.namespaces[6]['sq'] = u'Figura'
-
-        self.namespaces[7]['da'] = u'Billeddiskussion'
-        self.namespaces[7]['fr'] = u'Discussion Fichier'
-        self.namespaces[7]['sq'] = u'Figura diskutim'
-        self.namespaces[7]['tr'] = u'Resim tartışma'
-
-
-        self.namespaces[11]['fr'] = u'Discussion Modèle'
-
-        self.namespaces[13]['fr'] = u'Discussion Aide'
-
-        self.namespaces[14]['sq'] = u'Kategori'
-
-        self.namespaces[15]['fr'] = u'Discussion Catégorie'
-        self.namespaces[15]['sq'] = u'Kategori Diskutim'
-
         self.namespaces[100] = {'en':u'Focus'}
 
         self.namespaces[101] = {'en':u'Focus talk'}
 
-
         self.nocapitalize = self.langs.keys()
 
         self.obsolete = {
+            # ISO 639-2 -> ISO 639-1 mappings
             'ara': 'ar',
-            'bos': 'bs',
-            'zho': 'zh',
+            'chi': 'zh',
             'dan': 'da',
             'deu': 'de',
             'dut': 'nl',
@@ -121,33 +116,38 @@ class Family(family.Family):
             'eng': 'en',
             'epo': 'eo',
             'fas': 'fa',
-            'fra': 'fr',
             'fin': 'fi',
+            'fra': 'fr',
+            'ger': 'de',
+            'gre': 'el',
             'heb': 'he',
+            'hye': 'hy',
             'ind': 'id',
             'ita': 'it',
             'jpn': 'ja',
-            'lit': 'lt',
+            'kor': 'ko',
             'lav': 'lv',
+            'lit': 'lt',
+            'nno': 'no',
+            'nob': 'no',
             'nor': 'no',
-            'nsh': 'sh',
             'pol': 'pl',
             'por': 'pt',
             'rum': 'ro',
             'rus': 'ru',
             'spa': 'es',
             'srp': 'sr',
-            'srp': 'hr',
-            'swe': 'sv',
-            'kor': 'ko',
             'sqi': 'sq',
-            'hye': 'hy',
+            'swe': 'sv',
             'tur': 'tr',
+            'zho': 'zh',
 
-            'ell': 'gre',
-            'srp': 'hrv',
-            'nno': None,
-            'nob': None,
+            # ISO 639-1 -> ISO 639-1 mappings
+            'bs': 'hr',
+
+            # Non-compliant mappings
+            'bos': 'hr',
+            'nsh': 'hr',
         }
 
     def version(self, code):
