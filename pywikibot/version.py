@@ -117,7 +117,7 @@ def getversion_git_windows(hsh, path=None):
                 date = time.strptime(date, "%Y-%m-%d %H:%M:%S")
                 return rev, date
     if not rev:
-        return "(unknown)", time.strptime("2000-01-01 00:00:00", "%Y-%m-%d %H:%M:%S")
+        raise ParseError
     return rev, date
 
 
@@ -185,8 +185,13 @@ def getversion_git(path=None):
             subprocess.Popen([cmd], stdout=subprocess.PIPE).communicate()
         except:
             #Means git hasn't been installed, no way to get the date, retreving date from gitblit
-            hsh = open(os.path.join(_program_dir, '.git/refs/heads/master'), 'r').read().strip(" \n")
-            rev, date = getversion_git_windows(hsh, path)
+            file_path = os.path.join(_program_dir, '.git/refs/heads/master')
+            if os.path.isfile(file_path):
+                with open(file_path, 'r') as hash_file:
+                    hsh = hash_file.read().strip(' \n')
+                rev, date = getversion_git_windows(hsh, path)
+            else:
+                raise ParseError
     tag = open(os.path.join(_program_dir, '.git/config'), 'r').read()
     s = tag.find('url = ', tag.find('[remote "origin"]'))
     e = tag.find('\n', s)
