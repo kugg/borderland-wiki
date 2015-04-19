@@ -1065,6 +1065,7 @@ class Family(family.WikimediaFamily):
             'mk': u'Образовен програм',
             'nl': u'Onderwijsprogramma',
             'pt': u'Ensino',
+            'ru': u'Образовательная программа',
             'sv': u'Utbildningsprogram',
             'uk': u'Education Program',
         }
@@ -1081,6 +1082,7 @@ class Family(family.WikimediaFamily):
             'mk': u'Разговор за Образовен програм',
             'nl': u'Overleg onderwijsprogramma',
             'pt': u'Ensino Discussão',
+            'ru': u'Обсуждение образовательной программы',
             'sv': u'Utbildningsprogramsdiskussion',
             'uk': u'Education Program talk',
         }
@@ -1109,6 +1111,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Sujet',
             'he': u'נושא',
             'pt': u'Tópico',
+            'ru': u'Тема',
         }
 
         self.category_redirect_templates = {
