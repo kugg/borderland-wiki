@@ -375,9 +375,13 @@ class CosmeticChangesToolkit:
         return text
 
     def cleanUpLinks(self, text):
-        # helper function which works on one link and either returns it
-        # unmodified, or returns a replacement.
+        """Cleanup wiki links."""
+
         def handleOneLink(match):
+            """Helper function for one link.
+
+            Either returns it unmodified, or returns a replacement.
+            """
             titleWithSection = match.group('titleWithSection')
             label = match.group('label')
             trailingChars = match.group('linktrail')
@@ -482,6 +486,10 @@ class CosmeticChangesToolkit:
                     return newLink
             # don't change anything
             return match.group()
+
+        if self.site.sitename() == u'wikipedia:fa':
+            # Per community discussion, this one is not allowed in fa.wp
+            return text  # unmodified text
 
         trailR = re.compile(self.site.linktrail())
     # The regular expression which finds links. Results consist of four groups:
