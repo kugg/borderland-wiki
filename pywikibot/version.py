@@ -178,7 +178,7 @@ def getversion_git(path=None):
     date = None
     try:
         subprocess.Popen([cmd], stdout=subprocess.PIPE).communicate()
-    except WindowsError:
+    except OSError:
         # some windows git versions provide git.cmd instead of git.exe
         cmd = 'git.cmd'
         try:
