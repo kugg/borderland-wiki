@@ -1,9 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
-
 """
-This script goes over multiple pages of the home wiki, and reports invalid
-ISBN numbers.
+This script reports and fixes invalid ISBN numbers.
 
 Additionally, it can convert all ISBN-10 codes to the ISBN-13 format, and
 correct the ISBN format by placing hyphens.
@@ -36,7 +34,7 @@ Furthermore, the following command line parameters are supported:
 
 """
 #
-# (C) Pywikibot team, 2006-2014
+# (C) Pywikibot team, 2006-2015
 #
 # Distributed under the terms of the MIT license.
 #
@@ -53,7 +51,7 @@ docuReplacements = {
 }
 
 # Maps each group number to the list of its publisher number ranges.
-# Taken from http://www.isbn-international.org/converter/ranges.htm
+# Taken from https://www.isbn-international.org/converter/ranges.htm
 ranges = {
     '0': [  # English speaking area
         ('00', '19'),
@@ -69,6 +67,7 @@ ranges = {
         ('4000', '5499'),
         ('55000', '86979'),
         ('869800', '998999'),
+        ('9990000', '9999999'),
     ],
     '2': [  # French speaking area
         ('00', '19'),
@@ -90,7 +89,11 @@ ranges = {
         ('7000', '8499'),
         ('85000', '89999'),
         ('900000', '949999'),
-        ('9500000', '9999999'),
+        ('9500000', '9539999'),
+        ('95400', '96999'),
+        ('9700000', '9899999'),
+        ('99000', '99499'),
+        ('99500', '99999'),
     ],
     '4': [  # Japan
         ('00', '19'),
@@ -101,15 +104,24 @@ ranges = {
         ('9500000', '9999999'),
     ],
     '5': [  # Russian Federation
+        ('00000', '00499'),
+        ('0050', '0099'),
         ('00', '19'),
-        ('200', '699'),
+        ('200', '420'),
+        ('4200', '4299'),
+        ('430', '430'),
+        ('4310', '4399'),
+        ('440', '440'),
+        ('4410', '4499'),
+        ('450', '699'),
         ('7000', '8499'),
         ('85000', '89999'),
         ('900000', '909999'),
         ('91000', '91999'),
         ('9200', '9299'),
         ('93000', '94999'),
-        ('9500', '9799'),
+        ('9500000', '9500999'),
+        ('9501', '9799'),
         ('98000', '98999'),
         ('9900000', '9909999'),
         ('9910', '9999'),
@@ -1160,40 +1172,17 @@ ranges = {
 }
 
 
-class IsbnBot:
-    def __init__(self, generator):
-        self.generator = generator
-
-    def run(self):
-        for page in self.generator:
-            try:
-                text = page.get(get_redirect=self.touch_redirects)
-                # convert ISBN numbers
-                page.put(text)
-            except pywikibot.NoPage:
-                pywikibot.output(u"Page %s does not exist?!"
-                                 % page.title(asLink=True))
-            except pywikibot.IsRedirectPage:
-                pywikibot.output(u"Page %s is a redirect; skipping."
-                                 % page.title(asLink=True))
-            except pywikibot.LockedPage:
-                pywikibot.output(u"Page %s is locked?!"
-                                 % page.title(asLink=True))
-
-
 class InvalidIsbnException(pywikibot.Error):
-    """Invalid ISBN"""
+
+    """Invalid ISBN."""
 
 
 class ISBN:
-    """
-    Abstract superclass
-    """
+
+    """Abstract superclass."""
 
     def format(self):
-        """
-        Puts hyphens into this ISBN number.
-        """
+        """Put hyphens into this ISBN number."""
         result = ''
         rest = ''
         for digit in self.digits():
@@ -1219,7 +1208,7 @@ class ISBN:
         # Determine the publisher
         for (start, end) in publisherRanges:
             length = len(start)  # NOTE: start and end always have equal length
-            if rest[:length] > start and rest[:length] <= end:
+            if rest[:length] >= start and rest[:length] <= end:
                 result += rest[:length] + '-'
                 rest = rest[length:]
                 break
@@ -1233,6 +1222,9 @@ class ISBN:
 
 
 class ISBN13(ISBN):
+
+    """ISBN 13."""
+
     def __init__(self, code, checksumMissing=False):
         self.code = code
         if checksumMissing:
@@ -1243,9 +1235,7 @@ class ISBN13(ISBN):
         return ['978', '979']
 
     def digits(self):
-        """
-        Returns a list of the digits in the ISBN code.
-        """
+        """Return a list of the digits in the ISBN code."""
         result = []
         for c in self.code:
             if c.isdigit():
@@ -1264,7 +1254,7 @@ class ISBN13(ISBN):
                                        % self.code)
 
     def calculateChecksum(self):
-        # See http://en.wikipedia.org/wiki/ISBN#Check_digit_in_ISBN_13
+        # See https://en.wikipedia.org/wiki/ISBN#Check_digit_in_ISBN_13
         sum = 0
         for i in range(0, 13 - 1, 2):
             sum += self.digits()[i]
@@ -1274,6 +1264,9 @@ class ISBN13(ISBN):
 
 
 class ISBN10(ISBN):
+
+    """ISBN 10."""
+
     def __init__(self, code):
         self.code = code
         self.checkValidity()
@@ -1282,9 +1275,7 @@ class ISBN10(ISBN):
         return []
 
     def digits(self):
-        """
-        Returns a list of the digits and Xs in the ISBN code.
-        """
+        """Return a list of the digits and Xs in the ISBN code."""
         result = []
         for c in self.code:
             if c.isdigit() or c in 'Xx':
@@ -1295,19 +1286,13 @@ class ISBN10(ISBN):
         return result
 
     def checkChecksum(self):
-        """
-        Raises an InvalidIsbnException if the checksum shows that the
-        ISBN is incorrect.
-        """
-        # See http://en.wikipedia.org/wiki/ISBN#Check_digit_in_ISBN_10
+        """Raise an InvalidIsbnException if the ISBN checksum is incorrect."""
+        # See https://en.wikipedia.org/wiki/ISBN#Check_digit_in_ISBN_10
         sum = 0
         for i in range(0, 9):
             sum += (i + 1) * int(self.digits()[i])
-        #print sum
         checksum = sum % 11
-        #print checksum
         lastDigit = self.digits()[-1]
-        #print lastDigit
         if not ((checksum == 10 and lastDigit in 'Xx') or
                 (lastDigit.isdigit() and checksum == int(lastDigit))):
             raise InvalidIsbnException('The ISBN checksum of %s is incorrect.'
@@ -1325,15 +1310,13 @@ class ISBN10(ISBN):
 
     def toISBN13(self):
         """
-        Creates a 13-digit ISBN from this 10-digit ISBN by prefixing the GS1
-        prefix '978' and recalculating the checksum.
+        Create a 13-digit ISBN from this 10-digit ISBN.
+
+        Adds the GS1 prefix '978' and recalculates the checksum.
         The hyphenation structure is taken from the format of the original
         ISBN number.
         """
         code = '978-' + self.code[:-1]
-
-        #cs = self.calculateChecksum()
-        #code += str(cs)
         return ISBN13(code, checksumMissing=True)
 
     def format(self):
@@ -1345,21 +1328,20 @@ class ISBN10(ISBN):
 
 
 def getIsbn(code):
+    """Return an ISBN object for the code."""
     try:
         i = ISBN13(code)
-    except InvalidIsbnException, e13:
+    except InvalidIsbnException as e13:
         try:
             i = ISBN10(code)
-        except InvalidIsbnException, e10:
+        except InvalidIsbnException as e10:
             raise InvalidIsbnException(u'ISBN-13: %s / ISBN-10: %s'
                                        % (e13, e10))
     return i
 
 
 def _hyphenateIsbnNumber(match):
-    """
-    Helper function to deal with a single ISBN
-    """
+    """Helper function to deal with a single ISBN."""
     code = match.group('code')
     try:
         i = getIsbn(code)
@@ -1377,9 +1359,7 @@ def hyphenateIsbnNumbers(text):
 
 
 def _isbn10toIsbn13(match):
-    """
-    Helper function to deal with a single ISBN
-    """
+    """Helper function to deal with a single ISBN."""
     code = match.group('code')
     try:
         i = getIsbn(code)
@@ -1391,12 +1371,15 @@ def _isbn10toIsbn13(match):
 
 
 def convertIsbn10toIsbn13(text):
+    """Helper function to convert ISBN 10 to ISBN 13."""
     isbnR = re.compile(r'(?<=ISBN )(?P<code>[\d\-]+[Xx]?)')
     text = isbnR.sub(_isbn10toIsbn13, text)
     return text
 
 
 class IsbnBot:
+
+    """ISBN bot."""
 
     def __init__(self, generator, to13=False, format=False, always=False):
         self.generator = generator
@@ -1413,7 +1396,7 @@ class IsbnBot:
                 code = match.group('code')
                 try:
                     getIsbn(code)
-                except InvalidIsbnException, e:
+                except InvalidIsbnException as e:
                     pywikibot.output(e)
 
             newText = oldText
@@ -1424,7 +1407,7 @@ class IsbnBot:
                 newText = self.isbnR.sub(_hyphenateIsbnNumber, newText)
             self.save(page, newText)
         except pywikibot.NoPage:
-            pywikibot.output(u"Page %s does not exist?!"
+            pywikibot.output(u"Page %s does not exist"
                              % page.title(asLink=True))
         except pywikibot.IsRedirectPage:
             pywikibot.output(u"Page %s is a redirect; skipping."
@@ -1471,6 +1454,9 @@ class IsbnBot:
 
 
 def main():
+    """
+    Process command line arguments and invoke bot.
+    """
     #page generator
     gen = None
     # This temporary array is used to read the page title if one single
