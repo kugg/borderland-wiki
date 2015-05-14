@@ -1,9 +1,9 @@
 # -*- coding: utf-8  -*-
-""" Script to create user files (user-config.py, user-fixes.py) """
+"""Script to create user files (user-config.py, user-fixes.py)."""
 #
-# (C) Pywikibot team, 2008-2013
+# (C) Pywikibot team, 2008-2015
 #
-# Distributed under the terms of the MIT license
+# Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
@@ -54,6 +54,7 @@ def listchoice(clist=[], message=None, default=None):
 
 
 def file_exists(filename):
+    """Return whether the file exists and print a message if it exists."""
     if os.path.exists(filename):
         print("'%s' already exists." % filename)
         return True
@@ -149,10 +150,11 @@ usernames['%s']['%s'] = u'%s'
 
 
 def create_user_fixes(base_dir):
+    """Create a basic user-fixes.py in base_dir."""
     _fnf = os.path.join(base_dir, "user-fixes.py")
     if not file_exists(_fnf):
-        f = codecs.open(_fnf, "w", "utf-8")
-        f.write(r"""# -*- coding: utf-8  -*-
+        with codecs.open(_fnf, "w", "utf-8") as f:
+            f.write(r"""# -*- coding: utf-8  -*-
 
 #
 # This is only an example. Don't use it.
@@ -161,7 +163,7 @@ def create_user_fixes(base_dir):
 fixes['example'] = {
     'regex': True,
     'msg': {
-        '_default':u'no summary specified',
+        '_default': u'no summary specified',
     },
     'replacements': [
         (ur'\bword\b', u'two words'),
@@ -169,7 +171,6 @@ fixes['example'] = {
 }
 
 """)
-        f.close()
         print("'%s' written." % _fnf)
 
 
