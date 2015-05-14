@@ -542,7 +542,7 @@ class Family(family.WikimediaFamily):
             'nap': [u'Wikipedia chiàcchiera', u'Discussioni Wikipedia'],
             'nds': [u'Wikipedia Diskuschoon', u'Wikipedia Diskussion'],
             'nds-nl': u'Overleg Wikipedie',
-            'ne': u'विकिपीडिया वार्ता',
+            'ne': [u'विकिपीडिया वार्ता', u'WT', u'विवा'],
             'new': u'विकिपिडिया खँलाबँला',
             'nl': u'Overleg Wikipedia',
             'nn': u'Wikipedia-diskusjon',
@@ -1046,11 +1046,17 @@ class Family(family.WikimediaFamily):
         }
         self.namespaces[118] = {
             'en': u'Draft',
+            'fa': u'پیش‌نویس',
             'he': u'טיוטה',
+            'ko': u'초안',
+            'zh': u'Draft',
         }
         self.namespaces[119] = {
             'en': u'Draft talk',
+            'fa': u'بحث پیش‌نویس',
             'he': u'שיחת טיוטה',
+            'ko': u'초안토론',
+            'zh': u'Draft talk',
         }
 
         self.namespaces[446] = {
@@ -1062,12 +1068,13 @@ class Family(family.WikimediaFamily):
             'es': u'Education Program',
             'fa': u'برنامه آموزشی',
             'he': u'הוראה',
+            'lv': u'Izglītības programma',
             'mk': u'Образовен програм',
             'nl': u'Onderwijsprogramma',
             'pt': u'Ensino',
             'ru': u'Образовательная программа',
             'sv': u'Utbildningsprogram',
-            'uk': u'Education Program',
+            'uk': u'Освітня програма',
         }
 
         self.namespaces[447] = {
@@ -1079,12 +1086,13 @@ class Family(family.WikimediaFamily):
             'es': u'Education Program talk',
             'fa': u'بحث برنامه آموزشی',
             'he': u'שיחת הוראה',
+            'lv': u'Izglītības programmas diskusija',
             'mk': u'Разговор за Образовен програм',
             'nl': u'Overleg onderwijsprogramma',
             'pt': u'Ensino Discussão',
             'ru': u'Обсуждение образовательной программы',
             'sv': u'Utbildningsprogramsdiskussion',
-            'uk': u'Education Program talk',
+            'uk': u'Обговорення освітньої програми',
         }
 
         self.namespaces[460] = {
@@ -1110,8 +1118,11 @@ class Family(family.WikimediaFamily):
             'en': u'Topic',
             'fr': u'Sujet',
             'he': u'נושא',
+            'pa': u'Topic',
             'pt': u'Tópico',
             'ru': u'Тема',
+            'te': u'Topic',
+            'zh': u'Topic',
         }
 
         self.category_redirect_templates = {
