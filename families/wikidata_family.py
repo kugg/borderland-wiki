@@ -62,6 +62,10 @@ class Family(family.WikimediaFamily):
             '_default': u'Translations talk',
         }
 
+        self.namespaces[2600] = {
+            '_default': u'Topic',
+        }
+
     def shared_data_repository(self, code, transcluded=False):
         """Always return a repository tupe. This enables testing whether
         the site object is the repository itself, see Site.is_data_repository()
