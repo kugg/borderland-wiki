@@ -40,7 +40,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['fa'] = [u'کاربر']
         self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur', u'Discussion utilisatrice']
-        self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
@@ -126,7 +125,7 @@ class Family(family.WikimediaFamily):
             'su': u'Wikiquote',
             'sv': u'Wikiquote',
             'ta': [u'விக்கிமேற்கோள்', u'Wikiquote', u'விக்கிபீடியா'],
-            'te': u'Wikiquote',
+            'te': [u'వికీవ్యాఖ్య', u'Wikiquote'],
             'th': [u'วิกิคำคม', u'Wikiquote'],
             'tr': [u'Vikisöz', u'Wikiquote'],
             'uk': [u'Вікіцитати', u'ВЦ', u'Wikiquote'],
@@ -208,7 +207,7 @@ class Family(family.WikimediaFamily):
             'su': u'Obrolan Wikiquote',
             'sv': u'Wikiquotediskussion',
             'ta': [u'விக்கிமேற்கோள் பேச்சு', u'விக்கிபீடியா பேச்சு'],
-            'te': u'Wikiquote చర్చ',
+            'te': [u'వికీవ్యాఖ్య చర్చ', u'Wikiquote చర్చ'],
             'th': u'คุยเรื่องวิกิคำคม',
             'tr': u'Vikisöz tartışma',
             'tt': u'Wikiquote bäxäse',

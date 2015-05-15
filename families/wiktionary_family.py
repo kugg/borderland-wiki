@@ -56,6 +56,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[2]['ko'] = [u'사용자']
         self.namespaces[3]['ko'] = [u'사용자토론']
+        self.namespaces[2]['ne'] = [u'प्रयोगकर्ता']
+        self.namespaces[11]['ne'] = [u'ढाँचा वार्ता']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
@@ -165,7 +167,7 @@ class Family(family.WikimediaFamily):
             'no': u'Wiktionary',
             'oc': [u'Wikiccionari', u'Wiktionary'],
             'om': u'Wiktionary',
-            'or': u'Wiktionary',
+            'or': [u'ଉଇକିଅଭିଧାନ', u'Wiktionary'],
             'pa': u'Wiktionary',
             'pl': [u'Wikisłownik', u'WS', u'Wiktionary'],
             'pnb': [u'وکشنری', u'Wiktionary'],
@@ -245,7 +247,7 @@ class Family(family.WikimediaFamily):
             'cy': u'Sgwrs Wiciadur',
             'da': [u'Wiktionary diskussion', u'Wiktionary-diskussion'],
             'de': u'Wiktionary Diskussion',
-            'dv': [u'ވިކިރަދީފު ޚިޔާ', u'Wiktionary talk'],
+            'dv': [u'ވިކިރަދީފު ޚިޔާލު', u'Wiktionary talk'],
             'el': [u'Συζήτηση βικιλεξικού', u'Βικιλεξικό συζήτηση'],
             'en': u'Wiktionary talk',
             'eo': [u'Vikivortaro-Diskuto', u'Vikivortaro diskuto'],
@@ -316,7 +318,7 @@ class Family(family.WikimediaFamily):
             'no': u'Wiktionary-diskusjon',
             'oc': u'Discussion Wikiccionari',
             'om': u'Wiktionary talk',
-            'or': [u'Wiktionary ଆଲୋଚନା', u'ଉଇକିପିଡ଼ିଆ ଆଲୋଚନା'],
+            'or': [u'ଉଇକିଅଭିଧାନ ଆଲୋଚନା', u'ଉଇକିପିଡ଼ିଆ ଆଲୋଚନା'],
             'pa': [u'Wiktionary ਗੱਲ-ਬਾਤ', u'Wiktionary ਚਰਚਾ'],
             'pl': u'Wikidyskusja',
             'pnb': u'گل ات',
@@ -478,6 +480,7 @@ class Family(family.WikimediaFamily):
             'ia': u'Appendice',
             'ku': u'Nimînok',
             'lt': u'Priedas',
+            'or': u'ସୂଚୀ',
             'pl': u'Indeks',
             'pt': u'Vocabulário',
             'ro': u'Apendice',
@@ -497,6 +500,7 @@ class Family(family.WikimediaFamily):
             'ia': u'Discussion Appendice',
             'ku': u'Gotûbêja nimînokê',
             'lt': u'Priedo aptarimas',
+            'or': u'ସୂଚୀ ଆଲୋଚନା',
             'pl': u'Dyskusja indeksu',
             'pt': u'Vocabulário Discussão',
             'ro': u'Discuție Apendice',
@@ -583,11 +587,13 @@ class Family(family.WikimediaFamily):
         self.namespaces[114] = {
             'en': u'Citations',
             'nds': u'Zitaten',
+            'or': u'ଆଧାର',
         }
 
         self.namespaces[115] = {
             'en': u'Citations talk',
             'nds': u'Zitaten Diskuschoon',
+            'or': u'ଆଧାର ଆଲୋଚନା',
         }
 
         self.namespaces[116] = {

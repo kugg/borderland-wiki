@@ -41,7 +41,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['fa'] = [u'کاربر']
         self.namespaces[3]['fa'] = [u'بحث کاربر']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur', u'Discussion utilisatrice']
-        self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
@@ -49,6 +48,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[829]['ja'] = [u'モジュール・トーク']
         self.namespaces[2]['ko'] = [u'사용자']
         self.namespaces[3]['ko'] = [u'사용자토론']
+        self.namespaces[2]['ne'] = [u'प्रयोगकर्ता']
+        self.namespaces[11]['ne'] = [u'ढाँचा वार्ता']
         self.namespaces[2]['pl'] = [u'Wikipedysta', u'Użytkowniczka', u'Użytkownik', u'Wikipedystka']
         self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty', u'Dyskusja użytkowniczki', u'Dyskusja użytkownika', u'Dyskusja wikipedystki']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
@@ -84,7 +85,7 @@ class Family(family.WikimediaFamily):
             'es': [u'Wikilibros', u'Wikibooks'],
             'et': [u'Vikiõpikud', u'Wikibooks'],
             'eu': u'Wikibooks',
-            'fa': [u'ویکی‌کتاب', u'Wikibooks', u'وک'],
+            'fa': [u'ویکی‌کتاب', u'Wikibooks', u'وک', u'ویکی‌نسک'],
             'fi': [u'Wikikirjasto', u'Wikibooks'],
             'fr': [u'Wikilivres', u'WL', u'Wikibooks'],
             'fy': u'Wikibooks',
@@ -246,6 +247,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[100] = {
             'bn': u'উইকিশৈশব',
+            'ca': u'Portal',
             'fr': u'Transwiki',
             'he': u'שער',
             'id': u'Resep',
@@ -263,6 +265,7 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[101] = {
             'bn': u'উইকিশৈশব আলাপ',
+            'ca': u'Portal Discussió',
             'fr': u'Discussion Transwiki',
             'he': u'שיחת שער',
             'id': u'Pembicaraan Resep',

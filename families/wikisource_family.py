@@ -18,10 +18,10 @@ class Family(family.WikimediaFamily):
         self.languages_by_size = [
             'fr', 'en', 'de', 'ru', 'it', 'pl', 'zh', 'he', 'es', 'sv', 'pt',
             'cs', 'ca', 'fa', 'hu', 'ar', 'ml', 'ko', 'sl', 'te', 'ro', 'fi',
-            'sr', 'vi', 'sa', 'el', 'hr', 'th', 'no', 'bn', 'hy', 'is', 'nl',
-            'gu', 'la', 'ja', 'br', 'vec', 'uk', 'eo', 'tr', 'az', 'mk', 'yi',
-            'ta', 'id', 'be', 'da', 'li', 'et', 'as', 'mr', 'bg', 'bs', 'sah',
-            'kn', 'gl', 'lt', 'cy', 'sk', 'zh-min-nan', 'fo',
+            'sr', 'vi', 'sa', 'el', 'hr', 'no', 'th', 'bn', 'hy', 'is', 'nl',
+            'gu', 'la', 'ja', 'br', 'vec', 'uk', 'eo', 'tr', 'mk', 'yi', 'ta',
+            'az', 'id', 'be', 'da', 'li', 'et', 'as', 'mr', 'bg', 'bs', 'sah',
+            'kn', 'gl', 'lt', 'cy', 'sk', 'zh-min-nan', 'fo', 'or',
         ]
 
         self.langs = dict([(lang, '%s.wikisource.org' % lang)
@@ -332,7 +332,7 @@ class Family(family.WikimediaFamily):
             'eo': u'Aŭtoro-Diskuto',
             'es': u'Página Discusión',
             'et': u'Lehekülje arutelu',
-            'fa': u'گفتگو پدیدآورنده',
+            'fa': u'بحث پدیدآورنده',
             'fr': u'Discussion Auteur',
             'hr': u'Razgovor o stranici',
             'hy': u'Պորտալի քննարկում',
@@ -417,7 +417,7 @@ class Family(family.WikimediaFamily):
             'eo': u'Paĝo-Diskuto',
             'es': u'Índice Discusión',
             'et': u'Registri arutelu',
-            'fa': u'گفتگوی برگه',
+            'fa': u'بحث برگه',
             'fr': u'Discussion Page',
             'gu': u'પૃષ્ઠ ચર્ચા',
             'he': u'שיחת עמוד',
@@ -493,7 +493,7 @@ class Family(family.WikimediaFamily):
             'en': u'Index talk',
             'eo': u'Indekso-Diskuto',
             'et': u'Autori arutelu',
-            'fa': u'گفتگوی فهرست',
+            'fa': u'بحث فهرست',
             'fr': u'Discussion Portail',
             'gu': u'સૂચિ ચર્ચા',
             'he': u'שיחת ביאור',
@@ -554,11 +554,13 @@ class Family(family.WikimediaFamily):
         self.namespaces[112] = {
             'fr': u'Livre',
             'he': u'מפתח',
+            'it': u'Opera',
         }
 
         self.namespaces[113] = {
             'fr': u'Discussion Livre',
             'he': u'שיחת מפתח',
+            'it': u'Discussioni opera',
         }
         self.namespaces[114] = {
             'en': u'Translation',
