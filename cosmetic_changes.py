@@ -377,10 +377,6 @@ class CosmeticChangesToolkit:
     def cleanUpLinks(self, text):
         # helper function which works on one link and either returns it
         # unmodified, or returns a replacement.
-        if self.site.sitename() != u'wikipedia:fa':
-            # Per community discussion, this one is not allowed in fa.wp
-            return
-
         def handleOneLink(match):
             titleWithSection = match.group('titleWithSection')
             label = match.group('label')
