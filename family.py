@@ -4967,7 +4967,7 @@ class WikimediaFamily(Family):
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
         # Here we return the latest mw release of wikimedia projects
-        return '1.26wmf4'
+        return '1.26wmf5'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
