@@ -1,0 +1,17 @@
+<blockquote>
+"Go away or I will replace you with a very small shell script"
+</blockquote>
+
+[Secretaribot](https://www.noisebridge.net/wiki/Secretaribot) is actually a few (quite small) python scripts, which, along with [Noisebot](https://www.noisebridge.net/wiki/Noisebot), help out the Noisebridge collective with housekeeping tasks.
+
+This document is automagically created by make.py and README.intro in the
+Secretaribot repository at [github](https://github.com/dannyob/secretaribot),
+which is written out to the [Secretaribot's
+page](https://www.noisebridge.net/wiki/Secretaribot) on the Noisebridge wiki. 
+
+### General instructions ###
+
+For the wiki tools, you'll need the
+[pywikipediabot](http://pywikipediabot.sourceforge.net/) library stored
+somewhere, and point the environment variable PYWIKIBOT_DIR at it. Copy the
+'lib/noisebridge_family.py' into its 'families' directory.
