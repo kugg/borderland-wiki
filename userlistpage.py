@@ -30,9 +30,10 @@ import urlparse
 
 
 def user_list_since_user(site, lastUser):
-    """ Maximum number of users = 2000 """
-    return user_list_from_page("Special:ListUsers", site,
-            '&username=%s&creationSort=1&limit=2000' % lastUser)
+    """ Maximum number of users = 500 """
+    userlistpage = user_list_from_page("Special:ListUsers", site,
+            '&username=%s&creationSort=1&limit=500' % lastUser)
+    return userlistpage
 
 
 def user_list_from_page(page, site, query):
@@ -68,7 +69,7 @@ class UserListPage:
         self.site = site
 
     def getUsers(self):
-        ula = cssselect.CSSSelector('div.mw-spcontent > ul > li > a')
+        ula = cssselect.CSSSelector('#mw-content-text > ul > li > a')
         list_links = ula(self.lxml_root)
         total_users = []
         for link in list_links:

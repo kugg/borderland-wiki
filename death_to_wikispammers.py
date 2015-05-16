@@ -34,10 +34,9 @@ def main(args):
             lastUser = f.readline().strip()
             f.close()
         except IOError:
-            lastUser = 'Zephyr'
+            lastUser = '3upiotr'
 
     users = user_list_since_user(noisebridge, lastUser).getUsers()
-
     for i in users:
         print ">>> ", i.name()
         hasContributions = False
