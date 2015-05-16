@@ -1,0 +1,20 @@
+[submodule "i18n"]
+    path = i18n
+    url = https://gerrit.wikimedia.org/r/p/pywikibot/i18n.git
+    branch = .
+    ignore = all
+[submodule "externals/spelling"]
+    path = externals/spelling
+    url = https://gerrit.wikimedia.org/r/p/pywikibot/spelling.git
+    branch = .
+    ignore = all
+[submodule "externals/opencv"]
+    path = externals/opencv
+    url = https://gerrit.wikimedia.org/r/pywikibot/opencv.git
+    branch = .
+    ignore = all
+[submodule "externals/pycolorname"]
+    path = externals/pycolorname
+    url = https://gerrit.wikimedia.org/r/pywikibot/pycolorname.git
+    branch = .
+    ignore = all

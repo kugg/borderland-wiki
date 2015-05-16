@@ -1,0 +1,8 @@
+*.bak
+*.pyc
+logs*
+user-config.py
+user-fixes.py
+throttle.ctrl
+login-data/*login.data
+watchlists/*.dat

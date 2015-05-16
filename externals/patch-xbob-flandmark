@@ -1,0 +1,94 @@
+diff -Naur '--exclude=*.pyc' '--exclude=*.so' '--exclude=bin' '--exclude=build' '--exclude=develop-eggs' '--exclude=eggs' '--exclude=parts' TEST_xbob_flandmark/buildout.cfg xbob_flandmark/buildout.cfg
+--- TEST_xbob_flandmark/buildout.cfg	2013-09-16 17:19:28.236993218 +0200
++++ xbob_flandmark/buildout.cfg	2013-04-28 17:38:00.399030000 +0200
+@@ -6,7 +6,7 @@
+ parts = xbob.flandmark scripts
+ newest = false
+ eggs = xbob.flandmark
+-;prefixes = /Users/andre/work/bob/b/dbg
++prefixes = /home/ursin/data/toolserver/pywikipedia/dtbext/_bob/build
+ 
+ [xbob.flandmark]
+ recipe = xbob.buildout:develop
+diff -Naur '--exclude=*.pyc' '--exclude=*.so' '--exclude=bin' '--exclude=build' '--exclude=develop-eggs' '--exclude=eggs' '--exclude=parts' TEST_xbob_flandmark/__init__.py xbob_flandmark/__init__.py
+--- TEST_xbob_flandmark/__init__.py	1970-01-01 01:00:00.000000000 +0100
++++ xbob_flandmark/__init__.py	2013-04-28 18:36:12.108122000 +0200
+@@ -0,0 +1,41 @@
++
++# === how to compile 'xbob.flandmark' ===
++# https://pypi.python.org/pypi/xbob.flandmark
++#
++# * adopt prefixes in buildout.cfg
++# * copy bob include to build dir
++#   ( e.g. cp .../pywikipedia/dtbext/_bob/include .../pywikipedia/dtbext/_bob/build/include )
++# * compile with
++#   ```sh
++#   $ python bootstrap.py
++#   $ ./bin/buildout
++#   ```
++#
++#@inproceedings{Uricar-Franc-Hlavac-VISAPP-2012,
++#  author =      {U{\\v{r}}i{\\v{c}}{\\'{a}}{\\v{r}}, Michal and Franc, Vojt{\\v{e}}ch and Hlav{\\'{a}}{\\v{c}}, V{\\'{a}}clav},
++#  title =       {Detector of Facial Landmarks Learned by the Structured Output {SVM}},
++#  year =        {2012},
++#  pages =       {547-556},
++#  booktitle =   {VISAPP '12: Proceedings of the 7th International Conference on Computer Vision Theory and Applications},
++#  editor =      {Csurka, Gabriela and Braz, Jos{\'{e}}},
++#  publisher =   {SciTePress --- Science and Technology Publications},
++#  address =     {Portugal},
++#  volume =      {1},
++#  isbn =        {978-989-8565-03-7},
++#  book_pages =  {747},
++#  month =       {February},
++#  day =         {24-26},
++#  venue =       {Rome, Italy},
++#  keywords =    {Facial Landmark Detection, Structured Output Classification, Support Vector Machines, Deformable Part Models},
++#  prestige =    {important},
++#  authorship =  {50-40-10},
++#  status =      {published},
++#  project =     {FP7-ICT-247525 HUMAVIPS, PERG04-GA-2008-239455 SEMISOL, Czech Ministry of Education project 1M0567},
++#  www = {http://www.visapp.visigrapp.org},
++#}
++
++import sys
++sys.path.append('/home/ursin/data/toolserver/pywikipedia/dtbext/xbob.flandmark/build/lib.linux-x86_64-2.7')
++#sys.path.append('/home/ursin/data/toolserver/pywikipedia/dtbext/bob/build/lib64')
++from xbob import flandmark
++#from xbob.flandmark import *
+diff -Naur '--exclude=*.pyc' '--exclude=*.so' '--exclude=bin' '--exclude=build' '--exclude=develop-eggs' '--exclude=eggs' '--exclude=parts' TEST_xbob_flandmark/.installed.cfg xbob_flandmark/.installed.cfg
+--- TEST_xbob_flandmark/.installed.cfg	1970-01-01 01:00:00.000000000 +0100
++++ xbob_flandmark/.installed.cfg	2013-04-28 18:25:10.760142000 +0200
+@@ -0,0 +1,22 @@
++[buildout]
++installed_develop_eggs = 
++parts = xbob.flandmark scripts
++
++[xbob.flandmark]
++__buildout_installed__ = /data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/xpython.builder
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/develop-eggs/xbob.flandmark.egg-link
++__buildout_signature__ = xbob.buildout-0.2.13-py2.7.egg zc.recipe.egg-2.0.0-py2.7.egg distribute-8cad917ade8ac9c8f39373318f61e69d zc.buildout-2.1.0-py2.7.egg
++recipe = xbob.buildout:develop
++
++[scripts]
++__buildout_installed__ = /data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/python
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/annotate.py
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/ipython
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/nosetests
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/nosetests
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/sphinx-apidoc
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/sphinx-build
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/sphinx-quickstart
++	/data/toolserver/pywikipedia/dtbext/xbob.flandmark/bin/sphinx-autogen
++__buildout_signature__ = xbob.buildout-0.2.13-py2.7.egg zc.recipe.egg-2.0.0-py2.7.egg distribute-8cad917ade8ac9c8f39373318f61e69d zc.buildout-2.1.0-py2.7.egg
++recipe = xbob.buildout:scripts
+diff -Naur '--exclude=*.pyc' '--exclude=*.so' '--exclude=bin' '--exclude=build' '--exclude=develop-eggs' '--exclude=eggs' '--exclude=parts' TEST_xbob_flandmark/xbob.flandmark.egg-info/SOURCES.txt xbob_flandmark/xbob.flandmark.egg-info/SOURCES.txt
+--- TEST_xbob_flandmark/xbob.flandmark.egg-info/SOURCES.txt	2013-09-16 17:19:28.301992116 +0200
++++ xbob_flandmark/xbob.flandmark.egg-info/SOURCES.txt	2013-04-28 18:24:59.407370000 +0200
+@@ -2,6 +2,7 @@
+ README.rst
+ bootstrap.py
+ buildout.cfg
++setup.cfg
+ setup.py
+ xbob/__init__.py
+ xbob.flandmark.egg-info/PKG-INFO

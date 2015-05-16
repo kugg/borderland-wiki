@@ -1,0 +1,13 @@
+External dependencies for the compat repository.
+
+Usually - under normal circumstances - these packages should be installed 
+separately elsewhere in the OS by the standard package managing system. This
+might not be possible for more exotic ones. Therefore several methods are used
+in following order; (git:submodule), OS package management system, download and
+extract from URL, use of mercurial (or svn) repository.
+
+The essential packages (like e.g. BeautifulSoup) are PRE-INSTALLED.
+
+For more information please confer 'externals/__init__.py', which contains the
+listing of all packages needed as well as the install method used. Consider
+https://www.mediawiki.org/wiki/Manual:Pywikibot/Installation#Dependencies also.
