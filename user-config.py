@@ -13,8 +13,8 @@ mylang = 'en'
 
 # The dictionary usernames should contain a username for each site where you
 # have a bot account.
-usernames['theborderland']['en'] = u'secreatary'
-
+#usernames['theborderland']['en'] = u'Secretary'
+sysopnames['theborderland']['en'] = u'Secretary'
 
 ############## LOGFILE SETTINGS ##############
 

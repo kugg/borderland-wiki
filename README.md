@@ -1,4 +1,77 @@
+Wiki robot defence
+------------------
+
 A wiki cleaner for wiki.theborderland.se based on secritary from noisebridge.
+
+This software can run on any Linux machine with Python2.7  and does not have
+to be installed on the wiki server.
+
+This sotware depends on cssselect (https://pypi.python.org/pypi/cssselect) and
+pywikibot-compat (in repo).
+
+Install it by making a
+```
+git clone https://github.com/SimonSapin/cssselect/
+python cssselect/setup.py install --user
+```
+
+This will install the cssselect library for your user.
+
+Pywikibot is already in this repository you only have to set one environment
+variable to have it configured.
+
+Enter the directory where you have cloned this repository and run:
+
+```
+export PYWIKIBOT_DIR=$PWD
+```
+Running
+-------
+
+Create a login cookie by running:
+```
+python ./login.py -v -v
+```
+
+The account should now be authenticated using a cookie file.
+
+Run the wiki cleaner!
+
+```
+./death_to_wikispammers.py
+```
+
+It will prompt you with the usernames from the registered user
+list and ask you if they should be removed or not.
+
+It will save the name of the latest account in /tmp
+where you can retrieve it after 500 accounts have been handled.
+
+Take the name from the last attempt and use it as an argument to
+death_to_wikispammers.py to continue the next batch of 500 accounts.
+
+Trouble?
+--------
+
+If you get an error similar to this one:
+```
+userlib.UserActionRefuse: You don't have permission to block
+```
+It means that your account in user-config.py does not have the correct previlegies.
+Check your user-config.py on this line:
+```
+sysopnames['theborderland']['en'] = u'Secretary'
+```
+Verify that the same account exists on the wiki site and has account administrative privelegies.
+You may also want to verify your cookie file.
+```
+python ./login.py -test
+```
+
+Good luck!
+
+Details
+-------
 
 [Secretaribot](https://www.noisebridge.net/wiki/Secretaribot) is actually a few (quite small) python scripts, which, along with [Noisebot](https://www.noisebridge.net/wiki/Noisebot), help out the Noisebridge collective with housekeeping tasks.
 
