@@ -55,8 +55,9 @@ def main(args):
         print "Despamming"
         for each_page in i.contributions():
             print each_page
+            """Page [[en:User:Cynthia8890]] could not be deleted - it doesn't exist"""
             each_page[0].delete("Spam (deleted by [Secretaribot] )",
-                    prompt=False)
+                    prompt=True)
         i.block(reason="Spam: deleted by [Secretaribot]",
                 expiry="infinite", onAutoblock=True,
                 allowUsertalk=False, anon=False)
