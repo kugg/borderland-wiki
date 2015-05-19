@@ -14,7 +14,10 @@ Install it by making a
 git clone https://github.com/SimonSapin/cssselect/
 python cssselect/setup.py install --user
 ```
-
+You may need to install python-mechanize and python-lxml
+```
+apt-get install python-mechanize python-lxml
+```
 This will install the cssselect library for your user.
 
 Pywikibot is already in this repository you only have to set one environment
