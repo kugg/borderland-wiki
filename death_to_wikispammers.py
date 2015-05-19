@@ -23,7 +23,9 @@ __license__ = "GPL v3"
 from pywikipediabot import wikipedia
 from userlistpage import user_list_since_user
 
-
+whitelist = ["Borderwiki", "Guff", "DanielH", "Mulvany", \
+	     "Andreas", "Good News", "Blackbird", "Timorybak", \
+	     "Maria", "Hest", "Tingfinder", "Secretary"]
 def main(args):
     noisebridge = wikipedia.Site('en')
     if len(args) > 0:
@@ -37,7 +39,12 @@ def main(args):
             lastUser = '3upiotr'
 
     users = user_list_since_user(noisebridge, lastUser).getUsers()
+    
     for i in users:
+	if i.name() in whitelist:
+	    continue
+	else:
+	    print "Not in whitelist"
         print ">>> ", i.name()
         hasContributions = False
         if i.isBlocked():
@@ -57,7 +64,7 @@ def main(args):
             print each_page
             """Page [[en:User:Cynthia8890]] could not be deleted - it doesn't exist"""
             each_page[0].delete("Spam (deleted by [Secretaribot] )",
-                    prompt=True)
+                    prompt=False)
         i.block(reason="Spam: deleted by [Secretaribot]",
                 expiry="infinite", onAutoblock=True,
                 allowUsertalk=False, anon=False)
