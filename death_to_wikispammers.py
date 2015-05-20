@@ -27,7 +27,7 @@ from userlistpage import user_list_since_user
 whitelist = ["Borderwiki", "Guff", "DanielH", "Mulvany", \
 	     "Andreas", "Good News", "Blackbird", "Timorybak", \
 	     "Maria", "Hest", "Tingfinder", "Secretary", \
-	     "Fannyofdoom", "Mathias Gazze", "Mama Rabbit" \
+	     "Fannyofdoom", "Mathias Gazze", "Mama Rabbit", \
 	     "Nikolajmartini", u'Zak Ärlig', "Animalpaul"]
 white_pages = ["Dreams", "Camps", \
 	       "Survival Guide", "The Ten Principles", "The essentials", \
@@ -55,9 +55,10 @@ def main(args):
     
     for i in users:
 	if i.name() in whitelist:
+            print "Protected by whitelist:"
 	    continue
 	else:
-	    print "Not in whitelist"
+	    print "Not in whitelist:"
         print ">>> ", i.name()
         hasContributions = False
         if i.isBlocked():
