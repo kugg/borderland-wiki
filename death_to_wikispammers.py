@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8  -*-
 ##
 # death_to_wikispammers.py - helps quickly delete spam in
 # spuriously created userpages
@@ -25,7 +26,10 @@ from userlistpage import user_list_since_user
 
 whitelist = ["Borderwiki", "Guff", "DanielH", "Mulvany", \
 	     "Andreas", "Good News", "Blackbird", "Timorybak", \
-	     "Maria", "Hest", "Tingfinder", "Secretary"]
+	     "Maria", "Hest", "Tingfinder", "Secretary", \
+	     "Fannyofdoom", "Mathias Gazze", "Mama Rabbit" \
+	     "Nikolajmartini", u'Zak Ärlig' ]
+# Zak Ärlig
 def main(args):
     noisebridge = wikipedia.Site('en')
     if len(args) > 0:
@@ -55,10 +59,10 @@ def main(args):
             hasContributions = True
         except StopIteration:
             pass
-        if hasContributions:
-            decision = raw_input("Spam? [y/N]")
-            if decision.upper() != "Y":
-                continue
+        #if hasContributions:
+            #decision = raw_input("Spam? [y/N]")
+            #if decision.upper() != "Y":
+            #    continue
         print "Despamming"
         for each_page in i.contributions():
             print each_page
