@@ -28,8 +28,17 @@ whitelist = ["Borderwiki", "Guff", "DanielH", "Mulvany", \
 	     "Andreas", "Good News", "Blackbird", "Timorybak", \
 	     "Maria", "Hest", "Tingfinder", "Secretary", \
 	     "Fannyofdoom", "Mathias Gazze", "Mama Rabbit" \
-	     "Nikolajmartini", u'Zak Ärlig' ]
-# Zak Ärlig
+	     "Nikolajmartini", u'Zak Ärlig', "Animalpaul"]
+white_pages = ["Dreams", "Camps", \
+	       "Survival Guide", "The Ten Principles", "The essentials", \
+	       "Arriving The area", "The Clown Police", "The area", \
+	       "Photography", "Leave No Trace", "Getting There", \
+	       "Shopping 2", "Shopping", "Trixeldome", \
+	       "Kakophonium", "Evil_Mutant_Overlord_Cheap_Wine_Tasting", \
+	       "DREAM_RADIO", u'Jörmungandr', "The_Borderland_Sauna", \
+	       "The_center_of_information_and_misinformstion", "Earth", \
+	       "The_Shadowland", "HighBearNation", \
+	       "The_Rabbithole", "Queer Qlux Qlan"]
 def main(args):
     noisebridge = wikipedia.Site('en')
     if len(args) > 0:
@@ -66,6 +75,10 @@ def main(args):
         print "Despamming"
         for each_page in i.contributions():
             print each_page
+            print each_page[0].title()
+            if each_page[0].title() in white_pages:
+                print "Page is protected by whitepage filter."
+                continue
             """Page [[en:User:Cynthia8890]] could not be deleted - it doesn't exist"""
             each_page[0].delete("Spam (deleted by [Secretaribot] )",
                     prompt=False)
