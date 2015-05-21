@@ -28,14 +28,15 @@ whitelist = ["Borderwiki", "Guff", "DanielH", "Mulvany", \
 	     "Andreas", "Good News", "Blackbird", "Timorybak", \
 	     "Maria", "Hest", "Tingfinder", "Secretary", \
 	     "Fannyofdoom", "Mathias Gazze", "Mama Rabbit", \
-	     "Nikolajmartini", u'Zak Ärlig', "Animalpaul"]
+	     "Nikolajmartini", u'Zak rlig', "Animalpaul", \
+	     "KraFs", "Juliebm", "Gfgfs"]
 white_pages = ["Dreams", "Camps", \
 	       "Survival Guide", "The Ten Principles", "The essentials", \
 	       "Arriving The area", "The Clown Police", "The area", \
 	       "Photography", "Leave No Trace", "Getting There", \
 	       "Shopping 2", "Shopping", "Trixeldome", \
 	       "Kakophonium", "Evil_Mutant_Overlord_Cheap_Wine_Tasting", \
-	       "DREAM_RADIO", u'Jörmungandr', "The_Borderland_Sauna", \
+	       "DREAM_RADIO", u'Jrmungandr', "The_Borderland_Sauna", \
 	       "The_center_of_information_and_misinformstion", "Earth", \
 	       "The_Shadowland", "HighBearNation", \
 	       "The_Rabbithole", "Queer Qlux Qlan"]
@@ -54,12 +55,22 @@ def main(args):
     users = user_list_since_user(noisebridge, lastUser).getUsers()
     
     for i in users:
-	if i.name() in whitelist:
-            print "Protected by whitelist:"
+	try:
+            input_name = i.name()
+	    ascii_name = input_name.encode('ascii', 'ignore')
+        except:
+	    print input_name
+	    print type(input_name)
+            print ascii_name
+	    print type(ascii_name)
+            raise
+
+	if ascii_name in whitelist:
+            print("Protected by whitelist: {}".format(ascii_name))
 	    continue
 	else:
-	    print "Not in whitelist:"
-        print ">>> ", i.name()
+            print("Not in whitelist: {}".format(ascii_name))
+
         hasContributions = False
         if i.isBlocked():
             continue
@@ -77,6 +88,7 @@ def main(args):
         for each_page in i.contributions():
             print each_page
             print each_page[0].title()
+            title = each_page[0].title().encode('ascii', 'ignore')
             if each_page[0].title() in white_pages:
                 print "Page is protected by whitepage filter."
                 continue
