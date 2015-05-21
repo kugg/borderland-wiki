@@ -35,11 +35,11 @@ white_pages = ["Dreams", "Camps", \
 	       "Arriving The area", "The Clown Police", "The area", \
 	       "Photography", "Leave No Trace", "Getting There", \
 	       "Shopping 2", "Shopping", "Trixeldome", \
-	       "Kakophonium", "Evil_Mutant_Overlord_Cheap_Wine_Tasting", \
-	       "DREAM_RADIO", u'Jrmungandr', "The_Borderland_Sauna", \
-	       "The_center_of_information_and_misinformstion", "Earth", \
-	       "The_Shadowland", "HighBearNation", \
-	       "The_Rabbithole", "Queer Qlux Qlan"]
+	       "Kakophonium", "Evil Mutant Overlord Cheap Wine Tasting", \
+	       "DREAM_RADIO", u'Jrmungandr', "The_Borderland Sauna", \
+	       "The center of information and misinformstion", "Earth", \
+	       "The Shadowland", "HighBearNation", \
+	       "The Rabbithole", "Queer Qlux Qlan"]
 def main(args):
     noisebridge = wikipedia.Site('en')
     if len(args) > 0:
@@ -85,6 +85,7 @@ def main(args):
             #if decision.upper() != "Y":
             #    continue
         print "Despamming"
+        userpage_deleted = False
         for each_page in i.contributions():
             print each_page
             print each_page[0].title()
@@ -93,6 +94,11 @@ def main(args):
                 print "Page is protected by whitepage filter."
                 continue
             """Page [[en:User:Cynthia8890]] could not be deleted - it doesn't exist"""
+            if title == "User:{}".format(ascii_name):
+                if userpage_deleted:
+                    continue
+                else:
+                    userpage_deleted = True
             each_page[0].delete("Spam (deleted by [Secretaribot] )",
                     prompt=False)
         i.block(reason="Spam: deleted by [Secretaribot]",
