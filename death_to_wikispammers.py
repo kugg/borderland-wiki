@@ -41,7 +41,9 @@ white_pages = ["Dreams", "Camps", \
 	       "The Shadowland", "HighBearNation", \
 	       "The Rabbithole", "Queer Qlux Qlan", \
                "Frequently Asked Questions", \
-               "Complete List of Important Things", "Danish Law"]
+               "Complete List of Important Things", "Danish Law", \
+               "Use of Images", "Electricity", "Logo", "Getting There", \
+               "Event Participation Agreement", "FAQ"]
 def main(args):
     noisebridge = wikipedia.Site('en')
     if len(args) > 0:
