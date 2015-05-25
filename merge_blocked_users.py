@@ -51,7 +51,7 @@ def main(args):
     else:
         initial_user = args[0]
 
-    nb = wikipedia.Site('en', "noisebridge")
+    nb = wikipedia.Site('en', "theborderland")
     spam_user = userlib.User(nb, "SpammerHellDontDelete")
 
     ul = userlistpage.user_list_since_user(nb, initial_user).getUsers()
