@@ -29,7 +29,7 @@ whitelist = ["Borderwiki", "Guff", "DanielH", "Mulvany", \
 	     "Maria", "Hest", "Tingfinder", "Secretary", \
 	     "Fannyofdoom", "Mathias Gazze", "Mama Rabbit", \
 	     "Nikolajmartini", u'Zak rlig', "Animalpaul", \
-	     "KraFs", "Juliebm", "Gfgfs"]
+	     "KraFs", "Juliebm", "Gfgfs", "Mermaid"]
 white_pages = ["Dreams", "Camps", \
 	       "Survival Guide", "The Ten Principles", "The essentials", \
 	       "Arriving The area", "The Clown Police", "The area", \
@@ -43,7 +43,7 @@ white_pages = ["Dreams", "Camps", \
                "Frequently Asked Questions", \
                "Complete List of Important Things", "Danish Law", \
                "Use of Images", "Electricity", "Logo", "Getting There", \
-               "Event Participation Agreement", "FAQ"]
+               "Event Participation Agreement", "FAQ", "Mermaid camp"]
 def main(args):
     noisebridge = wikipedia.Site('en')
     if len(args) > 0:
